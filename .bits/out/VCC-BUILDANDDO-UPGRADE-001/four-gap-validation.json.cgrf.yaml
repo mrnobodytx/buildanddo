@@ -1,0 +1,19 @@
+# ─── CGRF Header ───────────────────────────────────────────────
+# File:        .bits/out/VCC-BUILDANDDO-UPGRADE-001/four-gap-validation.json.cgrf.yaml
+# Stage:       11_COMMIT
+# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# CAPS:        pending
+# CK:          pending
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+# Seat:        BITS-CODEGEN
+# Owner:       Citadel Nexus Inc.
+# Created:     2026-09-21
+# Depends:     .bits/out/VCC-BUILDANDDO-UPGRADE-001/four-gap-validation.json, libs/evolution/review_packets.py, scripts/ci/day21_submission.py, scripts/ci/submission_readiness.py
+# EnumType:    Schema
+# EnumEdges:   PRODUCES .bits/out/VCC-BUILDANDDO-UPGRADE-001/four-gap-validation.json; CONSUMES libs/evolution/review_packets.py; CONSUMES scripts/ci/day21_submission.py; CONSUMES scripts/ci/submission_readiness.py
+# DAG Node:    none
+# Intent:      Preserve the tested source identity, actual acceptance failures and ungraded local evidence without asserting external qualification or submission.
+# ───────────────────────────────────────────────────────────────
+
+schema_version: 1
+artifact: .bits/out/VCC-BUILDANDDO-UPGRADE-001/four-gap-validation.json

@@ -46,6 +46,7 @@ function Probe() {
             <button type="button" onClick={refresh}>
                 Refresh workspaces
             </button>
+            <button type="button" onClick={() => refresh('new-workspace')}>Open created workspace</button>
         </div>
     );
 }
@@ -62,6 +63,16 @@ function Scene({ auth }) {
 beforeEach(() => pb.__reset());
 
 describe('WorkspaceProvider account isolation', () => {
+    it('selects the newly created readable workspace even when another one was remembered', async () => {
+        localStorage.setItem('bad_active_ws:user_test', 'ws_test');
+        pb.__setRecords('workspaces', [createMockWorkspace({ name: 'Earlier business' }), createMockWorkspace({ id: 'new-workspace', name: 'New business' })]);
+        renderWithProviders(<Scene auth={createAuthValue()} />);
+        expect(await screen.findByText('Earlier business')).toBeVisible();
+        await setupUser().click(screen.getByRole('button', { name: 'Open created workspace' }));
+        expect(await screen.findByText('New business')).toBeVisible();
+        expect(localStorage.getItem('bad_active_ws:user_test')).toBe('new-workspace');
+        localStorage.removeItem('bad_active_ws:user_test');
+    });
     it('clears the previous account synchronously while the next account loads', async () => {
         pb.__setRecords('workspaces', [
             createMockWorkspace({ name: 'Account A private workspace' }),

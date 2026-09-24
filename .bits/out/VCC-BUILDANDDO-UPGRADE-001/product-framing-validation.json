@@ -1,0 +1,446 @@
+{
+  "schema_version": "buildanddo.product-framing/v1",
+  "status": "PARTIAL",
+  "scope": "Public product identity, project intake copy and submission presentation; no runtime activation or acceptance claim.",
+  "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+  "srs_codes": [
+    "SRS-BUILDANDDO-UPGRADE-001"
+  ],
+  "base_commit": "3eaebd321303b6ecf3b5867c820e1c5fbd76a140",
+  "implementation_commit": "6703a37cc5c138c78dc9c42a93515f491db188a3",
+  "test_identity": "Local source checks before the implementation commit; every listed source/document digest matches the committed bytes. These are not hosted GitLab or clean-candidate Day-21 receipts.",
+  "tested_file_sha256": {
+    "README.md": "c1d9ecec5e1d6daeb71a3faa9f412c8991dedf487313089da122ab1998ae18c2",
+    "apps/web/public/llms.txt": "32808e50cce0551d834d7a8bf606352a1a2f34a5e88376c1d24232fa16bb6e64",
+    "apps/web/src/__tests__/HostingerChallengePage.test.jsx": "99020bb3bae751cca7d2cbb6c0b0bb13a1b879bda37557325bbb8a9db9565e29",
+    "apps/web/src/components/Seo.jsx": "bb0819a162db9f296b2606dec4ab03b28105f8afef00a352a5fdcd3731188b07",
+    "apps/web/src/components/editorial/EditorialFrontPage.jsx": "71d382a23d6e7a5ffb2bb850bf4b3973277ae981c9594feb3ba9a6772eebac7f",
+    "apps/web/src/components/site/EarlyAccess.jsx": "bf50ab470f3b4a8a7379c9ea4341029b911bdb619787854ca66a6fdb9df9b434",
+    "apps/web/src/components/site/Faq.jsx": "2177e5775319de31bad2a301382d9ebb69f9b2800466ea35835d6737d848c6eb",
+    "apps/web/src/components/site/Footer.jsx": "e7d33d604a3fc353bbd45f7bad3d3496b897f55984043e963d88448420561c02",
+    "apps/web/src/data/hostingerChallenge.js": "07c4c60e3f9d32134c2d7a65af73759ef59def345f1114106a61188f363cff34",
+    "apps/web/src/lib/publicPages.js": "d6e56267423768951b768637684bacdbff84a270658945f80aa4c931a41bb5ad",
+    "apps/web/src/pages/HomePage.jsx": "0a3be9a1a9577a56853f6bc89dbc8624aec1e5ac521152cdf3e6a0f6a96e3012",
+    "apps/web/src/pages/HostingerChallengePage.jsx": "4661922500e668bf944a473c6116d65639bdcf63b144534f84315c14d8683c85",
+    "apps/web/src/pages/PricingPage.jsx": "04f99a92938e33c6063fa67df168a9875380c76b6f043c474df35fd838e888ee",
+    "apps/web/src/pages/__tests__/HomePage.test.jsx": "380e6187ab78397f03d348842a4daadd6978eeb8aed3d1f09ab18f7dafc3e042",
+    "apps/web/tools/generate-seo.mjs": "c13a1a888cfa04873e021208857eca6d2f6ffa16e4af7f152ff4d04475647600",
+    "docs/day21/JUDGE_STORY.md": "651ff037ddc8528e8bbf913aa60d986291484aafe7505ba4caf28d73894dd8ce",
+    "docs/day21/VIDEO_SHOTLIST.md": "1de50df13807f36a90556b5179c1b803debc117979678ccbc09228d6ac9353fb",
+    "docs/hostinger-sprint-closure.md": "9966abeb231defbf69fcbd2a22b099820ebb19d3636613aa42f14a73d078faaf",
+    "docs/sprint-user-journey.md": "6e13316c6499561c4623fc046bf884d26bb7c21da21231034c20710a78b31aa3",
+    "docs/submission-guide.md": "24d0945b05ad3a608707018981ee6bec29a087d9a0a8ccbff5a0d4e23a329f4c"
+  },
+  "execution_environment": {
+    "source_and_web_gate_node": "22.17.0",
+    "python": "3.12.13",
+    "source_diagnostic_node": "24.13.0",
+    "source_checker_eslint": "9.16.0 global diagnostic only",
+    "source_checker_module_path": "/usr/local/share/nvm/versions/node/v24.13.0/lib/node_modules",
+    "source_checker_is_locked_lint": false
+  },
+  "suite_totals": {
+    "node": {
+      "total": 580,
+      "passed": 580,
+      "failed": 0,
+      "skipped": 0
+    },
+    "python": {
+      "total": 802,
+      "passed": 770,
+      "failed": 0,
+      "skipped": 32
+    }
+  },
+  "dispatch_smoke": {
+    "pass": 4,
+    "fail": 3,
+    "total": 7,
+    "note": "Frontend gate processes fail because dependencies are missing; Python command exits successfully with 32 skips, which do not establish native acceptance."
+  },
+  "results": {
+    "boundary-final": {
+      "name": "boundary-final",
+      "command": [
+        "python",
+        "scripts/ci/verify_public_boundary.py"
+      ],
+      "exit_code": 0,
+      "started_at": "2026-09-22T16:08:50.890193+00:00",
+      "finished_at": "2026-09-22T16:08:52.490415+00:00",
+      "seconds": 1.6,
+      "log": "/tmp/buildanddo-product-framing/boundary-final.log",
+      "log_sha256": "01af3ee50afbfd788edb22f5746b999dad54bf2efb497e1830265dddce21c1c6",
+      "log_bytes": 82
+    },
+    "boundary": {
+      "name": "boundary",
+      "command": [
+        "python",
+        "scripts/ci/verify_public_boundary.py"
+      ],
+      "exit_code": 0,
+      "started_at": "2026-09-22T16:04:16.789228+00:00",
+      "finished_at": "2026-09-22T16:04:18.528654+00:00",
+      "seconds": 1.74,
+      "log": "/tmp/buildanddo-product-framing/boundary.log",
+      "log_sha256": "19e796bc436db204a340121c1859a74aefeabca99a137c740b2f05774c0d19fc",
+      "log_bytes": 82
+    },
+    "context-final": {
+      "name": "context-final",
+      "command": [
+        "python",
+        "scripts/ci/agent_context.py",
+        "--check"
+      ],
+      "exit_code": 0,
+      "started_at": "2026-09-22T16:08:51.088113+00:00",
+      "finished_at": "2026-09-22T16:08:51.972354+00:00",
+      "seconds": 0.884,
+      "log": "/tmp/buildanddo-product-framing/context-final.log",
+      "log_sha256": "f625e9d776db2194712d0e1d36d5d56049117007714d6b8bcf5b4ea0de192191",
+      "log_bytes": 86
+    },
+    "context": {
+      "name": "context",
+      "command": [
+        "python",
+        "scripts/ci/agent_context.py",
+        "--check"
+      ],
+      "exit_code": 0,
+      "started_at": "2026-09-22T16:04:16.742740+00:00",
+      "finished_at": "2026-09-22T16:04:17.822679+00:00",
+      "seconds": 1.08,
+      "log": "/tmp/buildanddo-product-framing/context.log",
+      "log_sha256": "f625e9d776db2194712d0e1d36d5d56049117007714d6b8bcf5b4ea0de192191",
+      "log_bytes": 86
+    },
+    "memory-final": {
+      "name": "memory-final",
+      "command": [
+        "python",
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/verify.py"
+      ],
+      "exit_code": 0,
+      "started_at": "2026-09-22T16:08:50.814582+00:00",
+      "finished_at": "2026-09-22T16:08:51.794766+00:00",
+      "seconds": 0.98,
+      "log": "/tmp/buildanddo-product-framing/memory-final.log",
+      "log_sha256": "1c267ecb8fd9706fdcc20942ee9883f8c5d0b8959d49bca858f07ef8bc9341f7",
+      "log_bytes": 74
+    },
+    "node-regression": {
+      "name": "node-regression",
+      "command": [
+        "node",
+        "--test",
+        "tests/upgrade/blueprint-client.test.mjs",
+        "tests/upgrade/blueprint-saved-client.test.mjs",
+        "tests/upgrade/blueprint-system.test.mjs",
+        "tests/upgrade/build.test.mjs",
+        "tests/upgrade/business-client.test.mjs",
+        "tests/upgrade/business-execution.test.mjs",
+        "tests/upgrade/business-learning.test.mjs",
+        "tests/upgrade/classroom-client.test.mjs",
+        "tests/upgrade/classroom-presence.test.mjs",
+        "tests/upgrade/classroom-system.test.mjs",
+        "tests/upgrade/commercial-enquiry.test.mjs",
+        "tests/upgrade/decision-runtime.test.mjs",
+        "tests/upgrade/discord-catalogue.test.mjs",
+        "tests/upgrade/dossier-client.test.mjs",
+        "tests/upgrade/dossier-system.test.mjs",
+        "tests/upgrade/editorial-frontpage.test.mjs",
+        "tests/upgrade/government-learning.test.mjs",
+        "tests/upgrade/knowledge-client.test.mjs",
+        "tests/upgrade/knowledge-system.test.mjs",
+        "tests/upgrade/mission-research.test.mjs",
+        "tests/upgrade/mission-system.test.mjs",
+        "tests/upgrade/motion-system.test.mjs",
+        "tests/upgrade/objective-onboarding.test.mjs",
+        "tests/upgrade/operator-client.test.mjs",
+        "tests/upgrade/operator-system.test.mjs",
+        "tests/upgrade/pocketbase-metrics.test.mjs",
+        "tests/upgrade/policy-intelligence.test.mjs",
+        "tests/upgrade/research-client.test.mjs",
+        "tests/upgrade/signal-mission.test.mjs",
+        "tests/upgrade/source-checker.test.mjs",
+        "tests/upgrade/sprint-integrity.test.mjs",
+        "tests/upgrade/sprint-journey.test.mjs",
+        "tests/upgrade/staging-contract.test.mjs",
+        "tests/upgrade/suite-client.test.mjs",
+        "tests/upgrade/suite-system.test.mjs",
+        "tests/upgrade/tutorial-learning-client.test.mjs",
+        "tests/upgrade/tutorial-learning-system.test.mjs",
+        "tests/upgrade/work-history.test.mjs",
+        "tests/upgrade/workflow-client.test.mjs",
+        "tests/upgrade/workflow-runs.test.mjs",
+        "tests/upgrade/workspace-administration.test.mjs",
+        "tests/upgrade/workspace-assistant.test.mjs",
+        "tests/upgrade/workspace-community.test.mjs",
+        "tests/upgrade/workspace-control-client.test.mjs",
+        "tests/upgrade/workspace-integration.test.mjs",
+        "tests/upgrade/workspace-rooms.test.mjs",
+        "tests/upgrade/workspace-summary.test.mjs",
+        "tests/upgrade/workspace-value.test.mjs"
+      ],
+      "exit_code": 0,
+      "started_at": "2026-09-22T15:57:54.302663+00:00",
+      "finished_at": "2026-09-22T15:58:12.858442+00:00",
+      "seconds": 18.556,
+      "log": "/tmp/buildanddo-product-framing/node-regression.log",
+      "log_sha256": "0b37076515c9d796a3af4aadb583fd93b5fd2a18e5e04c6b50c20a7ba4a8501d",
+      "log_bytes": 137748
+    },
+    "python-regression": {
+      "name": "python-regression",
+      "command": [
+        "python",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests/upgrade",
+        "-p",
+        "test_*.py"
+      ],
+      "exit_code": 0,
+      "started_at": "2026-09-22T15:58:00.425528+00:00",
+      "finished_at": "2026-09-22T16:00:08.965714+00:00",
+      "seconds": 128.54,
+      "log": "/tmp/buildanddo-product-framing/python-regression.log",
+      "log_sha256": "553d5d08ab045f834645e260e29e6f9a5882fe50c70b146d7ecadb06adc57a60",
+      "log_bytes": 3517
+    },
+    "readiness-final": {
+      "name": "readiness-final",
+      "command": [
+        "python",
+        "scripts/ci/hostinger_readiness.py",
+        "--check"
+      ],
+      "exit_code": 0,
+      "started_at": "2026-09-22T16:08:50.811281+00:00",
+      "finished_at": "2026-09-22T16:08:51.641315+00:00",
+      "seconds": 0.83,
+      "log": "/tmp/buildanddo-product-framing/readiness-final.log",
+      "log_sha256": "7799e54ef92ae57c822cdc3c86f8b0a27b57ea4cc0825d813de3e0ae6969cfd1",
+      "log_bytes": 85
+    },
+    "readiness": {
+      "name": "readiness",
+      "command": [
+        "python",
+        "scripts/ci/hostinger_readiness.py",
+        "--check"
+      ],
+      "exit_code": 0,
+      "started_at": "2026-09-22T16:04:16.742829+00:00",
+      "finished_at": "2026-09-22T16:04:17.681889+00:00",
+      "seconds": 0.939,
+      "log": "/tmp/buildanddo-product-framing/readiness.log",
+      "log_sha256": "7799e54ef92ae57c822cdc3c86f8b0a27b57ea4cc0825d813de3e0ae6969cfd1",
+      "log_bytes": 85
+    },
+    "source-diagnostic": {
+      "name": "source-diagnostic",
+      "command": [
+        "node",
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/check-source.cjs"
+      ],
+      "exit_code": 0,
+      "started_at": "2026-09-22T15:55:36.062907+00:00",
+      "finished_at": "2026-09-22T15:55:39.264437+00:00",
+      "seconds": 3.202,
+      "log": "/tmp/buildanddo-product-framing/source-diagnostic.log",
+      "log_sha256": "ca36bb92698c0ae8bc7ccb17ee31ea82cd03e63e73e322f906d1d8e2c03d1743",
+      "log_bytes": 90
+    },
+    "submission-policy-final": {
+      "name": "submission-policy-final",
+      "command": [
+        "python",
+        "scripts/ci/submission_readiness.py",
+        "--check"
+      ],
+      "exit_code": 0,
+      "started_at": "2026-09-22T16:08:50.918455+00:00",
+      "finished_at": "2026-09-22T16:08:51.395636+00:00",
+      "seconds": 0.477,
+      "log": "/tmp/buildanddo-product-framing/submission-policy-final.log",
+      "log_sha256": "f67a6b0785d6eb8c1010f942b404ff5ed35157c2532d7241de173a9447ab6038",
+      "log_bytes": 88
+    },
+    "submission-policy": {
+      "name": "submission-policy",
+      "command": [
+        "python",
+        "scripts/ci/submission_readiness.py",
+        "--check"
+      ],
+      "exit_code": 0,
+      "started_at": "2026-09-22T16:04:16.822133+00:00",
+      "finished_at": "2026-09-22T16:04:17.401372+00:00",
+      "seconds": 0.58,
+      "log": "/tmp/buildanddo-product-framing/submission-policy.log",
+      "log_sha256": "f67a6b0785d6eb8c1010f942b404ff5ed35157c2532d7241de173a9447ab6038",
+      "log_bytes": 88
+    },
+    "web-build-node22": {
+      "name": "web-build-node22",
+      "command": [
+        "npm",
+        "--prefix",
+        "apps/web",
+        "run",
+        "build"
+      ],
+      "exit_code": 1,
+      "started_at": "2026-09-22T15:57:22.980584+00:00",
+      "finished_at": "2026-09-22T15:57:24.204103+00:00",
+      "seconds": 1.224,
+      "log": "/tmp/buildanddo-product-framing/web-build-node22.log",
+      "log_sha256": "c8e1f6fca51c2294d50c1de473516617ed9f4af5434e81e1c3b1ae63cb4756fc",
+      "log_bytes": 587
+    },
+    "web-build": {
+      "name": "web-build",
+      "command": [
+        "npm",
+        "--prefix",
+        "apps/web",
+        "run",
+        "build"
+      ],
+      "exit_code": 1,
+      "started_at": "2026-09-22T15:56:06.891241+00:00",
+      "finished_at": "2026-09-22T15:56:07.516205+00:00",
+      "seconds": 0.625,
+      "log": "/tmp/buildanddo-product-framing/web-build.log",
+      "log_sha256": "8ab2e3c0b4b140840802a4d300b331232175064d3d66db6b124dd3799a5fcc40",
+      "log_bytes": 1086
+    },
+    "web-lint": {
+      "name": "web-lint",
+      "command": [
+        "npm",
+        "--prefix",
+        "apps/web",
+        "run",
+        "lint"
+      ],
+      "exit_code": 2,
+      "started_at": "2026-09-22T15:57:32.782404+00:00",
+      "finished_at": "2026-09-22T15:57:35.338369+00:00",
+      "seconds": 2.556,
+      "log": "/tmp/buildanddo-product-framing/web-lint.log",
+      "log_sha256": "080d9baad27f964fed893b4d2394fe8afde45685f1ef5083c2bfb54465e170f2",
+      "log_bytes": 1693
+    },
+    "web-tests": {
+      "name": "web-tests",
+      "command": [
+        "npm",
+        "--prefix",
+        "apps/web",
+        "test"
+      ],
+      "exit_code": 127,
+      "started_at": "2026-09-22T15:57:28.255071+00:00",
+      "finished_at": "2026-09-22T15:57:29.178844+00:00",
+      "seconds": 0.924,
+      "log": "/tmp/buildanddo-product-framing/web-tests.log",
+      "log_sha256": "ad1008697a0e65d0c55a056826b79bc4031e3ac8af07c196e10f6e218ea33254",
+      "log_bytes": 140
+    }
+  },
+  "logs": {
+    "boundary-final": {
+      "complete": true,
+      "text": "{\n  \"state\": \"PASS\",\n  \"files_checked\": 1341,\n  \"failures\": [],\n  \"actor\": null\n}\n"
+    },
+    "boundary": {
+      "complete": true,
+      "text": "{\n  \"state\": \"PASS\",\n  \"files_checked\": 1338,\n  \"failures\": [],\n  \"actor\": null\n}\n"
+    },
+    "context-final": {
+      "complete": true,
+      "text": "PASS: .bits/context.lock.json matches the repository (24 findings, 22 unwired gates).\n"
+    },
+    "context": {
+      "complete": true,
+      "text": "PASS: .bits/context.lock.json matches the repository (24 findings, 22 unwired gates).\n"
+    },
+    "memory-final": {
+      "complete": true,
+      "text": "PASS: 790 file vectors, 1791 edges, 196 events; IOO complete; no orphans.\n"
+    },
+    "node-regression": {
+      "complete": false,
+      "text": "  ...\n# Subtest: partial evidence, absent reviewer and malformed frozen reviews stay unmeasured\nok 580 - partial evidence, absent reviewer and malformed frozen reviews stay unmeasured\n  ---\n  duration_ms: 154.589617\n  type: 'test'\n  ...\n1..580\n# tests 580\n# suites 0\n# pass 580\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 18288.530224\n"
+    },
+    "python-regression": {
+      "complete": true,
+      "text": ".......s..............s.................................s.s..............ssbusiness_worker_stopped\n.business_action_unavailable\n..................................................................sss......................................................................................................................s............................................................................ssss....................................................................................................................................................................{\"event\": \"suite.worker.unavailable\", \"outcome\": \"\", \"reason\": \"unavailable\", \"duration_ms\": null, \"version\": \"mission-suite/1.0.0\", \"source_sha256\": \"\", \"tenant_id\": \"\", \"mission_id\": \"\", \"correlation_id\": \"\", \"srs_code\": \"SRS-BUILDANDDO-UPGRADE-001\", \"dispatch_id\": \"VCC-BUILDANDDO-UPGRADE-001\", \"seat\": \"BITS-CODEGEN\"}\n..{\"event\": \"suite.operation.blocked\", \"outcome\": \"\", \"reason\": \"configuration_or_input\", \"duration_ms\": null, \"version\": \"mission-suite/1.0.0\", \"source_sha256\": \"\", \"tenant_id\": \"\", \"mission_id\": \"\", \"correlation_id\": \"\", \"srs_code\": \"SRS-BUILDANDDO-UPGRADE-001\", \"dispatch_id\": \"VCC-BUILDANDDO-UPGRADE-001\", \"seat\": \"BITS-CODEGEN\"}\n...{\"event\": \"suite.run.recorded\", \"outcome\": \"failed\", \"reason\": \"invalid_data\", \"duration_ms\": 3, \"version\": \"mission-suite/1.0.0\", \"source_sha256\": \"86050b0bfe47215f4ac462df30ba56e35a642805ba0becf89bc305b1d588dd78\", \"tenant_id\": \"ws1\", \"mission_id\": \"mission1\", \"correlation_id\": \"record000000009\", \"srs_code\": \"SRS-BUILDANDDO-UPGRADE-001\", \"dispatch_id\": \"VCC-BUILDANDDO-UPGRADE-001\", \"seat\": \"BITS-CODEGEN\"}\n.{\"event\": \"suite.run.recorded\", \"outcome\": \"ready\", \"reason\": \"\", \"duration_ms\": 10, \"version\": \"mission-suite/1.0.0\", \"source_sha256\": \"86050b0bfe47215f4ac462df30ba56e35a642805ba0becf89bc305b1d588dd78\", \"tenant_id\": \"ws1\", \"mission_id\": \"mission1\", \"correlation_id\": \"record000000009\", \"srs_code\": \"SRS-BUILDANDDO-UPGRADE-001\", \"dispatch_id\": \"VCC-BUILDANDDO-UPGRADE-001\", \"seat\": \"BITS-CODEGEN\"}\n.{\"event\": \"suite.run.recorded\", \"outcome\": \"ready\", \"reason\": \"\", \"duration_ms\": 8, \"version\": \"mission-suite/1.0.0\", \"source_sha256\": \"86050b0bfe47215f4ac462df30ba56e35a642805ba0becf89bc305b1d588dd78\", \"tenant_id\": \"ws1\", \"mission_id\": \"mission1\", \"correlation_id\": \"record000000009\", \"srs_code\": \"SRS-BUILDANDDO-UPGRADE-001\", \"dispatch_id\": \"VCC-BUILDANDDO-UPGRADE-001\", \"seat\": \"BITS-CODEGEN\"}\n..........................................................................s.....{\"event\": \"research.startup.blocked\", \"outcome\": \"\", \"reason\": \"configuration\", \"srs_code\": \"SRS-BUILDANDDO-UPGRADE-001\", \"seat\": \"BITS-CODEGEN\", \"dispatch_id\": \"VCC-BUILDANDDO-UPGRADE-001\"}\n.......{\"event\": \"research.processing.recorded\", \"outcome\": \"failed\", \"reason\": \"capability_unavailable\", \"srs_code\": \"SRS-BUILDANDDO-UPGRADE-001\", \"seat\": \"BITS-CODEGEN\", \"dispatch_id\": \"VCC-BUILDANDDO-UPGRADE-001\"}\n..{\"event\": \"research.processing.recorded\", \"outcome\": \"failed\", \"reason\": \"capability_unavailable\", \"srs_code\": \"SRS-BUILDANDDO-UPGRADE-001\", \"seat\": \"BITS-CODEGEN\", \"dispatch_id\": \"VCC-BUILDANDDO-UPGRADE-001\"}\n...................................................................................................................................................................sssssss..................ssssssssss\n----------------------------------------------------------------------\nRan 802 tests in 126.675s\n\nOK (skipped=32)\nDiscord adapter backend: explicit transport double; native acceptance pending\n"
+    },
+    "readiness-final": {
+      "complete": true,
+      "text": "PASS: all eleven milestones retain current rationale, owners, checks and next steps.\n"
+    },
+    "readiness": {
+      "complete": true,
+      "text": "PASS: all eleven milestones retain current rationale, owners, checks and next steps.\n"
+    },
+    "source-diagnostic": {
+      "complete": true,
+      "text": "PASS: 340 modules parsed; 0 static errors. This does not run repository lint or UI tests.\n"
+    },
+    "submission-policy-final": {
+      "complete": true,
+      "text": "PASS: eleven internal submission checkpoints; official rules remain explicitly unknown.\n"
+    },
+    "submission-policy": {
+      "complete": true,
+      "text": "PASS: eleven internal submission checkpoints; official rules remain explicitly unknown.\n"
+    },
+    "web-build-node22": {
+      "complete": true,
+      "text": "\n> web@0.0.0 build\n> node tools/build.mjs\n\n{\n  \"fleet_status\": \"state/estate/fleet-status.json\",\n  \"platform_health\": \"apps/web/public/platform-health.json\",\n  \"observed_at\": \"2026-09-11T00:00:00+00:00\",\n  \"fleet_totals\": {\n    \"hosts\": 7,\n    \"containers\": 81,\n    \"containers_running\": 81,\n    \"containers_not_running\": 0,\n    \"planes\": 3,\n    \"alerts\": 4,\n    \"agent_versions\": [\n      \"7.78.1\",\n      \"7.79.2\"\n    ]\n  },\n  \"platform_totals\": {\n    \"platforms\": 4,\n    \"connected\": 3,\n    \"unverified\": 1,\n    \"features_assessed\": 34\n  }\n}\nUnable to start Vite: spawnSync vite ENOENT\n"
+    },
+    "web-build": {
+      "complete": true,
+      "text": "\n> web@0.0.0 build\n> node tools/build.mjs\n\nnode:internal/child_process:1120\n    result.error = new ErrnoException(result.error, 'spawnSync ' + options.file);\n                   ^\n\n<ref *1> Error: spawnSync git EPERM\n    at Object.spawnSync (node:internal/child_process:1120:20)\n    at spawnSync (node:child_process:911:24)\n    at execFileSync (node:child_process:954:15)\n    at resolveBuildRelease (file:///workspace/repo/scripts/ci/release.mjs:33:9)\n    at file:///workspace/repo/apps/web/tools/build.mjs:19:17\n    at ModuleJob.run (node:internal/modules/esm/module_job:413:25)\n    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:660:26)\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {\n  errno: -1,\n  code: 'EPERM',\n  syscall: 'spawnSync git',\n  path: 'git',\n  spawnargs: [ 'rev-parse', 'HEAD' ],\n  error: [Circular *1],\n  status: 0,\n  signal: null,\n  output: [ null, '3eaebd321303b6ecf3b5867c820e1c5fbd76a140\\n', '' ],\n  pid: 97,\n  stdout: '3eaebd321303b6ecf3b5867c820e1c5fbd76a140\\n',\n  stderr: ''\n}\n\nNode.js v24.13.0\n"
+    },
+    "web-lint": {
+      "complete": true,
+      "text": "\n> web@0.0.0 lint\n> node tools/lint.mjs\n\n\nOops! Something went wrong! :(\n\nESLint: 9.16.0\n\nError [ERR_MODULE_NOT_FOUND]: Cannot find package 'eslint-plugin-import' imported from /workspace/repo/apps/web/eslint.config.mjs\n    at Object.getPackageJSONURL (node:internal/modules/package_json_reader:256:9)\n    at packageResolve (node:internal/modules/esm/resolve:768:81)\n    at moduleResolve (node:internal/modules/esm/resolve:854:18)\n    at defaultResolve (node:internal/modules/esm/resolve:984:11)\n    at ModuleLoader.defaultResolve (node:internal/modules/esm/loader:780:12)\n    at #cachedDefaultResolve (node:internal/modules/esm/loader:704:25)\n    at ModuleLoader.resolve (node:internal/modules/esm/loader:687:38)\n    at ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:305:38)\n    at ModuleJob._link (node:internal/modules/esm/module_job:175:49)\n\nOops! Something went wrong! :(\n\nESLint: 9.16.0\n\nError [ERR_MODULE_NOT_FOUND]: Cannot find package 'eslint-plugin-import' imported from /workspace/repo/apps/web/eslint.config.mjs\n    at Object.getPackageJSONURL (node:internal/modules/package_json_reader:256:9)\n    at packageResolve (node:internal/modules/esm/resolve:768:81)\n    at moduleResolve (node:internal/modules/esm/resolve:854:18)\n    at defaultResolve (node:internal/modules/esm/resolve:984:11)\n    at ModuleLoader.defaultResolve (node:internal/modules/esm/loader:780:12)\n    at #cachedDefaultResolve (node:internal/modules/esm/loader:704:25)\n    at ModuleLoader.resolve (node:internal/modules/esm/loader:687:38)\n    at ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:305:38)\n    at ModuleJob._link (node:internal/modules/esm/module_job:175:49)\n"
+    },
+    "web-tests": {
+      "complete": true,
+      "text": "\n> web@0.0.0 test\n> vitest run --reporter=default --reporter=junit --outputFile.junit=../../reports/junit/web.xml\n\nsh: 1: vitest: not found\n"
+    }
+  },
+  "memory_preservation": {
+    "baseline_sha256": "f40cf6fea783ed72a6e61f8f5629d840a0de354b19f200dbe3db2a06ae8800e0",
+    "historical_type_c_count": 192,
+    "historical_events_preserved": true
+  },
+  "governance": {
+    "readiness": "PASS: source binding reviewed; no milestone acceptance changed",
+    "submission_policy": "PASS: internal checkpoints; official requirements remain an owner input",
+    "existing_checkpoint_requirements": "All eleven checks, dependencies, runtime requirements, prior acceptance conditions and external requirements retained",
+    "remote_actor_label": "UNMEASURED; actor:agent required"
+  },
+  "limitations": [
+    "Vitest is absent; existing rendered homepage/challenge assertions were updated but could not execute.",
+    "Vite is absent; the Node 22 build reaches Vite and stops before producing a frontend bundle.",
+    "eslint-plugin-import is absent; repository lint cannot load its configuration. The source diagnostic is not a substitute.",
+    "The initial Node 24 build attempt hit a sandbox subprocess restriction; the approved Node 22 retry resolved that restriction and exposed the missing Vite binary.",
+    "No dependency installation or network provisioning was retried; the previous offline cache attempt is historical, not a new result.",
+    "Python discovery skips 32 cases requiring native/optional dependencies; no native or deployed acceptance is claimed.",
+    "The complete Day-21 matrix, hosted GitLab, browser recording, provider activation and learner/project outcomes were not executed by this wording continuation.",
+    "Existing deadline/product-use statements and competition weights were not re-authenticated against official rules by this task."
+  ]
+}

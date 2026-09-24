@@ -1,16 +1,16 @@
 # ─── CGRF Header ────────────────────────────
 # File:        tests/upgrade/test_semantic_twin_phase1_complete.py
 # Stage:       08_TEST
-# SRS:         SRS-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001
+# SRS:         SRS-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001, SRS-BUILDANDDO-UPGRADE-001
 # CAPS:        pending
 # CK:          pending
-# Dispatch:    VCC-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-19
-# Depends:     libs/semantic_twin/phase1, libs/semantic_twin/ingestion
+# Depends:     libs/semantic_twin/phase1, libs/semantic_twin/ingestion, libs/semantic_twin/progression.py
 # EnumType:    Test
-# EnumEdges:   VALIDATES libs/semantic_twin/phase1; EXTENDS tests/upgrade/test_semantic_twin_ingestion.py
+# EnumEdges:   VALIDATES libs/semantic_twin/phase1; EXTENDS tests/upgrade/test_semantic_twin_ingestion.py; VALIDATES libs/semantic_twin/progression.py
 # DAG Node:    semantic-twin.phase-1.complete.tests
 # Intent:      Prove all ten complete Phase 1 adapters, reconciliation, epoch and replay proof behaviors without live providers or deployment actions.
 # ───────────────────────────────────────────────────────
@@ -542,6 +542,16 @@ class CompleteCompilerTests(unittest.TestCase):
         self.assertEqual(len(gaps), 5)
         self.assertTrue(verify_context_bundle(value.context, value.epoch.root_digest))
         self.assertEqual(value.epoch.object_count, len(value.graph.objects))
+
+    def test_development_capture_reuses_canonical_graph_and_epoch_time(self) -> None:
+        from libs.semantic_twin.progression import TwinCapture, describe
+
+        value = self.compilation
+        capture = value.as_capture("buildanddo/public-release")
+        self.assertEqual(capture.objects, tuple(sorted(value.graph.objects, key=lambda obj: obj.semantic_id)))
+        self.assertEqual(capture.captured_at, value.epoch.metadata.created_at)
+        self.assertEqual(TwinCapture.from_json(capture.to_json()).digest, capture.digest)
+        self.assertTrue(all(not row["authorized"] for row in describe(capture, at=capture.captured_at)))
 
     def test_compiler_joins_explicit_local_exports(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

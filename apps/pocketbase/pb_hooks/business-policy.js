@@ -1,16 +1,16 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/pocketbase/pb_hooks/business-policy.js
 // Stage:       07_BUILD
-// SRS:         SRS-BUILDANDDO-UPGRADE-001
+// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-TRUST-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-TRUST-001
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-15
-// Depends:     apps/pocketbase/pb_hooks/workflow-policy.js
+// Depends:     apps/pocketbase/pb_hooks/workflow-policy.js, apps/pocketbase/pb_hooks/government-access.js, apps/pocketbase/pb_hooks/tutorial-learning.js
 // EnumType:    Service
-// EnumEdges:   DEPENDS_ON apps/pocketbase/pb_hooks/workflow-policy.js
+// EnumEdges:   DEPENDS_ON apps/pocketbase/pb_hooks/workflow-policy.js; CONSUMES apps/pocketbase/pb_hooks/government-access.js; CONSUMES apps/pocketbase/pb_hooks/tutorial-learning.js
 // DAG Node:    none
 // Intent:      Preserve workspace relations and require attributed review before recording content publication.
 // ───────────────────────────────────────────────────────────────
@@ -151,11 +151,17 @@ function progress(e, creating) {
     if (record.getString('owner') !== e.auth.id || (!creating &&
         (record.getString('owner') !== original.getString('owner') || record.getString('tutorial') !== original.getString('tutorial'))))
         access.invalid('Learning progress stays with its original account and lesson.');
-    access.readable(e.app, access.find(e.app, 'tutorials', record.getString('tutorial')), e.requestInfo());
+    const tutorial = access.find(e.app, 'tutorials', record.getString('tutorial'));
+    if (!require(`${__hooks}/government-access.js`).lesson(e.app, e.auth, tutorial)) access.readable(e.app, tutorial, e.requestInfo());
     const status = record.getString('status');
     if (!['not_started', 'in_progress', 'completed'].includes(status)) access.invalid('Choose a listed learning state.');
     if (original?.getString('status') === 'completed' && status !== 'completed')
         access.invalid('Reviewing a lesson keeps its completed progress.');
+    // Interactive lessons are completed by their server-issued certificate; reading-only lessons stay self-reported.
+    const learning = require(`${__hooks}/tutorial-learning.js`);
+    if (status === 'completed' && original?.getString('status') !== 'completed' && learning.interactive(tutorial) &&
+        !learning.certified(e.app, e.auth.id, tutorial.id))
+        access.invalid('Finish the interactive tutorial to complete this lesson. Its certificate records the completion.');
     record.set('progress', { not_started: 0, in_progress: 50, completed: 100 }[status]);
     return e.next();
 }

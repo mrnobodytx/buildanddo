@@ -34,17 +34,17 @@ A daily learning edition built around sources, scoped missions and evidence.
 
 ## Public pages
 
-- [BuildAndDo — learn by doing, together](https://buildanddo.com/): Learn with people and AI, build something real, verify what happened and keep the evidence. A daily learning edition built from the sources you connect.
+- [BuildAndDo — learn by doing, together](https://buildanddo.com/): BuildAndDo is an educational collaboration platform. Learn with people and AI through real projects, verify what happened, and share what you learned.
 - [BuildAndDo — Hostinger 21-Day Challenge](https://buildanddo.com/hostinger-challenge): See the learning-platform idea, the verified mission story and the Hostinger product roles behind the BuildAndDo challenge entry.
 - [MetaFunction Fabric Platform | BuildAndDo](https://buildanddo.com/platform): Explore the governed execution flow, capability mesh and illustrative monitoring of the MetaFunction Fabric.
 - [BuildAndDo — Practice library](https://buildanddo.com/practice): Community-audited methods for real objectives, with evidence, knowledge states and lessons from each attempt.
 - [BuildAndDo — Public roadmap](https://buildanddo.com/roadmap): Follow the BuildAndDo plan, its current state and the evidence needed to call work complete.
-- [Pricing & early access | BuildAndDo](https://buildanddo.com/pricing): Explore BuildAndDo early access and discuss a team rollout. Public subscription pricing has not been announced.
-- [About & team | BuildAndDo](https://buildanddo.com/about): Meet the people and principles behind BuildAndDo, a Citadel Nexus Inc. product built around accountable work.
+- [Pricing & early access | BuildAndDo](https://buildanddo.com/pricing): Discuss a managed paid pilot for one workspace and one approved operation, or explore early access and team rollouts.
+- [About & team | BuildAndDo](https://buildanddo.com/about): Meet the people and principles behind BuildAndDo, the educational collaboration platform from Citadel Nexus Inc.
 - [Classrooms & shared lessons | BuildAndDo](https://buildanddo.com/classrooms): Learn together in workspace classrooms with host-led Field Manual lessons, attendance and saved discussion.
 - [Documentation | BuildAndDo](https://buildanddo.com/docs): Get started with workspaces, signals, missions, workflows and the evidence ledger. Learn what each state means.
 - [The BuildAndDo journal](https://buildanddo.com/blog): Field notes on learning by doing, bounded work and keeping a traceable record of what you built.
-- [Contact | BuildAndDo](https://buildanddo.com/contact): Ask a product question, report an issue or discuss commercial licensing with Citadel Nexus Inc.
+- [Contact | BuildAndDo](https://buildanddo.com/contact): Request a scoped paid pilot, discuss commercial licensing with Citadel Nexus Inc., or ask a product question.
 - [The guildmasters | BuildAndDo](https://buildanddo.com/guild): Eight automated agents, one per guild. Each profile says what the agent does, where it posts, and that it is software, not a person.
 - [Service status | BuildAndDo](https://buildanddo.com/status): Platform health and community reachability, each with the time it was measured and its age. Nothing is shown as up without a fresh reading.
 

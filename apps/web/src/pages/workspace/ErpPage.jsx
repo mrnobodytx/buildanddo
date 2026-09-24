@@ -1,5 +1,21 @@
+// ─── CGRF Header ───────────────────────────────────────────────
+// File:        apps/web/src/pages/workspace/ErpPage.jsx
+// Stage:       07_BUILD
+// SRS:         SRS-BUILDANDDO-UPGRADE-001
+// CAPS:        pending
+// CK:          pending
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+// Seat:        BITS-CODEGEN
+// Owner:       Citadel Nexus Inc.
+// Created:     2026-09-21
+// Depends:     apps/web/src/hooks/useWorkspaceRecords.js, apps/web/src/lib/businessPlanning.js
+// EnumType:    Widget
+// EnumEdges:   CONSUMES apps/web/src/hooks/useWorkspaceRecords.js; CONSUMES apps/web/src/lib/businessPlanning.js
+// Intent:      Connect scoped ERP objectives, contacts and tasks to their retained action, mission and evidence.
+// ───────────────────────────────────────────────────────────────
+
 import { MotionList, MotionValue } from '@/components/motion/MotionPrimitives';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import React, { useEffect, useRef, useState } from 'react';
 import { Button, Card } from '@/components/site/ui';
 import { Input } from '@/components/ui/input';
@@ -31,6 +47,8 @@ const definitions = {
 };
 
 function ErpDesk({ accountId, demo }) {
+    const [params, setParams] = useSearchParams();
+    const taskId = params.get('task') || '', objectiveId = params.get('objective') || '', contactId = params.get('contact') || '';
     const objectives = useWorkspaceRecords('erp_objectives');
     const tasks = useWorkspaceRecords('erp_tasks');
     const contacts = useWorkspaceRecords('erp_contacts');
@@ -39,6 +57,7 @@ function ErpDesk({ accountId, demo }) {
     const [query, setQuery] = useState('');
     const [status, setStatus] = useState('all');
     const [priority, setPriority] = useState('all');
+    useEffect(() => { if (taskId || objectiveId || contactId) { setTab('tasks'); setQuery(''); setStatus('all'); setPriority('all'); } }, [taskId, objectiveId, contactId]);
     const [editor, setEditor] = useState(null);
     const [draft, setDraft] = useState({});
     const [busy, setBusy] = useState(false);
@@ -82,7 +101,7 @@ function ErpDesk({ accountId, demo }) {
     const definition = editor && definitions[editor.kind];
     const source = sources[tab];
     const search = query.trim().toLowerCase();
-    const visible = tab === 'tasks' ? selectTasks(tasks.records, { query, status, priority, today }) : source.records.filter((record) =>
+    const visible = tab === 'tasks' ? selectTasks(tasks.records, { query, status, priority, today, task: taskId, objective: objectiveId, contact: contactId }) : source.records.filter((record) =>
         `${record.title || record.name || ''} ${record.description || record.role || ''} ${record.email || ''} ${record.notes || ''}`.toLowerCase().includes(search) &&
         (status === 'all' || record.status === status));
     const relationSelect = (name, label, records, unavailable, titleField) => <div className="space-y-1">
@@ -113,15 +132,26 @@ function ErpDesk({ accountId, demo }) {
                     {config.statuses && <div className="space-y-1"><Label htmlFor={`erp-filter-${kind}`}>Filter by status</Label><select id={`erp-filter-${kind}`} className={selectClass} value={status} onChange={(event) => setStatus(event.target.value)}><option value="all">All states</option>{Object.entries(config.statuses).map(([value, label]) => <option key={value} value={value}>{label}</option>)}{kind === 'tasks' && <option value="overdue">Overdue</option>}</select></div>}
                     {kind === 'tasks' && <div className="space-y-1"><Label htmlFor="erp-priority-filter">Filter by priority</Label><select id="erp-priority-filter" className={selectClass} value={priority} onChange={(event) => setPriority(event.target.value)}><option value="all">All priorities</option>{Object.entries(PRIORITIES).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></div>}
                 </div>
+                {kind === 'tasks' && <div className="grid gap-3 sm:grid-cols-2">
+                    {[[ 'objective', objectiveId, objectives, 'title' ], [ 'contact', contactId, contacts, 'name' ]].map(([field, value, records, title]) => <label key={field} className="space-y-1 text-sm">Filter by {field}
+                        <select aria-label={`Filter by ${field}`} className={selectClass} value={value} disabled={records.loading || records.degraded}
+                            onChange={(event) => { const next = new URLSearchParams(params); next.delete('task'); if (event.target.value) next.set(field, event.target.value); else next.delete(field); setParams(next); }}>
+                            <option value="">All {field === 'objective' ? 'objectives' : 'contacts'}</option>{records.records.map((row) => <option key={row.id} value={row.id}>{row[title]}</option>)}
+                            {value && !records.records.some((row) => row.id === value) && <option value={value}>Linked record unavailable</option>}
+                        </select></label>)}
+                    {(taskId || objectiveId || contactId) && <Button size="sm" variant="ghost" onClick={() => { const next = new URLSearchParams(params); ['task', 'objective', 'contact'].forEach((key) => next.delete(key)); setParams(next); }}>Show all tasks</Button>}
+                    {taskId && !tasks.loading && !tasks.degraded && !tasks.records.some((row) => row.id === taskId) && <p role="alert">This task is unavailable in the current workspace.</p>}
+                </div>}
                 {source.degraded ? <DegradedNotice message={`The ${kind} list is unavailable.`} onRetry={source.refresh} /> : source.loading ? <ListSkeleton label={`Loading ${kind}…`} /> : !visible.length ? <p className="text-sm text-muted-foreground">{query || status !== 'all' || priority !== 'all' ? 'No records match these filters.' : `No ${kind} yet. Add a record to begin.`}</p> : <MotionList as="ul" itemsKey={visible.map((record) => record.id).join(':')} className="grid gap-3 md:grid-cols-2">
                     {visible.map((record) => <li key={record.id} data-motion-key={record.id} className="min-w-0"><Card className="h-full space-y-3 break-words p-4">
                         <div className="flex items-start justify-between gap-3"><h3 className="font-display text-lg font-semibold">{record.title || record.name}</h3><Button size="sm" variant="ghost" disabled={demo} aria-label={`Edit ${record.title || record.name}`} onClick={(event) => begin(kind, record, event.currentTarget)}>Edit</Button></div>
                         {record.status && <p className="text-xs font-semibold text-primary">{config.statuses?.[record.status] || record.status}{kind === 'tasks' ? ` · ${PRIORITIES[record.priority] || 'Normal'} priority` : ''}</p>}
+                        <Link className="text-sm underline" to={`/app/erp?${kind === 'tasks' ? 'task' : kind === 'objectives' ? 'objective' : 'contact'}=${encodeURIComponent(record.id)}`}>{kind === 'tasks' ? 'Task link' : 'Inspect linked tasks'}</Link>
                         {(record.description || record.role) && <p className="whitespace-pre-wrap text-sm leading-6 text-muted-foreground">{record.description || record.role}</p>}
                         {kind === 'objectives' && <><p className="text-sm leading-6">Success measure: {record.success_metric || 'Not recorded yet.'}</p><p className="text-xs text-muted-foreground">{knownTasks ? `${tasks.records.filter((task) => task.objective === record.id && task.status === 'done').length} of ${tasks.records.filter((task) => task.objective === record.id).length} linked tasks done` : 'Linked task counts unavailable'}</p></>}
                         {kind === 'tasks' && <><p className="text-xs text-muted-foreground">Objective: {record.objective ? objectives.records.find((item) => item.id === record.objective)?.title || 'Current link unavailable' : 'Not linked'}</p><p className="text-xs text-muted-foreground">Contact: {record.contact ? contacts.records.find((item) => item.id === record.contact)?.name || 'Current link unavailable' : 'Not linked'}</p></>}
                         {dateInput(record.due_date) && <p className={`text-xs ${overdue(record, today) && kind === 'tasks' ? 'text-destructive' : 'text-muted-foreground'}`}>Due: {dateInput(record.due_date)}{kind === 'tasks' && overdue(record, today) ? ' · Overdue' : ''}</p>}
-                        {kind === 'tasks' && record.execution && <p className="text-xs">Created by an approved action. <Link className="underline" to="/app/replay">Inspect execution {record.execution}</Link>{record.mission && <> · <Link className="underline" to={`/app/missions?mission=${encodeURIComponent(record.mission)}`}>Review mission</Link></>}</p>}
+                        {kind === 'tasks' && record.execution && <p className="text-xs">Created by an approved action. <Link className="underline" to={`/app/replay?action=${encodeURIComponent(record.execution)}`}>Inspect execution</Link>{record.mission && <> · <Link className="underline" to={`/app/missions?mission=${encodeURIComponent(record.mission)}`}>Review mission</Link></>}{record.evidence && <> · <Link className="underline" to={`/app/evidence?evidence=${encodeURIComponent(record.evidence)}`}>Inspect evidence</Link></>}</p>}
                         {record.email && <p className="break-all text-sm">{record.email}</p>}{record.notes && <p className="whitespace-pre-wrap text-sm leading-6 text-muted-foreground">{record.notes}</p>}
                     </Card></li>)}
                 </MotionList>}

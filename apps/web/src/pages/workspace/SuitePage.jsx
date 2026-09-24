@@ -8,9 +8,9 @@
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-16
-// Depends:     apps/web/src/hooks/useMissionSuite.js, apps/web/src/components/workspace/suite/SuiteForms.jsx, apps/web/src/components/workspace/suite/SuiteResult.jsx
+// Depends:     apps/web/src/hooks/useMissionSuite.js, apps/web/src/components/workspace/suite/SuiteForms.jsx, apps/web/src/components/workspace/suite/SuiteResult.jsx, apps/web/src/components/workspace/GovernmentGate.jsx
 // EnumType:    Widget
-// EnumEdges:   CONSUMES apps/web/src/hooks/useMissionSuite.js; CONSUMES apps/web/src/components/workspace/suite/SuiteForms.jsx; CONSUMES apps/web/src/components/workspace/suite/SuiteResult.jsx
+// EnumEdges:   CONSUMES apps/web/src/hooks/useMissionSuite.js; CONSUMES apps/web/src/components/workspace/suite/SuiteForms.jsx; CONSUMES apps/web/src/components/workspace/suite/SuiteResult.jsx; CONSUMES apps/web/src/components/workspace/GovernmentGate.jsx
 // DAG Node:    none
 // Intent:      Make suite execution a saved BuildAndDo mission with actual worker states, review evidence and government-submission learning.
 // ───────────────────────────────────────────────────────────────
@@ -27,6 +27,7 @@ import { ControlState, PageControls, controlInput } from '@/components/workspace
 import { MaritimeForm, SubmissionForm, SuiteConfiguration } from '@/components/workspace/suite/SuiteForms';
 import SuiteResult from '@/components/workspace/suite/SuiteResult';
 import { SUITE_STATES } from '@/lib/missionSuite';
+import GovernmentGate from '@/components/workspace/GovernmentGate';
 
 function MissionDesk({ mission }) {
     const [page, setPage] = useState(1); const [selected, setSelected] = useState('');
@@ -90,7 +91,7 @@ function MissionDesk({ mission }) {
 }
 
 /** @returns {React.ReactElement} Saved mission suite entry point. */
-export default function SuitePage() {
+function SuiteDesk() {
     const [search, setSearch] = useSearchParams(); const { user, isAuthed } = useAuth(); const { active } = useWorkspace();
     const missions = useWorkspaceRecords('missions', { sort: '-created' }); const selected = search.get('mission') || '';
     const mission = missions.records.find((item) => item.id === selected);
@@ -109,3 +110,5 @@ export default function SuitePage() {
                 <Card className="space-y-2 p-5"><h2 className="font-display text-xl">Start with a saved mission</h2><p className="text-sm text-muted-foreground">In the Challenge Desk, choose Start a mission and use the government submission starter. Save and approve the plan before starting its analysis. The linked learning path includes eight exercises and knowledge checks.</p></Card>}
     </div>;
 }
+
+export default function SuitePage() { return <GovernmentGate><SuiteDesk /></GovernmentGate>; }

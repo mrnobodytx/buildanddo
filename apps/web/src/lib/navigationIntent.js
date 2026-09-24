@@ -35,7 +35,9 @@ export function classroomTelemetryLocation(value) {
         const api = /\/api\/buildanddo\/workspaces\/[^/]+\/classrooms(?:\/|$)/.test(path);
         const learning = /\/api\/buildanddo\/learning(?:\/|$)/.test(path);
         const lesson = path === '/app/tutorials' && url.searchParams.has('lesson');
-        if (!room && !api && !learning && !lesson) return value;
+        const reset = /^\/reset-password\/[^/]/.test(path); // single-use reset token in the path
+        if (!room && !api && !learning && !lesson && !reset) return value;
+        if (reset) url.pathname = '/reset-password/:token';
         if (room) url.pathname = path === '/app/classrooms' || path === '/app/classrooms/' ? '/app/classrooms' : '/app/classrooms/:room';
         if (api) url.pathname = path.replace(/(\/api\/buildanddo\/workspaces\/)[^/]+\/classrooms(?:\/(.*))?$/, (_all, prefix, suffix) =>
             `${prefix}:workspace/classrooms${suffix ? `/:room${suffix.endsWith('/presence') ? '/presence' : ''}` : ''}`);

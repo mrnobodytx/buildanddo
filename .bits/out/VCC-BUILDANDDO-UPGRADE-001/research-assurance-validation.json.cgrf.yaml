@@ -1,0 +1,20 @@
+# ─── CGRF Header ───────────────────────────────────────────────
+# File:        .bits/out/VCC-BUILDANDDO-UPGRADE-001/research-assurance-validation.json.cgrf.yaml
+# Stage:       11_COMMIT
+# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# CAPS:        pending
+# CK:          pending
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+# Seat:        BITS-CODEGEN
+# Owner:       Citadel Nexus Inc.
+# Created:     2026-09-22
+# Depends:     .bits/out/VCC-BUILDANDDO-UPGRADE-001/research-assurance-validation.json, .bits/out/VCC-BUILDANDDO-UPGRADE-001/research-assurance-report.md, tests/assurance/run.py
+# EnumType:    Schema
+# EnumEdges:   VALIDATES .bits/out/VCC-BUILDANDDO-UPGRADE-001/research-assurance-validation.json; CONSUMES .bits/out/VCC-BUILDANDDO-UPGRADE-001/research-assurance-report.md; CONSUMES tests/assurance/run.py
+# Intent:      Bind the research assurance observations to their exact source and logs while retaining blocked and synthetic evidence states.
+# ───────────────────────────────────────────────────────────────
+schema_version: buildanddo.research-assurance/v1
+artifact: .bits/out/VCC-BUILDANDDO-UPGRADE-001/research-assurance-validation.json
+status: partial
+source_authority: VCC-BUILDANDDO-UPGRADE-001
+runtime_authority: unmeasured

@@ -1,0 +1,16 @@
+# ─── CGRF Header ───────────────────────────────────────────────
+# File:        .bits/out/VCC-BUILDANDDO-UPGRADE-001/governance-validation.json.cgrf.yaml
+# Stage:       11_COMMIT
+# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# CAPS:        pending
+# CK:          pending
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+# Seat:        BITS-CODEGEN
+# Owner:       Citadel Nexus Inc.
+# Created:     2026-09-21
+# Depends:     .bits/out/VCC-BUILDANDDO-UPGRADE-001/governance-validation.json
+# EnumType:    ConfigDoc
+# EnumEdges:   PRODUCES .bits/out/VCC-BUILDANDDO-UPGRADE-001/governance-validation.json; VALIDATES .gitlab/ci/day21-submission.yml; VALIDATES tests/upgrade/check_mission_suite.py
+# Intent:      Bind the governance repair to real provider observations, exact source bytes and retained local check outcomes without claiming hosted acceptance.
+# ───────────────────────────────────────────────────────────────
+schema_version: 1

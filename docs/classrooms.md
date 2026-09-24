@@ -8,9 +8,9 @@
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-16
-# Depends:     apps/web/src/pages/workspace/ClassroomsPage.jsx, apps/pocketbase/pb_hooks/classrooms.js, tests/upgrade/test_classroom_native.py
+# Depends:     apps/web/src/pages/workspace/ClassroomsPage.jsx, apps/pocketbase/pb_hooks/classrooms.js, apps/pocketbase/pb_hooks/classroom-media.js, tests/upgrade/test_classroom_native.py
 # EnumType:    Doc
-# EnumEdges:   CONSUMES apps/web/src/pages/workspace/ClassroomsPage.jsx; CONSUMES apps/pocketbase/pb_hooks/classrooms.js; VERIFIED_BY tests/upgrade/test_classroom_native.py
+# EnumEdges:   CONSUMES apps/web/src/pages/workspace/ClassroomsPage.jsx; CONSUMES apps/pocketbase/pb_hooks/classrooms.js; CONSUMES apps/pocketbase/pb_hooks/classroom-media.js; VERIFIED_BY tests/upgrade/test_classroom_native.py
 # DAG Node:    none
 # Intent:      Describe the classroom user flow, installed-backend requirements and acceptance limits without representing a shared lesson as a video stream.
 # ───────────────────────────────────────────────────────────────
@@ -23,10 +23,55 @@ section, expiring attendance and saved discussion. The public entry is
 footer, home learning section, Docs and workspace navigation point to them.
 The public page lists curriculum previews, never private room records.
 
-Voice, video, screen sharing, recording, public broadcasts and calendar
-notifications are not connected. A **Live lesson** means that a host started
-the shared lesson session. It does not assert an operating media stream.
-The actual media service and its join contract were not supplied in this session.
+The routed classroom now connects the existing voice/video signalling service.
+Joining media remains explicit and requires a live room, fresh attendance and
+installed session storage. A **Live lesson** means the host started the lesson,
+not that media works. "Receiving" requires measured inbound packets. Screen
+sharing, recording, public broadcasts and calendar notifications are not added.
+Hosted media has not been accepted by this source change.
+
+## Bound media and repair lessons
+
+The media routes below `/api/classroom` now require `room` in every session,
+track and renegotiation request. `1791400000_classroom_media_sessions.js` creates
+a locked `classroom_media_sessions` collection. Each provider session binds its
+workspace, room, native account, attendance record/revision, provider application,
+recorded published tracks and four-hour expiration. Four usable sessions per
+current attendance are allowed; obsolete attendance and rollback bindings do not
+consume a new attendance generation's capacity.
+
+Session creation, push/pull, renegotiation and presence recheck current native
+workspace membership, live room and fresh attendance. Publishing additionally
+requires host/administrator management authority and the existing publisher
+allowlist. A global publisher entry no longer grants room access. A private
+persona must join through the native classroom flow and create its own bound
+session; an old provider session identifier is not imported or grandfathered.
+Pulls resolve exact successful track registrations in that same room, and
+advertisements cannot invent a published track. Provider responses do not prove
+delivered media or independent verification.
+
+The browser rejects a session response without its matching room, closes pending
+or connected resources across real scope changes, and preserves subscriptions
+across same-session token refresh. `POST /api/classroom/close` invalidates only
+the caller's exact room session even after attendance ends. This closes local
+resources and future signalling admission; it does not claim that the provider
+has forcibly terminated every already-negotiated remote stream. Receiving tests
+must measure revocation behavior in both browsers and at the actual provider.
+
+Deploy the session migration and matching hooks before the new frontend and
+restart old media sessions. Missing or rolled-back storage denies new signalling;
+rollback removes the protocol marker and does not restore old bindings on re-up.
+Do not roll back to the unbound handlers as a security recovery.
+
+The authored case study is available at
+`/app/tutorials?lesson=broadcast-classroom-repair`, with a separate **Source case
+studies** panel on `/app/evidence` and a downloadable public source-test capture.
+`1791400001_broadcast_classroom_lessons.js` installs its tutorial for interactive
+learning/classroom selection, preserves operator edits and retains learner history
+on rollback. The bundled preview works without that installation. Reading the
+case or test report does not create workspace evidence, award progress/XP or
+verify a mission. Its dated source observation remains separate from blocked
+rendered/native and unmeasured hosted checks.
 
 ## Use a classroom
 

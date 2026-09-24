@@ -8,9 +8,9 @@
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-20
-# Depends:     tests/upgrade/test_dossier_native.py, apps/pocketbase/pb_hooks/mission-research.js, apps/pocketbase/pb_hooks/mission-policy.js, apps/pocketbase/pb_hooks/workflow-runs.js
+# Depends:     tests/upgrade/test_classroom_native.py, apps/pocketbase/pb_hooks/mission-research.js, apps/pocketbase/pb_hooks/mission-policy.js, apps/pocketbase/pb_hooks/workflow-runs.js, apps/pocketbase/pb_hooks/workspace-replay.js, apps/pocketbase/pb_hooks/workspace-value.js, apps/pocketbase/pb_migrations/1791300001_assistant_turn_usage.js
 # EnumType:    Test
-# EnumEdges:   CONSUMES tests/upgrade/test_dossier_native.py; VALIDATES apps/pocketbase/pb_hooks/mission-research.js; VALIDATES apps/pocketbase/pb_hooks/mission-policy.js; VALIDATES apps/pocketbase/pb_hooks/workflow-runs.js; VALIDATES apps/pocketbase/pb_hooks/business-policy.js; VALIDATES apps/pocketbase/pb_hooks/workspace-operator.js
+# EnumEdges:   CONSUMES tests/upgrade/test_classroom_native.py; VALIDATES apps/pocketbase/pb_hooks/mission-research.js; VALIDATES apps/pocketbase/pb_hooks/mission-policy.js; VALIDATES apps/pocketbase/pb_hooks/workflow-runs.js; VALIDATES apps/pocketbase/pb_hooks/business-policy.js; VALIDATES apps/pocketbase/pb_hooks/workspace-operator.js; VALIDATES apps/pocketbase/pb_hooks/workspace-replay.js; VALIDATES apps/pocketbase/pb_hooks/workspace-value.js; VALIDATES apps/pocketbase/pb_migrations/1791300001_assistant_turn_usage.js
 # Intent:      Require real auth, production migrations and a connected signal-to-independent-review journey before declaring workspace acceptance.
 # ───────────────────────────────────────────────────────────────
 
@@ -18,12 +18,13 @@
 
 from __future__ import annotations
 
+import hashlib
+import json
 import os
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 import shutil
 import socket
-import subprocess
 import sys
 import tempfile
 from typing import Any
@@ -32,7 +33,7 @@ import unittest
 ROOT = Path(__file__).resolve().parents[2]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
-from tests.upgrade.test_dossier_native import NO_WINDOW, NativeServer  # noqa: E402
+from tests.upgrade.test_classroom_native import DiagnosticNativeServer  # noqa: E402
 
 BINARY = os.environ.get("BUILDANDDO_TEST_POCKETBASE", "")
 WORKSPACE = "workspacealpha1"
@@ -59,6 +60,8 @@ MIGRATIONS = (
     "1790700000_workspace_onboarding",
     "1790800000_business_execution",
     "1790900000_workspace_assistant",
+    "1791100000_objective_onboarding",
+    "1791300001_assistant_turn_usage",
 )
 AUTH = r"""
 migrate((app) => {
@@ -76,6 +79,8 @@ migrate((app) => {
 SEED = r"""
 migrate((app) => {
     const save = (name, id, values) => {
+        try { app.findRecordById(name, id); return; }
+        catch (error) { if (!String(error.message).includes('no rows in result set')) throw error; }
         const record = new Record(app.findCollectionByNameOrId(name)); record.id = id;
         for (const [key, value] of Object.entries(values)) record.set(key, value);
         app.save(record);
@@ -88,7 +93,7 @@ migrate((app) => {
 """
 
 
-class WorkspaceServer(NativeServer):
+class WorkspaceServer(DiagnosticNativeServer):
     """Install production public migrations with isolated synthetic auth and data."""
 
     def __init__(self, binary: str) -> None:
@@ -98,7 +103,7 @@ class WorkspaceServer(NativeServer):
         self.root = Path(self.directory.name)
         self.binary = str(Path(binary).resolve())
         self.process = None
-        self.log = (self.root / "native.log").open("w")
+        self.log = tempfile.TemporaryFile(mode="w+b")
         self.environment = {
             "PATH": os.environ.get("PATH", ""),
             # Windows initializes Winsock from SystemRoot. Without it the child
@@ -118,6 +123,7 @@ class WorkspaceServer(NativeServer):
                 "business-action-policy.js",
                 "business-actions.js",
                 "business-execution.pb.js",
+                "workspace-replay.js",
                 "assistant-policy.js",
                 "workspace-assistant.js",
                 "assistant.pb.js",
@@ -131,8 +137,10 @@ class WorkspaceServer(NativeServer):
                 "evidence-policy.js",
                 "evidence.pb.js",
                 "business-policy.js",
+                "tutorial-learning.js",
                 "business.pb.js",
                 "workspace-access.js",
+                "government-access.js",
                 "workspace-record-policy.js",
                 "workspace-administration.js",
                 "workspace-community.js",
@@ -142,24 +150,22 @@ class WorkspaceServer(NativeServer):
                 "research.pb.js",
                 "operator.pb.js",
                 "workspace-operator.js",
+                "workspace-value.js",
             ):
                 shutil.copyfile(ROOT / "apps/pocketbase/pb_hooks" / name, hooks / name)
             migrations = self.root / "migrations"
             migrations.mkdir()
-            # PocketBase applies migrations in byte-wise filename order, so
-            # "1_auth.js" sorted AFTER "1999999000_seed.js" ("_" > "9") and the
-            # seed referenced fixture users that did not exist yet. This name
-            # sorts first, which is the order the fixture always intended.
             (migrations / "0000000001_auth.js").write_text(AUTH)
             for name in MIGRATIONS:
                 shutil.copyfile(
                     ROOT / "apps/pocketbase/pb_migrations" / (name + ".js"),
                     migrations / (name + ".js"),
                 )
-            (migrations / "data").mkdir()
+            data_dir = self.root / "pb_migrations" / "data"
+            data_dir.mkdir(parents=True)
             shutil.copyfile(
                 ROOT / "apps/pocketbase/pb_migrations/data/starter-tutorials.json",
-                migrations / "data/starter-tutorials.json",
+                data_dir / "starter-tutorials.json",
             )
             (migrations / "1999999000_seed.js").write_text(SEED)
             with socket.socket() as reservation:
@@ -171,23 +177,6 @@ class WorkspaceServer(NativeServer):
         except BaseException:
             self.close()
             raise
-
-    def migrate(self) -> None:
-        """Apply only the fixture's copied public migrations."""
-        result = subprocess.run(
-            [self.binary, "migrate", "up", *self.paths()],
-            cwd=self.root,
-            env=self.environment,
-            stdout=self.log,
-            stderr=subprocess.STDOUT,
-            timeout=45,
-            check=False,
-            **NO_WINDOW,
-        )
-        if result.returncode:
-            raise AssertionError(
-                "The disposable workspace migration failed; native acceptance did not pass."
-            )
 
 
 @unittest.skipUnless(
@@ -373,6 +362,16 @@ class NativeWorkspaceTests(unittest.TestCase):
                 for key in ("test", "evaluate", "verify", "validate")
             },
         }
+        for version in (None, 0, 2, "1", True):
+            self.assertEqual(
+                self.patch(
+                    "missions",
+                    mission,
+                    {"status": "verified", "mission_review": {**review, "version": version}},
+                    self.bravo,
+                )[0],
+                400,
+            )
         self.assertEqual(
             self.patch(
                 "missions", mission, {"status": "verified", "mission_review": review}
@@ -387,6 +386,7 @@ class NativeWorkspaceTests(unittest.TestCase):
         )
         self.assertEqual(status, 200)
         self.assertEqual(verified["mission_reviewed_by"], BRAVO)
+        self.assertEqual(verified["mission_review"]["version"], 1)
         self.assertEqual(
             verified["mission_review"]["evidence_snapshot"][0]["id"], evidence
         )
@@ -407,6 +407,9 @@ class NativeWorkspaceTests(unittest.TestCase):
             if row["id"] == mission
         )
         self.assertEqual(item["status"], "verified")
+        self.assertEqual(item["value"]["state"], "VERIFIED")
+        self.assertTrue(item["value"]["independent"])
+        self.assertEqual(item["value"]["reviewer"], BRAVO)
         self.assertTrue(
             any(
                 row["id"] == evidence for row in cockpit["sources"]["evidence"]["items"]
@@ -421,10 +424,92 @@ class NativeWorkspaceTests(unittest.TestCase):
         self.assertEqual(recovered["id"], mission)
         self.assertTrue(recovered["replayed"])
 
-    def test_atomic_onboarding_concurrent_retries_and_restart(self) -> None:
-        body = {"name": "Native new business", "domain": "shop.fixture"}
+    def test_review_utf8_boundary_after_snapshot_enrichment(self) -> None:
+        fields = (
+            "purpose", "beneficiary", "in_scope", "out_of_scope", "baseline", "target",
+            "authorization", "input_validation", "data_handling", "rollback",
+            "test", "evaluate", "verify", "validate",
+        )
+        tevv = ("test", "evaluate", "verify", "validate")
+        snapshot_fields = (
+            "id", "workspace", "mission", "owner", "type", "title", "source", "content",
+            "url", "created", "updated",
+        )
+        plan = {"version": 1, "risk": "A1", "independent_review": True,
+                **{key: "Observe the disposable fixture " + key for key in fields}}
 
-        def create() -> tuple[int, dict]:
+        def size(value: dict[str, Any]) -> int:
+            return len(json.dumps(value, ensure_ascii=False, separators=(",", ":")).encode("utf-8"))
+
+        for token in ("\u6f22", "\U0001f680"):
+            with self.subTest(token=ascii(token)):
+                mission = self.record("missions", {"title": "Synthetic byte boundary",
+                    "status": "proposed", "priority": "normal", "mission_plan": plan})["id"]
+                self.assertEqual(self.patch("missions", mission, {"status": "approved"}, self.bravo)[0], 200)
+                self.assertEqual(self.patch("missions", mission, {"status": "running"})[0], 200)
+                evidence = [self.record("evidence", {"mission": mission, "type": "observed",
+                    "source": "Disposable native byte fixture", "content": "Pending local observation"})
+                    for _ in tevv]
+                review = {"reflection": "\u6f22" * 1050, **{
+                    key: {"outcome": "pass", "observation": "\u6f22" * 1050, "evidence": row["id"]}
+                    for key, row in zip(tevv, evidence)
+                }}
+                code, draft = self.patch("missions", mission, {"mission_review": review}, self.bravo)
+                self.assertEqual(code, 200)
+                self.assertEqual(draft["mission_review"]["version"], 1)
+                self.assertLess(size(draft["mission_review"]), 24000)
+                for target in (24564, 24001, 24000):
+                    snapshots = [{key: row.get(key, "") for key in snapshot_fields} for row in evidence]
+                    for row in snapshots:
+                        row["content"] = ""
+                    expected = {**draft["mission_review"], "evidence_snapshot": snapshots}
+                    remaining = target - size(expected)
+                    width = len(token.encode("utf-8"))
+                    for index, row in enumerate(evidence):
+                        share = remaining // (len(evidence) - index)
+                        content = token * (share // width) + "x" * (share % width)
+                        self.assertLessEqual(len(content), 2000)
+                        code, updated = self.patch("evidence", row["id"], {"content": content})
+                        self.assertEqual(code, 200)
+                        evidence[index] = updated
+                        snapshots[index] = {key: updated.get(key, "") for key in snapshot_fields}
+                        remaining -= share
+                    self.assertEqual(size(expected), target)
+                    code, result = self.patch("missions", mission, {"status": "verified"}, self.bravo)
+                    if target > 24000:
+                        self.assertEqual(code, 400)
+                        self.assertIn("24,000", result["message"])
+                        code, retained = self.server.request(
+                            "GET", f"/api/collections/missions/records/{mission}", token=self.bravo)
+                        self.assertEqual(code, 200)
+                        self.assertEqual(retained["status"], "running")
+                        self.assertEqual(retained["mission_review"], draft["mission_review"])
+                        self.assertEqual(retained["mission_reviewed_at"], draft["mission_reviewed_at"])
+                    else:
+                        self.assertEqual(code, 200)
+                        self.assertEqual(result["mission_review"], expected)
+                        self.assertEqual(size(result["mission_review"]), 24000)
+                        code, unchanged = self.patch("missions", mission, {"mission_learning": {"scope": "measured"}})
+                        self.assertEqual(code, 200)
+                        self.assertEqual(unchanged["mission_review"], expected)
+                        self.assertEqual(unchanged["mission_reviewed_at"], result["mission_reviewed_at"])
+                        code, cockpit = self.server.request(
+                            "GET", f"/api/buildanddo/workspaces/{WORKSPACE}/operator", token=self.bravo)
+                        self.assertEqual(code, 200)
+                        item = next(row for row in cockpit["sources"]["missions"]["items"] if row["id"] == mission)
+                        self.assertEqual(item["value"]["state"], "VERIFIED")
+                        self.assertTrue(item["value"]["independent"])
+
+    def test_atomic_onboarding_concurrent_retries_and_restart(self) -> None:
+        body = {
+            "name": "Native learning workspace",
+            "domain": "",
+            "intent": "build",
+            "objective": "Deploy my first website",
+            "business_context": "",
+        }
+
+        def create() -> tuple[int, dict[str, Any]]:
             return self.server.request(
                 "POST", "/api/buildanddo/onboarding", body, self.alice
             )
@@ -435,11 +520,46 @@ class NativeWorkspaceTests(unittest.TestCase):
         self.assertEqual(results[0][1]["workspace"], results[1][1]["workspace"])
         self.assertEqual(len(set(results[0][1]["services"])), 7)
         identity = results[0][1]["workspace"]
+        objective = results[0][1]["objective"]
+        self.assertEqual(objective, results[1][1]["objective"])
+        status, workspace = self.server.request(
+            "GET",
+            f"/api/collections/workspaces/records/{identity}?expand=onboarding_objective",
+            token=self.alice,
+        )
+        self.assertEqual(status, 200)
+        self.assertEqual(workspace["onboarding_intent"], "build")
+        self.assertEqual(workspace["domain"], "")
+        self.assertEqual(
+            workspace["expand"]["onboarding_objective"]["title"], body["objective"]
+        )
+        self.assertEqual(
+            workspace["expand"]["onboarding_objective"]["workspace"], identity
+        )
+        self.assertIn(
+            self.server.request(
+                "GET",
+                f"/api/collections/erp_objectives/records/{objective}",
+                token=self.other,
+            )[0],
+            (403, 404),
+        )
         self.server.stop()
         self.server.migrate()
         self.server.start()
         self.alice = self.server.login("alice")
         self.assertEqual(create()[1]["workspace"], identity)
+        self.assertEqual(create()[1]["objective"], objective)
+        legacy = {"name": "Legacy workspace", "domain": "legacy.fixture"}
+        first = self.server.request(
+            "POST", "/api/buildanddo/onboarding", legacy, self.alice
+        )
+        again = self.server.request(
+            "POST", "/api/buildanddo/onboarding", legacy, self.alice
+        )
+        self.assertEqual(first[0], 200)
+        self.assertEqual(first[1]["workspace"], again[1]["workspace"])
+        self.assertNotIn("objective", first[1])
         self.assertIn(
             self.server.request("POST", "/api/buildanddo/onboarding", body)[0],
             (401, 403),
@@ -572,6 +692,7 @@ class NativeWorkspaceTests(unittest.TestCase):
             400,
         )
         review = {
+            "version": 1,
             "reflection": "Independent native review",
             **{
                 key: {
@@ -599,6 +720,45 @@ class NativeWorkspaceTests(unittest.TestCase):
             verified["mission_review"]["evidence_snapshot"][0]["id"],
             receipt["evidence"],
         )
+        capture_url = f"/api/buildanddo/workspaces/{WORKSPACE}/mission-replay/{mission}"
+        code, capture = self.server.request("GET", capture_url, token=self.bravo)
+        self.assertEqual(code, 200)
+        self.assertTrue(capture["capture_complete"])
+        self.assertEqual(capture["integrity"], "consistent")
+        self.assertEqual(capture["captured_by"], BRAVO)
+        self.assertEqual(capture["evidence_state"], "recorded")
+        self.assertEqual(capture["content"]["mission"]["mission_review"], verified["mission_review"])
+        self.assertEqual(capture["content"]["mission"]["mission_review"]["version"], 1)
+        self.assertEqual(capture["content"]["jobs"][0]["id"], receipt["id"])
+        self.assertEqual(capture["content"]["tasks"][0]["id"], task)
+        self.assertEqual(capture["content"]["runs"][0]["status"], "completed")
+        self.assertNotIn("lease_id", capture["content"]["jobs"][0])
+        canonical = json.dumps(
+            capture["content"],
+            sort_keys=True,
+            ensure_ascii=False,
+            separators=(",", ":"),
+        ).encode()
+        self.assertEqual(
+            hashlib.sha256(canonical).hexdigest(), capture["content_sha256"]
+        )
+        for leaf in capture["leaves"]:
+            rows = (
+                [capture["content"]["mission"]]
+                if leaf["kind"] == "mission"
+                else capture["content"][leaf["kind"]]
+            )
+            row = next(row for row in rows if row["id"] == leaf["id"])
+            encoded = json.dumps(
+                row, sort_keys=True, ensure_ascii=False, separators=(",", ":")
+            ).encode()
+            self.assertEqual(hashlib.sha256(encoded).hexdigest(), leaf["sha256"])
+        self.assertEqual(
+            self.server.request("GET", capture_url, token=self.viewer)[0], 200
+        )
+        self.assertIn(
+            self.server.request("GET", capture_url, token=self.other)[0], (403, 404)
+        )
         self.assertIn(
             self.server.request("GET", endpoint, token=self.other)[0], (403, 404)
         )
@@ -612,6 +772,14 @@ class NativeWorkspaceTests(unittest.TestCase):
     def test_assistant_isolates_personal_history_and_reports_unconfigured_inference(
         self,
     ) -> None:
+        schema = self.server.collection("assistant_turns")
+        fields = {field["name"]: field for field in schema["fields"]}
+        self.assertIn(
+            "usage", fields, "The usage migration must actually be installed."
+        )
+        self.assertEqual(fields["usage"]["type"], "json")
+        self.assertEqual(fields["usage"]["maxSize"], 2000)
+        self.assertFalse(fields["usage"]["required"])
         endpoint = f"/api/buildanddo/workspaces/{WORKSPACE}/assistant"
         code, session = self.server.request(
             "POST",
@@ -642,6 +810,16 @@ class NativeWorkspaceTests(unittest.TestCase):
         self.assertEqual(code, 200)
         self.assertEqual(turn["status"], "unavailable")
         self.assertIsNone(turn["plan"])
+        saved_turn = next(
+            row
+            for row in self.server.stored("assistant_turns")
+            if row["id"] == turn["id"]
+        )
+        self.assertIn("usage", saved_turn)
+        self.assertIn(saved_turn["usage"], (None, "null"))
+        self.assertEqual(saved_turn["owner"], ALICE)
+        self.assertEqual(saved_turn["workspace"], WORKSPACE)
+        self.assertEqual(saved_turn["session"], session["id"])
         for token in (self.bravo, self.viewer, self.other):
             self.assertIn(
                 self.server.request(
@@ -679,6 +857,101 @@ class NativeWorkspaceTests(unittest.TestCase):
                 "GET", endpoint + "?session=" + session["id"], token=self.alice
             )[0],
             404,
+        )
+
+    def test_assistant_usage_down_up_preserves_history_and_locked_rules(self) -> None:
+        endpoint = f"/api/buildanddo/workspaces/{WORKSPACE}/assistant"
+        code, session = self.server.request(
+            "POST",
+            endpoint,
+            {
+                "action": "session.start",
+                "request_key": "native_usage_session_001",
+                "payload": {"title": "Usage compatibility; no provider"},
+            },
+            self.alice,
+        )
+        self.assertEqual(code, 200)
+        body = {
+            "session": session["id"],
+            "request_key": "native_usage_absent_001",
+            "message": "No provider is configured.",
+            "surface": {"id": "usage-fixture", "route": "/app/erp", "controls": []},
+        }
+        self.server.stop()
+        # The final seed is idempotent; the preceding migration is the usage field. revert()
+        # moves them aside too, because serve re-applies a pending migration on 0.39.8.
+        self.server.revert("2")
+        self.assertNotIn(
+            "usage",
+            {
+                field["name"]
+                for field in self.server.collection("assistant_turns")["fields"]
+            },
+        )
+        self.server.start()
+        code, absent = self.server.request("POST", endpoint + "/chat", body, self.alice)
+        self.assertEqual(code, 200)
+        self.assertEqual(absent["status"], "unavailable")
+        self.assertIsNone(absent["plan"])
+        self.assertNotIn("usage", self.server.stored("assistant_turns")[0])
+        self.server.stop()
+        self.server.restore()
+        self.server.migrate()
+        self.server.start()
+        fields = {
+            field["name"]
+            for field in self.server.collection("assistant_turns")["fields"]
+        }
+        self.assertIn("usage", fields)
+        code, present = self.server.request(
+            "POST",
+            endpoint + "/chat",
+            {
+                **body,
+                "request_key": "native_usage_present_001",
+            },
+            self.alice,
+        )
+        self.assertEqual(code, 200)
+        self.assertEqual(present["status"], "unavailable")
+        rows = self.server.stored("assistant_turns")
+        self.assertEqual({row["id"] for row in rows}, {absent["id"], present["id"]})
+        self.assertTrue(
+            all("usage" in row and row["usage"] in (None, "null") for row in rows)
+        )
+        for collection, identity in (
+            ("assistant_turns", present["id"]),
+            ("assistant_sessions", session["id"]),
+        ):
+            installed = self.server.collection(collection)
+            for rule in (
+                "listRule",
+                "viewRule",
+                "createRule",
+                "updateRule",
+                "deleteRule",
+            ):
+                self.assertIsNone(installed[rule])
+            for method, suffix, payload in (
+                ("GET", "", None),
+                ("POST", "", {"owner": ALICE}),
+                ("PATCH", "/" + identity, {"usage": {"input_tokens": 42}}),
+                ("DELETE", "/" + identity, None),
+            ):
+                with self.subTest(collection=collection, method=method):
+                    self.assertIn(
+                        self.server.request(
+                            method,
+                            f"/api/collections/{collection}/records" + suffix,
+                            payload,
+                            self.alice,
+                        )[0],
+                        (403, 404),
+                    )
+        self.assertEqual(
+            {row["id"] for row in self.server.stored("assistant_turns")},
+            {absent["id"], present["id"]},
         )
 
     def test_source_auth_revocation_staleness_and_foreign_denial(self) -> None:

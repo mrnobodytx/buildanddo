@@ -29,7 +29,8 @@ const n8n = { provider: 'n8n', binding: 'shop-actions', max_seconds: 30, paramet
 function setup() {
     const environment = {};
     const f = fixture({ runtime: { $security: { sha256: sha, randomString: (length) => randomBytes(length).toString('hex').slice(0, length) },
-        __migrations: '/migrations', toString: String, $os: { getenv: (name) => environment[name] ?? (name === 'BUILDANDDO_BUSINESS_BINDINGS' ? JSON.stringify(bindings) : ''), readFile: () => source('apps/pocketbase/pb_migrations/data/starter-tutorials.json') } } });
+        toString: String, $os: { getenv: (name) => environment[name] ?? (name === 'BUILDANDDO_BUSINESS_BINDINGS' ? JSON.stringify(bindings) : ''),
+            readFile: (path) => { assert.equal(path, '/pb_migrations/data/starter-tutorials.json'); return source('apps/pocketbase/pb_migrations/data/starter-tutorials.json'); } } } });
     f.environment = environment;
     f.migration('apps/pocketbase/pb_migrations/1789700000_expand_business_learning.js').up(); f.migration(migration).up();
     let key = 0;

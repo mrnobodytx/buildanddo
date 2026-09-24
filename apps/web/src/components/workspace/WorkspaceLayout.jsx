@@ -1,10 +1,27 @@
+// ─── CGRF Header ───────────────────────────────────────────────
+// File:        apps/web/src/components/workspace/WorkspaceLayout.jsx
+// Stage:       07_BUILD
+// SRS:         SRS-BUILDANDDO-UPGRADE-001
+// CAPS:        pending
+// CK:          pending
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+// Seat:        BITS-CODEGEN
+// Owner:       Citadel Nexus Inc.
+// Created:     2026-09-22
+// Depends:     apps/web/src/contexts/WorkspaceAccessContext.jsx, apps/web/src/pages/workspace/CareerPage.jsx, apps/web/src/lib/workspaceControl.js
+// EnumType:    Widget
+// EnumEdges:   CONSUMES apps/web/src/contexts/WorkspaceAccessContext.jsx; CONSUMES apps/web/src/pages/workspace/CareerPage.jsx; CONSUMES apps/web/src/lib/workspaceControl.js
+// Intent:      Keep workspace navigation tied to observed account and government membership while preserving ordinary work areas.
+// ───────────────────────────────────────────────────────────────
+
 import MotionToggle from '@/components/motion/MotionToggle';
 import React, { useId, useState } from 'react';
-import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
+import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import BrandMark from '@/components/brand/BrandMark';
 import Wordmark from '@/components/brand/Wordmark';
 import {
     Activity,
+    Compass,
     LayoutDashboard,
     Radar,
     Target,
@@ -33,6 +50,7 @@ import { Helmet } from 'react-helmet';
 import { ThemeToggle } from '@/components/ThemeControls';
 import { useAuth } from '@/contexts/AuthContext';
 import { isMasterSeat } from '@/lib/estateAccess';
+import { workspaceLifecycleKey } from '@/lib/workspaceControl';
 import { useWorkspace } from '@/contexts/WorkspaceContext';
 import { WorkspaceAccessProvider, useWorkspaceAccess } from '@/contexts/WorkspaceAccessContext';
 import { useDemoMode } from '@/hooks/useDemoMode';
@@ -42,67 +60,122 @@ import { StatusBadge, DOMAIN_STATUS } from './workspaceHelpers';
 import { DemoModeBanner } from './WorkspaceNotices';
 import WorkspaceAssistant from './WorkspaceAssistant';
 
-const NAV = [
+// Build and Do lead; the rest is grouped so a new user sees five headings, not
+// thirty-five links. Every destination is still here; only its placement changed.
+const NAV_TOP = [
+    { to: '/app/journey', label: 'Start a journey', icon: Compass },
     { to: '/app', label: 'Front Page', icon: LayoutDashboard, end: true },
-    { to: '/app/operator', label: 'Operator cockpit', icon: Activity },
-    { to: '/app/signals', label: 'Signals', icon: Radar },
-    { to: '/app/missions', label: 'Challenge Desk', icon: Target },
-    { to: '/app/workflows', label: 'Workflows', icon: Workflow },
-    { to: '/app/evidence', label: 'Evidence Ledger', icon: FileSearch },
-    { to: '/app/research', label: 'Mission research', icon: FileSearch },
-    { to: '/app/knowledge', label: 'Knowledge & context', icon: Network },
-    { to: '/app/blueprints', label: 'Blueprints', icon: FileSearch },
-    { to: '/app/policy', label: 'Policy intelligence', icon: Scale },
-    { to: '/app/suite', label: 'Mission suite', icon: Boxes },
-    { to: '/app/dossier', label: 'My dossier', icon: BookOpen },
-    { to: '/app/edition', label: 'Daily Edition', icon: Newspaper },
-    { to: '/app/rooms/organization', label: 'Living Rooms', icon: Network },
-    { to: '/app/desks', label: 'Specialist desks', icon: Boxes },
-    { to: '/app/replay', label: 'Execution replay', icon: Workflow },
-    { to: '/app/passport', label: 'Capability Passport', icon: ShieldCheck },
-    { to: '/app/corrections', label: 'Corrections', icon: Scale },
-    { to: '/app/tutorials', label: 'Field Manual', icon: GraduationCap },
-    { to: '/app/classrooms', label: 'Classrooms', icon: Users },
-    { to: '/app/erp', label: 'ERP', icon: Boxes },
-    { to: '/app/support', label: 'Support & Revenue', icon: Coins },
-    { to: '/app/community', label: 'Community & Social', icon: MessageCircle },
-    { to: '/app/wiki', label: 'Workspace wiki', icon: BookOpen },
-    { to: '/app/forums', label: 'Workspace forum', icon: Users },
-    { to: '/app/roadmap', label: 'Roadmap', icon: Gauge },
-    { to: '/app/operations', label: 'Operations Desk', icon: Server },
-    { to: '/app/fleet', label: 'Fleet', icon: Network, estate: true },
-    { to: '/app/platforms', label: 'Platform Health', icon: Plug },
-    { to: '/app/integrations', label: 'Sinks & extensions', icon: Plug },
-    { to: '/app/admin', label: 'Administration', icon: ShieldCheck, admin: true },
-    { to: '/app/settings', label: 'Settings', icon: Settings },
 ];
+const NAV_GROUPS = [
+    { id: 'build', label: 'Build', hint: 'Learn it and make it', items: [
+        { to: '/app/tutorials', label: 'Field Manual', icon: GraduationCap },
+        { to: '/app/classrooms', label: 'Classrooms', icon: Users },
+        { to: '/app/blueprints', label: 'Blueprints', icon: FileSearch },
+        { to: '/app/knowledge', label: 'Knowledge & context', icon: Network },
+        { to: '/app/research', label: 'Mission research', icon: FileSearch },
+        { to: '/app/policy', label: 'Policy intelligence', icon: Scale },
+        { to: '/app/government', label: 'Government research', icon: Scale },
+    ] },
+    { id: 'do', label: 'Do', hint: 'Put it to work', items: [
+        { to: '/app/missions', label: 'Challenge Desk', icon: Target },
+        { to: '/app/signals', label: 'Signals', icon: Radar },
+        { to: '/app/workflows', label: 'Workflows', icon: Workflow },
+        { to: '/app/erp', label: 'ERP', icon: Boxes },
+        { to: '/app/operator', label: 'Operator cockpit', icon: Activity },
+        { to: '/app/desks', label: 'Specialist desks', icon: Boxes },
+        { to: '/app/suite', label: 'Mission suite', icon: Boxes, government: true },
+        { to: '/app/operations', label: 'Operations Desk', icon: Server },
+    ] },
+    { id: 'prove', label: 'Prove', hint: 'Show what you did', items: [
+        { to: '/app/career', label: 'Career Passport', icon: BookOpen },
+        { to: '/app/evidence', label: 'Evidence Ledger', icon: FileSearch },
+        { to: '/app/replay', label: 'Execution replay', icon: Workflow },
+        { to: '/app/passport', label: 'Capability Passport', icon: ShieldCheck },
+        { to: '/app/corrections', label: 'Corrections', icon: Scale },
+        { to: '/app/dossier', label: 'My dossier', icon: BookOpen },
+    ] },
+    { id: 'community', label: 'Community', hint: 'People and news', items: [
+        { to: '/app/edition', label: 'Daily Edition', icon: Newspaper },
+        { to: '/app/rooms/organization', label: 'Living Rooms', icon: Network },
+        { to: '/app/community', label: 'Community & Social', icon: MessageCircle },
+        { to: '/app/support', label: 'Support & Revenue', icon: Coins },
+    ] },
+    { id: 'workspace', label: 'Workspace', hint: 'Run this workspace', items: [
+        { to: '/app/wiki', label: 'Workspace wiki', icon: BookOpen },
+        { to: '/app/forums', label: 'Workspace forum', icon: Users },
+        { to: '/app/roadmap', label: 'Roadmap', icon: Gauge },
+        { to: '/app/platforms', label: 'Platform Health', icon: Plug },
+        { to: '/app/fleet', label: 'Fleet', icon: Network, estate: true },
+        { to: '/app/integrations', label: 'Sinks & extensions', icon: Plug },
+        { to: '/app/admin', label: 'Administration', icon: ShieldCheck, admin: true },
+    ] },
+];
+const NAV_BOTTOM = [{ to: '/app/settings', label: 'Settings', icon: Settings }];
+/** Return the group holding a path, so that group starts open. */
+function groupFor(pathname) {
+    const match = (item) => pathname === item.to || pathname.startsWith(item.to + '/') ||
+        (item.to === '/app/rooms/organization' && pathname.startsWith('/app/rooms'));
+    // Settings sits pinned at the bottom but belongs with the workspace controls.
+    if (pathname.startsWith('/app/settings')) return 'workspace';
+    return NAV_GROUPS.find((group) => group.items.some(match))?.id || '';
+}
+
+function NavItem({ item, onNavigate }) {
+    return (
+        <NavLink
+            to={item.to}
+            end={item.end}
+            onClick={onNavigate}
+            className={({ isActive }) =>
+                cn(
+                    'motion-nav-link flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition-colors',
+                    isActive
+                        ? 'bg-primary/10 text-primary'
+                        : 'text-muted-foreground hover:bg-secondary/60 hover:text-foreground',
+                )
+            }
+        >
+            <item.icon className="h-4 w-4 shrink-0" strokeWidth={2.1} />
+            {item.label}
+        </NavLink>
+    );
+}
 
 function NavList({ onNavigate }) {
     const access = useWorkspaceAccess();
     const { user } = useAuth();
+    const { pathname } = useLocation();
+    const base = useId();
     // Estate entries (Fleet) are for master-level CNWB seats only; the level is backend-owned (estate.pb.js).
     const masterSeat = isMasterSeat(user);
+    const allowed = (item) => (!item.admin || access.data?.can_admin) && (!item.estate || masterSeat) && (!item.government || access.data?.government?.allowed);
+    const current = groupFor(pathname);
+    const [open, setOpen] = useState(() => new Set(current ? [current] : []));
+    const [seen, setSeen] = useState(current);
+    if (current !== seen) { setSeen(current); if (current && !open.has(current)) setOpen(new Set([...open, current])); }
+    const toggle = (id) => setOpen((previous) => { const next = new Set(previous); if (next.has(id)) next.delete(id); else next.add(id); return next; });
     return (
         <nav className="flex flex-col gap-1" aria-label="Workspace">
-            {NAV.filter((item) => (!item.admin || access.data?.can_admin) && (!item.estate || masterSeat)).map((item) => (
-                <NavLink
-                    key={item.to}
-                    to={item.to}
-                    end={item.end}
-                    onClick={onNavigate}
-                    className={({ isActive }) =>
-                        cn(
-                            'motion-nav-link flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition-colors',
-                            isActive
-                                ? 'bg-primary/10 text-primary'
-                                : 'text-muted-foreground hover:bg-secondary/60 hover:text-foreground',
-                        )
-                    }
-                >
-                    <item.icon className="h-4 w-4 shrink-0" strokeWidth={2.1} />
-                    {item.label}
-                </NavLink>
-            ))}
+            {NAV_TOP.map((item) => <NavItem key={item.to} item={item} onNavigate={onNavigate} />)}
+            {NAV_GROUPS.map((group) => {
+                const items = group.items.filter(allowed);
+                if (!items.length) return null;
+                const expanded = open.has(group.id);
+                const panel = `${base}-${group.id}`;
+                return (
+                    <div key={group.id} className="mt-2">
+                        <button type="button" aria-expanded={expanded} aria-controls={panel} onClick={() => toggle(group.id)}
+                            className="flex w-full items-baseline justify-between rounded-md px-3 py-1.5 text-left hover:bg-secondary/60">
+                            <span className="text-xs font-semibold uppercase tracking-wider">{group.label}</span>
+                            <span className="text-xs text-muted-foreground">{group.hint}</span>
+                        </button>
+                        {expanded && <div id={panel} className="flex flex-col gap-1">
+                            {items.map((item) => <NavItem key={item.to} item={item} onNavigate={onNavigate} />)}
+                        </div>}
+                    </div>
+                );
+            })}
+            <div className="mt-2">{NAV_BOTTOM.map((item) => <NavItem key={item.to} item={item} onNavigate={onNavigate} />)}</div>
         </nav>
     );
 }
@@ -148,12 +221,26 @@ function WorkspaceSwitcher() {
     );
 }
 
+function WorkspacePages() {
+    const access = useWorkspaceAccess();
+    const key = workspaceLifecycleKey({ access });
+    const [draft, setDraft] = useState({ key, epoch: 0, value: { answers: {}, step: 0, saved: null, saveState: 'idle' } });
+    // Reset only the journey, not every routed desk. Polling leaves this key
+    // unchanged; each changed grant fences old save callbacks, even on return.
+    if (draft.key !== key) setDraft({ key, epoch: draft.epoch + 1, value: { answers: {}, step: 0, saved: null, saveState: 'idle' } });
+    const setJourney = (update) => setDraft((current) => current.epoch !== draft.epoch || current.key !== key ? current : {
+        ...current, value: typeof update === 'function' ? update(current.value) : update,
+    });
+    return <Outlet context={{ journey: draft.value, setJourney, journeyEpoch: draft.epoch }} />;
+}
+
 export default function WorkspaceLayout() {
-    const { user, logout } = useAuth();
+    const { user, logout, sessionEpoch } = useAuth();
     const { active, loading } = useWorkspace();
     const { demo } = useDemoMode();
     const navigate = useNavigate();
     const [mobileOpen, setMobileOpen] = useState(false);
+    const scope = workspaceLifecycleKey({ accountId: user?.id, workspaceId: active?.id, demo, sessionEpoch });
 
     const handleLogout = () => {
         logout();
@@ -165,7 +252,7 @@ export default function WorkspaceLayout() {
     const domainStatus = domainRecord?.status || (active && !active.domain ? 'selected' : null);
 
     return (
-        <WorkspaceAccessProvider key={`${user?.id}:${active?.id}:${demo}`}>
+        <WorkspaceAccessProvider key={scope}>
         <div className="min-h-screen bg-background text-foreground">
             <Helmet>
                 <meta name="robots" content="noindex,nofollow" />
@@ -277,12 +364,12 @@ export default function WorkspaceLayout() {
                         tabIndex={-1}
                         className="workspace-content px-4 py-8 sm:px-6 lg:px-8"
                     >
-                        <div key={`${user?.id}:${active?.id}:${demo}`} className="mx-auto max-w-6xl space-y-6">
+                        <div key={scope} className="mx-auto max-w-6xl space-y-6">
                             {/* Rendered by the shell, not by each page, so a page
                             that forgets it cannot present demonstration data
                             as the operator's own. */}
                             <DemoModeBanner />
-                            <Outlet />
+                            <WorkspacePages />
                         </div>
                     </main>
                 </div>

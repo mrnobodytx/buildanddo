@@ -1,14 +1,19 @@
 #!/usr/bin/env python3
-# # --- CGRF Header ------------------------------------------------
+# ─── CGRF Header ───────────────────────────────────────────────
+# File:        tools/day21/day21_architecture_snapshot.py
 # Stage:       07_BUILD
-# SRS:         SRS-BUILDANDDO-DAY21-CLOSURE-001
+# SRS:         SRS-BUILDANDDO-UPGRADE-001
 # CAPS:        pending
 # CK:          pending
-# Dispatch:    VCC-BUILDANDDO-DAY21-CLOSURE-001
-# Seat:        CLA-INSTALLER
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+# Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
-# Intent:      Close Hostinger Day-21 runtime evidence and submission packaging gaps without granting deployment authority.
-# ----------------------------------------------------------------
+# Created:     2026-09-21
+# Depends:     .gitlab/ci/day21-submission.yml, scripts/ci/hostinger_readiness.py
+# EnumType:    Service
+# EnumEdges:   CONSUMES .gitlab/ci/day21-submission.yml; CONSUMES scripts/ci/hostinger_readiness.py
+# Intent:      Describe source-declared architecture and GitLab execution without promoting configuration into runtime evidence.
+# ───────────────────────────────────────────────────────────────
 """Generate a source-observed BuildAndDo architecture snapshot for submission."""
 from __future__ import annotations
 
@@ -57,7 +62,7 @@ def compile_snapshot(repo: Path, output: Path) -> dict[str, object]:
     MIS --> WF[Workflow / authorized executor boundary]
     WF --> EV[Evidence + independent verification]
     EV --> OP[Operator readback / Daily Edition]
-    CI[GitHub public source + CI] --> GL[Private GitLab intake / release evidence]
+    CI[GitHub public source / collaboration] --> GL[GitLab CI / acceptance / release evidence]
     GL --> VPS[Hostinger VPS runtime]
     HOST[Hostinger Web Hosting / AI Builder / Agent] --> WEB
     VPS --> OBS[Datadog / PostHog / operational receipts]

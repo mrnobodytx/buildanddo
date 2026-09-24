@@ -12,11 +12,12 @@ Flow, every run:
   2. GATE       run integrity_regression_check.py (build+lint, real subprocess,
                 never assumed). FAIL stops the line before anything touches a
                 server - staging gets nothing broken deployed to it either.
-  3. STAGING    rsync the fresh dist to /var/www/buildanddo-staging on the VM,
+  3. STAGING    copy the fresh dist beside /var/www/buildanddo-staging on the VM,
+                verify it, swap it into place (see _rsync), then
                 probe https://staging.buildanddo.com for a real 200.
   4. PROMOTE    only if staging gate + staging probe both pass: rsync the SAME
                 build (not a rebuild - promote what was actually gated) to
-                /var/www/buildanddo (production), probe https://buildanddo.com.
+                /var/www/buildanddo (production) the same way, probe https://buildanddo.com.
   5. EPOCH      only after a passing production probe: fingerprint the exact
                 artifact set that is now serving production into one chained
                 Merkle root and publish it to Datadog (evidence_epoch.py,
@@ -29,9 +30,9 @@ Flow, every run:
 
 Any stage failing halts the line at that stage; later stages never run on a
 failed gate. This is the whole gate: build+lint clean AND both live domains
-answer 200 after their respective syncs. No feature flags, no rollback logic
-yet - out of scope until this loop itself is proven (this repo's own "prove
-it" standard).
+answer 200 after their respective syncs. No feature flags and no automatic
+rollback: each sync keeps the replaced release at `<dir>.previous` so an
+operator can move it back by hand.
 """
 from __future__ import annotations
 import datetime as dt
@@ -242,55 +243,76 @@ def _ssh_identity_args() -> list[str]:
     return ["-i", SSH_KEY] if SSH_KEY else []
 
 
-def _swap_script(remote_dir: str) -> str:
-    """The server half of a deploy, as one shell command: move the copied build into place.
+# Trust a host key on first contact, refuse a changed one. `=no` accepted any key, so a
+# redirected connection would have received the build and the identity it runs under.
+SSH_HOST_KEY_ARGS = ["-o", "StrictHostKeyChecking=accept-new"]
 
-    `_rsync` copies the build into `<remote_dir>.incoming`, beside the live directory. This refuses a copy
-    without its index.html, keeps the live release as `<remote_dir>.previous` (replacing an older one), and
-    moves the copy in with two renames on the same filesystem, so visitors see the old release or the new one
-    and never an empty or half-copied directory. The copy takes the live directory's owner and mode where the
-    server allows it. A first deploy, with no live directory yet, just moves the copy into place.
-    """
-    live = shlex.quote(remote_dir)
-    incoming = shlex.quote(f"{remote_dir}.incoming")
-    previous = shlex.quote(f"{remote_dir}.previous")
-    return (f"set -eu; test -s {incoming}/index.html || "
-            f"{{ echo 'REFUSED: the copied build has no index.html' >&2; exit 3; }}; "
-            f"if [ -d {live} ]; then chown --reference={live} {incoming} 2>/dev/null || true; "
-            f"chmod --reference={live} {incoming} 2>/dev/null || true; rm -rf {previous}; mv {live} {previous}; fi; "
-            f"mv {incoming} {live}; echo SWAPPED")
+
+def _release_stamp() -> str:
+    return dt.datetime.now(dt.timezone.utc).strftime("%Y%m%dT%H%M%SZ") + f"-{os.getpid()}"
+
+
+def _file_count(local_dir: Path) -> int:
+    return sum(len(files) for _root, _dirs, files in os.walk(local_dir))
+
+
+def _swap_script(incoming: str, live: str, previous: str, expected_files: int) -> str:
+    """One remote shell: verify the staged copy, keep the live tree as `previous`, rename
+    the staged copy into place. Exit 3 = verify failed (live untouched); exit 4 = swap
+    failed (previous release moved back when possible)."""
+    inc, cur, prev = shlex.quote(incoming), shlex.quote(live), shlex.quote(previous)
+    return (
+        f"set -u; "
+        f"test -f {inc}/index.html || {{ echo 'VERIFY_FAILED: index.html missing' >&2; exit 3; }}; "
+        f"n=$(find {inc} -type f | wc -l); "
+        f"[ \"$n\" -eq {int(expected_files)} ] || "
+        f"{{ echo \"VERIFY_FAILED: expected {int(expected_files)} files, found $n\" >&2; exit 3; }}; "
+        # The staged copy takes the live directory's owner and mode where the server allows it, so the
+        # web server reads the new release as it read the old one (SRS-BUILDANDDO-DEPLOY-SWAP-001).
+        f"if [ -e {cur} ]; then chown --reference={cur} {inc} 2>/dev/null || true; "
+        f"chmod --reference={cur} {inc} 2>/dev/null || true; fi; "
+        f"rm -rf {prev} || {{ echo 'SWAP_FAILED: could not clear previous release' >&2; exit 4; }}; "
+        f"if [ -e {cur} ]; then mv {cur} {prev} || {{ echo 'SWAP_FAILED: could not retire live release' >&2; exit 4; }}; fi; "
+        f"mv {inc} {cur} || {{ [ -e {prev} ] && mv {prev} {cur}; echo 'SWAP_FAILED: could not promote staged copy' >&2; exit 4; }}"
+    )
 
 
 def _rsync(local_dir: Path, remote_dir: str) -> dict:
-    """Copy the build beside the live directory, then swap it in (SRS-BUILDANDDO-DEPLOY-SWAP-001).
+    """Copy the dist tree to a sibling staging dir, verify it, then swap it into place.
 
-    The live directory used to be emptied first and then refilled by scp. For the whole copy, and for good
-    after a failed copy, the environment served an empty or half-filled directory. Now nothing touches the
-    live directory until a complete copy sits beside it in `<remote_dir>.incoming`. `_swap_script` then
-    checks the copy and swaps it in, keeping the release it replaced as `<remote_dir>.previous`. A failure
-    before the swap returns the failing stage and leaves the live directory as it was.
-    """
+    The live directory is never emptied before a complete copy exists. The old flow ran
+    `find live -delete` then scp, so a failed or interrupted copy left the site serving a
+    partial tree or nothing. The previous release is kept at `<remote_dir>.previous` for
+    rollback. The swap is two renames in one remote shell, not a single atomic operation:
+    the live path is absent for the instant between them, never half-written.
+
+    A fresh directory also keeps the dotfile lesson: `rm -rf dir/*` never matched
+    `.well-known/`, so a stale citadel-release.json outlived three deploys (2026-09-20)."""
     if not VM_HOST:
         return {"ok": False, "stage": "config", "reason": "BUILDANDDO_VM_HOST not set (see secrets/deploy.local.env)"}
-    # Dotfiles move with the directory. The first clear, `rm -rf dir/*`, left them behind, because the shell
-    # glob never matches a leading dot. Measured 2026-09-20: /var/www/buildanddo/.well-known/citadel-release.json
-    # still reported commit 0b9faeb from 09-11 after deploys on 09-18 and 09-20, while `_version` (no dot) was
-    # replaced every time, so the environment published two identities nine days apart. Replacing the whole
-    # directory makes that impossible, and no build file from an older release can linger either.
-    incoming = f"{remote_dir}.incoming"
-    prepare = _run(["ssh", *_ssh_identity_args(), "-o", "StrictHostKeyChecking=no", VM_HOST,
-                    f"rm -rf {shlex.quote(incoming)} && mkdir -p {shlex.quote(incoming)}"])
+    expected = _file_count(local_dir)
+    if not (local_dir / "index.html").is_file() or expected == 0:
+        return {"ok": False, "stage": "local_verify", "reason": "local build has no index.html"}
+    stamp = _release_stamp()
+    incoming = f"{remote_dir}.incoming-{stamp}"
+    previous = f"{remote_dir}.previous"
+    ssh = ["ssh", *_ssh_identity_args(), *SSH_HOST_KEY_ARGS, VM_HOST]
+
+    prepare = _run([*ssh, f"rm -rf {shlex.quote(incoming)} && mkdir -p {shlex.quote(incoming)}"])
     if not prepare["ok"]:
-        return {"ok": False, "stage": "prepare_incoming", **prepare}
-    copy = _run(["scp", *_ssh_identity_args(), "-o", "StrictHostKeyChecking=no", "-r",
+        return {"ok": False, "stage": "prepare_remote", **prepare}
+    copy = _run(["scp", *_ssh_identity_args(), *SSH_HOST_KEY_ARGS, "-r",
                  f"{local_dir}/.", f"{VM_HOST}:{incoming}/"], timeout=300)
     if not copy["ok"]:
+        _run([*ssh, f"rm -rf {shlex.quote(incoming)}"], timeout=60)  # best effort; live untouched
         return {"ok": False, "stage": "scp", **copy}
-    swap = _run(["ssh", *_ssh_identity_args(), "-o", "StrictHostKeyChecking=no", VM_HOST,
-                 _swap_script(remote_dir)], timeout=120)
+    swap = _run([*ssh, _swap_script(incoming, remote_dir, previous, expected)], timeout=120)
     if not swap["ok"]:
-        return {"ok": False, "stage": "swap", **swap}
-    return {"ok": True, "previous": f"{remote_dir}.previous"}
+        stage = "verify_remote" if swap.get("returncode") == 3 else "swap"
+        if stage == "verify_remote":
+            _run([*ssh, f"rm -rf {shlex.quote(incoming)}"], timeout=60)
+        return {"ok": False, "stage": stage, **swap}
+    return {"ok": True, "files": expected, "previous": previous}
 
 
 def _write_web_env() -> None:
@@ -343,11 +365,19 @@ def _refresh_capability_inventory() -> dict:
     local = ROOT / "apps" / "web" / "public" / "capabilities.json"
     if not local.is_file():
         return {"ok": False, "stage": "measure", "reason": "capabilities.json not produced"}
+    # Upload beside the live file, then rename over it: a reader never sees a half-written file.
+    stamp = _release_stamp()
     for remote in (STAGING_REMOTE_DIR, PROD_REMOTE_DIR):
-        copy = _run(["scp", *_ssh_identity_args(), "-o", "StrictHostKeyChecking=no",
-                     str(local), f"{VM_HOST}:{remote}/capabilities.json"], timeout=60)
+        target = f"{remote}/capabilities.json"
+        staged = f"{target}.incoming-{stamp}"
+        copy = _run(["scp", *_ssh_identity_args(), *SSH_HOST_KEY_ARGS,
+                     str(local), f"{VM_HOST}:{staged}"], timeout=60)
         if not copy["ok"]:
             return {"ok": False, "stage": "scp", "remote": remote, **copy}
+        swap = _run(["ssh", *_ssh_identity_args(), *SSH_HOST_KEY_ARGS, VM_HOST,
+                     f"mv -f {shlex.quote(staged)} {shlex.quote(target)}"], timeout=60)
+        if not swap["ok"]:
+            return {"ok": False, "stage": "swap", "remote": remote, **swap}
     return {"ok": True}
 
 

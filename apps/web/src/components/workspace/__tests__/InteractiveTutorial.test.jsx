@@ -1,10 +1,10 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/src/components/workspace/__tests__/InteractiveTutorial.test.jsx
 // Stage:       08_TEST
-// SRS:         SRS-BUILDANDDO-UPGRADE-001
+// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-TRUST-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-TRUST-001
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-19
@@ -20,6 +20,7 @@ import { act, within } from '@testing-library/react';
 import { beforeEach, afterEach, expect, it, vi } from 'vitest';
 import { learningFixture } from '../../../../../../tests/upgrade/tutorial-learning-fixture.mjs';
 import { plain } from '../../../../../../tests/upgrade/admin-fixture.mjs';
+import broadcast from '../../../../../pocketbase/pb_migrations/data/broadcast-classroom-lessons.json';
 import TutorialCatalog from '@/components/workspace/TutorialCatalog';
 import AuthContext from '@/contexts/AuthContext';
 import pb from '@/lib/pocketbaseClient';
@@ -46,7 +47,9 @@ beforeEach(() => {
         if (transport.unavailable) throw { status: 503, response: { message: 'Interactive learning is unavailable.' } };
         const id = path.replace('/api/buildanddo/learning', '').slice(1);
         const event = backend.event(pb.authStore.record.id, request.body || {}, { id, query: request.query || {} });
-        const result = plain(request.method === 'POST' ? backend.service.command(event) : id ? backend.service.detail(event) : backend.service.list(event));
+        let result;
+        try { result = plain(request.method === 'POST' ? backend.service.command(event) : id ? backend.service.detail(event) : backend.service.list(event)); }
+        catch (error) { throw error.status ? { status: error.status, response: { message: error.message } } : error; }
         if (transport.loseNext && request.method === 'POST') { transport.loseNext = false; throw new Error('Response lost'); }
         if (transport.wait && request.method === 'POST') await transport.wait;
         return result;
@@ -103,11 +106,18 @@ it('requires practice and the right answer, then displays a persistent certifica
     const { reader } = await openTutorial(user);
     await throughPractice(user, reader);
     expect(reader.getByRole('button', { name: 'Check answer and finish' })).toBeDisabled();
-    await user.click(reader.getByRole('radio', { name: lesson.lesson.check.choices[0] }));
+    const wrong = lesson.lesson.check.choices.findIndex((_choice, index) => index !== lesson.lesson.check.answer);
+    await user.click(reader.getByRole('radio', { name: lesson.lesson.check.choices[wrong] }));
     await user.click(reader.getByRole('button', { name: 'Check answer and finish' }));
     expect(await reader.findByText('Not quite. Read the feedback and try again.')).toBeVisible();
+    expect(reader.getByText('You can answer again in 30 seconds.')).toBeVisible();
+    expect(reader.queryByText(lesson.lesson.check.explanation)).not.toBeInTheDocument();
     expect(backend.list('user_test').points).toBe(0);
     await user.click(reader.getByRole('radio', { name: lesson.lesson.check.choices[lesson.lesson.check.answer] }));
+    await user.click(reader.getByRole('button', { name: 'Check answer and finish' }));
+    expect(await reader.findByRole('alert')).toHaveTextContent(/try the knowledge check again in \d+ seconds/);
+    expect(reader.queryByRole('button', { name: 'Reload saved tutorial' })).not.toBeInTheDocument();
+    backend.expire();
     await user.click(reader.getByRole('button', { name: 'Check answer and finish' }));
     expect(await reader.findByRole('heading', { name: 'Certificate of completion' })).toBeVisible();
     expect(reader.getByText('Test Owner')).toBeVisible();
@@ -115,7 +125,7 @@ it('requires practice and the right answer, then displays a persistent certifica
     const growth = within(screen.getByRole('region', { name: 'Your learning journey' }));
     expect(await growth.findByText('Level 2 · Practitioner')).toBeVisible();
     expect(growth.getByText('First finish · earned')).toBeVisible();
-    expect(await screen.findByText('1 of 33 lessons completed')).toBeVisible();
+    expect(await screen.findByText(`1 of ${backend.lessons.length + broadcast.lessons.length} lessons completed`)).toBeVisible();
     const reopened = (await openTutorial(user)).reader;
     expect(await reopened.findByRole('heading', { name: 'Certificate of completion' })).toBeVisible();
     expect(backend.list('user_test').points).toBe(100);

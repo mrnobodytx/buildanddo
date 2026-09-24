@@ -1,0 +1,16 @@
+# ─── CGRF Header ───────────────────────────────────────────────
+# File:        .bits/out/VCC-BUILDANDDO-UPGRADE-001/gitlab-validation.json.cgrf.yaml
+# Stage:       11_COMMIT
+# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# CAPS:        pending
+# CK:          pending
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+# Seat:        BITS-CODEGEN
+# Owner:       Citadel Nexus Inc.
+# Created:     2026-09-21
+# Depends:     .bits/out/VCC-BUILDANDDO-UPGRADE-001/gitlab-validation.json
+# EnumType:    ConfigDoc
+# EnumEdges:   PRODUCES .bits/out/VCC-BUILDANDDO-UPGRADE-001/gitlab-validation.json; VALIDATES .gitlab/ci/day21-submission.yml
+# Intent:      Bind the GitLab acceptance correction to exact tested source and preserved process evidence without claiming a hosted run.
+# ───────────────────────────────────────────────────────────────
+schema_version: 1

@@ -85,6 +85,7 @@ export default function LiveBroadcast({ room, membership, media: availability, d
         <MediaControls publishing={publishing} connected={connected} connecting={media.status === 'connecting'} canBroadcast={host}
             mic={media.local.mic} camera={media.local.camera} disabled={disabled}
             onJoin={() => media.join(host ? 'teach' : 'watch')} onLeave={media.leave} onToggle={media.toggle} />
+        {media.status === 'connecting' && <button type="button" onClick={media.leave} className="text-sm underline underline-offset-4">Cancel connection</button>}
         <div aria-live="polite" className="space-y-1">
             {media.health && !media.configured && <Notice tone="caution">The broadcast service is not ready{media.health.reason ? `: ${media.health.reason}` : ''}.</Notice>}
             {host && media.configured && media.publishersConfigured === 0 && <Notice tone="caution">No one in this workspace is allowed to broadcast yet. Members can still join and listen.</Notice>}

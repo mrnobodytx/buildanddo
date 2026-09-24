@@ -45,12 +45,13 @@ export function overdue(task, today = localDay()) {
 }
 
 /** @param {Array<{title?: string, description?: string, status?: string, priority?: string, due_date?: string}>} records Tasks. @param {{query?: string, status?: string, priority?: string, today?: string}} filters Selection. @returns {Array<object>} Matching tasks, most urgent first. */
-export function selectTasks(records, { query = '', status = 'all', priority = 'all', today = localDay() } = {}) {
+export function selectTasks(records, { query = '', status = 'all', priority = 'all', objective = '', contact = '', task = '', today = localDay() } = {}) {
     const search = query.trim().toLowerCase();
     return records.filter((record) =>
         `${record.title || ''} ${record.description || ''}`.toLowerCase().includes(search) &&
         (status === 'all' || (status === 'overdue' ? overdue(record, today) : record.status === status)) &&
-        (priority === 'all' || (record.priority || 'normal') === priority),
+        (priority === 'all' || (record.priority || 'normal') === priority) &&
+        (!objective || record.objective === objective) && (!contact || record.contact === contact) && (!task || record.id === task),
     ).sort((a, b) => Number(overdue(b, today)) - Number(overdue(a, today)) ||
         ['high', 'normal', 'low'].indexOf(a.priority || 'normal') - ['high', 'normal', 'low'].indexOf(b.priority || 'normal') ||
         (dateInput(a.due_date) || '9999').localeCompare(dateInput(b.due_date) || '9999') ||

@@ -66,8 +66,9 @@ subcommand limit for this group; future expansion needs deliberate grouping.
 | Integration controls | Desired settings, check requests and source-specific research receipts. | The private generic request consumer and dated applied-state/health receipts still need implementation/verification in the receiving stack. |
 | Activation | Declared entry points and a read-only prerequisite doctor. | Actual launcher, selected Python/backend versions, installed revisions, approved registration and dated runtime receipts. |
 
-The package file declares PocketBase **0.39.8**; Compose/Dockerfile default to
-**0.28.4**. Neither establishes the running version. The new independent
+The package file and the Compose/Dockerfile defaults all declare PocketBase
+**0.39.8** (0.28.4 cannot install the current schema: several migrations need
+`__hooks`, SRS-BUILDANDDO-LEARNING-NATIVE-001). Neither establishes the running version. The new independent
 `ci:test / PocketBase dossier` matrix tests both declarations using the existing
 Dockerfile on the hosted runner; no version is silently substituted in the
 application. Its hosted result and the receiving runtime's version must be

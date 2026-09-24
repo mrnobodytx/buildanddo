@@ -37,6 +37,7 @@ from scripts.ci import hostinger_readiness as readiness
 from scripts.ci import agent_context
 
 ROOT = Path(__file__).resolve().parents[2]
+SOURCE_SUITES = ("upgrade", "career", "knowledge_units", "integrity", "world_twin")
 
 
 def write_json(path: Path, value: object) -> None:
@@ -61,10 +62,16 @@ def fixture(root: Path) -> dict[str, Any]:
         "tests/upgrade/example.test.mjs": "// synthetic fixture\n",
         "tests/upgrade/test_example.py": "# synthetic fixture\n",
         "tests/upgrade/test_example_native.py": "# excluded from source-only checks\n",
+        "tests/career/test_example.py": "# synthetic fixture\n",
+        "tests/knowledge_units/test_example.py": "# synthetic fixture\n",
+        "tests/integrity/test_example.py": "# synthetic fixture\n",
+        "tests/world_twin/test_example.py": "# synthetic fixture\n",
         "CLAUDE.md": "Synthetic instructions\n",
         "AGENTS.md": "python scripts/ci/hostinger_readiness.py --check\ngovernance:readiness\n",
         ".bits/context.md": "python scripts/ci/hostinger_readiness.py --check\n",
         ".github/workflows/pr-governance.yml": "jobs:\n  review:\n    steps:\n      - run: python scripts/ci/hostinger_readiness.py --check\n",
+        ".gitlab-ci.yml": "include:\n  - local: '.gitlab/ci/day21-submission.yml'\n",
+        ".gitlab/ci/day21-submission.yml": "review:\n  script:\n    - python3 scripts/ci/hostinger_readiness.py --check\n",
         "apps/web/src/components/workspace/ProgressionPipeline.jsx": "governance:readiness\n",
     }
     for name, contents in files.items():
@@ -123,7 +130,11 @@ class ReadinessTests(unittest.TestCase):
         self.assertFalse((self.root / "state/roadmap/sprint.json").exists())
 
     def test_source_change_new_helper_and_deleted_file_invalidate_review(self) -> None:
-        for name in ("apps/web/example.js", "libs/new_helper.py"):
+        for name in (
+            "apps/web/example.js", "libs/new_helper.py", ".gitlab/ci/new_check.yml",
+            "tests/career/test_example.py", "tests/knowledge_units/test_example.py",
+            "tests/integrity/test_example.py", "tests/world_twin/test_example.py",
+        ):
             with self.subTest(name=name):
                 (self.root / name).write_text("changed reviewed dependency\n")
                 with self.assertRaisesRegex(readiness.ReadinessError, "stale"):
@@ -166,7 +177,7 @@ class ReadinessTests(unittest.TestCase):
         for name in (
             "AGENTS.md",
             ".bits/context.md",
-            ".github/workflows/pr-governance.yml",
+            ".gitlab/ci/day21-submission.yml",
             "apps/web/src/components/workspace/ProgressionPipeline.jsx",
         ):
             path = self.root / name
@@ -377,6 +388,51 @@ class AcceptanceTests(unittest.TestCase):
         )
         self.assertEqual(fresh["status"], "PASS")
 
+    def test_final_candidate_binding_requires_unchanged_committed_source(self) -> None:
+        definition = checks.Check(
+            ("python", "-c", "print('# tests 1\\n# fail 0\\n# skipped 0')"),
+            "source",
+            "tap",
+        )
+        sha = "a" * 40
+        with patch.dict(checks.CHECKS, {"fixture": definition}):
+            for final, expected in (
+                ((sha, True), "PASS"),
+                ((sha, False), "INVALID"),
+                (("b" * 40, True), "INVALID"),
+            ):
+                with patch.object(
+                    checks, "candidate_binding", side_effect=[(sha, True), final]
+                ):
+                    path = checks.run_check(
+                        self.root, self.output, "fixture", self.source
+                    )
+                states = readiness.acceptance_state(
+                    self.root, self.output, self.source, datetime.now(timezone.utc), sha
+                )
+                self.assertEqual(states["fixture"], expected)
+                receipt = readiness.read_json(path)
+                self.assertEqual(receipt["candidate_sha"], sha)
+                path.unlink()
+
+    def test_equal_time_conflicting_receipts_cannot_select_a_passing_filename(
+        self,
+    ) -> None:
+        program = "print('# tests 1\\n# fail 0\\n# skipped 0')"
+        path, original = self.run_fixture(program)
+        definition = checks.Check(("python", "-c", program), "source", "tap")
+        write_json(
+            self.output / "000-failure.json",
+            {**original, "status": "FAIL", "exit_code": 1},
+        )
+        with patch.dict(checks.CHECKS, {"fixture": definition}):
+            self.assertEqual(
+                readiness.acceptance_state(
+                    self.root, self.output, self.source, datetime.now(timezone.utc)
+                )["fixture"],
+                "INVALID",
+            )
+
     def test_counts_cover_cancelled_unittest_and_junit_failures(self) -> None:
         self.assertEqual(
             checks.test_counts(
@@ -441,12 +497,29 @@ class AcceptanceTests(unittest.TestCase):
                 readiness.acceptance_state(self.root, self.output, self.source, now)
 
     def test_command_globs_are_fixed_and_native_profiles_are_explicit(self) -> None:
+        for suite in SOURCE_SUITES:
+            for name in ("test_example_native.py", "check_example.py", "helper.py"):
+                (self.root / "tests" / suite / name).write_text(
+                    "raise AssertionError('Not a source behavior test')\n"
+                )
+            (self.root / "tests" / suite / "test_directory.py").mkdir()
+        unrelated = self.root / "tests/unrelated/test_other.py"
+        unrelated.parent.mkdir()
+        unrelated.write_text("raise AssertionError('Outside the fixed selection')\n")
+        (self.root / "tests/upgrade/test_alpha.py").write_text("# sorted first\n")
         command = checks.command(self.root, checks.CHECKS["source_python"])
-        self.assertIn("tests.upgrade.test_example", command)
-        self.assertNotIn("tests.upgrade.test_example_native", command)
+        self.assertEqual(
+            command,
+            ["python", "-m", "unittest", "tests.upgrade.test_alpha"]
+            + [f"tests.{suite}.test_example" for suite in SOURCE_SUITES],
+        )
         self.assertIn(
             "tests/upgrade/example.test.mjs",
             checks.command(self.root, checks.CHECKS["source_node"]),
+        )
+        self.assertEqual(
+            sum(2 if check.level == "native" else 1 for check in checks.CHECKS.values()),
+            18,
         )
         self.assertEqual(checks.runtime_version(self.root, "compose"), "0.28.3")
         with self.assertRaises(ValueError):
@@ -458,23 +531,87 @@ class AcceptanceTests(unittest.TestCase):
             checks.runtime_version(self.root, "package")
 
     def test_source_selection_preserves_discovery_helper_imports(self) -> None:
-        for directory in ("tests", "tests/upgrade"):
+        for directory in ("tests", *("tests/" + suite for suite in SOURCE_SUITES)):
             (self.root / directory / "__init__.py").write_text("")
         (self.root / "tests/upgrade/sibling_helper.py").write_text("VALUE = 7\n")
-        (self.root / "tests/upgrade/test_imports.py").write_text(
-            "import unittest\nfrom sibling_helper import VALUE\n"
-            "class Imports(unittest.TestCase):\n"
-            "    def test_real_sibling(self):\n"
-            "        self.assertEqual(VALUE, 7)\n"
-        )
-        (self.root / "tests/upgrade/test_example_native.py").write_text(
-            "raise AssertionError('Native checks must remain separate')\n"
-        )
+        for suite in SOURCE_SUITES:
+            (self.root / "tests" / suite / "test_example.py").write_text(
+                "import unittest\nfrom sibling_helper import VALUE\n"
+                "class Imports(unittest.TestCase):\n"
+                "    def test_real_sibling(self):\n"
+                "        self.assertEqual(VALUE, 7)\n"
+            )
+            (self.root / "tests" / suite / "test_example_native.py").write_text(
+                "raise AssertionError('Native checks must remain separate')\n"
+            )
         result = readiness.read_json(
             checks.run_check(self.root, self.output, "source_python", self.source)
         )
         self.assertEqual(result["status"], "PASS")
-        self.assertEqual(result["counts"], {"tests": 1, "failures": 0, "skipped": 0})
+        self.assertEqual(result["counts"], {"tests": 5, "failures": 0, "skipped": 0})
+
+    def test_empty_source_selection_cannot_fall_back_to_unittest_discovery(self) -> None:
+        for missing in [(suite,) for suite in SOURCE_SUITES] + [SOURCE_SUITES]:
+            with self.subTest(missing=missing):
+                for suite in SOURCE_SUITES:
+                    (self.root / "tests" / suite / "test_example.py").write_text(
+                        "# synthetic fixture\n"
+                    )
+                for suite in missing:
+                    (self.root / "tests" / suite / "test_example.py").unlink()
+                    (self.root / "tests" / suite / "test_only_native.py").write_text(
+                        "raise AssertionError('Native checks must remain separate')\n"
+                    )
+                with (
+                    patch.object(checks, "candidate_binding", return_value=(None, False)),
+                    patch.object(
+                        checks.subprocess,
+                        "Popen",
+                        side_effect=AssertionError("Empty suite invoked unittest"),
+                    ) as process,
+                ):
+                    result = readiness.read_json(
+                        checks.run_check(self.root, self.output, "source_python", self.source)
+                    )
+                process.assert_not_called()
+                self.assertEqual(result["status"], "BLOCKED")
+                self.assertEqual(result["counts"], {"tests": 0, "failures": 0, "skipped": 0})
+                for suite in missing:
+                    self.assertIn("tests/" + suite, result["reason"])
+                self.assertEqual(
+                    readiness.acceptance_state(
+                        self.root, self.output, self.source, datetime.now(timezone.utc)
+                    )["source_python"],
+                    "BLOCKED",
+                )
+
+    def test_source_selection_refuses_empty_and_skipped_behavior_tests(self) -> None:
+        for directory in ("tests", *("tests/" + suite for suite in SOURCE_SUITES)):
+            (self.root / directory / "__init__.py").write_text("")
+        for program, skipped in (
+            ("# No test cases\n", 0),
+            (
+                "import unittest\n"
+                "class Behavior(unittest.TestCase):\n"
+                "    @unittest.skip('Unavailable behavior dependency')\n"
+                "    def test_behavior(self):\n"
+                "        pass\n",
+                1,
+            ),
+        ):
+            with self.subTest(skipped=skipped):
+                (self.root / "tests/world_twin/test_example.py").write_text(program)
+                result = readiness.read_json(
+                    checks.run_check(self.root, self.output, "source_python", self.source)
+                )
+                self.assertIn(
+                    result["status"],
+                    ("HOLD",) if skipped else ("HOLD", "FAIL"),
+                    (self.output / result["log"]).read_text(),
+                )
+                self.assertEqual(
+                    result["counts"], {"tests": skipped, "failures": 0, "skipped": skipped}
+                )
 
 
 if __name__ == "__main__":

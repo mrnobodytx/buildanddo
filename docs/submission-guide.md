@@ -8,9 +8,9 @@
 # Seat:         BITS-CODEGEN
 # Owner:        Citadel Nexus Inc.
 # Created:      2026-09-21
-# Depends:      .bits/submission-policy.json, .bits/hostinger-readiness.json, scripts/ci/submission_readiness.py, docs/business-execution.md, docs/workspace-assistant.md
+# Depends:      .bits/submission-policy.json, .bits/hostinger-readiness.json, scripts/ci/submission_readiness.py, scripts/ci/day21_submission.py, docs/business-execution.md, docs/workspace-assistant.md
 # EnumType:     Doc
-# EnumEdges:    DEPENDS_ON .bits/submission-policy.json; DEPENDS_ON .bits/hostinger-readiness.json; DEPENDS_ON scripts/ci/submission_readiness.py; DEPENDS_ON docs/business-execution.md; DEPENDS_ON docs/workspace-assistant.md
+# EnumEdges:    DEPENDS_ON .bits/submission-policy.json; DEPENDS_ON .bits/hostinger-readiness.json; DEPENDS_ON scripts/ci/submission_readiness.py; DEPENDS_ON scripts/ci/day21_submission.py; DEPENDS_ON docs/business-execution.md; DEPENDS_ON docs/workspace-assistant.md
 # DAG Node:     none
 # Intent:       Define provisional submission rules, exhaustive checkpoint acceptance and a verifiable owner-reviewed entry package.
 # ───────────────────────────────────────────────────────────────
@@ -24,9 +24,30 @@ criteria, permitted AI use and submission method remain unknown until an actual
 organizer source is captured and reviewed. September 29 in the internal sprint
 plan is not an asserted competition deadline.
 
+## Product identity and submission story
+
+**Learn by doing. Verify what you did. Do it together.**
+
+BuildAndDo is an educational collaboration platform for turning an objective
+into real, evidence-backed experience. People learn with other people and AI,
+work on actual projects, preserve what they did, and build reusable knowledge
+from the result.
+
+Classrooms, the Field Manual/tutorials, Practice Library, missions, evidence,
+replay, capability passports and personal progress are core. Living Rooms and
+community channels support collaboration. Software, research, business,
+community, creative and government/proposal work are application domains.
+ERP and external research/execution tools serve those projects. The existing
+business automation demonstration is one bounded application of the platform.
+
+The presentation follows objective → learn → collaborate → plan → do → observe
+→ verify → reflect → retain/reuse. Show the work produced, what failed, what
+changed and a reusable method with its actual review status. Completion of a
+lesson or a reflection alone cannot demonstrate capability or certify a method.
+
 ## Internal entry rules
 
-Submit one working, bounded small-business journey with current evidence. Every
+Submit one working, bounded learning-through-work journey with current evidence. Every
 advertised feature must have an executed acceptance result on the submitted
 candidate. Distinguish source tests, rendered browser tests, native backend tests,
 deployed observations and independent verification. A failed/skipped/unavailable
@@ -74,35 +95,46 @@ by this entry. If added to the submitted promise, each needs its own real accept
 ## Evaluator journey
 
 Use a staging workspace and three distinct authorized identities: proposer,
-worker/producer where applicable, and verifier. For the first bounded business
-action, create an ERP follow-up task; separately demonstrate the registered n8n
-operation and Firecrawl connector required by HS-07. The receiving owner supplies
-the actual operation, allowed public source and data rights.
+worker/producer where applicable, and verifier. Lead with the learner's objective.
+The existing technical acceptance lane uses an ERP follow-up task as its first
+bounded action and separately requires registered n8n and Firecrawl observations
+under HS-07. Present that lane as a business/project example of the learning
+loop. This framing does not remove its provider or native receipt requirements.
+The receiving owner supplies the actual operation, allowed source and data rights.
 
-1. Sign up or use an operator-provisioned evaluator account. Create a workspace
-   without a website or select a domain for analysis only. Repeat a lost setup
-   response and confirm the same workspace. Domain selection is not ownership.
-2. Capture the permitted source in Signals. Inspect its saved source reference;
+1. Sign up or use an operator-provisioned evaluator account. Choose an intent
+   and concrete objective, save the workspace and reopen its goal. Business and
+   domain context are optional. Repeat a lost setup response and confirm the
+   same workspace and objective. A saved domain is not proof of ownership.
+2. Open a relevant Field Manual lesson or Practice Library method. Retain its
+   identity and current review state. Discuss how to apply it with a collaborator
+   or class; show AI assistance only when its approved binding is available.
+3. Capture the permitted source in Signals. Inspect its saved source reference;
    propose the mission and complete its independent-review plan.
-3. A human approves the plan and starts work. Create/start a workflow with the
+4. A human approves the plan and starts work. Create/start a workflow with the
    first approval checkpoint and one bounded Execute step. Inspect frozen input.
-4. Complete the checkpoint, execute and inspect the native task/provider receipt.
+5. Complete the checkpoint, execute and inspect the native task/provider receipt.
    Exercise a deliberate controlled failure with separate fixture/test scope,
    then verify the recovery path. Do not intentionally break production.
-5. Have the verifier inspect the exact evidence and record four TEVV observations.
+6. Have the verifier inspect the exact evidence and record four TEVV observations.
    Attempt an unauthorized evidence rewrite and verify denial. Open ERP, the
    Daily Edition and the operator snapshot to read the same outcome.
-6. Open Buddi on ERP, request help preparing a follow-up, review its proposed
+7. Open Buddi on ERP, request help preparing a follow-up, review its proposed
    steps, apply them and confirm the native saved result. Inspect personal
    session knowledge, switch accounts/workspaces and confirm isolation. Observe
    a missing provider or rejected control as an unavailable/failed state.
-7. Export the real execution receipt page and the ordered capture. Run the local
+8. Record what worked, what failed and what changed in the existing mission
+   reflection. Reference the lesson/method and result evidence. Inspect progress
+   and any reusable practice without upgrading its review or capability state.
+9. Export the real execution receipt page and the ordered capture. Run the local
    validators, inspect every blocked requirement and retain the independent review.
 
-Existing learning/classroom acceptance remains required where included in the
+Learning and classroom work are core to the presentation. Their acceptance is
+still required wherever included in the
 journey: resume checkpoints, grading, certificate/credit exactly once, lesson and
 text-discussion isolation. A certificate of lesson completion is not a verified
-business outcome or professional qualification.
+project outcome or professional qualification. The steps above are a capture
+plan, not a report that a learner, class, provider or reviewer completed them.
 
 ## Commands and captured entry package
 
@@ -134,6 +166,57 @@ nonempty file with `{path, sha256, observed_at}`; the validator hashes exact byt
 in bounded chunks, including videos up to 1 GB. Keep private originals private.
 A sanitized export must identify that it is a redacted derivative and must not
 invent a provider attestation.
+
+The manifest also requires `candidate_evidence`, a content reference to the
+Day-21 `candidate-evidence.json` index. This joins the existing packaging and
+final readiness paths: owner milestone decisions alone cannot replace browser
+observations or the four separately observed product proofs.
+
+Run acceptance on the selected committed revision. New check receipts retain
+the revision and whether source remained unchanged; local dirty-tree results
+remain useful diagnostics but cannot establish candidate acceptance. Older
+receipts without that binding must be rerun for final submission.
+
+```bash
+python scripts/ci/day21_submission.py acceptance --root . \
+  --acceptance state/hostinger/acceptance --candidate <full-candidate-sha> \
+  --evidence state/submission/new-candidate/day21
+python scripts/ci/day21_submission.py templates \
+  --evidence state/submission/new-candidate/day21
+```
+
+The exporter preserves all observed check history, including later failures,
+and copies the actual JUnit/build artifacts. Missing or failed profiles produce
+a HOLD summary. Templates are unmeasured input descriptions; they do not fill
+any proof requirement. Populate them with authorized captures:
+
+- Every public URL, browser and product document carries the exact candidate,
+  reviewed source fingerprint and artifact-tree digest from the release capture.
+- Public URL evidence retains its response body as `body: {path, sha256,
+  observed_at}`. Browser evidence retains its URL, console log reference and six
+  ordered steps: public entry, auth, challenge, mission, evidence, operator readback.
+  Screenshots must be captured during that journey; console errors remain HOLD.
+- Each Hostinger product needs its own observed evidence. One repeated proof
+  cannot stand in for four product uses.
+- `demo-replay.json` retains the existing replay result and a `capture` reference
+  to its raw capture manifest. The auditor revalidates the full release and
+  execution chain; a written `CONSISTENT_CAPTURE` label cannot replace it.
+- Architecture and build-journey documents reference actual dated source evidence.
+  Official dates come from the separately reviewed organizer capture.
+
+```bash
+python scripts/ci/day21_submission.py audit --root . \
+  --evidence state/submission/new-candidate/day21 --json
+python scripts/ci/day21_submission.py index \
+  --evidence state/submission/new-candidate/day21
+```
+
+Reference that new index in `submission.json` using the same content-reference
+format as the materials. The final audit checks every pinned document and its
+underlying bytes, the actual named acceptance profiles, the shared candidate
+and artifact identities, the observed demo URL and the exact replay used by
+the owner review. A Day-21 bundle remains `READY_FOR_OWNER_REVIEW`; only the
+separate final audit can return `READY_FOR_OWNER_SUBMISSION`.
 
 Add the actual HTTPS `demo_url`, selected workspace/mission/dispatch,
 `replay` (the existing hostinger capture), `execution_receipts` (the native
@@ -175,8 +258,11 @@ retains the organizer's actual confirmation; the validator never fabricates one.
 ## Receiving owners and remaining acceptance
 
 The public source dispatch has no shared runtime credentials or activation grant.
-The repository account owner resolves hosted Actions access (the last observed
-failure reported a billing lock) and obtains the separate Cloudflare diagnostic.
+The GitLab runner owner executes the complete Day-21 acceptance lane with the
+declared dependencies and retains its full candidate-bound export. GitHub's
+historical billing failure is not evidence about GitLab availability. The separate
+Cloudflare diagnostic still requires the hosting owner; it does not gate local
+source checks or establish their failure.
 IDE1 executes native/browser acceptance and migration recovery. CMAX-B binds the
 existing Firecrawl, n8n, assistant and private operator adapters under the receiving
 dispatch. The private release owner deploys and captures source/artifact/health

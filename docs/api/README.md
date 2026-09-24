@@ -1,9 +1,10 @@
 # ─── CGRF Header ───────────────────────────────────────────────
 # File:        docs/api/README.md
 # Stage:       06_PLAN
-# SRS:         SRS-BUILDANDDO-DEVENV-001
+# SRS:         SRS-BUILDANDDO-DEVENV-001, SRS-BUILDANDDO-UPGRADE-001
 # CAPS:        pending
 # CK:          pending
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-10
@@ -48,6 +49,29 @@ Useful non-collection endpoints:
 | `POST /api/collections/{name}/auth-with-password` | Authenticate a user or superuser. |
 
 ## Authentication
+
+### Classroom media
+
+The authenticated signalling routes below `/api/classroom` use current native
+workspace membership and fresh attendance in a live classroom, not a supplied
+role or publisher name. The new locked `classroom_media_sessions` collection is
+not accessible through ordinary raw collection APIs. See `docs/classrooms.md`
+for installation, compatibility, expiration and acceptance limits.
+
+| Method / suffix | Body / scope |
+|---|---|
+| POST `/session` | `room`, `sessionDescription` (offer); returns the same room and an owned session |
+| POST `/tracks` | `room`, `sessionId`, `action`, `tracks`, optional offer; local pushes require `kind`, `mid`, `trackName`, `location: local` |
+| PUT `/renegotiate` | `room`, `sessionId`, `sessionDescription` (answer); only the session owner |
+| POST `/close` | `room`, `sessionId`; only the owner may invalidate its binding, including after leaving |
+| POST/GET `/presence` | Advertise/read exact bound tracks under current room participation and publisher authority |
+
+Remote pulls use `location: remote`, the source `sessionId` and its exact
+`trackName`. Foreign rooms, owners, stale attendance, expired/closed sessions
+and unknown tracks fail before provider access. A successful provider echo is
+not measured audio or independent verification. Session bindings contain no
+credentials or raw SDP. `1791400001_broadcast_classroom_lessons.js` is a data-only
+tutorial installation; it does not create workspace evidence or learner awards.
 
 ### The flow the app actually uses
 

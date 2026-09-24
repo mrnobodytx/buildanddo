@@ -1,10 +1,10 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/src/lib/tutorialCurriculum.js
 // Stage:       07_BUILD
-// SRS:         SRS-BUILDANDDO-UPGRADE-001
+// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-TRUST-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-TRUST-001
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-15
@@ -15,7 +15,7 @@
 // Intent:      Merge authored lesson previews with persistent catalogue identities without claiming unsaved or unreadable progress.
 // ───────────────────────────────────────────────────────────────
 
-/** @param {unknown} value Lesson body. @returns {boolean} Whether a bounded structured lesson can be rendered. */
+/** @param {unknown} value Lesson body. @returns {boolean} Whether a bounded structured lesson can be rendered; the answer and explanation are optional because clients only receive them once earned. */
 export function validLesson(value) {
     const strings = (items, max = 20) => Array.isArray(items) && items.length > 0 && items.length <= max &&
         items.every((item) => typeof item === 'string' && item.trim() && item.length <= 5000);
@@ -27,11 +27,24 @@ export function validLesson(value) {
             (section.steps === undefined || strings(section.steps)) && (strings(section.paragraphs) || strings(section.steps))) &&
         value.exercise && typeof value.exercise.prompt === 'string' && value.exercise.prompt.trim() && value.exercise.prompt.length <= 5000 &&
         strings(value.exercise.checklist) && value.check && typeof value.check.question === 'string' && value.check.question.trim() && value.check.question.length <= 5000 &&
-        strings(value.check.choices, 6) && value.check.choices.length >= 2 && Number.isInteger(value.check.answer) &&
-        value.check.answer >= 0 && value.check.answer < value.check.choices.length &&
-        typeof value.check.explanation === 'string' && value.check.explanation.trim() && value.check.explanation.length <= 5000 &&
+        strings(value.check.choices, 6) && value.check.choices.length >= 2 && (value.check.answer === undefined ||
+        Number.isInteger(value.check.answer) && value.check.answer >= 0 && value.check.answer < value.check.choices.length) &&
+        (value.check.explanation === undefined || typeof value.check.explanation === 'string' && value.check.explanation.trim() &&
+        value.check.explanation.length <= 5000) &&
         Array.isArray(value.references) && value.references.length <= 12 && value.references.every((reference) =>
             reference && typeof reference.label === 'string' && typeof reference.url === 'string' && Boolean(lessonLink(reference.url))));
+}
+
+/** @param {unknown} lesson Authored lesson body. @returns {unknown} The body without the knowledge-check answer or its revealing explanation. */
+export function publicLesson(lesson) {
+    if (!lesson || typeof lesson !== 'object' || Array.isArray(lesson) || !lesson.check || typeof lesson.check !== 'object') return lesson;
+    const { answer: _answer, explanation: _explanation, ...check } = lesson.check;
+    return { ...lesson, check };
+}
+
+/** @param {object} curriculum Authored curriculum file. @returns {object} The same file with every lesson reduced to its public body. */
+export function publicCurriculum(curriculum) {
+    return { ...curriculum, lessons: curriculum.lessons.map((record) => ({ ...record, lesson: publicLesson(record.lesson) })) };
 }
 
 /** @param {unknown} value Reference path. @returns {string} Safe local or HTTPS destination. */

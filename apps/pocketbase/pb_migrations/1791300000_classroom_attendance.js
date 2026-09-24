@@ -23,6 +23,17 @@
 // write it, and only aggregate counts ever leave the server.
 
 migrate((app) => {
+    // A Go-bound field exposes `type` as a method, so JSON.stringify(saved.type) is undefined and a raw
+    // comparison refused every re-apply on native PocketBase ("Review custom ..."). Read values the
+    // way the classroom_rooms and classroom_presence migrations do.
+    const norm = (holder, key) => {
+        const raw = holder[key];
+        const value = typeof raw === 'function' ? raw() : raw;
+        const json = JSON.stringify(value);
+        if (json === undefined) return String(value);
+        if (json === '{}' && value !== null && typeof value === 'object') return String(value);
+        return json;
+    };
     const exists = (name) => {
         try { return app.findCollectionByNameOrId(name); }
         catch (error) { if (String(error.message).includes('no rows in result set')) return null; throw error; }
@@ -49,10 +60,13 @@ migrate((app) => {
         if (actual[key] !== definition[key]) throw new Error(`Review custom classroom_attendance.${key}.`);
     for (const field of definition.fields) {
         const saved = actual.fields.getByName(field.name);
-        if (!saved || Object.keys(field).some((key) => JSON.stringify(saved[key]) !== JSON.stringify(field[key])))
+        if (!saved || Object.keys(field).some((key) => norm(saved, key) !== norm(field, key)))
             throw new Error(`Review custom classroom_attendance.${field.name}.`);
     }
-    if (!definition.indexes.every((index) => actual.indexes.includes(index))) throw new Error('Review classroom_attendance indexes.');
+    const shape = (index) => String(index).toLowerCase().replace(/[`"[\]]/g, '')
+        .replace(/\s+/g, ' ').replace(/\s*([(),])\s*/g, '$1').trim();
+    const present = (actual.indexes || []).map(shape);
+    if (!definition.indexes.every((index) => present.includes(shape(index)))) throw new Error('Review classroom_attendance indexes.');
 }, (app) => {
     // Rollback keeps the recorded history, as the classroom migration does for
     // sessions: deleting attendance people already produced is not a schema

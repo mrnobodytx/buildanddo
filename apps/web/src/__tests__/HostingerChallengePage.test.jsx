@@ -1,13 +1,17 @@
-// // --- CGRF Header ------------------------------------------------
+// ─── CGRF Header ───────────────────────────────────────────────
+// File:        apps/web/src/__tests__/HostingerChallengePage.test.jsx
 // Stage:       07_BUILD
-// SRS:         SRS-BUILDANDDO-DAY21-CLOSURE-001
+// SRS:         SRS-BUILDANDDO-DAY21-CLOSURE-001, SRS-BUILDANDDO-UPGRADE-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-DAY21-CLOSURE-001
+// Dispatch:    VCC-BUILDANDDO-DAY21-CLOSURE-001, VCC-BUILDANDDO-UPGRADE-001
 // Seat:        CLA-INSTALLER
 // Owner:       Citadel Nexus Inc.
+// Depends:     apps/web/src/pages/HostingerChallengePage.jsx
+// EnumType:    Test
+// EnumEdges:   VALIDATES apps/web/src/pages/HostingerChallengePage.jsx
 // Intent:      Close Hostinger Day-21 runtime evidence and submission packaging gaps without granting deployment authority.
-// ----------------------------------------------------------------
+// ───────────────────────────────────────────────────────────────
 import React from 'react';
 import { describe, expect, it } from 'vitest';
 import HostingerChallengePage from '@/pages/HostingerChallengePage';
@@ -17,7 +21,9 @@ describe('HostingerChallengePage', () => {
     it('states the focused judge story and exposes the real CTAs', async () => {
         renderWithProviders(<HostingerChallengePage />);
         expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('One real project');
-        expect(screen.getAllByRole('link', { name: /Try the challenge desk/i }).length).toBeGreaterThan(0);
+        for (const link of screen.getAllByRole('link', { name: /Try the challenge desk/i })) {
+            expect(link).toHaveAttribute('href', '/#challenge-desk');
+        }
         expect(screen.getByRole('link', { name: /Create an account/i })).toHaveAttribute('href', '/signup');
     });
 

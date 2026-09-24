@@ -8,9 +8,9 @@
 // Seat:        BITS-CODEGEN, C-ONE (status link kept on the domain)
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-18
-// Depends:     apps/web/src/lib/operatorPlane.js, apps/web/src/contexts/WorkspaceAccessContext.jsx, apps/web/src/components/workspace/ControlPrimitives.jsx
+// Depends:     apps/web/src/lib/operatorPlane.js, apps/web/src/contexts/WorkspaceAccessContext.jsx, apps/web/src/components/workspace/ControlPrimitives.jsx, apps/web/src/lib/workspaceValue.js, apps/web/src/components/workspace/ValueDashboard.jsx
 // EnumType:    Widget
-// EnumEdges:   CONSUMES apps/web/src/lib/operatorPlane.js; CONSUMES apps/web/src/contexts/WorkspaceAccessContext.jsx; CONSUMES apps/web/src/components/workspace/ControlPrimitives.jsx
+// EnumEdges:   CONSUMES apps/web/src/lib/operatorPlane.js; CONSUMES apps/web/src/contexts/WorkspaceAccessContext.jsx; CONSUMES apps/web/src/components/workspace/ControlPrimitives.jsx; CONSUMES apps/web/src/lib/workspaceValue.js; CONSUMES apps/web/src/components/workspace/ValueDashboard.jsx
 // DAG Node:    none
 // Intent:      Surface observed workspace decisions and source coverage while keeping imported build plans separate from explicit review mission proposals.
 // ───────────────────────────────────────────────────────────────
@@ -20,6 +20,8 @@ import { Link } from 'react-router-dom';
 import { Button, Card } from '@/components/site/ui';
 import { controlInput, dateLabel, PageControls, PlainArticle } from '@/components/workspace/ControlPrimitives';
 import { PageHeader } from '@/components/workspace/workspaceHelpers';
+import ValueDashboard from '@/components/workspace/ValueDashboard';
+import { projectWorkspaceValue } from '@/lib/workspaceValue';
 import { useAuth } from '@/contexts/AuthContext';
 import { useWorkspace } from '@/contexts/WorkspaceContext';
 import { useWorkspaceAccess } from '@/contexts/WorkspaceAccessContext';
@@ -64,7 +66,9 @@ function WorkspaceSnapshot({ view }) {
         <section aria-label="Systems and evidence"><Card className="space-y-4 p-5">
             <h2 className="font-headline text-2xl">Systems and evidence</h2>
             <p className="text-sm text-muted-foreground">Connection records and source observations describe what was seen. Missing observations leave system health unknown.</p>
-            {!view.systems.length && <p className="text-sm">No system observations appear in this sample.</p>}
+            {!view.systems.length && <p className="text-sm">{view.sources.find((source) => source.id === 'integrations')?.state === 'available'
+                ? 'No system observations appear in this sample. Ecosystem coverage is unmeasured.'
+                : 'Integration observations are unavailable. System health is unmeasured.'}</p>}
             <ul className="grid gap-3 sm:grid-cols-2">{view.systems.map((system) => <li key={system.id} className="space-y-2 rounded-md border border-border p-4">
                 <h3 className="break-words font-semibold">{system.name}</h3>
                 <p className="text-sm">Status: {label(system.status)}</p>
@@ -211,6 +215,7 @@ function OperatorDesk({ accountId, workspaceId, canWrite, checkingAccess }) {
     }, [api]);
     useEffect(() => { void refresh(page); }, [refresh, page]);
     const view = useMemo(() => snapshot.data ? projectOperator(snapshot.data, now) : null, [snapshot.data, now]);
+    const valueModel = useMemo(() => snapshot.data && view ? projectWorkspaceValue(snapshot.data, view, now) : null, [snapshot.data, view, now]);
     const available = Boolean(view && !snapshot.loading && !checkingAccess);
     const writeAllowed = Boolean(canWrite && ['owner', 'admin', 'editor'].includes(snapshot.data?.role) && view?.freshness === 'current');
     const canPropose = Boolean(writeAllowed && available && plan);
@@ -263,6 +268,7 @@ function OperatorDesk({ accountId, workspaceId, canWrite, checkingAccess }) {
         </div>
         {snapshot.loading && <p role="status">Reading workspace state…</p>}
         {snapshot.error && <p role="alert">{snapshot.error}</p>}
+        {view && valueModel && <ValueDashboard model={valueModel} operator={view} />}
         {view && <WorkspaceSnapshot view={view} />}
         <PageControls page={page} hasMore={page < 9999 && Boolean(view?.sources.some((source) => source.has_more))}
             onPage={setPage} label="Workspace source" disabled={snapshot.loading || write.busy} />

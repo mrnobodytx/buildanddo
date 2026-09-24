@@ -1,16 +1,16 @@
 # ─── CGRF Header ────────────────────────────
 # File:        libs/semantic_twin/phase1/compiler.py
 # Stage:       07_BUILD
-# SRS:         SRS-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001
+# SRS:         SRS-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001, SRS-BUILDANDDO-UPGRADE-001
 # CAPS:        pending
 # CK:          pending
-# Dispatch:    VCC-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-19
-# Depends:     libs/semantic_twin/ingestion, libs/semantic_twin/phase1/release_state.py, libs/semantic_twin/phase1/history.py, libs/semantic_twin/phase1/sbom.py, libs/semantic_twin/phase1/providers.py, libs/semantic_twin/phase1/memory.py, libs/semantic_twin/phase1/claims.py, libs/semantic_twin/phase1/truth.py, libs/semantic_twin/phase1/merkle.py, libs/semantic_twin/phase1/context.py
+# Depends:     libs/semantic_twin/ingestion, libs/semantic_twin/phase1/release_state.py, libs/semantic_twin/phase1/history.py, libs/semantic_twin/phase1/sbom.py, libs/semantic_twin/phase1/providers.py, libs/semantic_twin/phase1/memory.py, libs/semantic_twin/phase1/claims.py, libs/semantic_twin/phase1/truth.py, libs/semantic_twin/phase1/merkle.py, libs/semantic_twin/phase1/context.py, libs/semantic_twin/progression.py
 # EnumType:    Service
-# EnumEdges:   CONSUMES libs/semantic_twin/ingestion; CONSUMES libs/semantic_twin/phase1/release_state.py; CONSUMES libs/semantic_twin/phase1/history.py; CONSUMES libs/semantic_twin/phase1/sbom.py; CONSUMES libs/semantic_twin/phase1/providers.py; CONSUMES libs/semantic_twin/phase1/memory.py; CONSUMES libs/semantic_twin/phase1/claims.py; CONSUMES libs/semantic_twin/phase1/truth.py; PRODUCES libs/semantic_twin/phase1/merkle.py; PRODUCES libs/semantic_twin/phase1/context.py
+# EnumEdges:   CONSUMES libs/semantic_twin/ingestion; CONSUMES libs/semantic_twin/phase1/release_state.py; CONSUMES libs/semantic_twin/phase1/history.py; CONSUMES libs/semantic_twin/phase1/sbom.py; CONSUMES libs/semantic_twin/phase1/providers.py; CONSUMES libs/semantic_twin/phase1/memory.py; CONSUMES libs/semantic_twin/phase1/claims.py; CONSUMES libs/semantic_twin/phase1/truth.py; PRODUCES libs/semantic_twin/phase1/merkle.py; PRODUCES libs/semantic_twin/phase1/context.py; CONSUMES libs/semantic_twin/progression.py
 # DAG Node:    semantic-twin.phase-1.compiler
 # Intent:      Join all ten local Phase 1 capabilities into one connected graph, release-truth matrix, semantic epoch and query proof bundle.
 # ────────────────────────────────────────────────────────
@@ -30,6 +30,7 @@ from ..ingestion.graph import SemanticGraph
 from ..ingestion.pipeline import extract_release_twin
 from ..ingestion.release import RELEASE_PATH_KEYS
 from ..vocabulary import EvidenceState, RelationPredicate
+from ..progression import Invitation, TwinCapture
 from .claims import assess_claims
 from .common import relation, stable_id
 from .context import ContextProofBundle, compile_context_bundle
@@ -73,6 +74,17 @@ class Phase1Compilation:
     truth_matrix_id: str
     epoch: SemanticEpoch
     context: ContextProofBundle
+
+    def as_capture(
+        self, scope_id: str, *, invitations: tuple[Invitation, ...] = ()
+    ) -> TwinCapture:
+        """Expose the same canonical objects to developmental queries without changing trust."""
+        return TwinCapture(
+            scope_id=scope_id,
+            captured_at=self.epoch.metadata.created_at,
+            objects=self.graph.objects,
+            invitations=invitations,
+        )
 
     def to_dict(self) -> dict[str, Any]:
         """Render graph, reconciliation and proof metadata as one payload."""

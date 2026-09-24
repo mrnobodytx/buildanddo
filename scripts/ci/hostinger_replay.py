@@ -540,7 +540,7 @@ def project_milestones(
         and review["capture_sha256"] == replay["capture_sha256"],
         "Owner review is stale or binds another capture.",
     )
-    states = acceptance_state(root, evidence, source, now)
+    states = acceptance_state(root, evidence, source, now, str(replay["candidate_sha"]))
     decisions = review["decisions"]
     require(isinstance(decisions, list), "Owner decisions must be a list.")
     by_id: dict[str, dict[str, object]] = {}

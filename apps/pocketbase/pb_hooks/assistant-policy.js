@@ -17,7 +17,8 @@
 
 const access = require(`${__hooks}/workspace-access.js`);
 const ROUTES = [
-    ['/app', 'Front Page'], ['/app/operator', 'Operator cockpit'], ['/app/signals', 'Signals'], ['/app/missions', 'Challenge Desk'],
+    ['/app', 'Front Page'], ['/app/journey', 'Start a journey'], ['/app/career', 'Career Passport'],
+    ['/app/operator', 'Operator cockpit'], ['/app/signals', 'Signals'], ['/app/missions', 'Challenge Desk'],
     ['/app/workflows', 'Workflows'], ['/app/evidence', 'Evidence Ledger'], ['/app/research', 'Mission research'],
     ['/app/knowledge', 'Knowledge and context'], ['/app/blueprints', 'Blueprints'],
     ['/app/policy', 'Policy intelligence'], ['/app/suite', 'Mission suite'], ['/app/dossier', 'My dossier'], ['/app/edition', 'Daily Edition'],

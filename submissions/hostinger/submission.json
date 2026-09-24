@@ -25,7 +25,7 @@
   {
    "claim": "The platform is exercised from machines that are not the developer workstation",
    "evidence": "5 concurrent sessions from 5 distinct DigitalOcean hosts, 111-241ms",
-   "verify": "source IPs in the access log are not rig1"
+   "verify": "source IPs in the access log are not the developer workstation's address"
   },
   {
    "claim": "Progress cannot be asserted, only earned",

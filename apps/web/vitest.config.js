@@ -1,7 +1,7 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/vitest.config.js
 // Stage:       08_TEST
-// SRS:         SRS-BUILDANDDO-TEST-001
+// SRS:         SRS-BUILDANDDO-TEST-001, SRS-BUILDANDDO-TRUST-001
 // CAPS:        pending
 // CK:          pending
 // Seat:        BITS-CODEGEN
@@ -19,6 +19,7 @@
 import { fileURLToPath } from 'node:url';
 import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vitest/config';
+import publicLessonsPlugin from './plugins/vite-plugin-public-lessons.js';
 
 // Deliberately standalone rather than `mergeConfig(viteConfig, ...)`: the app's
 // vite.config.js injects the Horizons editor plugins and rewrites index.html,
@@ -26,7 +27,8 @@ import { defineConfig } from 'vitest/config';
 const srcDir = fileURLToPath(new URL('./src', import.meta.url));
 
 export default defineConfig({
-    plugins: [react()],
+    // Tests import the same answer-free lesson projection the build ships.
+    plugins: [publicLessonsPlugin(), react()],
     resolve: {
         // Must stay in step with vite.config.js — a test that resolves imports
         // differently from the build is not testing the shipped module graph.

@@ -20,6 +20,7 @@
 from __future__ import annotations
 
 from concurrent.futures import ThreadPoolExecutor
+from contextlib import closing
 import json
 import os
 from pathlib import Path
@@ -145,6 +146,7 @@ class NativeServer:
                 "dossier-vault.js",
                 "research-policy.js",
                 "workspace-access.js",
+                "government-access.js",
                 "workflow-policy.js",
             ]:
                 shutil.copyfile(ROOT / "apps/pocketbase/pb_hooks" / name, hooks / name)
@@ -217,8 +219,9 @@ class NativeServer:
             check=False,
             **NO_WINDOW,
         )
-        self.log.write(result.stdout or "")
-        self.log.write(result.stderr or "")
+        output = (result.stdout or "") + (result.stderr or "")
+        # The diagnostic servers log to an anonymous binary file; this base logs text.
+        self.log.write(output.encode("utf-8", "replace") if "b" in getattr(self.log, "mode", "") else output)
         self.log.flush()
         if result.returncode:
             raise AssertionError(
@@ -366,9 +369,9 @@ class NativeServer:
         """Inspect only ciphertext in the fixture database using a read-only connection."""
         if name not in {"dossier_entities", "dossier_events", "user_dossiers"}:
             raise ValueError("Choose a dossier fixture table.")
-        with sqlite3.connect(
+        with closing(sqlite3.connect(
             (self.root / "data/data.db").as_uri() + "?mode=ro", uri=True
-        ) as database:
+        )) as database:
             return database.execute(
                 f"select owner, key_id, sealed from {name}"
             ).fetchall()

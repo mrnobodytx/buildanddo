@@ -1,0 +1,8 @@
+{
+  "synthetic-staff-platform": [
+    {"id": "q1", "text": "Describe your experience with CI/CD and observability."},
+    {"id": "q2", "text": "Are you legally authorized to work in the United States?"},
+    {"id": "q3", "text": "What are your salary expectations?"},
+    {"id": "q4", "text": "Why do you want to join us?"}
+  ]
+}

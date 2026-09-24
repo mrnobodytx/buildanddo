@@ -145,12 +145,12 @@ test('workflow command latency uses bounded endpoint names and preserves failed 
     assert.doesNotMatch(JSON.stringify(records), /private-run-id/);
 });
 
-test('unset configuration silently disables counters and middleware', () => {
-    const { hooks, telemetry, records } = runtime({});
+test('unset transport configuration keeps registered middleware inert without changing requests', () => {
+    const { hooks, records } = runtime({});
     const event = recordEvent();
     hooks.onRecordAfterCreateSuccess(event);
     assert.equal(event.calls, 1);
-    assert.equal(telemetry.observeRequest(requestEvent()), 'saved');
+    assert.equal(hooks.routerUse(requestEvent()), 'saved');
     assert.equal(records.length, 0);
 });
 
@@ -162,7 +162,7 @@ test('logging failures and helper load failures preserve the write result', () =
     const event = recordEvent();
     assert.doesNotThrow(() => hooks.onRecordAfterCreateSuccess(event));
     assert.equal(event.calls, 1);
-    assert.equal(telemetry.observeRequest(requestEvent()), 'saved');
+    assert.equal(hooks.routerUse(requestEvent()), 'saved');
     assert.doesNotThrow(() => telemetry.record({}, 'create', false));
 });
 
@@ -220,15 +220,41 @@ test('auth, system collections, arbitrary paths, query values and invalid trace 
     assert.equal(records[0].data.tags.endpoint, '/api/collections/missions/records');
 });
 
-test('middleware registers exactly once and times the request it receives', () => {
+test('routerUse registers request timing exactly once, without an onServe compatibility fake', () => {
     const { hooks, registrations, records } = runtime();
     // Under routerUse there is no router to bind and nothing to delegate at registration time:
     // the callback IS the middleware and receives each request. What is still worth asserting is
     // that the hook registers one and only one of them, and that the one it registers observes.
     assert.equal(registrations.routerUse, 1);
     assert.equal(typeof hooks.routerUse, 'function');
-    assert.equal(hooks.routerUse(requestEvent()), 'saved');
+    assert.equal(Object.hasOwn(hooks, 'onServe'), false);
+    let calls = 0;
+    const event = requestEvent(undefined, undefined, () => { calls++; return 'saved'; });
+    assert.equal(hooks.routerUse(event), 'saved');
+    assert.equal(calls, 1);
     assert.equal(records.length, 1);
+    assert.equal(records[0].data.metric, 'buildanddo.request.duration_ms');
+});
+
+test('router middleware loads the helper inside its isolated callback and preserves downstream errors', () => {
+    const { hooks, telemetry, records } = runtime();
+    const handler = vm.runInNewContext(`(${hooks.routerUse.toString()})`, {
+        __hooks: '/native/hooks', require: (path) => {
+            assert.equal(path, '/native/hooks/telemetry.js'); return telemetry;
+        },
+    });
+    const failure = new Error('downstream failed');
+    let calls = 0;
+    assert.throws(() => handler(requestEvent(undefined, undefined, () => { calls++; throw failure; })), (error) => error === failure);
+    assert.equal(calls, 1);
+    assert.equal(records.length, 1);
+    assert.equal(records[0].data.tags.outcome, 'failure');
+});
+
+test('an unsupported router registration fails instead of silently disabling telemetry', () => {
+    const { hookScope } = runtime();
+    delete hookScope.routerUse;
+    assert.throws(() => vm.runInNewContext(hookSource, hookScope), /routerUse is not defined/);
 });
 
 test('missing helpers cannot stop record hooks or middleware', () => {
@@ -244,7 +270,9 @@ test('missing helpers cannot stop record hooks or middleware', () => {
     }
     // With the helper unavailable the middleware must still pass the request through rather than
     // failing the request to protect a metric.
-    assert.equal(hooks.routerUse(requestEvent()), 'saved');
+    let calls = 0;
+    assert.equal(hooks.routerUse(requestEvent(undefined, undefined, () => { calls++; return 'saved'; })), 'saved');
+    assert.equal(calls, 1);
     assert.equal(records.length, 0);
 });
 

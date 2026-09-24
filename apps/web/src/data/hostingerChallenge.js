@@ -1,13 +1,17 @@
-// // --- CGRF Header ------------------------------------------------
+// ─── CGRF Header ───────────────────────────────────────────────
+// File:        apps/web/src/data/hostingerChallenge.js
 // Stage:       07_BUILD
-// SRS:         SRS-BUILDANDDO-DAY21-CLOSURE-001, SRS-BUILDANDDO-PURPOSE-001
+// SRS:         SRS-BUILDANDDO-DAY21-CLOSURE-001, SRS-BUILDANDDO-PURPOSE-001, SRS-BUILDANDDO-UPGRADE-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-DAY21-CLOSURE-001, VCC-BUILDANDDO-PURPOSE-001
+// Dispatch:    VCC-BUILDANDDO-DAY21-CLOSURE-001, VCC-BUILDANDDO-PURPOSE-001, VCC-BUILDANDDO-UPGRADE-001
 // Seat:        CLA-INSTALLER, C-ONE (the educational-platform framing)
 // Owner:       Citadel Nexus Inc.
+// Depends:     docs/day21/JUDGE_STORY.md
+// EnumType:    ConfigDoc
+// EnumEdges:   CONSUMES docs/day21/JUDGE_STORY.md
 // Intent:      Close Hostinger Day-21 runtime evidence and submission packaging gaps without granting deployment authority.
-// ----------------------------------------------------------------
+// ───────────────────────────────────────────────────────────────
 import { PURPOSE } from '@/lib/purpose';
 
 // The entry describes the startup as the operator decided it is: an educational, collaborative platform

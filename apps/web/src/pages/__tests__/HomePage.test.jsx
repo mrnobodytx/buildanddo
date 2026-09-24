@@ -123,15 +123,20 @@ describe('home workspace edition', () => {
         pb.__setRecords('signals', [createMockSignal()]);
         pb.__setRecords('missions', [createMockMission({ status: 'running' })]);
         pb.__setRecords('evidence', [createMockEvidence({ title: 'Reminder receipt' })]);
+        pb.__setRecords('challenge_submissions', [
+            { id: 'project', workspace: 'ws_test', problem: 'Build a shared project website', status: 'submitted', created: now() },
+        ]);
         pb.__setRecords('daily_editions', [
             {
                 id: 'draft',
+                workspace: 'ws_test',
                 status: 'draft',
                 title: 'Draft must stay off the front page',
                 created: now(),
             },
             {
                 id: 'edition',
+                workspace: 'ws_test',
                 status: 'published',
                 title: 'Friday appointment report',
                 summary: 'Measured reminders',
@@ -142,6 +147,7 @@ describe('home workspace edition', () => {
         pb.__setRecords('corrections', [
             {
                 id: 'c1',
+                workspace: 'ws_test',
                 status: 'verified',
                 prior_prediction: 'Expected four misses',
                 observed_result: 'Observed one miss',
@@ -149,6 +155,7 @@ describe('home workspace edition', () => {
             },
             {
                 id: 'c2',
+                workspace: 'ws_test',
                 status: 'pending',
                 prior_prediction: 'Pending prediction',
                 observed_result: 'Unverified result',
@@ -158,6 +165,7 @@ describe('home workspace edition', () => {
         pb.__setRecords('support_sources', [
             {
                 id: 'usd',
+                workspace: 'ws_test',
                 provider: 'patreon',
                 status: 'healthy',
                 last_sync: now(),
@@ -166,13 +174,14 @@ describe('home workspace edition', () => {
             },
             {
                 id: 'eur',
+                workspace: 'ws_test',
                 provider: 'kofi',
                 status: 'healthy',
                 last_sync: now(),
                 gross: 10,
                 currency: 'EUR',
             },
-            { id: 'pending', provider: 'gofundme', status: 'pending', gross: 900, currency: 'USD' },
+            { id: 'pending', workspace: 'ws_test', provider: 'gofundme', status: 'pending', gross: 900, currency: 'USD' },
         ]);
         renderWithProviders(<HomePage />);
         expect(
@@ -186,6 +195,9 @@ describe('home workspace edition', () => {
         expect(screen.queryByText('Draft must stay off the front page')).not.toBeInTheDocument();
         expect(section('corrections').getByText('Observed one miss')).toBeVisible();
         expect(screen.queryByText('Unverified result')).not.toBeInTheDocument();
+        const challengeMetric = section('glance').getByRole('heading', { name: 'Saved challenges' }).closest('.p-5');
+        expect(within(challengeMetric).getByText('1', { exact: true })).toBeVisible();
+        expect(within(challengeMetric).getByRole('link', { name: /Open desk/ })).toHaveAttribute('href', '#challenge-desk');
         expect(section('support-revenue').getByText('USD 25.00')).toBeVisible();
         expect(section('support-revenue').getByText('EUR 10.00')).toBeVisible();
         expect(screen.queryByText('USD 900.00')).not.toBeInTheDocument();
