@@ -31,9 +31,9 @@ vi.mock('@/lib/pocketbaseClient', async () => {
 vi.mock('@/lib/observability/runtime', () => ({ reportAction: vi.fn(), reportMetric: vi.fn(), trackAuthIdentity: vi.fn() }));
 vi.mock('@/lib/telemetry', () => ({ trackEvent: vi.fn() }));
 
-// ComponentCatalog is deliberately NOT mocked here. The sibling TutorialCatalog
-// suite stubs it, which means a stub would also stand in for a tab that should
-// no longer exist - the assertion below has to see the real page's real tabs.
+// Nothing on this page is stubbed out: the assertion below has to see the real
+// page's real tabs. The Component Catalog tab it guards against was removed, and
+// ComponentCatalog.jsx went with it (SRS-BUILDANDDO-HYGIENE-001).
 
 beforeEach(() => {
     pb.__reset();

@@ -42,7 +42,6 @@ vi.mock('@/lib/pocketbaseClient', async () => {
 });
 vi.mock('@/lib/observability/runtime', () => ({ reportAction: vi.fn(), reportMetric: vi.fn(), trackAuthIdentity: vi.fn() }));
 vi.mock('@/lib/telemetry', () => ({ trackEvent: vi.fn() }));
-vi.mock('@/components/workspace/ComponentCatalog', () => ({ default: () => <p>Component reference</p> }));
 const lesson = curriculum.lessons[0];
 const broadcastLesson = broadcastCurriculum.lessons[0];
 const authorityLesson = authorityCurriculum.lessons[0];

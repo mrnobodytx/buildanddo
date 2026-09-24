@@ -296,7 +296,7 @@ read back from outside before it counts. The rules for contributors are in
 <summary><strong>GitLab CI</strong>: executes acceptance and holds deployment authority</summary>
 
 [`.gitlab-ci.yml`](./.gitlab-ci.yml) runs `integrity_gate` (build and lint regression, boundary scan,
-README check), `sprint_replay`, `praxis_evidence_tests` and SAST. It includes the source-validation
+README check, docs redaction scan), `sprint_replay`, `praxis_evidence_tests` and SAST. It includes the source-validation
 matrices for the Discord bot, foundry, federal portfolio, mission suite, behaviour coverage and
 assurance, plus the Day-21 job, which runs all eighteen acceptance profiles.
 
@@ -305,6 +305,7 @@ assurance, plus the Day-21 job, which runs all eighteen acceptance profiles.
 | Gate | Guards against |
 |---|---|
 | `scripts/ci/verify_public_boundary.py` | Private files, secrets or a missing actor label reaching the public repo |
+| `scripts/ci/public_redaction.py scan docs …` | A machine name or address in the public docs, README, changelog or contributor guides |
 | `scripts/ci/agent_context.py --check` | Pipelines, gates or governance changing without the context lock being updated |
 | `scripts/ci/readme_check.py` | This README falling behind the repository: dead links, an unnamed app or workflow, a stale roadmap |
 | `scripts/ci/changelog_gen.py --check` | A changelog that no longer matches `main` |
