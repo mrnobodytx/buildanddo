@@ -1,0 +1,19 @@
+<!-- @dsCard group="Platform" height=760 page=true -->
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600;6..72,700;6..72,800&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap"><title>BroadcastPlatform</title><style>body{padding:16px;}</style></head>
+<body>
+<div id="root"></div>
+<script>
+  var B = window.BndClassroom, h = React.createElement;
+  ReactDOM.createRoot(document.getElementById('root')).render(h('div',{className:'bc-platform'},
+ h('div',{className:'bc-platform-main'},
+  h('div',{className:'bc-row-between'}, h('div',null, h(B.SectionLabel,{icon:'antenna'},'On air'), h('h1',{style:{margin:'4px 0 0',font:'600 30px/36px var(--font-display)'}},'Deploy your first website')), h('div',{style:{display:'flex',gap:8,flexWrap:'wrap'}}, h(B.TransportBadge,{transport:'moq',level:'USED'}), h(B.LatencyReadout,{ms:412,targetMs:800}))),
+  h(B.BroadcastStage,{status:'live',hostName:'Mara Quinn',section:'Section 2 of 6',signal:'receiving',packets:1204}),
+  h(B.MediaControls,{canPublish:false,hand:false}),
+  h(B.RelayPath,{hops:[{role:'publisher',name:'Host browser',state:'measured',latencyMs:0},{role:'relay',name:'relay-iad',state:'measured',latencyMs:38},{role:'subscribers',name:'Class',state:'measured',latencyMs:61,count:42}]}),
+  h(B.TrackCatalog,{namespace:'bnd/class/7f3a',tracks:[{name:'video/sd',label:'Host video',kind:'video',rendition:'640×360',subscribed:true,state:'receiving',group:318,object:12},{name:'audio',label:'Host audio',kind:'audio',rendition:'opus 48k',subscribed:true,state:'receiving',group:1204,object:3},{name:'captions',label:'Captions',kind:'captions',subscribed:true,state:'stalled',group:88,object:0}]})),
+ h(B.LiveFeed,{state:'live',newCount:2,onShowNew:function(){},onPause:function(){},items:[{id:1,kind:'broadcast',title:'Deploy your first website is on air',source:'bnd/class/7f3a',evidence:1,time:'14:02'},{id:2,kind:'judgment',priority:'high',status:'UNDER_REVIEW',title:'Relay fra-2 dropping groups',body:'Video stalled for EU subscribers; audio held.',confidence:{value:0.8,scale:'0–1',method:'analyst'},source:'sentinel',evidence:4,time:'14:12'},{id:3,kind:'observation',status:'OPEN',title:'Captions track stalled at group 88',source:'moq catalog',evidence:1,time:'14:05'}]})));
+</script>
+</body>
+</html>

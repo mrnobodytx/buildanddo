@@ -1,0 +1,269 @@
+{
+ "v": 3,
+ "layout": "files",
+ "createdOnFiles": {
+  "v": 1,
+  "at": "2026-09-23T12:00:00Z"
+ },
+ "title": "Broadcast Classroom",
+ "namespace": "BndClassroom",
+ "libraries": [
+  {
+   "name": "react",
+   "version": "18"
+  },
+  {
+   "name": "react-dom",
+   "version": "18"
+  }
+ ],
+ "sections": {},
+ "groups": [
+  "Icons"
+ ],
+ "assetGroups": {
+  "Icons": {
+   "name": "Icons",
+   "tile": "s",
+   "order": [
+    "mic.svg",
+    "mic-off.svg",
+    "video.svg",
+    "video-off.svg",
+    "monitor-up.svg",
+    "hand.svg",
+    "phone-off.svg",
+    "radio.svg",
+    "signal.svg",
+    "wifi-off.svg",
+    "circle-dot.svg",
+    "book-open.svg",
+    "users.svg",
+    "message-circle.svg",
+    "antenna.svg",
+    "waypoints.svg",
+    "activity.svg",
+    "radar.svg",
+    "rss.svg",
+    "tv-minimal.svg",
+    "shield-check.svg",
+    "undo-2.svg",
+    "file-search.svg",
+    "triangle-alert.svg",
+    "user-round.svg",
+    "bot.svg",
+    "globe.svg",
+    "eye.svg",
+    "share-2.svg",
+    "search-check.svg",
+    "pen-line.svg",
+    "badge-check.svg"
+   ],
+   "files": {
+    "mic.svg": {
+     "name": "mic.svg",
+     "blob": "40d9e3387c219d2046339a18a0faa8f1",
+     "size": 436,
+     "type": "image/svg+xml"
+    },
+    "mic-off.svg": {
+     "name": "mic-off.svg",
+     "blob": "2d30fe429bb51134c5ccc6bc1979100c",
+     "size": 550,
+     "type": "image/svg+xml"
+    },
+    "video.svg": {
+     "name": "video.svg",
+     "blob": "2f9e226704b803b170bcff3e1956c0a0",
+     "size": 427,
+     "type": "image/svg+xml"
+    },
+    "video-off.svg": {
+     "name": "video-off.svg",
+     "blob": "1a44af057a32bcab7d0081886a0cb7bb",
+     "size": 467,
+     "type": "image/svg+xml"
+    },
+    "monitor-up.svg": {
+     "name": "monitor-up.svg",
+     "blob": "96e36bb829a30248dbcd409f161a8bf5",
+     "size": 443,
+     "type": "image/svg+xml"
+    },
+    "hand.svg": {
+     "name": "hand.svg",
+     "blob": "5594c4106479dec85346c803d946e402",
+     "size": 559,
+     "type": "image/svg+xml"
+    },
+    "phone-off.svg": {
+     "name": "phone-off.svg",
+     "blob": "0e9c6ddf3fe880167966247a1cf27443",
+     "size": 655,
+     "type": "image/svg+xml"
+    },
+    "radio.svg": {
+     "name": "radio.svg",
+     "blob": "9840a96dbf5139f039f5924fbcf23663",
+     "size": 509,
+     "type": "image/svg+xml"
+    },
+    "signal.svg": {
+     "name": "signal.svg",
+     "blob": "e8d4c75758c0a2f0192c7b60b46273fa",
+     "size": 408,
+     "type": "image/svg+xml"
+    },
+    "wifi-off.svg": {
+     "name": "wifi-off.svg",
+     "blob": "acc57fab55b6353137fdbeba27c6bd7b",
+     "size": 574,
+     "type": "image/svg+xml"
+    },
+    "circle-dot.svg": {
+     "name": "circle-dot.svg",
+     "blob": "9da23e9438a2499ed7526f07e2ab5985",
+     "size": 361,
+     "type": "image/svg+xml"
+    },
+    "book-open.svg": {
+     "name": "book-open.svg",
+     "blob": "64516eb65f1c4b14055ab11156f10f08",
+     "size": 459,
+     "type": "image/svg+xml"
+    },
+    "users.svg": {
+     "name": "users.svg",
+     "blob": "ca37f2c77487eb30c1c47bf58f9e7e40",
+     "size": 458,
+     "type": "image/svg+xml"
+    },
+    "message-circle.svg": {
+     "name": "message-circle.svg",
+     "blob": "40dfe750dd43a0cfd31e069234d0c8f6",
+     "size": 340,
+     "type": "image/svg+xml"
+    },
+    "antenna.svg": {
+     "name": "antenna.svg",
+     "blob": "08cfb3af28c7a82d1b76481d2091ff4d",
+     "size": 441,
+     "type": "image/svg+xml"
+    },
+    "waypoints.svg": {
+     "name": "waypoints.svg",
+     "blob": "db8fb35c0289cf41de73e7a5de175d13",
+     "size": 534,
+     "type": "image/svg+xml"
+    },
+    "activity.svg": {
+     "name": "activity.svg",
+     "blob": "97756ff9b86bb98fc0ef73f3d3032a1c",
+     "size": 426,
+     "type": "image/svg+xml"
+    },
+    "radar.svg": {
+     "name": "radar.svg",
+     "blob": "d7537393354ada3dd58973164510447a",
+     "size": 604,
+     "type": "image/svg+xml"
+    },
+    "rss.svg": {
+     "name": "rss.svg",
+     "blob": "415bbea87521ac4bd75ba9d04b38ff9d",
+     "size": 390,
+     "type": "image/svg+xml"
+    },
+    "tv-minimal.svg": {
+     "name": "tv-minimal.svg",
+     "blob": "f5be574aad4a75a775cadb8507d86c24",
+     "size": 367,
+     "type": "image/svg+xml"
+    },
+    "shield-check.svg": {
+     "name": "shield-check.svg",
+     "blob": "be76937c7f4599c475a5f4ca44ced35a",
+     "size": 499,
+     "type": "image/svg+xml"
+    },
+    "undo-2.svg": {
+     "name": "undo-2.svg",
+     "blob": "84c7abb43b06f9134263e7085132eb1b",
+     "size": 387,
+     "type": "image/svg+xml"
+    },
+    "file-search.svg": {
+     "name": "file-search.svg",
+     "blob": "9e7dcd859d59fc34772cf7091973d7b9",
+     "size": 478,
+     "type": "image/svg+xml"
+    },
+    "triangle-alert.svg": {
+     "name": "triangle-alert.svg",
+     "blob": "a11b433999f942caa26b542e00e11816",
+     "size": 431,
+     "type": "image/svg+xml"
+    },
+    "user-round.svg": {
+     "name": "user-round.svg",
+     "blob": "96ba7ef5c6a16c32f19dffd0f25680ba",
+     "size": 361,
+     "type": "image/svg+xml"
+    },
+    "bot.svg": {
+     "name": "bot.svg",
+     "blob": "cca84966a5f7aea3d4a2833ce1111b60",
+     "size": 455,
+     "type": "image/svg+xml"
+    },
+    "globe.svg": {
+     "name": "globe.svg",
+     "blob": "b72b00a6c842d996ba83fd3a436e2804",
+     "size": 408,
+     "type": "image/svg+xml"
+    },
+    "eye.svg": {
+     "name": "eye.svg",
+     "blob": "aa814866f5bf6e2b27ede242ad5d87bb",
+     "size": 435,
+     "type": "image/svg+xml"
+    },
+    "share-2.svg": {
+     "name": "share-2.svg",
+     "blob": "080fbc56db5f9d913d1c2b4c71b79822",
+     "size": 497,
+     "type": "image/svg+xml"
+    },
+    "search-check.svg": {
+     "name": "search-check.svg",
+     "blob": "20fa89dafae2ee9a464e1d11acf6cc94",
+     "size": 386,
+     "type": "image/svg+xml"
+    },
+    "pen-line.svg": {
+     "name": "pen-line.svg",
+     "blob": "274845428ee5a96f0d1dcec8349e6613",
+     "size": 457,
+     "type": "image/svg+xml"
+    },
+    "badge-check.svg": {
+     "name": "badge-check.svg",
+     "blob": "e9dbe275f189362fec090662451bce8f",
+     "size": 495,
+     "type": "image/svg+xml"
+    }
+   }
+  }
+ },
+ "blobs": {},
+ "docs": {
+  "readme": "project/README.md",
+  "sections": []
+ },
+ "lastChange": {
+  "by": "Claude",
+  "at": "2026-09-23T17:00:00Z",
+  "via": "Claude Code",
+  "note": "Added broadcaster, world audience, 24-hour presence, content use and agent activity, with validated people/agent chart colours."
+ }
+}

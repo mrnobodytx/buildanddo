@@ -255,8 +255,30 @@ class NativeServer:
         self.reverted = []
         self.migrate("up")
 
+    def seed_superuser(self) -> None:
+        """Give the disposable instance a superuser BEFORE it serves.
+
+        Without one, PocketBase treats the first serve as an install: it prints a
+        /_/#/pbinstall/<token> URL and OPENS IT IN THE OPERATOR'S DEFAULT BROWSER. A suite that
+        starts a dozen fixtures therefore threw a dozen setup tabs at whoever was using the
+        machine, and the release pipeline's gate did it on every run. There is no serve flag to
+        suppress it on 0.39.8 - the only lever is to remove the condition, so the install never
+        triggers. Measured both ways: with this, the serve log carries no `pbinstall` line at all.
+
+        The credentials are throwaway and local to one temporary directory that the fixture
+        deletes; nothing here reaches a real instance.
+        """
+        subprocess.run(
+            [self.binary, "superuser", "upsert",
+             "fixture@localhost.invalid", "fixture-local-disposable-instance",
+             f"--dir={self.root / 'data'}"],
+            cwd=self.root, env=self.environment,
+            stdout=self.log, stderr=subprocess.STDOUT, check=False, **NO_WINDOW,
+        )
+
     def start(self) -> None:
         """Start only the disposable loopback instance and wait for native health."""
+        self.seed_superuser()
         self.process = subprocess.Popen(
             [
                 self.binary,
