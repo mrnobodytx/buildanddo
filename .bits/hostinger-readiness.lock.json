@@ -225,6 +225,7 @@
     "apps/pocketbase/pb_migrations/1791800000_classroom_access_rules.js": "82a0ab7dee83bfff30f4c2f5558d39cd1d1836ecc55678c8369526e17d7b54a7",
     "apps/pocketbase/pb_migrations/1791800000_seat_display_is_persona.js": "402eb247d7989501f4258045a39a3230a458cc8c712ebc0e9fdbaf69c548705e",
     "apps/pocketbase/pb_migrations/1791900000_classroom_rules_are_null.js": "4a3e184712889ae6c5274aeb893fb2dbbbb3ea8f0566d451f662f52cbee002a4",
+    "apps/pocketbase/pb_migrations/1792000000_classroom_global_and_access.js": "f74bf637e7a352f8bf129bac90cf421050234bf75779f74e4791f93e506c32a3",
     "apps/pocketbase/pb_migrations/data/broadcast-classroom-lessons.json": "83f22984c79692424b3c76f98a8c49d0bd1faf3cbae51db1fb0eba32515354a8",
     "apps/pocketbase/pb_migrations/data/broadcast-classroom-lessons.json.cgrf.yaml": "1eb5511ca1512788beb427efdfd59f1f3a4fee0bdcc307526fbad0602a7446f9",
     "apps/pocketbase/pb_migrations/data/government-submissions.json": "0f977023c13a652eccf234bcf7ee9c7ca4a0058a9167aea7b81ca2e639746f58",

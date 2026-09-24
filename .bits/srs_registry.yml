@@ -360,3 +360,10 @@ srs:
     spec: .bits/srs/SRS-BUILDANDDO-RECONCILE-001.md
     owner: C-ONE
     notes: Operator direction 2026-09-23 - merge the branches into main, the staging line first, resolving public copy as the staging wording plus main's additions. At the start main was 67 commits ahead of the staging line and the staging line 152 ahead of main (merge base 916507f), and a trial merge had 53 conflicting files. Each merge and the staging-only deploy wait for the operator; this entry does not self-authorize A2 and production is excluded
+  - code: SRS-BUILDANDDO-CLASSROOM-GLOBAL-001
+    title: A class is a global object; the workspace holds a person's access to classes and renders it as their gallery
+    status: in_progress
+    risk: A2
+    spec: .bits/srs/SRS-BUILDANDDO-CLASSROOM-GLOBAL-001.md
+    owner: C-ONE
+    notes: Operator decision 2026-09-24 - classes live outside workspaces, the workspace tracks a user's access and shows it as a gallery, so a student who never studies chemistry never sees a chemistry class there. Today classroom_rooms.workspace is REQUIRED and every classroom index is workspace-first, so a class cannot exist without a workspace; a5bc2b0 fanned out client-side across readable workspaces, which finds existing classes but does not make one global. Additive migration - existing rooms stay scope=workspace and keep their behaviour. Guildmaster audit and score land on the class, using the frozen trust vocabulary where VERIFIED needs a resolvable evidence reference. No deployment
