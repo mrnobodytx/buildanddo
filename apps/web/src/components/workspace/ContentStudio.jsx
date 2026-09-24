@@ -26,6 +26,8 @@ import { DemoModeBanner, DegradedNotice, ListSkeleton } from '@/components/works
 import StructuredContent from '@/components/workspace/StructuredContent';
 import { useAuth } from '@/contexts/AuthContext';
 import { useWorkspace } from '@/contexts/WorkspaceContext';
+import { useWorkspaceAccess } from '@/contexts/WorkspaceAccessContext';
+import { workspaceLifecycleKey } from '@/lib/workspaceControl';
 import { useDemoMode } from '@/hooks/useDemoMode';
 import { useWorkspaceRecords } from '@/hooks/useWorkspaceRecords';
 import { CONTENT_FORMATS, CONTENT_STATUSES, contentOutline, dateInput, publicationUrl, retainedFields } from '@/lib/businessPlanning';
@@ -43,6 +45,10 @@ const reviewLabels = {
 function Studio({ accountId, demo }) {
     const content = useWorkspaceRecords('social_content');
     const objectives = useWorkspaceRecords('erp_objectives');
+    const access = useWorkspaceAccess();
+    const canWrite = !demo && !access.loading && !access.error && access.data?.can_write === true;
+    const canAdmin = canWrite && access.data?.can_admin === true;
+    const canEdit = (record) => canWrite && (!record || record.owner === accountId || canAdmin);
     const [query, setQuery] = useState('');
     const [filter, setFilter] = useState('all');
     const [format, setFormat] = useState('all');
@@ -66,7 +72,7 @@ function Studio({ accountId, demo }) {
     const begin = (record, target, copy = false) => {
         opener.current = target; setError(''); setSaved(''); setPreview(false); setReplace(false);
         setDraft(Object.fromEntries(Object.entries(emptyDraft).map(([name, fallback]) => [name, record?.[name] || fallback])));
-        setEditor({ id: copy ? '' : record?.id || '' }); setDetail(null);
+        setEditor({ id: copy ? '' : record?.id || '', record: copy ? null : record }); setDetail(null);
     };
     const open = (record, target) => {
         opener.current = target; setDetail(record); setError(''); setSaved(''); setChecks({}); setNote('');
@@ -74,14 +80,14 @@ function Studio({ accountId, demo }) {
     };
     const save = async (event) => {
         event.preventDefault();
-        if (lock.current || !current() || demo) return;
+        if (lock.current || !current() || !canEdit(editor.record) || content.uncertain) return;
         if (!draft.title.trim()) { setError('Name the draft.'); return; }
         lock.current = true; setBusy(true); setError('');
         const fields = { ...Object.fromEntries(Object.entries(draft).map(([name, value]) => [name, value.trim()])), status: 'draft' };
-        const result = editor.id ? await content.update(editor.id, fields) : await content.create(fields);
+        const result = editor.id ? await content.update(editor.id, fields, editor.record) : await content.create(fields);
         if (current()) {
             if (result.ok && !retainedFields(result.record, fields)) {
-                setEditor({ id: result.record.id });
+                setEditor({ id: result.record.id, record: result.record });
                 setError('A record was saved, but some draft fields were not retained. Apply the content migration before updating this saved draft. Your copy is still here.');
             } else if (result.ok) { setEditor(null); setSaved('Draft saved. Request review when the copy is ready.'); }
             else setError(result.error || 'Could not save the draft. Your writing is still here.');
@@ -90,9 +96,9 @@ function Studio({ accountId, demo }) {
         lock.current = false;
     };
     const transition = async (fields) => {
-        if (lock.current || !detail || !current() || demo) return;
+        if (lock.current || !detail || !current() || !canEdit(detail) || content.uncertain) return;
         lock.current = true; setBusy(true); setError(''); setSaved('');
-        const result = await content.update(detail.id, fields);
+        const result = await content.update(detail.id, fields, detail);
         if (current()) {
             if (result.ok) {
                 setDetail(result.record);
@@ -107,6 +113,12 @@ function Studio({ accountId, demo }) {
         }
         lock.current = false;
     };
+    const retrySave = async () => {
+        const result = await content.retry(); if (!current()) return;
+        if (result.ok) { setEditor(null); setDetail(result.record); setError(''); setSaved('Previous save confirmed. Refresh to inspect the latest version.'); }
+        else setError(result.error);
+    };
+    const retryButton = content.uncertain && <Button type="button" size="sm" disabled={!canWrite || busy || content.saving} onClick={retrySave}>Retry previous content save</Button>;
     const visible = content.records.filter((record) =>
         `${record.title || ''} ${record.audience || ''} ${record.channel || ''}`.toLowerCase().includes(query.trim().toLowerCase()) &&
         (filter === 'all' || record.status === filter) && (format === 'all' || (record.format || 'social') === format));
@@ -119,9 +131,10 @@ function Studio({ accountId, demo }) {
     return <div className="ph-no-capture space-y-5" data-dd-privacy="mask">
         <div className="flex flex-wrap items-start justify-between gap-3"><div><h2 className="font-display text-2xl font-semibold">Content studio</h2><p className="mt-1 max-w-2xl text-sm leading-6 text-muted-foreground">Build a brief, write and preview a draft, then review it before recording publication.</p></div><div className="flex flex-wrap gap-2">
             <Button size="sm" variant="secondary" disabled={content.loading || busy} onClick={content.refresh}>Refresh content</Button>
-            <Button size="sm" disabled={demo || content.loading || content.degraded} onClick={(event) => begin(null, event.currentTarget)}>New draft</Button>
+            <Button size="sm" disabled={!canWrite || content.loading || content.degraded || content.uncertain} onClick={(event) => begin(null, event.currentTarget)}>New draft</Button>
         </div></div>
         {demo && <DemoModeBanner />}
+        {content.uncertain && !editor && !detail && <div className="space-y-2"><p role="alert" className="text-sm">{content.writeError}</p>{retryButton}</div>}
         {saved && !detail && <p role="status" className="text-sm text-success">{saved}</p>}
         <div className="grid gap-3 sm:grid-cols-3">
             <div className="space-y-1"><Label htmlFor="content-search">Search content</Label><Input id="content-search" value={query} onChange={(event) => setQuery(event.target.value)} /></div>
@@ -141,7 +154,7 @@ function Studio({ accountId, demo }) {
         <p className="text-xs leading-6 text-muted-foreground">Outlines use your brief and editable writing prompts. Planned dates do not send posts. Publication records an operator-checked URL; channel delivery remains a separate authorized action.</p>
         {editor && <Dialog open onOpenChange={(open) => { if (!open && !busy) setEditor(null); }}><DialogContent className="max-h-[92dvh] max-w-3xl overflow-y-auto" data-dd-privacy="mask" onCloseAutoFocus={closeFocus}>
             <div className="ph-no-capture space-y-4"><DialogHeader><DialogTitle>{editor.id ? 'Edit draft' : 'New content draft'}</DialogTitle><DialogDescription>Save a brief and editable copy. Drafts are private to the workspace.</DialogDescription></DialogHeader>
-                <form className="space-y-4" onSubmit={save}><fieldset disabled={busy} className="min-w-0 space-y-4">
+                <form className="space-y-4" onSubmit={save}><fieldset disabled={busy || !canEdit(editor.record) || content.uncertain} className="min-w-0 space-y-4">
                     {field('title', 'Title', 200)}
                     <div className="grid gap-3 sm:grid-cols-2"><div className="space-y-1"><Label htmlFor="content-format">Format</Label><select id="content-format" className={selectClass} value={draft.format} onChange={(event) => setDraft((before) => ({ ...before, format: event.target.value }))}>{Object.entries(CONTENT_FORMATS).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></div>{field('channel', 'Intended channel', 160)}</div>
                     {field('audience', 'Intended audience', 300)}{field('brief', 'Brief and supporting facts', 2000, true)}{field('call_to_action', 'Next action for the reader', 400)}
@@ -152,7 +165,7 @@ function Studio({ accountId, demo }) {
                     <p className="text-xs leading-6 text-muted-foreground">Use # headings, blank lines, - bullets and numbered lists. Replace outline prompts and verify claims before requesting review.</p>
                     {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
                     <div className="flex flex-wrap justify-end gap-2"><Button type="button" size="sm" variant="ghost" onClick={() => setEditor(null)}>Cancel</Button><Button type="submit" size="sm">{busy ? 'Saving…' : 'Save draft'}</Button></div>
-                </fieldset></form>
+                </fieldset>{retryButton}</form>
             </div>
         </DialogContent></Dialog>}
         {detail && <Dialog open onOpenChange={(open) => { if (!open && !busy) setDetail(null); }}><DialogContent className="max-h-[92dvh] max-w-3xl overflow-y-auto" data-dd-privacy="mask" onCloseAutoFocus={closeFocus}>
@@ -163,13 +176,14 @@ function Studio({ accountId, demo }) {
                 {detail.reviewed_at && <Card className="space-y-2 p-4"><h3 className="font-display text-lg">Saved review</h3><p className="text-xs text-muted-foreground">Recorded {detail.reviewed_at}</p><p className="whitespace-pre-wrap text-sm leading-6">{detail.review_note}</p></Card>}
                 {detail.status === 'published' && <div className="space-y-2 text-sm">{publicationUrl(detail.published_url) ? <><a href={publicationUrl(detail.published_url)} target="_blank" rel="noreferrer" className="break-all text-primary underline">Open recorded publication<span className="sr-only"> (opens in a new tab)</span></a><p className="text-xs text-muted-foreground">Receipt recorded {detail.published_at || 'at an unavailable time'}; this does not establish external delivery time.</p></> : <p>This legacy published state has no publication receipt from the content desk.</p>}</div>}
                 {saved && <p role="status" className="text-sm text-success">{saved}</p>}{error && <p role="alert" className="text-sm text-destructive">{error}</p>}
-                <fieldset disabled={busy || demo} className="min-w-0 space-y-4">
+                <fieldset disabled={busy || !canEdit(detail) || content.uncertain} className="min-w-0 space-y-4">
                     {detail.status === 'draft' && <div className="flex flex-wrap gap-2"><Button size="sm" variant="secondary" onClick={() => begin(detail, opener.current)}>Edit draft</Button><Button size="sm" onClick={() => transition({ status: 'awaiting_approval' })}>Request review</Button></div>}
-                    {detail.status === 'awaiting_approval' && <div className="space-y-3"><h3 className="font-display text-lg font-semibold">Review this saved copy</h3><p className="text-xs text-muted-foreground">Approval requires a current workspace owner or admin. Record what you actually checked.</p>{Object.entries(reviewLabels).map(([name, label]) => <label key={name} className="flex items-start gap-3 py-1 text-sm leading-6"><input type="checkbox" className="mt-1 h-4 w-4 shrink-0 accent-primary" checked={checks[name] === true} onChange={(event) => setChecks((before) => ({ ...before, [name]: event.target.checked }))} /><span>{label}</span></label>)}<Label htmlFor="content-review-note">Review note</Label><Textarea id="content-review-note" value={note} maxLength={1200} rows={3} onChange={(event) => setNote(event.target.value)} /><Button size="sm" disabled={!Object.keys(reviewLabels).every((name) => checks[name]) || !note.trim()} onClick={() => transition({ status: 'approved', review_checks: checks, review_note: note.trim() })}>Approve reviewed copy</Button></div>}
-                    {['approved', 'scheduled'].includes(detail.status) && (detail.reviewed_at && detail.reviewed_by ? <div className="space-y-4"><div className="space-y-2"><Label htmlFor="content-planned-date">Planned publication date</Label><Input id="content-planned-date" type="date" value={plannedDate} onChange={(event) => setPlannedDate(event.target.value)} /><Button size="sm" variant="secondary" disabled={!plannedDate} onClick={() => transition({ status: 'scheduled', scheduled_for: `${plannedDate} 12:00:00.000Z` })}>Save publication plan</Button><p className="text-xs text-muted-foreground">This saves a date; it does not schedule an external job.</p></div><div className="space-y-2"><Label htmlFor="content-publication-url">Checked publication URL</Label><Input id="content-publication-url" type="url" placeholder="https://…" value={url} maxLength={2048} onChange={(event) => setUrl(event.target.value)} /><Button size="sm" disabled={!publicationUrl(url)} onClick={() => transition({ status: 'published', published_url: publicationUrl(url) })}>Record publication</Button><p className="text-xs text-muted-foreground">An owner or admin records a URL after checking the authorized publication.</p></div></div> : <p className="text-sm text-muted-foreground">This state has no saved review receipt. Return to draft and request review before proceeding.</p>)}
+                    {detail.status === 'awaiting_approval' && <div className="space-y-3"><h3 className="font-display text-lg font-semibold">Review this saved copy</h3><p className="text-xs text-muted-foreground">Approval requires a current workspace owner or admin. Record what you actually checked.</p>{Object.entries(reviewLabels).map(([name, label]) => <label key={name} className="flex items-start gap-3 py-1 text-sm leading-6"><input type="checkbox" className="mt-1 h-4 w-4 shrink-0 accent-primary" checked={checks[name] === true} onChange={(event) => setChecks((before) => ({ ...before, [name]: event.target.checked }))} /><span>{label}</span></label>)}<Label htmlFor="content-review-note">Review note</Label><Textarea id="content-review-note" value={note} maxLength={1200} rows={3} onChange={(event) => setNote(event.target.value)} /><Button size="sm" disabled={!canAdmin || !Object.keys(reviewLabels).every((name) => checks[name]) || !note.trim()} onClick={() => transition({ status: 'approved', review_checks: checks, review_note: note.trim() })}>Approve reviewed copy</Button></div>}
+                    {['approved', 'scheduled'].includes(detail.status) && (detail.reviewed_at && detail.reviewed_by ? <div className="space-y-4"><div className="space-y-2"><Label htmlFor="content-planned-date">Planned publication date</Label><Input id="content-planned-date" type="date" value={plannedDate} onChange={(event) => setPlannedDate(event.target.value)} /><Button size="sm" variant="secondary" disabled={!plannedDate} onClick={() => transition({ status: 'scheduled', scheduled_for: `${plannedDate} 12:00:00.000Z` })}>Save publication plan</Button><p className="text-xs text-muted-foreground">This saves a date; it does not schedule an external job.</p></div><div className="space-y-2"><Label htmlFor="content-publication-url">Checked publication URL</Label><Input id="content-publication-url" type="url" placeholder="https://…" value={url} maxLength={2048} onChange={(event) => setUrl(event.target.value)} /><Button size="sm" disabled={!canAdmin || !publicationUrl(url)} onClick={() => transition({ status: 'published', published_url: publicationUrl(url) })}>Record publication</Button><p className="text-xs text-muted-foreground">An owner or admin records a URL after checking the authorized publication.</p></div></div> : <p className="text-sm text-muted-foreground">This state has no saved review receipt. Return to draft and request review before proceeding.</p>)}
                     {['awaiting_approval', 'approved', 'scheduled', 'failed'].includes(detail.status) && <Button size="sm" variant="secondary" onClick={() => transition({ status: 'draft' })}>Return to draft</Button>}
-                    <Button size="sm" variant="ghost" onClick={() => begin(detail, opener.current, true)}>Copy to a new draft</Button>
                 </fieldset>
+                {retryButton}
+                <Button size="sm" variant="ghost" disabled={!canWrite || busy || content.uncertain} onClick={() => begin(detail, opener.current, true)}>Copy to a new draft</Button>
                 <Button size="sm" variant="ghost" disabled={busy} onClick={() => setDetail(null)}>Close content</Button>
             </div>
         </DialogContent></Dialog>}
@@ -179,7 +193,8 @@ function Studio({ accountId, demo }) {
 /** @returns {React.ReactElement} Workspace content desk, reset on account/workspace/demo changes. */
 export default function ContentStudio() {
     const { active } = useWorkspace();
-    const { user } = useAuth();
+    const { user, sessionEpoch } = useAuth();
     const { demo } = useDemoMode();
-    return active && user?.id ? <Studio key={`${user.id}:${active.id}:${demo}`} accountId={user.id} demo={demo} /> : <p>Select a workspace to manage content.</p>;
+    const access = useWorkspaceAccess();
+    return active && user?.id ? <Studio key={workspaceLifecycleKey({ accountId: user.id, workspaceId: active.id, demo, sessionEpoch, access })} accountId={user.id} demo={demo} /> : <p>Select a workspace to manage content.</p>;
 }

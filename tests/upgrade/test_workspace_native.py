@@ -8,9 +8,9 @@
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-20
-# Depends:     tests/upgrade/test_classroom_native.py, apps/pocketbase/pb_hooks/mission-research.js, apps/pocketbase/pb_hooks/mission-policy.js, apps/pocketbase/pb_hooks/workflow-runs.js, apps/pocketbase/pb_hooks/workspace-replay.js, apps/pocketbase/pb_hooks/workspace-value.js, apps/pocketbase/pb_migrations/1791300001_assistant_turn_usage.js
+# Depends:     tests/upgrade/test_classroom_native.py, apps/pocketbase/pb_hooks/mission-research.js, apps/pocketbase/pb_hooks/mission-policy.js, apps/pocketbase/pb_hooks/workflow-runs.js, apps/pocketbase/pb_hooks/workspace-replay.js, apps/pocketbase/pb_hooks/workspace-value.js, apps/pocketbase/pb_migrations/1791300001_assistant_turn_usage.js, apps/pocketbase/pb_hooks/workspace-claims.js, apps/pocketbase/pb_migrations/1791500001_workspace_claim_authority.js
 # EnumType:    Test
-# EnumEdges:   CONSUMES tests/upgrade/test_classroom_native.py; VALIDATES apps/pocketbase/pb_hooks/mission-research.js; VALIDATES apps/pocketbase/pb_hooks/mission-policy.js; VALIDATES apps/pocketbase/pb_hooks/workflow-runs.js; VALIDATES apps/pocketbase/pb_hooks/business-policy.js; VALIDATES apps/pocketbase/pb_hooks/workspace-operator.js; VALIDATES apps/pocketbase/pb_hooks/workspace-replay.js; VALIDATES apps/pocketbase/pb_hooks/workspace-value.js; VALIDATES apps/pocketbase/pb_migrations/1791300001_assistant_turn_usage.js
+# EnumEdges:   CONSUMES tests/upgrade/test_classroom_native.py; VALIDATES apps/pocketbase/pb_hooks/mission-research.js; VALIDATES apps/pocketbase/pb_hooks/mission-policy.js; VALIDATES apps/pocketbase/pb_hooks/workflow-runs.js; VALIDATES apps/pocketbase/pb_hooks/business-policy.js; VALIDATES apps/pocketbase/pb_hooks/workspace-operator.js; VALIDATES apps/pocketbase/pb_hooks/workspace-replay.js; VALIDATES apps/pocketbase/pb_hooks/workspace-value.js; VALIDATES apps/pocketbase/pb_migrations/1791300001_assistant_turn_usage.js; VALIDATES apps/pocketbase/pb_hooks/workspace-claims.js; VALIDATES apps/pocketbase/pb_migrations/1791500001_workspace_claim_authority.js
 # Intent:      Require real auth, production migrations and a connected signal-to-independent-review journey before declaring workspace acceptance.
 # ───────────────────────────────────────────────────────────────
 
@@ -43,6 +43,16 @@ ALICE, BRAVO, OTHER, VIEWER = (
     "accountother001",
     "accountviewer01",
 )
+CLAIM_MIGRATION = "1791500001_workspace_claim_authority"
+LEGACY_CLAIMS = {
+    "support_sources": "legacysupport01",
+    "corrections": "legacycorrect01",
+    "daily_editions": "legacyedition01",
+    "specialist_desks": "legacydesk00001",
+    "social_content": "legacycontent01",
+    "social_channels": "legacychannel01",
+    "seat_events": "legacyseatevt01",
+}
 MIGRATIONS = (
     "1788474000_create_workspace_collections",
     "1788477655_create_editorial_collections",
@@ -62,6 +72,7 @@ MIGRATIONS = (
     "1790900000_workspace_assistant",
     "1791100000_objective_onboarding",
     "1791300001_assistant_turn_usage",
+    CLAIM_MIGRATION,
 )
 AUTH = r"""
 migrate((app) => {
@@ -70,7 +81,7 @@ migrate((app) => {
     catch { users = new Collection({ name: 'users', type: 'auth' }); }
     users.authRule = ''; users.passwordAuth = { enabled: true, identityFields: ['email'] };
     users.authAlert = { enabled: false }; app.save(users);
-    for (const [id, name] of [['accountalice001', 'alice'], ['accountbravo001', 'bravo'], ['accountother001', 'other'], ['accountviewer01', 'viewer']]) {
+    for (const [id, name] of [['accountalice001', 'alice'], ['accountbravo001', 'bravo'], ['accountother001', 'other'], ['accountviewer01', 'viewer'], ['accounteditor02', 'editor2']]) {
         const user = new Record(users); user.id = id; user.set('email', name + '@fixture.invalid');
         user.set('verified', true); user.setPassword('local-fixture-password-only'); app.save(user);
     }
@@ -89,6 +100,16 @@ migrate((app) => {
     save('workspaces', 'workspacebravo1', { owner: 'accountother001', name: 'Synthetic foreign workspace' });
     save('workspace_members', 'memberalice0001', { workspace: 'workspacealpha1', user: 'accountalice001', role: 'editor' });
     save('workspace_members', 'memberviewer001', { workspace: 'workspacealpha1', user: 'accountviewer01', role: 'viewer' });
+    save('workspace_members', 'membereditor002', { workspace: 'workspacealpha1', user: 'accounteditor02', role: 'editor' });
+    const scope = { workspace: 'workspacealpha1', owner: 'accountalice001' };
+    save('support_sources', 'legacysupport01', { ...scope, provider: 'patreon', status: 'healthy', gross: 200,
+        platform_fees: 4, refunds: 1, currency: 'USD', last_sync: '2026-09-01 12:00:00.000Z' });
+    save('corrections', 'legacycorrect01', { ...scope, status: 'verified', prior_prediction: 'Synthetic legacy prediction', observed_result: 'Synthetic legacy claim' });
+    save('daily_editions', 'legacyedition01', { ...scope, status: 'published', title: 'Synthetic legacy edition', body: 'Historical reported publication' });
+    save('specialist_desks', 'legacydesk00001', { ...scope, desk: 'risk', status: 'active', scope: 'Synthetic operator report' });
+    save('social_content', 'legacycontent01', { ...scope, status: 'published', title: 'Synthetic legacy content', body: 'Historical reported publication' });
+    save('social_channels', 'legacychannel01', { ...scope, platform: 'youtube', status: 'healthy', handle: 'Synthetic legacy channel' });
+    save('seat_events', 'legacyseatevt01', { ...scope, event: 'completed', seat: 'legacy-agent-label', actor_type: 'agent', summary: 'Synthetic legacy report' });
 }, () => {});
 """
 
@@ -96,7 +117,7 @@ migrate((app) => {
 class WorkspaceServer(DiagnosticNativeServer):
     """Install production public migrations with isolated synthetic auth and data."""
 
-    def __init__(self, binary: str) -> None:
+    def __init__(self, binary: str, *, hooks_enabled: bool = True, claims: bool = True) -> None:
         self.directory = tempfile.TemporaryDirectory(
             prefix="buildanddo-workspace-native-"
         )
@@ -132,6 +153,8 @@ class WorkspaceServer(DiagnosticNativeServer):
                 "workspace-access.js",
                 "government-access.js",
                 "workspace-record-policy.js",
+                "workspace-claims.js",
+                "workspace-claims.pb.js",
                 "workspace-administration.js",
                 "workspace-community.js",
                 "administration.pb.js",
@@ -142,11 +165,15 @@ class WorkspaceServer(DiagnosticNativeServer):
                 "workspace-operator.js",
                 "workspace-value.js",
             ):
+                if not hooks_enabled and name.endswith(".pb.js"):
+                    continue
                 shutil.copyfile(ROOT / "apps/pocketbase/pb_hooks" / name, hooks / name)
             migrations = self.root / "migrations"
             migrations.mkdir()
             (migrations / "0000000001_auth.js").write_text(AUTH)
             for name in MIGRATIONS:
+                if name == CLAIM_MIGRATION and not claims:
+                    continue
                 shutil.copyfile(
                     ROOT / "apps/pocketbase/pb_migrations" / (name + ".js"),
                     migrations / (name + ".js"),
@@ -179,6 +206,33 @@ class NativeWorkspaceTests(unittest.TestCase):
         self.addCleanup(self.server.close)
         self.alice, self.bravo, self.other, self.viewer = (
             self.server.login(name) for name in ("alice", "bravo", "other", "viewer")
+        )
+        self.editor2 = self.server.login("editor2")
+        self.claim_sequence = 0
+
+    def claim(
+        self,
+        action: str,
+        values: dict[str, Any],
+        *,
+        identity: str = "",
+        revision: int = 0,
+        token: str | None = None,
+        key: str | None = None,
+        workspace: str = WORKSPACE,
+    ) -> tuple[int, dict[str, Any]]:
+        """Invoke the real scoped command with a saved revision and retry identity."""
+        self.claim_sequence += 1
+        return self.server.request(
+            "POST",
+            f"/api/buildanddo/workspaces/{workspace}/claims",
+            {
+                "action": action,
+                "revision": revision,
+                "request_key": key or f"native_claim_request_{self.claim_sequence:04}",
+                "payload": {"id": identity} if action == "edition.publish" else {"id": identity, "values": values},
+            },
+            self.alice if token is None else token,
         )
 
     def record(
@@ -869,8 +923,8 @@ class NativeWorkspaceTests(unittest.TestCase):
             "surface": {"id": "usage-fixture", "route": "/app/erp", "controls": []},
         }
         self.server.stop()
-        # The final seed is idempotent; the preceding migration is the usage field.
-        self.server.migrate("down", "2")
+        # Retain the seed and claim records while rolling back through usage.
+        self.server.migrate("down", str(len(MIGRATIONS) - MIGRATIONS.index("1791300001_assistant_turn_usage") + 1))
         self.assertNotIn(
             "usage",
             {
@@ -1013,15 +1067,16 @@ class NativeWorkspaceTests(unittest.TestCase):
             self.patch("erp_tasks", task["id"], {"status": "todo"}, self.viewer)[0],
             (403, 404),
         )
-        edition = self.record(
-            "daily_editions",
+        status, result = self.claim(
+            "edition.save",
             {
                 "title": "Synthetic acceptance edition",
                 "summary": "Observed local task completion.",
                 "body": "The fixture task was reviewed.",
-                "status": "draft",
             },
         )
+        self.assertEqual(status, 200)
+        edition = result["record"]
         status, saved = self.server.request(
             "GET",
             f"/api/collections/daily_editions/records/{edition['id']}",
@@ -1029,6 +1084,157 @@ class NativeWorkspaceTests(unittest.TestCase):
         )
         self.assertEqual(status, 200)
         self.assertEqual(saved["summary"], edition["summary"])
+
+    def test_claim_commands_bind_author_roles_revision_and_revoked_retries(self) -> None:
+        values = {"title": "Native saved edition", "body": "A synthetic report"}
+        for token in ("", self.viewer, self.other):
+            self.assertIn(self.claim("edition.save", values, token=token)[0], (401, 403, 404))
+        self.assertIn(self.claim("edition.save", values, workspace="workspacebravo1")[0], (403, 404))
+        code, created = self.claim("edition.save", values, key="native_claim_replay_001")
+        self.assertEqual(code, 200)
+        identity = created["id"]
+        self.assertEqual(created["record"]["owner"], ALICE)
+        self.assertEqual(created["revision"], 1)
+        code, repeated = self.claim("edition.save", values, key="native_claim_replay_001")
+        self.assertEqual(code, 200)
+        self.assertTrue(repeated["replayed"])
+        self.assertEqual(repeated["id"], identity)
+        self.assertEqual(self.claim("edition.save", {"body": "Another author"}, identity=identity, revision=1, token=self.editor2)[0], 403)
+        self.assertEqual(self.claim("edition.save", {"owner": BRAVO}, identity=identity, revision=1)[0], 400)
+        self.assertEqual(self.claim("edition.save", {"workspace": "workspacebravo1"}, identity=identity, revision=1)[0], 400)
+
+        def edit(token: str) -> int:
+            return self.claim("edition.save", {"body": "Concurrent bounded edit"}, identity=identity, revision=1, token=token,
+                key="native_editor_concurrency_" + ("author" if token == self.alice else "admin"))[0]
+
+        with ThreadPoolExecutor(max_workers=2) as pool:
+            self.assertEqual(sorted(pool.map(edit, (self.alice, self.bravo))), [200, 409])
+        self.assertEqual(self.claim("edition.publish", {}, identity=identity, revision=2)[0], 403)
+        code, published = self.claim("edition.publish", {}, identity=identity, revision=2, token=self.bravo)
+        self.assertEqual(code, 200)
+        self.assertEqual(published["record"]["published_by"], BRAVO)
+        self.assertTrue(published["record"]["published_at"])
+        self.assertEqual(self.claim("edition.save", {"body": "Rewrite published"}, identity=identity, revision=3, token=self.bravo)[0], 400)
+        code, _ = self.server.request("POST", f"/api/buildanddo/workspaces/{WORKSPACE}/admin", {
+            "action": "member.remove", "revision": 0, "request_key": "claim_member_revoke_001", "payload": {"user": ALICE},
+        }, self.bravo)
+        self.assertEqual(code, 200)
+        self.assertEqual(self.claim("edition.save", values, key="native_claim_replay_001")[0], 403)
+
+    def test_support_request_only_and_legacy_comparison_nonpromotion(self) -> None:
+        self.assertEqual(self.claim("support.request", {"provider": "stripe"})[0], 403)
+        for field in ("gross", "platform_fees", "refunds", "currency", "payout_status", "last_sync", "status", "date_range_start", "date_range_end"):
+            self.assertEqual(self.claim("support.request", {"provider": "stripe", field: "claimed"}, token=self.bravo)[0], 400)
+        code, requested = self.claim("support.request", {"provider": "stripe"}, token=self.bravo)
+        self.assertEqual(code, 200)
+        self.assertEqual(requested["record"]["status"], "pending")
+        self.assertEqual(requested["record"]["requested_by"], BRAVO)
+        self.assertTrue(requested["record"]["requested_at"])
+        code, _ = self.claim("support.request", {"provider": "patreon"}, identity=LEGACY_CLAIMS["support_sources"], token=self.bravo)
+        self.assertEqual(code, 200)
+        code, retained = self.server.request("GET", f"/api/collections/support_sources/records/{LEGACY_CLAIMS['support_sources']}", token=self.alice)
+        self.assertEqual(code, 200)
+        self.assertEqual((retained["status"], retained["gross"], retained["currency"]), ("healthy", 200, "USD"))
+        values = {"prior_prediction": "Expected four", "observed_result": "Reported two"}
+        for status in ("verified", "rejected"):
+            self.assertEqual(self.claim("correction.save", {**values, "status": status}, token=self.bravo)[0], 400)
+        code, pending = self.claim("correction.save", values)
+        self.assertEqual(code, 200)
+        self.assertEqual(pending["record"]["status"], "pending")
+        self.assertEqual(self.claim("correction.save", {"observed_result": "Another author"}, identity=pending["id"], revision=1, token=self.editor2)[0], 403)
+        self.assertEqual(self.claim("correction.save", values, identity=LEGACY_CLAIMS["corrections"], token=self.bravo)[0], 400)
+
+    def test_social_review_publication_and_desk_authorship(self) -> None:
+        code, draft = self.claim("content.save", {"title": "Native draft", "body": "Synthetic supported copy", "audience": "Editors", "format": "blog"})
+        self.assertEqual(code, 200)
+        identity = draft["id"]
+        self.assertEqual(self.claim("content.save", {"body": "Another editor copy"}, identity=identity, revision=1, token=self.editor2)[0], 403)
+        self.assertEqual(self.claim("content.save", {"status": "awaiting_approval"}, identity=identity, revision=1)[0], 200)
+        review = {"status": "approved", "review_checks": {name: True for name in ("accuracy", "privacy", "rights", "accessibility")}, "review_note": "Reviewed synthetic copy"}
+        self.assertEqual(self.claim("content.save", review, identity=identity, revision=2)[0], 403)
+        self.assertEqual(self.claim("content.save", {**review, "review_checks": {}}, identity=identity, revision=2, token=self.bravo)[0], 400)
+        code, approved = self.claim("content.save", review, identity=identity, revision=2, token=self.bravo)
+        self.assertEqual(code, 200)
+        self.assertEqual(approved["record"]["reviewed_by"], BRAVO)
+        code, published = self.claim("content.save", {"status": "published", "published_url": "https://example.test/fixture"}, identity=identity, revision=3, token=self.bravo)
+        self.assertEqual(code, 200)
+        self.assertEqual(published["record"]["published_by"], BRAVO)
+        self.assertTrue(published["record"]["published_at"])
+        self.assertEqual(self.claim("content.save", {"status": "draft"}, identity=identity, revision=4, token=self.bravo)[0], 400)
+        code, desk = self.claim("desk.save", {"desk": "research", "scope": "Synthetic operator scope", "status": "active"})
+        self.assertEqual(code, 200)
+        self.assertEqual(self.claim("desk.save", {"scope": "Another author scope"}, identity=desk["id"], revision=1, token=self.editor2)[0], 403)
+        self.assertEqual(self.claim("desk.save", {"scope": "Admin edit"}, identity=desk["id"], revision=1, token=self.bravo)[0], 200)
+        self.assertEqual(self.claim("channel.request", {"platform": "x"})[0], 403)
+        self.assertEqual(self.claim("channel.request", {"platform": "x", "last_check": "2026-09-01"}, token=self.bravo)[0], 400)
+        self.assertEqual(self.claim("channel.request", {"platform": "x"}, token=self.bravo)[0], 200)
+
+    def test_seat_reports_stamp_native_account_and_cannot_be_rewritten(self) -> None:
+        values = {"event": "completed", "summary": "Synthetic self-report", "detail": {"verified": True}}
+        for token in ("", self.viewer, self.other):
+            self.assertIn(self.claim("seat.report", values, token=token)[0], (401, 403, 404))
+        self.assertEqual(self.claim("seat.report", {**values, "owner": BRAVO})[0], 400)
+        for identity in ({"seat": "Claimed agent label"}, {"seat": BRAVO}, {"actor_type": "agent"}, {"actor_type": "mixed"}):
+            self.assertEqual(self.claim("seat.report", {**values, **identity})[0], 400)
+        code, created = self.claim("seat.report", values, key="native_seat_report_retry_1")
+        self.assertEqual(code, 200)
+        self.assertEqual(created["record"]["owner"], ALICE)
+        self.assertEqual(created["record"]["seat"], ALICE)
+        self.assertEqual(created["record"]["actor_type"], "human")
+        self.assertEqual(self.claim("seat.report", values, key="native_seat_report_retry_1")[1]["id"], created["id"])
+        self.assertEqual(self.claim("seat.report", values, identity=created["id"], revision=1, token=self.bravo)[0], 400)
+        self.assertIn(self.patch("seat_events", created["id"], {"summary": "Rewrite"}, self.bravo)[0], (403, 404))
+        self.assertIn(self.server.request("DELETE", f"/api/collections/seat_events/records/{created['id']}", token=self.alice)[0], (403, 404))
+
+    def test_claim_guard_retains_legacy_data_and_down_keeps_raw_writes_locked(self) -> None:
+        server = WorkspaceServer(BINARY, claims=False)
+        self.addCleanup(server.close)
+        token = server.login("bravo")
+        before = {}
+        for name, identity in LEGACY_CLAIMS.items():
+            code, before[name] = server.request("GET", f"/api/collections/{name}/records/{identity}", token=token)
+            self.assertEqual(code, 200)
+        server.stop()
+        shutil.copyfile(ROOT / "apps/pocketbase/pb_migrations" / (CLAIM_MIGRATION + ".js"), server.root / "migrations" / (CLAIM_MIGRATION + ".js"))
+        server.migrate()
+        server.migrate()
+        server.start()
+        for name, identity in LEGACY_CLAIMS.items():
+            code, after = server.request("GET", f"/api/collections/{name}/records/{identity}", token=token)
+            self.assertEqual(code, 200)
+            for field, value in before[name].items():
+                self.assertEqual(after[field], value, f"Historical {name}.{field} was altered")
+            self.assertEqual(after["claim_revision"], 0)
+            self.assertFalse(after.get("published_at"))
+        server.stop()
+        server.migrate("down", "2")
+        server.start()
+        code, _ = server.request("POST", f"/api/buildanddo/workspaces/{WORKSPACE}/claims", {
+            "action": "edition.save", "revision": 0, "request_key": "rollback_claim_command_001", "payload": {"id": "", "values": {"title": "Blocked command"}},
+        }, token)
+        self.assertEqual(code, 503)
+        for name, identity in LEGACY_CLAIMS.items():
+            for rule in ("createRule", "updateRule", "deleteRule"):
+                self.assertIsNone(server.collection(name)[rule])
+            self.assertEqual(server.request("GET", f"/api/collections/{name}/records/{identity}", token=token)[0], 200)
+
+    def test_hookless_native_instance_denies_all_seven_raw_write_surfaces(self) -> None:
+        server = WorkspaceServer(BINARY, hooks_enabled=False)
+        self.addCleanup(server.close)
+        admin, viewer, foreign = (server.login(name) for name in ("bravo", "viewer", "other"))
+        self.assertFalse(list((server.root / "hooks").glob("*.pb.js")))
+        for name, identity in LEGACY_CLAIMS.items():
+            with self.subTest(collection=name):
+                base = f"/api/collections/{name}/records"
+                code, saved = server.request("GET", base + "/" + identity, token=admin)
+                self.assertEqual(code, 200)
+                self.assertEqual(server.request("GET", base + "/" + identity, token=viewer)[0], 200)
+                self.assertIn(server.request("GET", base + "/" + identity, token=foreign)[0], (403, 404))
+                payload = {key: value for key, value in saved.items() if key not in ("id", "collectionId", "collectionName", "created", "updated")}
+                payload["owner"] = BRAVO
+                for method, suffix, values in (("POST", "", payload), ("PATCH", "/" + identity, payload), ("DELETE", "/" + identity, None)):
+                    self.assertIn(server.request(method, base + suffix, values, admin)[0], (403, 404))
+                self.assertEqual(server.request("GET", base + "/" + identity, token=admin)[1], saved)
 
 
 if __name__ == "__main__":

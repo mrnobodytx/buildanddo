@@ -50,6 +50,25 @@ Useful non-collection endpoints:
 
 ## Authentication
 
+### Learning and claim commands
+
+The guided lesson API returns a keyless learner projection, preserving full
+server snapshots for grading. `GET /api/buildanddo/learning/states` returns
+canonical per-account checkpoints in pages of 20; clients must not present a
+truncated/failed scan as a complete catalogue. Raw `tutorial_progress` writes are
+locked by `1791500000_learning_progress_authority.js`; retained rows represent
+historical reading, not new guided certificates. Public quizzes remain open-book.
+
+`POST /api/buildanddo/workspaces/{workspace}/claims` handles the seven collections
+locked by `1791500001_workspace_claim_authority.js`: support sources, corrections,
+daily editions, specialist desks, social content/channels and seat events. It
+accepts only explicit actions with `revision`, `request_key` and bounded `payload`.
+Current native users/roles and author/admin constraints precede receipt replay.
+Provider fields and verification labels cannot be supplied as editable values.
+New browser seat reports use the authenticated account ID and `actor_type: human`;
+the native command rejects alternate identities before replaying a receipt.
+See `docs/claim-authority.md` for actions, installation and retention semantics.
+
 ### Classroom media
 
 The authenticated signalling routes below `/api/classroom` use current native

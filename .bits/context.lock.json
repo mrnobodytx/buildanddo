@@ -450,7 +450,9 @@
       ],
       "path": "services/praxis_evidence/run_all_tests.py",
       "referenced_by": [
-        "tests/praxis_evidence/test_target_guard.py"
+        "services/praxis_evidence/isolated_test.py",
+        "tests/praxis_evidence/test_target_guard.py",
+        "tests/upgrade/test_praxis_isolation.py"
       ],
       "wired_into_ci": true
     },
@@ -1011,8 +1013,8 @@
       "scripts/deploy/ship.py",
       "scripts/deploy/staging-readback.sh"
     ],
-    "migrations": 58,
-    "python_files": 413,
+    "migrations": 63,
+    "python_files": 415,
     "services": [
       "praxis_evidence"
     ],
@@ -1025,7 +1027,7 @@
     "pieces": [
       {
         "id": "HS-01",
-        "next_step": "The CI owner must confirm public candidate delivery, trusted review metadata and same-revision GitLab statuses before updating required-check settings. Execute the complete governance/source matrices and all eighteen acceptance profiles with retained artifacts; Cloudflare needs its separate diagnostic.",
+        "next_step": "The CI owner must confirm public candidate delivery, trusted review metadata and same-revision GitLab statuses before updating required-check settings. Execute the complete governance/source matrices, isolated Praxis profiles and all eighteen acceptance profiles with retained artifacts; Cloudflare needs its separate diagnostic. Privately audit past shared test destinations without running mutating probes against them.",
         "owner": "BITS-CODEGEN / repository owner",
         "why": "A repeatable candidate and visible failed gates are prerequisites for every demo claim."
       },
@@ -1105,7 +1107,7 @@
     "js_runners": [
       "vitest"
     ],
-    "js_test_files": 77,
+    "js_test_files": 78,
     "js_test_script": true,
     "junit_configured": true,
     "python_suite_entrypoints": [

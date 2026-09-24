@@ -48,6 +48,7 @@ MIGRATIONS = (
     "1791300000_classroom_attendance.js",
     "1791400000_classroom_media_sessions.js",
     "1791400001_broadcast_classroom_lessons.js",
+    "1791500002_authority_repair_lessons.js",
 )
 HOOKS = (
     "classrooms.pb.js",
@@ -326,7 +327,7 @@ class ClassroomServer(DiagnosticNativeServer):
                 )
             data_dir = self.root / "pb_migrations/data"
             data_dir.mkdir(parents=True)
-            for name in ("starter-tutorials.json", "broadcast-classroom-lessons.json"):
+            for name in ("starter-tutorials.json", "broadcast-classroom-lessons.json", "authority-repairs-lessons.json"):
                 shutil.copyfile(
                     ROOT / "apps/pocketbase/pb_migrations/data" / name, data_dir / name
                 )
@@ -686,7 +687,8 @@ class NativeClassroomTests(unittest.TestCase):
                 self.assertIsNone(schema[rule])
         status, listing = self.server.request("GET", self.path, token=self.owner)
         self.assertEqual(status, 200)
-        self.assertEqual(len(listing["lessons"]["items"]), 26)
+        self.assertEqual(len(listing["lessons"]["items"]), 27)
+        self.assertIn("bdoauthority001", {row["id"] for row in listing["lessons"]["items"]})
         self.assertIn(
             "bdobroadcast001", {row["id"] for row in listing["lessons"]["items"]}
         )

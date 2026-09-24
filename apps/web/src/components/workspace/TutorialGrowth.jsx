@@ -15,7 +15,7 @@
 // Intent:      Make saved learning credit, earned milestones and recoverable completion certificates visible across the Field Manual.
 // ───────────────────────────────────────────────────────────────
 
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Award, BookOpen, Check } from 'lucide-react';
 import { Badge, Button, Card } from '@/components/site/ui';
 import { certificateDocument } from '@/lib/tutorialLearning';
@@ -50,6 +50,7 @@ export function LearningCertificate({ certificate }) {
     return <Card className="space-y-5 border-double border-4 p-5 sm:p-8">
         <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-primary"><Award className="h-5 w-5" aria-hidden="true" />BuildAndDo learning</p>
         <h3 className="font-display text-3xl font-semibold">Certificate of completion</h3>
+        <p className="text-sm leading-6">open-book tutorial completion; practice self-reported. This is not independently verified mastery.</p>
         <p className="text-sm text-muted-foreground">Awarded to <strong className="text-foreground">{certificate.learner}</strong></p>
         <p className="font-display text-xl font-semibold">{certificate.title}</p>
         <p className="text-sm leading-6">{certificate.achievement}</p>
@@ -61,18 +62,25 @@ export function LearningCertificate({ certificate }) {
     </Card>;
 }
 
-/** @param {{data: object|null, loading: boolean, error: string, onRefresh: Function, onOpen: Function}} props Account growth snapshot. @returns {React.ReactElement} Personal learning summary. */
-export default function TutorialGrowth({ data, loading, error, onRefresh, onOpen }) {
+/** @param {{data: object|null, loading: boolean, error: string, requestedPage: number, onRefresh: Function, onOpen: Function}} props Account growth snapshot and requested certificate page. @returns {React.ReactElement} Personal learning summary. */
+export default function TutorialGrowth({ data, loading, error, requestedPage, onRefresh, onOpen }) {
+    const [certificatesOpen, setCertificatesOpen] = useState(false);
+    const heading = useRef(null);
+    const refresh = (page) => {
+        // The private page is cleared during a read; its persistent heading keeps keyboard focus.
+        heading.current?.focus();
+        onRefresh(page);
+    };
     const levelProgress = data ? (data.level.next === null ? 100 : Math.min(100, Math.round((data.points - data.level.floor) * 100 / (data.level.next - data.level.floor)))) : 0;
     return <section aria-label="Your learning journey" className="ph-no-capture" data-dd-privacy="mask">
         <Card className="space-y-5 p-5 sm:p-6">
             <div className="flex flex-wrap items-start justify-between gap-3">
                 <div className="space-y-2"><p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-primary"><BookOpen className="h-4 w-4" aria-hidden="true" />Keep building your skills</p>
-                    <h2 className="font-display text-2xl font-semibold">Your learning journey</h2></div>
-                <Button size="sm" variant="ghost" disabled={loading} onClick={() => onRefresh(data?.certificates.page || 1)}>Refresh growth</Button>
+                    <h2 ref={heading} tabIndex={-1} className="font-display text-2xl font-semibold">Your learning journey</h2></div>
+                <Button size="sm" variant="ghost" disabled={loading} onClick={() => refresh(requestedPage)}>Refresh growth</Button>
             </div>
-            {loading && <p role="status" className="text-sm text-muted-foreground">Loading saved learning…</p>}
-            {error ? <p role="status" className="text-sm text-muted-foreground">{error}</p> : data && <>
+            {loading && <p role="status" className="text-sm text-muted-foreground">Loading saved learning, page {requestedPage}...</p>}
+            {error ? <div role="status" className="text-sm text-muted-foreground"><p>{error}</p><p>Requested page {requestedPage}</p></div> : data && <>
                 <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
                     <Badge tone="green">Level {data.level.number} · {data.level.name}</Badge>
                     <p className="text-sm"><strong>{data.points}</strong> learning points</p>
@@ -91,14 +99,14 @@ export default function TutorialGrowth({ data, loading, error, onRefresh, onOpen
                 {data.resume && <Button variant="secondary" className="h-auto min-h-11 whitespace-normal py-2 text-left" onClick={(event) => onOpen(data.resume.tutorial, event.currentTarget)}>Continue {data.resume.title} · {data.resume.progress}%</Button>}
                 {data.completed >= 1 && <details className="border-t border-border pt-3"><summary className="cursor-pointer py-2 text-sm font-semibold">Unlocked: reflection practice</summary><p className="mt-2 text-sm leading-6">Name one decision you would now make differently, one piece of evidence you would seek, and one small next action. At five completions, try explaining an example to another learner.</p>
                     {data.completed >= 5 && <p className="mt-3 text-sm leading-6">Peer teaching challenge: invite someone to work through a lesson with you. Ask them to explain their choice before showing the feedback, then compare what you both learned.</p>}</details>}
-                {data.completed > 0 && <details className="border-t border-border pt-3"><summary className="cursor-pointer py-2 text-sm font-semibold">My certificates ({data.completed})</summary>
+                {data.completed > 0 && <details className="border-t border-border pt-3" open={certificatesOpen} onToggle={(event) => setCertificatesOpen(event.currentTarget.open)}><summary className="cursor-pointer py-2 text-sm font-semibold">My certificates ({data.completed})</summary>
                     <ul className="divide-y divide-border">{data.certificates.items.map((item) => <li key={item.id} className="flex flex-wrap items-center justify-between gap-3 py-4">
                         <div className="min-w-0"><p className="break-words text-sm font-semibold">{item.certificate.title}</p><p className="mt-1 text-xs text-muted-foreground">{new Date(item.certificate.issued_at).toLocaleDateString(undefined, { timeZone: 'UTC' })}</p></div>
                         <CertificateDownload certificate={item.certificate} />
                     </li>)}</ul>
-                    <div className="mt-3 flex items-center gap-3"><Button size="sm" variant="ghost" disabled={loading || data.certificates.page === 1} onClick={() => onRefresh(data.certificates.page - 1)}>Previous certificates</Button><span className="text-xs">Page {data.certificates.page}</span><Button size="sm" variant="ghost" disabled={loading || !data.certificates.has_more} onClick={() => onRefresh(data.certificates.page + 1)}>More certificates</Button></div>
+                    <div className="mt-3 flex items-center gap-3"><Button size="sm" variant="ghost" disabled={loading || requestedPage === 1} onClick={() => { setCertificatesOpen(true); refresh(requestedPage - 1); }}>Previous certificates</Button><span className="text-xs">Page {requestedPage}</span><Button size="sm" variant="ghost" disabled={loading || !data.certificates.has_more} onClick={() => { setCertificatesOpen(true); refresh(requestedPage + 1); }}>More certificates</Button></div>
                 </details>}
-                <p className="text-xs leading-6 text-muted-foreground">Checkpoints and certificates stay with your account. Reviewing a tutorial keeps your credit; repeating it adds no extra points.</p>
+                <p className="text-xs leading-6 text-muted-foreground">Certificates record open-book tutorial completion; practice self-reported. They do not establish independently verified mastery. Reviewing keeps your credit; repeating adds no extra points.</p>
             </>}
         </Card>
     </section>;

@@ -108,6 +108,7 @@ export const PIPELINE_STEPS = [
             'Skipped or unavailable dependencies keep acceptance incomplete',
             'Native PocketBase dossier, suite, operator and classroom auth, scoped reads, storage, presence, leases and retry checks pass for both declared runtimes',
             'Native interactive tutorial checkpoints, completion certificates, concurrent credit and migration retention pass for both declared runtimes',
+            'Praxis selftests run in fresh owned loopback databases on both declared runtimes; shared targets and missing binaries cannot pass',
             'Native signal proposals, ordered workflow receipts, separate mission review and operator readback pass for both declared runtimes',
             'All eighteen acceptance profiles pass for the same candidate',
             'Receipts, logs, JUnit and the build artifact remain available for revalidation',
