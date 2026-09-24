@@ -91,3 +91,4 @@ if (leaks.length) {
     for (const leak of leaks) console.error(`Lesson ${leak.slug} answer is in ${leak.file}; import curricula with ?public-lessons and keep checks answer-free.`);
     process.exit(1);
 }
+telemetry?.finish(output);

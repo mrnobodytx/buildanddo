@@ -118,8 +118,24 @@ jobs:
       - name: Enforce public/private boundary and contributor visibility
         run: python scripts/ci/verify_public_boundary.py --github-event "$RUNNER_TEMP/governance-pr.json"
 
+      # Operator rule 2026-09-22: no machine name or address in public text. The
+      # boundary scan above checks paths, not prose; this reads the prose.
+      - name: No machine name or address in public docs
+        run: python scripts/ci/public_redaction.py scan docs README.md CHANGELOG.md CLAUDE.md AGENTS.md CONTRIBUTING.md
+
       - name: Verify agent context lock is current
         run: python scripts/ci/agent_context.py --check
+
+      # Blocking: a new app, service or workflow must be named in the README,
+      # its links must resolve, and its roadmap block must match sprint_cycle.py.
+      - name: Verify README still describes the repository
+        run: python scripts/ci/readme_check.py --check
+
+      # Reported, not blocking: growth.yml refreshes the lock on main, so a PR
+      # only shows what it grows or shrinks against the lock on origin/main.
+      - name: Report this change's system growth
+        continue-on-error: true
+        run: python scripts/ci/system_growth.py --diff origin/main >> "$GITHUB_STEP_SUMMARY"
 
       # Verify-only while the changelog is new: a stale changelog is worth
       # reporting, not worth failing a build over until every contributor has

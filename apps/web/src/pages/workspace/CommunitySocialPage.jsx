@@ -134,6 +134,9 @@ function ContributorHub() {
     const {
         records: contributors,
         loading: leaderboardLoading,
+        degraded: leaderboardDegraded,
+        error: leaderboardError,
+        refresh: refreshLeaderboard,
     } = useRecords('contributors', { sort: '-merged_prs' });
     const [pulls, setPulls] = useState({ open: [], merged: [] });
     const [pullsState, setPullsState] = useState('loading');
@@ -297,10 +300,19 @@ function ContributorHub() {
                 <h2 className="font-display text-lg font-semibold tracking-tight">
                     Contribution leaderboard
                 </h2>
+                {/* The empty state below calls the emptiness DELIBERATE and contrasts it with
+                    fake data. That is true of a workspace with no contributors and false of a
+                    read that failed - and the hook distinguishes them, so showing the same card
+                    for both is the product telling the reader something it does not know. */}
                 {leaderboardLoading ? (
                     <Card className="p-8 text-center text-sm text-muted-foreground">
                         <Loader2 className="mx-auto h-5 w-5 animate-spin" />
                     </Card>
+                ) : leaderboardDegraded ? (
+                    <DegradedNotice
+                        message={leaderboardError || 'The contributor leaderboard could not be loaded, so this is not a record of who has contributed.'}
+                        onRetry={refreshLeaderboard}
+                    />
                 ) : contributors.length === 0 ? (
                     <EmptyState
                         icon={Trophy}

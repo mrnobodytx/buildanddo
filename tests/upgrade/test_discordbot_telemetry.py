@@ -49,7 +49,7 @@ class OutcomeContractTests(unittest.TestCase):
     def test_event_command_and_control_enums_are_closed(self) -> None:
         self.assertEqual(OUTCOME_EVENTS, {
             "discord.command.completed", "discord.command.dispatched", "discord.control.completed",
-            "discord.research.command", "discord.dossier.command",
+            "discord.research.command", "discord.dossier.command", "discord.quiz.graded",
         })
         self.assertEqual(CONTROL_ACTIONS, {"previous", "next", "close", "lesson_select", "quiz_answer"})
         self.assertEqual(CONTROL_OUTCOMES, {"accepted", "rejected", "denied", "expired", "error", "cancelled"})
@@ -125,6 +125,10 @@ class DiscordTelemetryTests(unittest.IsolatedAsyncioTestCase):
         self.addAsyncCleanup(self.bot.close)
         self.service = self.bot.service
         self.service.clock = lambda: self.now
+        def grade_response(_route: str, *, body: dict[str, object]) -> dict[str, object]:
+            return {"correct": True, "explanation": "PRIVATE_EXPLANATION"} if body["choice"] == 1 else {"correct": False}
+        self.grading = SimpleNamespace(json=AsyncMock(side_effect=grade_response), close=AsyncMock())
+        self.service.grader = Grader(self.grading)
         self.caller = Caller(USER, GUILD, CHANNEL)
         self.items = []
 
@@ -151,10 +155,6 @@ class DiscordTelemetryTests(unittest.IsolatedAsyncioTestCase):
             # The quiz carries no answer since #104; the server grades it. The real Grader runs against a
             # fake route that answers the way the community-quiz hook does: choice 1 is right.
             reply = Reply((Page("PRIVATE_QUESTION", "PRIVATE_PROMPT"),), quiz=Quiz("PRIVATE_SLUG", ("PRIVATE_CHOICE_A", "PRIVATE_CHOICE_B")))
-            self.service.grader = Grader(SimpleNamespace(
-                json=AsyncMock(side_effect=lambda route, body: {"correct": True, "explanation": "PRIVATE_EXPLANATION"}
-                               if body["choice"] == 1 else {"correct": False}),
-                close=AsyncMock()))
         view = ADAPTER.ReplyView(self.service, self.caller, reply)
         view.session.expires_at = self.now + 600
         if control == "previous":
@@ -418,6 +418,7 @@ class DiscordTelemetryTests(unittest.IsolatedAsyncioTestCase):
 
     async def test_quiz_logs_dispatch_only_for_correct_wrong_replayed_and_rejected_answers(self) -> None:
         for choice in (0, 1):
+            self.grading.json.reset_mock()
             view = self.reader_view("quiz_answer")
             first, retry, changed = self.request(), self.request(), self.request()
             with self.assertLogs("buildanddo.discord", level="INFO") as captured:
@@ -427,15 +428,62 @@ class DiscordTelemetryTests(unittest.IsolatedAsyncioTestCase):
             # Control dispatch only; a graded answer also emits its own discord.quiz.graded event.
             self.assertEqual([row["outcome"] for row in events(captured, "discord.control.completed")], ["accepted", "accepted", "rejected"])
             self.assertEqual([row["outcome"] for row in events(captured, "discord.quiz.graded")], ["graded"])
+            self.grading.json.assert_awaited_once()
             rendered = first.edit_original_response.await_args.kwargs["embed"].to_dict()
             self.assertEqual(rendered, retry.edit_original_response.await_args.kwargs["embed"].to_dict())
             expected = ("Correct.\n\nPRIVATE_EXPLANATION" if choice == 1 else
                         "Not the expected answer. Review the lesson, then run the quiz again.") + PRACTICE
             self.assertEqual(rendered["description"], ADAPTER.escaped(expected))
+            self.assertNotIn("PRIVATE_CHOICE", rendered["description"])
             if choice == 0:
                 self.assertNotIn("PRIVATE_CHOICE_B", rendered["description"], "a wrong answer never reveals the right one")
             self.assertNotIn("verified", json.dumps(events(captured)))
             self.assert_private_free(captured)
+
+    async def test_unavailable_server_grade_is_reported_without_caching_and_retry_remains_open(self) -> None:
+        view, item = self.reader_view("quiz_answer"), self.request()
+        self.grading.json.side_effect = ResearchError("unavailable", 503)
+        with self.assertLogs("buildanddo.discord", level="INFO") as captured:
+            await view.answer(item, 1)
+        self.assertEqual([row["outcome"] for row in events(captured, "discord.quiz.graded")], ["unavailable"])
+        self.assertEqual([row["outcome"] for row in events(captured, "discord.control.completed")], ["accepted"])
+        self.assertFalse(view.session.answered)
+        self.assertFalse(any(child.disabled for child in view.children if isinstance(child, ADAPTER.QuizSelect)))
+        self.assert_private_free(captured)
+        self.grading.json.side_effect = None
+        self.grading.json.return_value = {"correct": False}
+        with self.assertLogs("buildanddo.discord", level="INFO") as retry:
+            await view.answer(self.request(), 0)
+        self.assertTrue(view.session.answered)
+        self.assertEqual([row["outcome"] for row in events(retry, "discord.control.completed")], ["accepted"])
+        self.assert_private_free(retry)
+
+    async def test_delayed_server_grade_cannot_publish_after_expiry_or_scope_revocation(self) -> None:
+        for boundary in ("expiry", "scope"):
+            with self.subTest(boundary=boundary):
+                self.service.settings = Settings()
+                view, item = self.reader_view("quiz_answer"), self.request()
+                entered, release = asyncio.Event(), asyncio.Event()
+
+                async def delayed(*args: object, **kwargs: object) -> dict[str, object]:
+                    entered.set()
+                    await release.wait()
+                    return {"correct": True, "explanation": "PRIVATE_EXPLANATION"}
+
+                self.grading.json.side_effect = delayed
+                with self.assertLogs("buildanddo.discord", level="INFO") as captured:
+                    answering = asyncio.create_task(view.answer(item, 1))
+                    await entered.wait()
+                    if boundary == "expiry":
+                        view.session.expires_at = self.now
+                    else:
+                        self.service.settings = Settings(frozenset({FOREIGN}))
+                    release.set()
+                    await answering
+                item.edit_original_response.assert_not_awaited()
+                self.assertEqual([row["outcome"] for row in events(captured, "discord.control.completed")],
+                                 ["expired" if boundary == "expiry" else "denied"])
+                self.assert_private_free(captured)
 
     async def test_forged_and_unavailable_lesson_selections_are_not_accepted(self) -> None:
         view = self.reader_view("lesson_select")

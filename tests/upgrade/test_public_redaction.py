@@ -61,6 +61,7 @@ def build_platform_health(env: dict[str, str] | None = None) -> dict:
                 mock.patch.object(fleet_report, "ROOT", root), \
                 mock.patch.object(fleet_report, "PLATFORM_OUT", root / "platform-health.json"), \
                 mock.patch.object(fleet_report, "FLEET_OUT", root / "fleet-status.json"), \
+                mock.patch.object(fleet_report, "PLATFORM_PRIVATE_OUT", root / "estate-platform-health.json"), \
                 contextlib.redirect_stdout(out), contextlib.redirect_stderr(out):
             status = fleet_report.main([])
         if status != 0:
@@ -126,12 +127,15 @@ class ControlTests(unittest.TestCase):
     """Each kind of leak, planted, is caught; what is not a leak is left alone."""
 
     def test_the_generator_withholds_a_name_planted_in_its_platforms(self):
+        # Planted in `label`, not `detail`: since 2026-09-24 the public artifact is a closed-set
+        # projection and `detail` is not in it, so a name planted there would be withheld by the
+        # projection and this test would no longer measure the rule at all.
         planted = copy.deepcopy(fleet_report.PLATFORMS)
-        planted[0]["detail"] = f"{planted[0]['detail']} Runs on {FAMILY_NAME}, reachable at {DOC_IP}."
+        planted[0]["label"] = f"{planted[0]['label']} on {FAMILY_NAME} at {DOC_IP}"
         with mock.patch.object(fleet_report, "PLATFORMS", planted):
             document = build_platform_health(families_only())
         self.assertEqual(redaction.Rule("").find_leaks(json.dumps(document)), {"ips": [], "machines": []})
-        self.assertIn(redaction.BAR, document["platforms"][0]["detail"])
+        self.assertIn(redaction.BAR, document["platforms"][0]["label"])
 
     def test_a_planted_family_name_and_address_are_caught_and_withheld(self):
         rule = redaction.Rule("")

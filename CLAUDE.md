@@ -29,6 +29,8 @@ That prints the pipelines that exist, which check scripts are actually wired
 into CI, the real test surface, the open SRS codes and every current finding
 with its evidence. It reads the repository, so it cannot be out of date. Then
 read `.bits/context.md` for intent and priorities.
+`python scripts/ci/system_growth.py` shows how each system is growing: size, tests,
+README and CGRF coverage, and dispatch progress. Its `--history` is the record of every merge.
 
 The Hostinger sprint also requires
 `python scripts/ci/hostinger_readiness.py --check` and

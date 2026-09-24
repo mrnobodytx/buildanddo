@@ -252,9 +252,9 @@ srs:
   - code: SRS-BUILDANDDO-CHANGELOG-001
     title: Public record - generated changelog, release summary, README roadmap mirror
     status: in_progress
-    risk: A0
+    risk: A2
     spec: .bits/srs/SRS-BUILDANDDO-CHANGELOG-001.md
-    notes: Summary lands in state/ - run output, never committed
+    notes: Summary lands in state/ - run output, never committed. Raised to A2 on 2026-09-24 by the owner's request for a README regression gate and changelog automation (VCC-BUILDANDDO-CHANGELOG-001); this entry records that request and does not self-authorize A2
 
   - code: SRS-BUILDANDDO-SUPPLY-001
     title: Dependency vulnerability and supply-chain telemetry
@@ -317,7 +317,7 @@ srs:
     risk: A1
     spec: .bits/srs/SRS-BUILDANDDO-DAY21-CLOSURE-001.md
     owner: C-ONE
-    notes: Additive closure lane over existing acceptance/replay receipts; blocks on one canonical origin because buildanddo.tech has no DNS while README and SITE_ORIGIN disagree
+    notes: Additive closure lane over existing acceptance/replay receipts; blocks on one canonical origin because buildanddo.tech has no DNS while README and SITE_ORIGIN disagree (resolved 2026-09-20 in 357c959: SITE_ORIGIN is https://buildanddo.com and the README names only .com - corrected 2026-09-24 by SRS-BUILDANDDO-HYGIENE-001)
 
   - code: SRS-BUILDANDDO-PUBLIC-REDACTION-001
     title: No fleet machine name or IP address in the generated JSON or the site bundle
@@ -381,3 +381,38 @@ srs:
     spec: .bits/srs/SRS-BUILDANDDO-CLASSROOM-GLOBAL-001.md
     owner: C-ONE
     notes: Operator decision 2026-09-24 - classes live outside workspaces, the workspace tracks a user's access and shows it as a gallery, so a student who never studies chemistry never sees a chemistry class there. Today classroom_rooms.workspace is REQUIRED and every classroom index is workspace-first, so a class cannot exist without a workspace; a5bc2b0 fanned out client-side across readable workspaces, which finds existing classes but does not make one global. Additive migration - existing rooms stay scope=workspace and keep their behaviour. Guildmaster audit and score land on the class, using the frozen trust vocabulary where VERIFIED needs a resolvable evidence reference. No deployment
+  - code: SRS-BUILDANDDO-GROWTH-001
+    title: System growth lock - per-system development and progression, measured from the repository and recorded on every merge
+    status: in_progress
+    risk: A2
+    spec: .bits/srs/SRS-BUILDANDDO-GROWTH-001.md
+    owner: BITS-CODEGEN
+    notes: Owner request 2026-09-24 - a progression and system development tracker kept the way the context lock is, for growth over time. Auto-refreshed on main by the owner's choice rather than required on every PR. This entry records that request and does not self-authorize A2. No deployment, no external writes
+  - code: SRS-BUILDANDDO-HYGIENE-001
+    title: Verified repository hygiene - public docs name no machine, the context lock and knip report the truth, dead web code removed
+    status: in_progress
+    risk: A2
+    spec: .bits/srs/SRS-BUILDANDDO-HYGIENE-001.md
+    owner: BITS-CODEGEN
+    notes: Owner request 2026-09-24 - verify the unused/scattered audit, then improve the system. Two survey claims withdrawn after verification. Closing other seats' SRS codes and deleting Python tools humans may run are excluded and recorded in the spec. This entry records that request and does not self-authorize A2
+  - code: SRS-BUILDANDDO-COMMUNITY-001
+    title: Community contributor infrastructure
+    status: in_progress
+    risk: A1
+    spec: .bits/srs/SRS-BUILDANDDO-COMMUNITY-001.md
+    owner: BITS-CODEGEN
+    notes: Registered 2026-09-24 by SRS-BUILDANDDO-HYGIENE-001 with the status, risk and seat its own spec declares; it had a spec since 2026-09-10 but no entry, so no branch could claim it
+  - code: SRS-BUILDANDDO-COMMUNITY-WEB-001
+    title: One source for community links, public persona profiles, honest community health, and no machine names in seat identity
+    status: in_progress
+    risk: A2
+    spec: .bits/srs/SRS-BUILDANDDO-COMMUNITY-WEB-001.md
+    owner: C-ONE
+    notes: Registered 2026-09-24 by SRS-BUILDANDDO-HYGIENE-001 with the status, risk and seat of its live dispatch VCC-BUILDANDDO-COMMUNITY-WEB-001 (the spec states no status line); apps/web/src/lib/communityLinks.js already cites it
+  - code: SRS-BUILDANDDO-WITNESS-001
+    title: Capability Passport and External Evidence Witness
+    status: in_progress
+    risk: A1
+    spec: .bits/srs/SRS-BUILDANDDO-WITNESS-001.md
+    owner: BITS-CODEGEN
+    notes: Registered 2026-09-24 by SRS-BUILDANDDO-HYGIENE-001 with the status, risk and seat its own spec declares; the public anchor step it specifies is still unbuilt (every epoch is tagged anchor:pending)
