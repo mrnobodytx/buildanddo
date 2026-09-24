@@ -1,16 +1,16 @@
 # --- CGRF Header ------------------------------------------------
 # File:        tests/upgrade/test_native_fixture_contracts.py
 # Stage:       08_TEST
-# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-SITE-001
 # CAPS:        pending
 # CK:          pending
 # Dispatch:    VCC-BUILDANDDO-UPGRADE-001
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-23
-# Depends:     tests/upgrade/test_classroom_native.py, tests/upgrade/test_workspace_native.py, tests/upgrade/test_tutorial_learning_native.py
+# Depends:     tests/upgrade/test_classroom_native.py, tests/upgrade/test_workspace_native.py, tests/upgrade/test_tutorial_learning_native.py, tests/upgrade/test_domain_verification_native.py
 # EnumType:    Test
-# EnumEdges:   VALIDATES tests/upgrade/test_classroom_native.py; VALIDATES tests/upgrade/test_workspace_native.py; VALIDATES tests/upgrade/test_tutorial_learning_native.py
+# EnumEdges:   VALIDATES tests/upgrade/test_classroom_native.py; VALIDATES tests/upgrade/test_workspace_native.py; VALIDATES tests/upgrade/test_tutorial_learning_native.py; VALIDATES tests/upgrade/test_domain_verification_native.py
 # DAG Node:    none
 # Intent:      Detect incomplete native fixtures and unsafe failure diagnostics without claiming native execution from subprocess doubles.
 # ----------------------------------------------------------------
@@ -34,6 +34,7 @@ import unittest
 from unittest.mock import Mock, patch
 
 from tests.upgrade import test_classroom_native as classroom
+from tests.upgrade import test_domain_verification_native as domain
 from tests.upgrade import test_tutorial_learning_native as learning
 from tests.upgrade import test_workspace_native as workspace
 from scripts.ci.hostinger_checks import CHECKS, runtime_version
@@ -78,6 +79,28 @@ class NativeFixtureContractTests(unittest.TestCase):
             0,
             classroom.sanitize_diagnostics(result.stdout + result.stderr),
         )
+
+    def test_domain_fixture_installs_production_hooks_and_migrations_unchanged(
+        self,
+    ) -> None:
+        with staged(domain.DomainServer) as server:
+            self.assertEqual(
+                {path.name for path in (server.root / "migrations").glob("*.js")},
+                set(domain.MIGRATIONS) | {"0000000001_fixture.js", "1788474001_fixture.js"},
+            )
+            self.assertIn("1791600000_domain_verification.js", domain.MIGRATIONS)
+            for name in domain.MIGRATIONS:
+                self.assertEqual(
+                    (server.root / "migrations" / name).read_bytes(),
+                    (ROOT / "apps/pocketbase/pb_migrations" / name).read_bytes(),
+                )
+            self.assertTrue({"domains.pb.js", "domain-verification.js", "workspace-record-policy.js"} <= set(domain.HOOKS))
+            for name in domain.HOOKS:
+                self.assertEqual(
+                    (server.root / "hooks" / name).read_bytes(),
+                    (ROOT / "apps/pocketbase/pb_hooks" / name).read_bytes(),
+                )
+            self.assertNotIn("BUILDANDDO_DOH_URL", server.environment)
 
     def test_classroom_installs_all_required_hooks_migrations_and_resolved_data(
         self,
@@ -473,6 +496,7 @@ class NativeFixtureContractTests(unittest.TestCase):
             "test_classroom_native.py",
             "test_workspace_native.py",
             "test_tutorial_learning_native.py",
+            "test_domain_verification_native.py",
         ):
             with self.subTest(entrypoint=name):
                 result = subprocess.run(

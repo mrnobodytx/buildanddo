@@ -91,6 +91,21 @@ test('browsers can record an unverified domain but never set status, name change
     assert.match(source('apps/pocketbase/pb_hooks/domains.pb.js'), /onRecordUpdateRequest\(.*domainWrite\(e, 'update'\), 'domains'\);/);
 });
 
+test('a browser removes only its own domain that no workspace links, because removal cascades to the workspace', () => {
+    const t = setup(); const policy = t.f.load('workspace-record-policy.js');
+    const remove = (id, actor) => { const e = t.f.event(actor); e.record = t.f.app.findRecordById('domains', id); e.next = () => 'deleted';
+        return () => policy.domainWrite(e, 'delete'); };
+    t.call('save', 'owner', { domain: 'first.example' }); const first = linkedDomain(t).id;
+    assert.throws(remove(first, 'owner'), (error) => error.status === 400 && /linked to a workspace/.test(error.message));
+    for (const actor of ['admin', 'editor', 'outsider']) denied(remove(first, actor));
+    t.call('save', 'admin', { domain: 'second.example' });
+    for (const actor of ['admin', 'editor']) denied(remove(first, actor));
+    assert.equal(remove(first, 'owner')(), 'deleted');
+    t.f.seed('workspaces', { id: 'ws3', owner: 'otherowner', name: 'Borrowed', domain: first });
+    assert.throws(remove(first, 'owner'), (error) => error.status === 400);
+    assert.match(source('apps/pocketbase/pb_hooks/domains.pb.js'), /onRecordDeleteRequest\(.*domainWrite\(e, 'delete'\), 'domains'\);/);
+});
+
 test('owners and admins add or change the domain; a change starts over on a new unverified record', () => {
     const t = setup();
     const added = t.call('save', 'admin', { domain: 'Example.com' });

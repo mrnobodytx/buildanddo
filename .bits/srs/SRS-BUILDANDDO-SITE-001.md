@@ -35,6 +35,8 @@ workspace has not proved it controls.
 
 1. Server-owned domain state: browsers can no longer set `status`, `verified_at` or
    verification fields on `domains`; only the server's verification command can.
+   A browser may remove only a domain row it holds that no workspace links, because
+   removing a linked domain would cascade to the workspace.
 2. DNS TXT proof: the owner or an admin requests a challenge; the server issues a
    random token and shows the record to publish
    (`_buildanddo-verify.<domain>` TXT `buildanddo-verify=<token>`). A "Check now"
@@ -46,6 +48,8 @@ workspace has not proved it controls.
    Check now button; the Front Page banner says "verified by DNS" only for a
    server-verified domain and states plainly that an unverified domain unlocks
    nothing.
+5. Existing self-asserted verified states are downgraded: the migration sets any
+   `verified` domain without a DNS check time to `needs_attention`.
 
 ## Out of scope
 

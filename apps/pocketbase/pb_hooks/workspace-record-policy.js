@@ -116,7 +116,12 @@ function workspaceCreate(e) {
 function domainWrite(e, operation) {
     access.authenticated(e);
     const record = e.record;
-    if (operation === 'create') {
+    if (operation === 'delete') {
+        if (record.getString('owner') !== e.auth.id) throw new ForbiddenError('Only the account that holds this domain may remove it.');
+        // workspaces.domain cascades, so removing a linked domain would delete its workspace.
+        if (e.app.findRecordsByFilter('workspaces', 'domain = {:domain}', '', 1, 0, { domain: record.id }).length)
+            access.invalid('This domain is linked to a workspace. Change the workspace domain in Settings; a linked domain cannot be removed.');
+    } else if (operation === 'create') {
         if (record.getString('owner') !== e.auth.id) throw new ForbiddenError('Create records under your own account.');
         if (record.getString('status') !== 'selected' || PROOF.some((field) => record.getString(field)))
             access.invalid('A new domain starts unverified. Verify ownership from Settings.');

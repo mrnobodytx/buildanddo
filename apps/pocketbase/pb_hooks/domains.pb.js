@@ -17,6 +17,7 @@
 
 onRecordCreateRequest((e) => require(`${__hooks}/workspace-record-policy.js`).domainWrite(e, 'create'), 'domains');
 onRecordUpdateRequest((e) => require(`${__hooks}/workspace-record-policy.js`).domainWrite(e, 'update'), 'domains');
+onRecordDeleteRequest((e) => require(`${__hooks}/workspace-record-policy.js`).domainWrite(e, 'delete'), 'domains');
 
 routerAdd('GET', '/api/buildanddo/workspaces/{workspace}/domain', (e) => {
     e.response.header().set('Cache-Control', 'no-store');
