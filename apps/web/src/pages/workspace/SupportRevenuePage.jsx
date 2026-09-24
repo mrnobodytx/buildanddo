@@ -4,6 +4,7 @@ import pb from '@/lib/pocketbaseClient';
 import { workspaceCollection } from '@/lib/observability/mutations';
 import { useWorkspace } from '@/contexts/WorkspaceContext';
 import { useWorkspaceRecords } from '@/hooks/useWorkspaceRecords';
+import { DegradedNotice } from '@/components/workspace/WorkspaceNotices';
 import { PageHeader } from '@/components/workspace/workspaceHelpers';
 import { Button, Card, Rule, StatePill, ProvenanceTag } from '@/components/site/ui';
 
@@ -22,7 +23,7 @@ function money(n, currency) {
 
 export default function SupportRevenuePage() {
     const { active } = useWorkspace();
-    const { records, loading, refresh } = useWorkspaceRecords('support_sources');
+    const { records, loading, degraded, error: readError, refresh } = useWorkspaceRecords('support_sources');
     const [busy, setBusy] = useState('');
     const [error, setError] = useState('');
 
@@ -54,6 +55,12 @@ export default function SupportRevenuePage() {
                 title="Support & Revenue"
                 description="Ingest real records only after explicit connection and authorization from each source. A connection alone is never reported as a donation or payment. Gross, fees, refunds, currency, payout status, and date range are kept separate — never merged or estimated across sources."
             />
+
+            {/* A read that FAILED and a workspace that is genuinely empty are different facts, and useWorkspaceRecords already tells them apart - its catch sets degraded and empties the list. Dropping `degraded` on the floor made every failure render as the empty state, so the page calmly reported nothing-to-show for data it never managed to load. Here it meant a page that shows every provider as not-connected when the truth
+                is that we could not find out. */}
+            {degraded && (
+                <DegradedNotice message={readError || 'Support connections could not be loaded, so no provider below should be read as disconnected.'} onRetry={refresh} />
+            )}
 
             {loading ? (
                 <Card className="p-8 text-center text-sm text-muted-foreground"><Loader2 className="mx-auto h-5 w-5 animate-spin" /></Card>

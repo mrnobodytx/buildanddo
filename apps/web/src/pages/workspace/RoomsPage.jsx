@@ -46,7 +46,15 @@ export default function RoomsPage() {
         fetch(`/room-projections/${active.id}.json`, { cache: 'no-store', signal: controller.signal })
             .then(async (response) => { if (!response.ok) throw new Error('No estate projection is published for this room.');
                 const raw = await response.text(); if (raw.length > 1000000) throw new Error('The published projection exceeds the supported size.');
-                return publishedRoom(JSON.parse(raw), active.id); })
+                // A single-page app answers 200 with index.html for any path it has no file for,
+                // so an UNPUBLISHED projection never arrives as a 404 - it arrives as a web page.
+                // `response.ok` was therefore always true and JSON.parse put its own SyntaxError,
+                // verbatim, in front of the reader. Absence now reads as absence.
+                const head = raw.trimStart();
+                if (!head.startsWith('{') && !head.startsWith('[')) throw new Error('No estate projection is published for this room.');
+                let parsed; // Parsed on its own so a fault inside publishedRoom is not relabelled as bad JSON.
+                try { parsed = JSON.parse(raw); } catch { throw new Error('The published projection for this room is not readable JSON.'); }
+                return publishedRoom(parsed, active.id); })
             .then((value) => { if (alive) setPublished({ key: publishedKey, value, error: '' }); })
             .catch((error) => { if (alive) setPublished({ key: publishedKey, value: null, error: error.message || 'The published projection is unavailable.' }); });
         return () => { alive = false; controller.abort(); };

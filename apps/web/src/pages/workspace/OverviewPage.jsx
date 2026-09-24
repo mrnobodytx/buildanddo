@@ -138,8 +138,12 @@ export default function OverviewPage() {
     const evidence = useWorkspaceRecords('evidence', { sort: '-created' });
     const editions = useWorkspaceRecords('daily_editions', { sort: '-created' });
 
+    // `editions` was read on the line above and then left out of this list, so the page stopped
+    // showing its skeleton while the daily edition was still loading and rendered "Nothing
+    // verified yet" underneath the degraded banner - a confident zero for a read still in flight.
     const loading =
-        signals.loading || missions.loading || workflows.loading || evidence.loading;
+        signals.loading || missions.loading || workflows.loading || evidence.loading
+        || editions.loading;
 
     // A single degraded read makes every count on this page a lower bound.
     // Saying so once, at the top, is more honest than five silent zeroes.

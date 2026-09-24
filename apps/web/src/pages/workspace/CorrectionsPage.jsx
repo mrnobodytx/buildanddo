@@ -5,6 +5,7 @@ import { workspaceCollection } from '@/lib/observability/mutations';
 import { useWorkspace } from '@/contexts/WorkspaceContext';
 import { useWorkspaceRecords } from '@/hooks/useWorkspaceRecords';
 import EmptyState from '@/components/workspace/EmptyState';
+import { DegradedNotice } from '@/components/workspace/WorkspaceNotices';
 import { PageHeader } from '@/components/workspace/workspaceHelpers';
 import { Button, Card, Rule, StatePill, ProvenanceTag } from '@/components/site/ui';
 import { Input } from '@/components/ui/input';
@@ -13,7 +14,7 @@ import { Textarea } from '@/components/ui/textarea';
 
 export default function CorrectionsPage() {
     const { active } = useWorkspace();
-    const { records, loading, refresh } = useWorkspaceRecords('corrections', { sort: '-created' });
+    const { records, loading, degraded, error: readError, refresh } = useWorkspaceRecords('corrections', { sort: '-created' });
     const [show, setShow] = useState(false);
     const [form, setForm] = useState({ prior_prediction: '', observed_result: '', status: 'pending', reference: '' });
     const [saving, setSaving] = useState(false);
@@ -53,6 +54,12 @@ export default function CorrectionsPage() {
                     </Button>
                 }
             />
+
+            {/* A read that FAILED and a workspace that is genuinely empty are different facts, and useWorkspaceRecords already tells them apart - its catch sets degraded and empties the list. Dropping `degraded` on the floor made every failure render as the empty state, so the page calmly reported nothing-to-show for data it never managed to load. The page's own description calls the empty state "the truthful default", which
+                is exactly the sentence a failed read must not be allowed to borrow. */}
+            {degraded && (
+                <DegradedNotice message={readError || 'Corrections could not be loaded, so this page cannot say whether any exist.'} onRetry={refresh} />
+            )}
 
             {show && (
                 <Card className="p-5">
