@@ -25,10 +25,13 @@ export const PUBLIC_LESSONS_QUERY = '?public-lessons';
 const PREFIX = '\0public-lessons:';
 const SUFFIX = '.public.js';
 const DATA = resolve(fileURLToPath(new URL('../../pocketbase/pb_migrations/data', import.meta.url))) + sep;
+// Vite hands `load` its module ids with forward slashes, while resolve() uses backslashes on Windows,
+// so compare both in one form. Without this every lesson file was refused on Windows.
+const slashes = (value) => value.replaceAll('\\', '/');
 
 /** @param {string} path Absolute authored curriculum file. @returns {object} The curriculum's public projection. */
 export function loadPublicLessons(path) {
-    if (!path.startsWith(DATA) || !path.endsWith('.json')) throw new Error(`Public lessons come only from authored curriculum data: ${path}`);
+    if (!slashes(path).startsWith(slashes(DATA)) || !path.endsWith('.json')) throw new Error(`Public lessons come only from authored curriculum data: ${path}`);
     const curriculum = JSON.parse(readFileSync(path, 'utf8'));
     if (!Array.isArray(curriculum?.lessons)) throw new Error(`Public lessons need a curriculum with lessons: ${path}`);
     return publicCurriculum(curriculum);
