@@ -206,3 +206,4 @@ export function flushTelemetry(reason = 'manual') {
 }
 
 export { reportAction, reportError, reportLog, reportMetric, networkSummary, metricSnapshot };
+export { SECTION_FAILURE_REASONS, SECTION_FAILURE_SOURCES, sectionOf, trackSectionFailure } from './sectionFailure';

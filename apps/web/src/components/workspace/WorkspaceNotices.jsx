@@ -22,6 +22,7 @@ import React from 'react';
 
 import { Button, Card } from '@/components/site/ui';
 import { useDemoMode } from '@/hooks/useDemoMode';
+import { useSectionFailure } from '@/hooks/useSectionFailure';
 import { cn } from '@/lib/utils';
 
 /**
@@ -94,6 +95,7 @@ export function DemoModeToggle({ className }) {
  * @returns {React.ReactElement} The notice.
  */
 export function DegradedNotice({ message, onRetry, className }) {
+    useSectionFailure(true, 'degraded_notice', 'read_failed', message);
     return (
         <Card
             className={cn(
@@ -138,6 +140,7 @@ export function DegradedNotice({ message, onRetry, className }) {
  * @returns {React.ReactElement|null} The notice, or null when there is no error.
  */
 export function WriteErrorNotice({ message, onDismiss }) {
+    useSectionFailure(Boolean(message), 'write_error_notice', 'write_failed', message);
     if (!message) return null;
     return (
         <div
