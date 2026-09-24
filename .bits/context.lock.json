@@ -641,7 +641,7 @@
       "wired_into_ci": true
     }
   ],
-  "generated_at": "2026-09-24T03:01:59.783080+00:00",
+  "generated_at": "2026-09-24T03:04:30.259997+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -710,6 +710,13 @@
         "spec": "",
         "status": "delivered",
         "title": "CI Visibility, DORA, build telemetry and baseline deltas"
+      },
+      {
+        "code": "SRS-BUILDANDDO-CLASSROOM-GLOBAL-001",
+        "risk": "A2",
+        "spec": ".bits/srs/SRS-BUILDANDDO-CLASSROOM-GLOBAL-001.md",
+        "status": "in_progress",
+        "title": "A class is a global object; the workspace holds a person's access to classes and renders it as their gallery"
       },
       {
         "code": "SRS-BUILDANDDO-CRAWL-001",
@@ -1233,12 +1240,12 @@
       "scripts/deploy/ship.py",
       "scripts/deploy/staging-readback.sh"
     ],
-    "migrations": 69,
+    "migrations": 70,
     "python_files": 435,
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 1754,
+    "tracked_files": 1757,
     "web_source_files": 413
   },
   "schema_version": 1,
@@ -1318,15 +1325,15 @@
         "why": "Competition readiness requires an evidence-backed learning-through-work journey, a reproducible replay and actual submission criteria."
       }
     ],
-    "source_sha256": "b82f2afa923ae3df7b65bb7b4a61e5c9f3ef66ef210c86e7b4a50825656e5fd8",
+    "source_sha256": "61ad4019e2e969766a7c30c63d545c0ca073ef50ca35dd7a97622b802e8d3bb8",
     "state": "PASS"
   },
   "summary": {
     "findings": 35,
     "findings_high": 35,
     "pipelines": 10,
-    "srs_open": 42,
-    "srs_total": 46,
+    "srs_open": 43,
+    "srs_total": 47,
     "unwired_gates": 32
   },
   "tests": {
