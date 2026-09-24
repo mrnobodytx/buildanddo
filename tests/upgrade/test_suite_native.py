@@ -19,6 +19,7 @@
 
 from __future__ import annotations
 
+from contextlib import closing
 import hashlib
 import json
 import os
@@ -140,6 +141,9 @@ class SuiteServer(NativeServer):
                 "business-action-policy.js",
                 "business-actions.js",
                 "workspace-value.js",
+                # workspace-value.js -> business-actions.js requires it; without it the operator
+                # route answered 400 "Invalid module" on the native binary.
+                "workflow-runs.js",
                 "workspace-administration.js",
                 "mission-policy.js",
             ):
@@ -299,9 +303,9 @@ class NativeSuiteTests(unittest.TestCase):
             "suite_runs",
             "suite_receipts",
         )
-        with sqlite3.connect(
+        with closing(sqlite3.connect(
             (self.server.root / "data/data.db").as_uri() + "?mode=ro", uri=True
-        ) as database:
+        )) as database:
             rows = {
                 table: database.execute(
                     f'select * from "{table}" order by id'

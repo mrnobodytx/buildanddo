@@ -895,7 +895,7 @@ class NativeWorkspaceTests(unittest.TestCase):
         self.assertIsNone(absent["plan"])
         self.assertNotIn("usage", self.server.stored("assistant_turns")[0])
         self.server.stop()
-        self.server.migrate()
+        self.server.restore()
         self.server.migrate()
         self.server.start()
         fields = {

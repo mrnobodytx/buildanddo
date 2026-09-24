@@ -20,6 +20,7 @@
 from __future__ import annotations
 
 from concurrent.futures import ThreadPoolExecutor
+from contextlib import closing
 import json
 import os
 from pathlib import Path
@@ -346,9 +347,9 @@ class NativeServer:
         """Inspect only ciphertext in the fixture database using a read-only connection."""
         if name not in {"dossier_entities", "dossier_events", "user_dossiers"}:
             raise ValueError("Choose a dossier fixture table.")
-        with sqlite3.connect(
+        with closing(sqlite3.connect(
             (self.root / "data/data.db").as_uri() + "?mode=ro", uri=True
-        ) as database:
+        )) as database:
             return database.execute(
                 f"select owner, key_id, sealed from {name}"
             ).fetchall()

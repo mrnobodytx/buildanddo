@@ -20,6 +20,7 @@
 from __future__ import annotations
 
 from concurrent.futures import ThreadPoolExecutor
+from contextlib import closing
 from datetime import datetime, timedelta, timezone
 import json
 import os
@@ -244,9 +245,9 @@ class DiagnosticNativeServer(NativeServer):
 
     def collection(self, name: str) -> dict[str, Any]:
         """Inspect the actual installed schema using a read-only local connection."""
-        with sqlite3.connect(
+        with closing(sqlite3.connect(
             (self.root / "data/data.db").as_uri() + "?mode=ro", uri=True
-        ) as database:
+        )) as database:
             database.row_factory = sqlite3.Row
             row = database.execute(
                 "select * from _collections where name = ?", (name,)
@@ -278,9 +279,9 @@ class DiagnosticNativeServer(NativeServer):
         }
         if name not in allowed:
             raise ValueError("Choose a public synthetic fixture table.")
-        with sqlite3.connect(
+        with closing(sqlite3.connect(
             (self.root / "data/data.db").as_uri() + "?mode=ro", uri=True
-        ) as database:
+        )) as database:
             database.row_factory = sqlite3.Row
             return [
                 dict(row)
@@ -1142,7 +1143,7 @@ class NativeClassroomTests(unittest.TestCase):
             (503,),
         )
         self.server.stop()
-        self.server.migrate("up")
+        self.server.restore()
         self.server.start()
         retained = self.server.stored("classroom_media_sessions")
         self.assertEqual(len(retained), 1)

@@ -5,7 +5,7 @@
 # CAPS:        pending
 # CK:          pending
 # Dispatch:    VCC-BUILDANDDO-UPGRADE-001
-# Seat:        BITS-CODEGEN
+# Seat:        BITS-CODEGEN, C-ONE (migration order)
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-22
 # Depends:     apps/pocketbase/pb_migrations/1791200000_government_membership.js
@@ -38,9 +38,15 @@ def membership_seed(users: tuple[str, ...]) -> str:
 
 
 def install_suite_membership(root: Path) -> None:
-    """Place the membership prerequisite before the existing suite rollback target."""
+    """Place the membership prerequisite before the existing suite rollback target.
+
+    PocketBase orders migrations by filename bytes, so "2_..." sorts AFTER "1790300000_mission_suite.js"
+    and the suite's one-step rollback reverted a fixture instead of the suite. Zero-padded names sort
+    before every timestamped migration, after the zero-padded base fixture, which is what "before"
+    has to mean here.
+    """
     migrations = root / "migrations"
-    (migrations / "2_government_lesson_fixture.js").write_text(
+    (migrations / "0000000002_government_lesson_fixture.js").write_text(
         """migrate((app) => {
         app.save(new Collection({ name: 'tutorials', type: 'base', fields: [{ name: 'category', type: 'text' }],
             listRule: "@request.auth.id != ''", viewRule: "@request.auth.id != ''", createRule: null, updateRule: null, deleteRule: null }));
@@ -49,9 +55,9 @@ def install_suite_membership(root: Path) -> None:
     )
     shutil.copyfile(
         ROOT / "apps/pocketbase/pb_migrations/1791200000_government_membership.js",
-        migrations / "3_government_membership.js",
+        migrations / "0000000003_government_membership.js",
     )
-    (migrations / "4_government_receipts_fixture.js").write_text(
+    (migrations / "0000000004_government_receipts_fixture.js").write_text(
         membership_seed(("accountalice001", "accountbravo001", "accountviewer01")),
         encoding="utf-8",
     )
