@@ -1,10 +1,10 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/src/components/workspace/InteractiveTutorial.jsx
 // Stage:       07_BUILD
-// SRS:         SRS-BUILDANDDO-UPGRADE-001
+// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-TRUST-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-TRUST-001
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-19
@@ -35,6 +35,7 @@ export default function InteractiveTutorial({ tutorialId, client, onSaved, onClo
     const [busy, setBusy] = useState(false);
     const [error, setError] = useState('');
     const [uncertain, setUncertain] = useState(false);
+    const [waiting, setWaiting] = useState(false);
     const [feedback, setFeedback] = useState(null);
     const [checks, setChecks] = useState([]);
     const [answer, setAnswer] = useState(null);
@@ -58,12 +59,12 @@ export default function InteractiveTutorial({ tutorialId, client, onSaved, onClo
     useEffect(() => { if (!loading) focus.current?.focus(); }, [step, loading]);
     const save = async (action, payload = {}, retry = false) => {
         if (saving.current || !data) return;
-        saving.current = true; setBusy(true); setError(''); setNotice('');
+        saving.current = true; setBusy(true); setError(''); setNotice(''); setWaiting(false);
         const result = await (retry ? client.retry() : client.command(tutorialId, action, data.tutorial.content_digest, payload));
         saving.current = false;
         if (!alive.current || result.reason === 'scope_changed') return;
         setBusy(false);
-        if (!result.ok) { setError(result.error); setUncertain(result.reason === 'uncertain'); return; }
+        if (!result.ok) { setError(result.error); setUncertain(result.reason === 'uncertain'); setWaiting(result.reason === 'wait'); return; }
         setUncertain(false); setData(result.data); setFeedback(result.data.feedback); setStep(currentStep(result.data));
         setNotice(result.data.feedback?.correct === false ? '' : result.data.enrollment.certificate ? 'Tutorial complete. Your certificate and 100 learning points are saved.' : 'Checkpoint saved. You can leave and continue later.');
         onSaved?.();
@@ -87,7 +88,7 @@ export default function InteractiveTutorial({ tutorialId, client, onSaved, onClo
                 </DialogHeader>
                 {loading && <p role="status" className="text-sm text-muted-foreground">Loading your saved tutorial…</p>}
                 {error && <div role="alert" className="space-y-3 border border-destructive/40 p-4"><p className="text-sm">{error}</p>
-                    {uncertain ? <Button size="sm" disabled={busy} onClick={() => save('', {}, true)}>Retry checkpoint save</Button> : <Button size="sm" variant="secondary" disabled={busy} onClick={load}>Reload saved tutorial</Button>}
+                    {waiting ? null : uncertain ? <Button size="sm" disabled={busy} onClick={() => save('', {}, true)}>Retry checkpoint save</Button> : <Button size="sm" variant="secondary" disabled={busy} onClick={load}>Reload saved tutorial</Button>}
                 </div>}
                 {!loading && data && <>
                     <div className="space-y-2"><div className="flex flex-wrap justify-between gap-2 text-xs text-muted-foreground"><span>{completed ? 'All checkpoints complete' : step < 0 ? `${total} checkpoints · about ${tutorial.effort_minutes} minutes` : `Checkpoint ${Math.min(step + 1, total)} of ${total}`}</span><span>{enrollment?.progress || 0}% saved</span></div>
@@ -111,7 +112,7 @@ export default function InteractiveTutorial({ tutorialId, client, onSaved, onClo
                             onChange={(event) => setChecks((before) => { const next = [...before]; next[index] = event.target.checked; return next; })} /><span>{item}</span></label>)}</fieldset>
                         <Button disabled={busy || uncertain || !enrollment.practiced && !lesson.exercise.checklist.every((_, index) => checks[index])} onClick={() => enrollment.practiced ? setStep(sectionCount + 1) : save('practice', { checks })}>{busy ? 'Saving…' : enrollment.practiced ? 'Next checkpoint' : 'Save practice and continue'}</Button>
                     </div> : step === sectionCount + 1 ? <div className="space-y-5"><fieldset className="space-y-3" disabled={busy || uncertain || completed}><legend className="mb-3 text-sm leading-7">{lesson.check.question}</legend>{lesson.check.choices.map((choice, index) => <label key={index} className="flex cursor-pointer items-start gap-3 border border-border p-3 text-sm leading-6"><input type="radio" name={`guided-answer-${tutorialId}`} checked={answer === index} className="mt-1 h-4 w-4 shrink-0 accent-primary" onChange={() => { setAnswer(index); setFeedback(null); }} /><span>{choice}</span></label>)}</fieldset>
-                        {feedback && <div role="status" className="space-y-2 border border-border p-4 text-sm leading-6"><p className="font-semibold">{feedback.correct ? 'That’s right.' : 'Not quite. Read the feedback and try again.'}</p><p>{feedback.explanation}</p></div>}
+                        {feedback && <div role="status" className="space-y-2 border border-border p-4 text-sm leading-6"><p className="font-semibold">{feedback.correct ? 'That’s right.' : 'Not quite. Read the feedback and try again.'}</p><p>{feedback.explanation}</p>{feedback.retry_after > 0 && <p>You can answer again in {feedback.retry_after} seconds.</p>}</div>}
                         {completed ? <Button onClick={() => setStep(total)}>View my certificate</Button> : <Button disabled={busy || uncertain || answer === null} onClick={() => save('answer', { choice: answer })}>{busy ? 'Checking…' : 'Check answer and finish'}</Button>}
                     </div> : completed && <LearningCertificate certificate={enrollment.certificate} />}
                     {notice && <p role="status" className="text-sm text-success">{notice}</p>}

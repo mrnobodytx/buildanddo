@@ -1,10 +1,10 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        tests/upgrade/tutorial-learning-client.test.mjs
 // Stage:       08_TEST
-// SRS:         SRS-BUILDANDDO-UPGRADE-001
+// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-TRUST-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-TRUST-001
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-19
@@ -31,7 +31,10 @@ function setup(options = {}) {
         if (state.error) throw state.error;
         const id = path.replace('/api/buildanddo/learning', '').slice(1);
         const event = f.event(sdk.authStore.record.id, request.body || {}, { id, query: request.query || {} });
-        const value = plain(request.method === 'POST' ? f.service.command(event) : id ? f.service.detail(event) : f.service.list(event));
+        let value;
+        // Native hook errors reach the SDK as a status with a response message.
+        try { value = plain(request.method === 'POST' ? f.service.command(event) : id ? f.service.detail(event) : f.service.list(event)); }
+        catch (error) { throw error.status ? { status: error.status, response: { message: error.message } } : error; }
         if (state.lose) { state.lose = false; throw new Error('response lost'); }
         return state.mutate(value);
     } };
@@ -73,7 +76,7 @@ test('a dropped committed response keeps the exact retry and refuses a new chang
     assert.deepEqual(state.requests[0].body, state.requests[1].body);
     f.finish();
     state.lose = true;
-    assert.equal((await act('answer', { choice: f.lessons[0].lesson.check.answer })).reason, 'uncertain');
+    assert.equal((await act('answer', { choice: f.answerFor() })).reason, 'uncertain');
     assert.equal((await client.retry()).data.enrollment.points, 100);
     assert.equal(f.list().points, 100);
 });
@@ -132,17 +135,33 @@ test('incomplete or cross-account responses never mint browser progress or credi
     ]) { state.mutate = mutate; assert.equal((await client.read()).ok, false); }
 });
 
-test('wrong answers retain their feedback and cannot claim completion', async () => {
-    const { client, tutorial, act } = setup();
+test('wrong answers retain their feedback, wait on the server and cannot claim completion', async () => {
+    const { client, tutorial, act, f, state } = setup();
+    const answer = f.answerFor();
+    assert.equal(tutorial.lesson.check.answer, undefined, 'the client validates lessons without the answer');
     await act('start');
     for (let index = 0; index < tutorial.lesson.sections.length; index++) await act('section', { index });
     await act('practice', { checks: tutorial.lesson.exercise.checklist.map(() => true) });
-    const wrong = await act('answer', { choice: (tutorial.lesson.check.answer + 1) % tutorial.lesson.check.choices.length });
+    const wrong = await act('answer', { choice: (answer + 1) % tutorial.lesson.check.choices.length });
     assert.equal(wrong.ok, true);
     assert.equal(wrong.data.feedback.correct, false);
+    assert.equal(wrong.data.feedback.retry_after, 30);
     assert.equal(wrong.data.enrollment.certificate, null);
     assert.equal((await client.read()).data.points, 0);
-    assert.equal((await act('answer', { choice: tutorial.lesson.check.answer })).data.enrollment.points, 100);
+    const waiting = await act('answer', { choice: answer });
+    assert.equal(waiting.reason, 'wait');
+    assert.match(waiting.error, /try the knowledge check again in \d+ seconds/);
+    f.expire();
+    const passed = await act('answer', { choice: answer });
+    assert.equal(passed.data.enrollment.points, 100);
+    assert.equal(passed.data.tutorial.lesson.check.answer, answer);
+    assert.equal((await client.read(tutorial.id)).data.tutorial.lesson.check.answer, answer, 'earned answers load for review');
+    for (const mutate of [(value) => ({ ...value, feedback: { ...value.feedback, correct: true } }),
+        (value) => ({ ...value, feedback: null }), (value) => ({ ...value, feedback: { ...value.feedback, retry_after: -1 } })]) {
+        state.mutate = (value) => mutate({ ...value, enrollment: { ...value.enrollment, status: 'in_progress', points: 0, progress: 80, completed_at: '', certificate: null } });
+        assert.equal((await act('answer', { choice: answer })).reason, 'uncertain', 'an unconfirmed grade never displays as a pass');
+        state.mutate = (value) => value; await client.retry();
+    }
 });
 
 test('storage errors remain recoverable; rejected commands clear pending state', async () => {

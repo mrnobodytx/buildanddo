@@ -1,10 +1,10 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        tests/upgrade/tutorial-learning-fixture.mjs
 // Stage:       08_TEST
-// SRS:         SRS-BUILDANDDO-UPGRADE-001
+// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-TRUST-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-TRUST-001
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-19
@@ -19,6 +19,7 @@ import { createHash } from 'node:crypto';
 import { fixture, plain, source } from './admin-fixture.mjs';
 
 export const MIGRATION = 'apps/pocketbase/pb_migrations/1790600000_tutorial_learning.js';
+export const WAIT_MIGRATION = 'apps/pocketbase/pb_migrations/1791500100_tutorial_answer_wait.js';
 
 // countRecords takes dbx expressions, so a double has to hand out dbx expressions too.
 export const DBX = { exp: (sql, params) => ({ __dbx: true, sql, params: params ?? {} }) };
@@ -65,16 +66,21 @@ export function learningFixture() {
     f.seed('users', { id: 'owner', name: 'Test Learner' });
     faithfulCountRecords(f.app);
     f.migration(MIGRATION).up();
+    f.migration(WAIT_MIGRATION).up();
     const service = f.load('tutorial-learning.js');
     const detail = (id = lessons[0].id, actor = 'owner') => plain(service.detail(f.event(actor, {}, { id })));
     const list = (actor = 'owner', query = {}) => plain(service.list(f.event(actor, {}, { query })));
     const command = (action, payload = {}, { id = lessons[0].id, actor = 'owner', digest } = {}) =>
         plain(service.command(f.event(actor, { action, payload, content_digest: digest ?? detail(id, actor).tutorial.content_digest }, { id })));
+    // Responses withhold the answer, so tests grade from the authored source.
+    const answerFor = (id = lessons[0].id) => lessons.find((lesson) => lesson.id === id).lesson.check.answer;
     const finish = (options = {}) => {
         const started = command('start', {}, options);
         for (let index = 0; index < started.tutorial.lesson.sections.length; index++) command('section', { index }, options);
         command('practice', { checks: started.tutorial.lesson.exercise.checklist.map(() => true) }, options);
-        return command('answer', { choice: started.tutorial.lesson.check.answer }, options);
+        return command('answer', { choice: answerFor(options.id) }, options);
     };
-    return { ...f, get data() { return f.data; }, lessons, service, detail, list, command, finish };
+    // Ends a pending wrong-answer wait as if it had elapsed.
+    const expire = () => { for (const row of f.data.tutorial_learning) row.answer_retry_at = ''; };
+    return { ...f, get data() { return f.data; }, lessons, service, detail, list, command, finish, answerFor, expire };
 }

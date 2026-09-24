@@ -623,7 +623,9 @@
         "gitlab"
       ],
       "path": "services/praxis_evidence/run_all_tests.py",
-      "referenced_by": [],
+      "referenced_by": [
+        "tests/praxis_evidence/test_target_guard.py"
+      ],
       "wired_into_ci": true
     },
     {
@@ -639,7 +641,7 @@
       "wired_into_ci": true
     }
   ],
-  "generated_at": "2026-09-24T00:42:22.580437+00:00",
+  "generated_at": "2026-09-24T02:10:11.775216+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -948,6 +950,13 @@
         "title": "Web test runner emitting JUnit, with workspace component suites"
       },
       {
+        "code": "SRS-BUILDANDDO-TRUST-001",
+        "risk": "A2",
+        "spec": ".bits/srs/SRS-BUILDANDDO-TRUST-001.md",
+        "status": "in_progress",
+        "title": "Trust hardening before the website-to-credential loop"
+      },
+      {
         "code": "SRS-BUILDANDDO-UPGRADE-001",
         "risk": "A2",
         "spec": ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md",
@@ -1213,6 +1222,7 @@
     ],
     "build_scripts": [
       "apps/web/tools/build.mjs",
+      "apps/web/tools/check-public-lessons.mjs",
       "apps/web/tools/generate-community.mjs",
       "apps/web/tools/generate-llms.js",
       "apps/web/tools/generate-seo.mjs",
@@ -1223,13 +1233,13 @@
       "scripts/deploy/ship.py",
       "scripts/deploy/staging-readback.sh"
     ],
-    "migrations": 67,
-    "python_files": 434,
+    "migrations": 69,
+    "python_files": 435,
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 1655,
-    "web_source_files": 403
+    "tracked_files": 1748,
+    "web_source_files": 408
   },
   "schema_version": 1,
   "sprint_readiness": {
@@ -1308,22 +1318,22 @@
         "why": "Competition readiness requires an evidence-backed learning-through-work journey, a reproducible replay and actual submission criteria."
       }
     ],
-    "source_sha256": "a9499655f12c97f1bd09ff61c3af4769e7b9e62776c989e4c198e55ed636cd38",
+    "source_sha256": "a1a78a0da6d401b2335ccf901f26b90f655b74b9e6f714c2f07a1c7a6eb97727",
     "state": "PASS"
   },
   "summary": {
     "findings": 35,
     "findings_high": 35,
     "pipelines": 10,
-    "srs_open": 41,
-    "srs_total": 45,
+    "srs_open": 42,
+    "srs_total": 46,
     "unwired_gates": 32
   },
   "tests": {
     "js_runners": [
       "vitest"
     ],
-    "js_test_files": 85,
+    "js_test_files": 87,
     "js_test_script": true,
     "junit_configured": true,
     "python_suite_entrypoints": [

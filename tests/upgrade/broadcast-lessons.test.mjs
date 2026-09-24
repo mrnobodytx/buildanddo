@@ -1,10 +1,10 @@
 // --- CGRF Header ------------------------------------------------
 // File:        tests/upgrade/broadcast-lessons.test.mjs
 // Stage:       08_TEST
-// SRS:         SRS-BUILDANDDO-UPGRADE-001
+// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-TRUST-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-TRUST-001
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-23
@@ -41,6 +41,7 @@ function installed(data = bundle) {
     } });
     f.migration('apps/pocketbase/pb_migrations/1789700000_expand_business_learning.js').up();
     f.migration('apps/pocketbase/pb_migrations/1790600000_tutorial_learning.js').up();
+    f.migration('apps/pocketbase/pb_migrations/1791500100_tutorial_answer_wait.js').up();
     // The learning hook counts with dbx expressions, as PocketBase requires; a filter-string double
     // agreed with the old call and let GET /api/buildanddo/learning answer 400 everywhere.
     faithfulCountRecords(f.app);
@@ -151,7 +152,8 @@ test('the actual native learning validator accepts the new lesson without enroll
     const f = installed(); f.migration(MIGRATION).up();
     const before = plain(f.data), learning = f.load('tutorial-learning.js');
     const result = plain(learning.detail(f.event('owner', {}, { id: seed.id })));
-    assert.deepEqual(result.tutorial.lesson, seed.lesson);
+    const { answer: _answer, explanation: _explanation, ...check } = seed.lesson.check;
+    assert.deepEqual(result.tutorial.lesson, { ...seed.lesson, check }, 'the answer and its explanation are withheld until earned');
     assert.equal(result.tutorial.curriculum_version, bundle.version);
     assert.equal(result.enrollment, null);
     assert.equal(learning.list(f.event('owner')).points, 0);

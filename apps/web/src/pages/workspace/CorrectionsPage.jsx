@@ -3,6 +3,7 @@ import { Scale, Plus, Loader2, AlertCircle, Info } from 'lucide-react';
 import pb from '@/lib/pocketbaseClient';
 import { workspaceCollection } from '@/lib/observability/mutations';
 import { useWorkspace } from '@/contexts/WorkspaceContext';
+import { useWorkspaceAccess } from '@/contexts/WorkspaceAccessContext';
 import { useWorkspaceRecords } from '@/hooks/useWorkspaceRecords';
 import EmptyState from '@/components/workspace/EmptyState';
 import { PageHeader } from '@/components/workspace/workspaceHelpers';
@@ -13,6 +14,8 @@ import { Textarea } from '@/components/ui/textarea';
 
 export default function CorrectionsPage() {
     const { active } = useWorkspace();
+    // The server refuses `verified` from editors; this only hides the option.
+    const canVerify = useWorkspaceAccess().data?.can_admin === true;
     const { records, loading, refresh } = useWorkspaceRecords('corrections', { sort: '-created' });
     const [show, setShow] = useState(false);
     const [form, setForm] = useState({ prior_prediction: '', observed_result: '', status: 'pending', reference: '' });
@@ -70,7 +73,7 @@ export default function CorrectionsPage() {
                                 <Label htmlFor="co-status">Status</Label>
                                 <select id="co-status" value={form.status} onChange={(e) => set('status', e.target.value)} className="h-9 border border-border bg-background px-3 text-sm">
                                     <option value="pending">Pending</option>
-                                    <option value="verified">Verified</option>
+                                    {canVerify && <option value="verified">Verified</option>}
                                     <option value="rejected">Rejected</option>
                                 </select>
                             </div>

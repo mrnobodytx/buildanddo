@@ -1,10 +1,10 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        tests/upgrade/classroom-system.test.mjs
 // Stage:       08_TEST
-// SRS:         SRS-BUILDANDDO-UPGRADE-001
+// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-TRUST-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-TRUST-001
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-16
@@ -292,7 +292,7 @@ test('classroom index normalization cannot admit changed uniqueness, identity, k
 });
 
 test('native route callbacks load policy in isolation and require bounded authenticated private requests', () => {
-    const routes = [];
+    const routes = [], f = classroomFixture();
     const code = source('apps/pocketbase/pb_hooks/classrooms.pb.js');
     vm.runInNewContext(code, { routerAdd: (...args) => routes.push(args), $apis: {
         requireAuth: (...args) => ({ auth: args }), bodyLimit: (max) => ({ max }),
@@ -303,10 +303,15 @@ test('native route callbacks load policy in isolation and require bounded authen
         if (method === 'POST') assert.ok(bodyLimit.max <= 30000);
         const fields = new Map(); let called = 0;
         const expected = method === 'GET' ? path.endsWith('/record') ? 'record' : path.endsWith('{id}') ? 'detail' : 'list' : path.endsWith('/presence') ? 'heartbeat' : 'command';
+        const lesson = { lesson: { check: { question: 'Q', choices: ['A', 'B'], answer: 1, explanation: 'B is right.' } } };
         const handler = vm.runInNewContext(`(${callback.toString()})`, { __hooks: '/native/hooks', require: (name) => {
-            assert.equal(name, '/native/hooks/classrooms.js'); return { [expected]: () => { called++; return { accepted: true }; } };
+            if (name === '/native/hooks/workflow-policy.js') return f.load('workflow-policy.js');
+            assert.equal(name, '/native/hooks/classrooms.js'); return { [expected]: () => { called++; return { accepted: true, ...(expected === 'detail' ? { lesson } : {}) }; } };
         } });
-        handler({ response: { header: () => ({ set: (key, value) => fields.set(key, value) }) }, json: (status, body) => { assert.equal(status, 200); assert.equal(body.accepted, true); } });
+        handler({ response: { header: () => ({ set: (key, value) => fields.set(key, value) }) }, json: (status, body) => {
+            assert.equal(status, 200); assert.equal(body.accepted, true);
+            if (expected === 'detail') assert.deepEqual(plain(body.lesson), { lesson: { check: { question: 'Q', choices: ['A', 'B'] } } }, 'classroom lessons carry no answer');
+        } });
         assert.equal(called, 1); assert.equal(fields.get('Cache-Control'), 'no-store');
     }
 });
