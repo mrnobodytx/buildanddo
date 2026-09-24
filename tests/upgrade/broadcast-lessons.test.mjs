@@ -29,7 +29,7 @@ const seed = bundle.lessons[0];
 const starter = JSON.parse(source('apps/pocketbase/pb_migrations/data/starter-tutorials.json'));
 
 function installed(data = bundle) {
-    const f = fixture({ runtime: {
+    const f = fixture({ runtime: { $dbx: DBX,
         toString: String,
         $dbx: DBX,
         $security: { sha256: (text) => createHash('sha256').update(text).digest('hex') },

@@ -641,7 +641,7 @@
       "wired_into_ci": true
     }
   ],
-  "generated_at": "2026-09-24T02:27:11.798915+00:00",
+  "generated_at": "2026-09-24T02:30:33.671984+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -843,6 +843,13 @@
         "spec": ".bits/srs/SRS-BUILDANDDO-KNOWLEDGE-UNIT-001.md",
         "status": "in_progress",
         "title": "Knowledge Unit contract, receipt and evidence-based mastery ladder"
+      },
+      {
+        "code": "SRS-BUILDANDDO-LEARNING-NATIVE-001",
+        "risk": "A2",
+        "spec": ".bits/srs/SRS-BUILDANDDO-LEARNING-NATIVE-001.md",
+        "status": "in_progress",
+        "title": "Native learning summary and migration replay on declared PocketBase"
       },
       {
         "code": "SRS-BUILDANDDO-PB-METRICS-001",
@@ -1238,7 +1245,7 @@
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 1753,
+    "tracked_files": 1755,
     "web_source_files": 413
   },
   "schema_version": 1,
@@ -1318,15 +1325,15 @@
         "why": "Competition readiness requires an evidence-backed learning-through-work journey, a reproducible replay and actual submission criteria."
       }
     ],
-    "source_sha256": "a866b87aba384fdbae340929935848d826f6884378b7447663349be13d1f84f2",
+    "source_sha256": "f7069cb99bc34fb89614dd7548d575098d97480d4dedccda85e7279931496b06",
     "state": "PASS"
   },
   "summary": {
     "findings": 35,
     "findings_high": 35,
     "pipelines": 10,
-    "srs_open": 42,
-    "srs_total": 46,
+    "srs_open": 43,
+    "srs_total": 47,
     "unwired_gates": 32
   },
   "tests": {

@@ -191,7 +191,7 @@ policies as well. Neither establishes native API-rule or SQLite concurrency
 behavior. This sandbox lacks frontend dependencies and the native PocketBase
 binary; browser, frontend and native acceptance remain required.
 
-On an isolated PocketBase 0.28.4 acceptance instance, apply the complete migration
+On an isolated PocketBase 0.39.8 acceptance instance, apply the complete migration
 sequence and install all hooks together. Use existing test-account procedures:
 
 1. Check owner/admin/editor/viewer access, an unrelated workspace and a removed
