@@ -59,7 +59,7 @@ export default function Footer({
                             className="flex items-center gap-2.5"
                             aria-label="BuildAndDo home"
                         >
-                            <BrandMark size={28} decorative />
+                            <BrandMark size={32} decorative />
                             <Wordmark className="text-base" />
                         </a>
                         <p className="mt-4 max-w-sm text-sm leading-relaxed text-muted-foreground">

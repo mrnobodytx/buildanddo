@@ -112,7 +112,7 @@ function NavList({ onNavigate }) {
 function BrandLockup() {
     return (
         <Link to="/" className="flex items-center gap-2.5" aria-label="BuildAndDo home">
-            <BrandMark size={28} decorative />
+            <BrandMark size={32} decorative />
             <Wordmark className="text-base" />
         </Link>
     );

@@ -37,7 +37,7 @@ export default function Header({
                     className="flex shrink-0 items-center gap-2"
                     aria-label="BuildAndDo home"
                 >
-                    <BrandMark size={24} decorative />
+                    <BrandMark size={32} decorative />
                     <Wordmark className="text-lg" />
                 </Link>
                 <nav className="hidden min-w-0 flex-1 items-center justify-center xl:flex" aria-label="Primary">
