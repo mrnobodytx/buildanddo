@@ -41,13 +41,15 @@
 3. The node double refuses non-expression `countRecords` arguments, as native does.
 4. The native down/up test asserts the rolled-back schema on disk and retained rows.
 5. The native seed names its data directory itself.
+6. Pin PocketBase 0.39.8 as the Compose, staging Compose, Dockerfile and
+   `.env.example` default (owner decision, 2026-09-24): production migrations
+   (`1789700000`, `1790400000`, `1791000000`, `1791400001`) need `__hooks`, so
+   0.28.4 cannot install the current schema. Operator docs name 0.39.8.
 
 ## Out of scope
 
-- Changing the PocketBase version compose, the staging compose, the Dockerfile or
-  `.env.example` default to (0.28.4) — an owner decision. Production migrations
-  (`1789700000`, `1790400000`, `1791000000`, `1791400001`) require `__hooks` and so
-  0.39.x; 0.28.4 cannot install the current schema.
+- Upgrading a running host: an operator backs up `pb_data`, rebuilds the image at
+  0.39.8 and lets `serve` apply pending migrations (A3, human dispatch).
 - `1791400000_classroom_media_sessions.js` has the same replay-check defect but is
   bound to recorded source evidence; it needs a rerun-and-refresh of that evidence.
 - Wiring native suites into CI.

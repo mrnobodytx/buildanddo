@@ -35,7 +35,7 @@ services:
       context: ./apps/pocketbase
       dockerfile: Dockerfile
       args:
-        POCKETBASE_VERSION: ${POCKETBASE_VERSION:-0.28.4}
+        POCKETBASE_VERSION: ${POCKETBASE_VERSION:-0.39.8}
     image: buildanddo/pocketbase:local
     command: ["migrate", "up", "--dir=/pb/pb_data", "--migrationsDir=/pb/pb_migrations"]
     environment:
@@ -55,7 +55,7 @@ services:
       context: ./apps/pocketbase
       dockerfile: Dockerfile
       args:
-        POCKETBASE_VERSION: ${POCKETBASE_VERSION:-0.28.4}
+        POCKETBASE_VERSION: ${POCKETBASE_VERSION:-0.39.8}
     image: buildanddo/pocketbase:local
     command:
       - "serve"

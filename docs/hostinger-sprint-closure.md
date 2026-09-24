@@ -184,7 +184,7 @@ On a provisioned runner, supply both actual binaries explicitly:
 ```bash
 python tools/day21/day21_acceptance.py --offline \
   --pocketbase-package /path/to/pocketbase-0.39.8 \
-  --pocketbase-compose /path/to/pocketbase-0.28.4 \
+  --pocketbase-compose /path/to/pocketbase-0.39.8 \
   --evidence-dir state/day21/acceptance/run-001 \
   --summary-output state/day21/evidence/run-001/acceptance-summary.json
 ```
