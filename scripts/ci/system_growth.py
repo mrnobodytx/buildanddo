@@ -49,7 +49,7 @@ _MODULE_ROOT = Path(__file__).resolve().parents[2]
 if str(_MODULE_ROOT) not in sys.path:
     sys.path.insert(0, str(_MODULE_ROOT))
 from scripts.ci import gitlab_ci  # noqa: E402
-from scripts.ci.agent_context import parse_registry  # noqa: E402
+from scripts.ci.agent_context import parse_dispatch, parse_registry  # noqa: E402
 
 ROOT = _MODULE_ROOT
 LOCK_PATH = ".bits/growth.lock.json"
@@ -79,9 +79,6 @@ TEST_PATH = re.compile(
 )
 CGRF_MARK = "CGRF Header"
 SRS_RE = re.compile(r"\bSRS-[A-Z0-9]+(?:-[A-Z0-9]+)+\b")
-TASK_ROW = re.compile(r"^\|\s*(\d+)\s*\|(.*)\|\s*([A-Za-z_ -]+?)\s*\|\s*$")
-STATUS_LINE = re.compile(r"\*\*Status:\*\*\s*([A-Za-z_]+)")
-SRS_LINE = re.compile(r"\*\*SRS:\*\*\s*(SRS-[A-Z0-9-]+)")
 SPARK = "▁▂▃▄▅▆▇█"
 
 
@@ -230,20 +227,6 @@ def measure_systems(root: Path, files: list[str]) -> tuple[dict[str, dict], int]
         entry["srs_codes"] = sorted(entry["srs_codes"])
         entry["cgrf_coverage"] = round(entry["cgrf_files"] / entry["source_files"], 4) if entry["source_files"] else 0.0
     return systems, unattributed
-
-
-def parse_dispatch(path: Path) -> dict:
-    text = path.read_text(encoding="utf-8", errors="replace")
-    statuses = [match.group(3).strip().lower() for match in map(TASK_ROW.match, text.splitlines()) if match]
-    done = sum(1 for status in statuses if status in {"done", "delivered", "complete", "completed"})
-    status = STATUS_LINE.search(text)
-    srs = SRS_LINE.search(text)
-    return {
-        "status": status.group(1).lower() if status else "unknown",
-        "srs": srs.group(1) if srs else "",
-        "tasks_total": len(statuses),
-        "tasks_done": done,
-    }
 
 
 def measure_progression(root: Path) -> dict:
