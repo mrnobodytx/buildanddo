@@ -1,9 +1,10 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/src/pages/workspace/SpecialistDeskPage.jsx
 // Stage:       07_BUILD
-// SRS:         SRS-BUILDANDDO-WITNESS-001
+// SRS:         SRS-BUILDANDDO-WITNESS-001, SRS-BUILDANDDO-UPGRADE-001
 // CAPS:        pending
 // CK:          pending
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-10
@@ -32,7 +33,8 @@ import { PageHeader } from '@/components/workspace/workspaceHelpers';
 import PublicProof, { compareRoots } from '@/components/workspace/PublicProof';
 import EpochTimeline, { shortDigest } from '@/components/workspace/EpochTimeline';
 import { Button, Card, Rule, StatePill } from '@/components/site/ui';
-import { reportAction } from '@/lib/observability/runtime';
+import { useFailureTelemetry } from '@/hooks/useFailureTelemetry';
+import { PUBLIC_ACTIONS, trackPublicAction } from '@/lib/publicActions';
 
 // Layer state -> the StatePill vocabulary. ABSENT maps to 'unavailable' rather
 // than to a failure: no record is a truthful value, not a negative result.
@@ -99,25 +101,30 @@ export default function SpecialistDeskPage() {
         loading: epochsLoading,
         error: epochsError,
     } = useRecords('evidence_epochs', { sort: '-sealed_at' });
-    const { records: anchors, error: anchorsError } = useRecords('anchor_manifests', {
+    const { records: anchors, loading: anchorsLoading, error: anchorsError } = useRecords('anchor_manifests', {
         sort: '-anchored_at',
     });
 
     const [selectedId, setSelectedId] = useState(null);
     const [showProof, setShowProof] = useState(false);
+    const unavailable = Boolean(epochsError || anchorsError);
+    useFailureTelemetry(!epochsLoading && !anchorsLoading && unavailable, 'capability_passport');
 
     // Reported once the first read has settled, so the count is the real one
     // and a view is not counted twice per visit.
     const viewReported = useRef(false);
     useEffect(() => {
-        if (epochsLoading || viewReported.current) return;
+        if (epochsLoading || anchorsLoading || viewReported.current) return;
         viewReported.current = true;
-        reportAction('passport.viewed', {
+        const counts = unavailable ? undefined : {
             epoch_count: epochs.length,
             anchored_count: epochs.filter((e) => e.status === 'ANCHORED').length,
-            read_failed: Boolean(epochsError),
+        };
+        trackPublicAction(PUBLIC_ACTIONS.PASSPORT_VIEW, unavailable ? 'failure' : 'observed', unavailable ? 'unavailable' : 'recorded_snapshot', counts, {
+            read_failed: unavailable,
+            read_state: epochsError ? anchorsError ? 'both_failed' : 'epochs_failed' : anchorsError ? 'anchors_failed' : 'available',
         });
-    }, [epochsLoading, epochs, epochsError]);
+    }, [epochsLoading, anchorsLoading, epochs, epochsError, anchorsError, unavailable]);
 
     const anchorFor = useMemo(
         () => (epoch) => anchors.find((a) => a.epoch === epoch?.id) || null,
@@ -137,21 +144,14 @@ export default function SpecialistDeskPage() {
 
     const selectEpoch = (epoch) => {
         setSelectedId(epoch.id);
-        reportAction('passport.epoch_selected', {
-            epoch_id: epoch.display_id,
-            epoch_status: epoch.status,
-        });
+        trackPublicAction(PUBLIC_ACTIONS.PASSPORT_SELECT, 'selected', 'user_requested', undefined, { epoch_status: epoch.status });
     };
 
     const verify = () => {
         setShowProof(true);
-        reportAction('passport.verify_clicked', {
-            epoch_id: selected?.display_id || null,
-            outcome: compareRoots(selected?.root_digest, selectedAnchor?.observed_public_root),
-        });
+        const outcome = unavailable || epochsLoading || anchorsLoading ? 'unavailable' : compareRoots(selected?.root_digest, selectedAnchor?.observed_public_root);
+        trackPublicAction(PUBLIC_ACTIONS.PASSPORT_VERIFY, outcome, 'root_comparison');
     };
-
-    const unavailable = Boolean(epochsError || anchorsError);
 
     return (
         <div className="space-y-8">

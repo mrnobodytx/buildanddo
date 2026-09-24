@@ -8,9 +8,9 @@
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-22
-// Depends:     apps/pocketbase/pb_hooks/workflow-policy.js
+// Depends:     apps/pocketbase/pb_hooks/workflow-policy.js, apps/pocketbase/pb_hooks/telemetry.js
 // EnumType:    Service
-// EnumEdges:   DEPENDS_ON apps/pocketbase/pb_hooks/workflow-policy.js
+// EnumEdges:   DEPENDS_ON apps/pocketbase/pb_hooks/workflow-policy.js; CONSUMES apps/pocketbase/pb_hooks/telemetry.js
 // Intent:      Require a current paid and approved membership before disclosing government work.
 // ───────────────────────────────────────────────────────────────
 
@@ -34,20 +34,25 @@ function timestamp(value) {
 /** @param {object} app Native app. @param {object} auth Native users record. @param {number} at Server clock. @returns {object} Minimal membership projection. */
 function status(app, auth, at = Date.now()) {
     const denied = (reason) => ({ ...PRICE, allowed: false, reason, expires_at: '' });
+    const unavailable = () => {
+        try { require(`${__hooks}/telemetry.js`).diagnostic('government.membership', 'schema', 0, COLLECTION); }
+        catch (_) { /* Preserve the existing membership denial. */ }
+        return denied('membership_unavailable');
+    };
     if (!auth || auth.collection().name !== 'users') return denied('sign_in_required');
-    if (!Number.isFinite(at)) return denied('membership_unavailable');
+    if (!Number.isFinite(at)) return unavailable();
     let collection;
     try { collection = app.findCollectionByNameOrId(COLLECTION); }
     catch (error) {
         if (!String(error.message).includes('no rows in result set')) throw error;
-        return denied('membership_unavailable');
+        return unavailable();
     }
     if (FIELDS.some((name) => !collection.fields.getByName(name)) ||
         RULES.some((name) => collection[name] !== null) || !collection.indexes.includes(INDEX))
-        return denied('membership_unavailable');
+        return unavailable();
     const rows = app.findRecordsByFilter(COLLECTION, 'user = {:user}', '', 2, 0, { user: auth.id });
     if (!rows.length) return denied('membership_required');
-    if (rows.length !== 1) return denied('membership_unavailable');
+    if (rows.length !== 1) return unavailable();
     const row = rows[0];
     if (row.getString('user') !== auth.id || row.get('protocol_version') !== 1 || row.getString('tier') !== PRICE.tier ||
         row.getString('status') !== 'active' || row.get('amount_cents') !== PRICE.amount_cents ||

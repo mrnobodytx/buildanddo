@@ -8,9 +8,11 @@
 // Seat:         BITS-CODEGEN
 // Owner:        Citadel Nexus Inc.
 // Created:      2026-09-20
-// Depends:     apps/web/src/pages/workspace/JourneyPage.jsx, apps/web/src/lib/workspaceAssistant.js, apps/web/src/lib/workspaceControl.js, apps/web/src/contexts/WorkspaceAccessContext.jsx
+// Depends:     apps/web/src/pages/workspace/JourneyPage.jsx, apps/web/src/lib/workspaceAssistant.js, apps/web/src/lib/workspaceControl.js, apps/web/src/contexts/WorkspaceAccessContext.jsx,
+//              apps/web/src/hooks/useFailureTelemetry.js
 // EnumType:     Widget
-// EnumEdges:    DEPENDS_ON apps/web/src/lib/workspaceAssistant.js; CONSUMES apps/web/src/lib/workspaceControl.js; DEPENDS_ON apps/web/src/contexts/WorkspaceAccessContext.jsx
+// EnumEdges:    DEPENDS_ON apps/web/src/lib/workspaceAssistant.js; CONSUMES apps/web/src/lib/workspaceControl.js; DEPENDS_ON apps/web/src/contexts/WorkspaceAccessContext.jsx;
+//               CONSUMES apps/web/src/hooks/useFailureTelemetry.js
 // DAG Node:     none
 // Intent:       Offer a persistent account-scoped assistant with visible plans, form assistance, retryable outcomes and personal session history.
 // ───────────────────────────────────────────────────────────────
@@ -25,7 +27,9 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useWorkspace } from '@/contexts/WorkspaceContext';
 import { useDemoMode } from '@/hooks/useDemoMode';
 import { useWorkspaceAccess } from '@/contexts/WorkspaceAccessContext';
+import { useFailureTelemetry } from '@/hooks/useFailureTelemetry';
 import pb from '@/lib/pocketbaseClient';
+import { observeMutation } from '@/lib/observability/mutations';
 import { createAssistantClient, captureAssistantSurface, applyAssistantPlan } from '@/lib/workspaceAssistant';
 import { workspaceLifecycleKey } from '@/lib/workspaceControl';
 
@@ -39,6 +43,7 @@ function AssistantDesk({ accountId, workspaceId, demo, sessionEpoch, isSessionCu
     const selectedSession = useRef(session), historyRequest = useRef(0);
     const permission = useRef(access); permission.current = access;
     const ready = !demo && !access.loading && !access.error && Boolean(access.data);
+    useFailureTelemetry(open && !demo && Boolean(error), 'control_feedback');
     selectedSession.current = session;
     route.current = location.pathname;
     // The journey page hands over its compiled answers. Open the panel and fill an
@@ -58,6 +63,7 @@ function AssistantDesk({ accountId, workspaceId, demo, sessionEpoch, isSessionCu
     const api = useMemo(() => createAssistantClient({ client: pb, workspaceId, accountId,
         isCurrent: () => !permission.current.loading && !permission.current.error && Boolean(permission.current.data),
         isScopeCurrent: () => alive.current && !demo && isSessionCurrent(sessionEpoch) && currentScope.current === scopeKey,
+        observe: observeMutation,
     }), [workspaceId, accountId, demo, isSessionCurrent, sessionEpoch, currentScope, scopeKey]);
     useLayoutEffect(() => { alive.current = true; return () => { alive.current = false; }; }, []);
     useEffect(() => { if (turn?.plan?.route !== location.pathname) captured.current = null; }, [location.pathname, turn]);
@@ -219,6 +225,9 @@ export default function WorkspaceAssistant() {
     const access = useWorkspaceAccess();
     const scopeKey = workspaceLifecycleKey({ accountId: user?.id, workspaceId: active?.id, demo, sessionEpoch, access });
     const currentScope = useRef(scopeKey); currentScope.current = scopeKey;
+    // Access is a settled hidden-state signal; controls owns read-attempt reporting.
+    useFailureTelemetry(Boolean(isAuthed && user?.id && active?.id && !demo && !access.loading && access.error),
+        'access', access.readFailure?.reason, access.readFailure?.status);
     if (!isAuthed || !user?.id || !active?.id || !demo && (access.error || !access.data)) return null;
     return <AssistantDesk key={scopeKey} scopeKey={scopeKey} currentScope={currentScope}
         accountId={user.id} workspaceId={active.id} demo={demo} sessionEpoch={sessionEpoch} isSessionCurrent={isSessionCurrent} />;

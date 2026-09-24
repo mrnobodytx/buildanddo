@@ -1,11 +1,11 @@
 # ─── CGRF Header ───────────────────────────────────────────────
 # File:        tests/upgrade/test_ocn_seat_session.py
 # Stage:       08_TEST
-# SRS:         SRS-BUILDANDDO-COMMUNITY-WEB-001
-# CAPS:        B
+# SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-COMMUNITY-WEB-001
+# CAPS:        pending
 # CK:          pending
-# Dispatch:    VCC-BUILDANDDO-COMMUNITY-WEB-001
-# Seat:        C-ONE
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-COMMUNITY-WEB-001
+# Seat:        BITS-CODEGEN, C-ONE
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-22
 # Depends:     scripts/ci/ocn_seat_session.py
@@ -186,8 +186,7 @@ class MainTests(unittest.TestCase):
 
     def test_a_resolved_seat_signs_in_as_itself_under_its_persona(self):
         self.node.write_text(json.dumps({"seat_id": "seat-alpha", "persona": {"guild": "finance"}}), encoding="utf-8")
-        egress = {"status": 200, "body": b"198.51.100.7", "ms": 1, "ctype": "text/plain"}
-        with patch.object(seat_session, "http", return_value=egress), \
+        with patch.object(seat_session, "http", side_effect=AssertionError("unnecessary network call")) as network, \
                 patch.object(seat_session, "login", return_value=(None, None, "LOGIN_401")) as login:
             code, out = self.run_main(["--no-capture"])
         self.assertEqual(code, 1)
@@ -195,6 +194,109 @@ class MainTests(unittest.TestCase):
         self.assertEqual((out["seat"], out["persona"], out["guild"]), ("seat-alpha", "Sterling", "finance"))
         self.assertEqual(out["identity"]["state"], "RESOLVED")
         self.assertEqual(out["login"], "LOGIN_401")
+        self.assertNotIn("egress_ip", out)
+        self.assertEqual((out["actor_type"], out["traffic_type"], out["probe_type"]),
+                         ("agent", "synthetic", "ocn-seat-session"))
+        network.assert_not_called()
+
+    def test_full_probe_retains_identity_replay_and_ingestion_caveat_without_egress_lookup(self):
+        self.node.write_text(json.dumps({"seat_id": "seat-alpha", "persona": {"guild": "builder"}}), encoding="utf-8")
+        requested = []
+        captures = []
+
+        def transport(url, data=None, **kwargs):
+            requested.append(url)
+            if data is not None:
+                captures.append(json.loads(data))
+                return {"status": 200, "body": b"{}", "ms": 1, "ctype": "application/json"}
+            return {"status": 200, "body": b'{"totalItems":2}', "ms": 7, "ctype": "application/json"}
+
+        with patch.object(seat_session, "http", side_effect=transport), \
+                patch.object(seat_session, "login", return_value=("synthetic-authentication", "synthetic-account", "LOGIN_OK")):
+            code, out = self.run_main(["--ph-key", "synthetic-posthog-input"])
+        self.assertEqual(code, 0)
+        self.assertEqual(out["seat"], "seat-alpha")
+        self.assertEqual(out["identity"]["state"], "RESOLVED")
+        self.assertEqual(len(out["replay"]), 1 + len(seat_session.ROUTES) + len(seat_session.DATA) + 5)
+        self.assertEqual(out["authenticated_reads"]["missions"], {"http": 200, "items": 2})
+        self.assertEqual(out["telemetry"]["accepted"], len(captures))
+        self.assertEqual(out["telemetry"]["refused"], 0)
+        self.assertIn("accepted != ingested", out["telemetry"]["note"])
+        self.assertFalse(any("ipify" in url for url in requested))
+        self.assertNotIn("egress_ip", out)
+        self.assertNotIn("seat-alpha", json.dumps(captures))
+        self.assertNotIn("Forge", json.dumps(captures))
+        self.assertNotIn("synthetic-posthog-input", json.dumps(out))
+
+
+class TelemetryPrivacyTests(unittest.TestCase):
+    def setUp(self):
+        self.payloads = []
+        self.http = patch.object(seat_session, "http", side_effect=self.transport)
+        self.http.start()
+        self.addCleanup(self.http.stop)
+        self.meta = {"persona": "Synthetic Person", "guild": "builder", "egress_ip": "198.51.100.7"}
+        self.telemetry = seat_session.Telemetry("synthetic-posthog-input", "probe-host.example.invalid", self.meta)
+
+    def transport(self, url, data=None, **kwargs):
+        self.payloads.append(json.loads(data))
+        return {"status": 200}
+
+    def test_profiles_and_events_are_id_only_synthetic_agent_probes(self):
+        self.telemetry.identify()
+        self.telemetry.pageview(seat_session.ENVS["staging"] + "/app?name=Synthetic%20Person#private", 200, 10)
+        self.telemetry.event("ocn_collection_read", {
+            "collection": "missions", "http": 200, "items": 3, "actor_type": "human", "traffic_type": "human",
+            "is_ocn_agent": False, "name": "Synthetic Person", "email": "person@example.invalid",
+            "ocn_box_ip": "198.51.100.7", "$ip": "198.51.100.7", "ocn_seat": "probe-host.example.invalid",
+            "$set": {"name": "Synthetic Person"}, "nested": {"address": "198.51.100.7"},
+        })
+        for payload in self.payloads:
+            self.assertEqual(payload["distinct_id"], "ocn-probe:" + self.telemetry.session_id)
+            properties = payload["properties"]
+            self.assertEqual(properties["actor_type"], "agent")
+            self.assertEqual(properties["traffic_type"], "synthetic")
+            self.assertEqual(properties["probe_type"], "ocn-seat-session")
+            self.assertTrue(properties["is_ocn_agent"])
+            self.assertTrue(properties["$geoip_disable"])
+        self.assertEqual(self.payloads[1]["properties"]["$current_url"], seat_session.ENVS["staging"] + "/app")
+        encoded = json.dumps(self.payloads)
+        for value in ("Synthetic Person", "person@example.invalid", "probe-host.example.invalid", "198.51.100.7", "#private"):
+            self.assertNotIn(value, encoded)
+        self.assertNotIn("name", self.payloads[0]["properties"]["$set"])
+
+    def test_unknown_event_names_urls_and_personal_properties_are_not_forwarded(self):
+        self.assertFalse(self.telemetry.event("event-Synthetic Person", {"name": "Synthetic Person"}))
+        self.assertEqual(self.payloads, [])
+        self.telemetry.pageview("https://198.51.100.7/private-person", 200, 1)
+        self.assertNotIn("$current_url", self.payloads[-1]["properties"])
+        self.telemetry.event("ocn_perception", {
+            "persona": "Synthetic Person", "env": {}, "collection": [],
+            "perc_persona_vocabulary_hits": ["build", "Synthetic Person", {"name": "private"}],
+            "perc_persona_vocabulary_coverage": "1/7", "perc_reachable_routes": "private-person",
+            "items": "private-person", "http": True,
+        })
+        props = self.payloads[-1]["properties"]
+        self.assertEqual(props["perc_persona_vocabulary_hits"], ["build"])
+        self.assertEqual(props["perc_persona_vocabulary_coverage"], "1/7")
+        for name in ("persona", "env", "collection", "items", "http", "perc_reachable_routes"):
+            self.assertNotIn(name, props)
+
+    def test_ids_are_session_scoped_and_disabled_capture_stays_noop(self):
+        another = seat_session.Telemetry("synthetic-posthog-input", "probe-host.example.invalid", self.meta)
+        self.assertNotEqual(self.telemetry.distinct_id, another.distinct_id)
+        for key, enabled in (("", True), ("synthetic-posthog-input", False)):
+            telemetry = seat_session.Telemetry(key, "probe-host.example.invalid", self.meta, enabled=enabled)
+            self.assertFalse(telemetry.identify())
+            self.assertFalse(telemetry.event("ocn_session_start", {"env": "staging"}))
+            self.assertEqual((telemetry.sent, telemetry.refused), (0, 0))
+        self.assertEqual(self.payloads, [])
+
+    def test_transport_counts_remain_acceptance_not_ingestion(self):
+        self.assertTrue(self.telemetry.identify())
+        with patch.object(seat_session, "http", return_value={"status": 503}):
+            self.assertFalse(self.telemetry.event("ocn_session_end", {"steps": 1}))
+        self.assertEqual((self.telemetry.sent, self.telemetry.refused), (1, 1))
 
 
 class PublicSourceTests(unittest.TestCase):

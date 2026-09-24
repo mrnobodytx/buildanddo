@@ -1,17 +1,18 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/src/components/workspace/WorkspaceNotices.jsx
 // Stage:       07_BUILD
-// SRS:         SRS-BUILDANDDO-WORKSPACE-001
+// SRS:         SRS-BUILDANDDO-WORKSPACE-001, SRS-BUILDANDDO-UPGRADE-001
 // CAPS:        pending
 // CK:          pending
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-10
 // Depends:     apps/web/src/hooks/useDemoMode.js,
-//              apps/web/src/components/site/ui.jsx
+//              apps/web/src/components/site/ui.jsx, apps/web/src/hooks/useFailureTelemetry.js
 // EnumType:    Widget
 // EnumEdges:   CONSUMES apps/web/src/hooks/useDemoMode.js;
-//              VALIDATES apps/web/src/pages/workspace
+//              VALIDATES apps/web/src/pages/workspace; CONSUMES apps/web/src/hooks/useFailureTelemetry.js
 // Intent:      Give every workspace page one shared vocabulary for the three
 //              states that are otherwise indistinguishable on screen: empty,
 //              unreachable, and demonstration.
@@ -22,6 +23,7 @@ import React from 'react';
 
 import { Button, Card } from '@/components/site/ui';
 import { useDemoMode } from '@/hooks/useDemoMode';
+import { useFailureTelemetry } from '@/hooks/useFailureTelemetry';
 import { cn } from '@/lib/utils';
 
 /**
@@ -93,7 +95,8 @@ export function DemoModeToggle({ className }) {
  * @param {{message?: string, onRetry?: Function, className?: string}} props Notice content.
  * @returns {React.ReactElement} The notice.
  */
-export function DegradedNotice({ message, onRetry, className }) {
+export function DegradedNotice({ message, onRetry, className, reason = 'unavailable', status, section }) {
+    useFailureTelemetry(true, 'degraded_notice', reason, status, section);
     return (
         <Card
             className={cn(
@@ -137,7 +140,8 @@ export function DegradedNotice({ message, onRetry, className }) {
  * @param {{message?: string, onDismiss?: Function}} props Notice content.
  * @returns {React.ReactElement|null} The notice, or null when there is no error.
  */
-export function WriteErrorNotice({ message, onDismiss }) {
+export function WriteErrorNotice({ message, onDismiss, reason = 'unavailable', status, section }) {
+    useFailureTelemetry(Boolean(message), 'write_notice', reason, status, section);
     if (!message) return null;
     return (
         <div

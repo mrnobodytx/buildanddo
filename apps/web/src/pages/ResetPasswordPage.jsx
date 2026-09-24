@@ -1,10 +1,10 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/src/pages/ResetPasswordPage.jsx
 // Stage:       07_BUILD
-// SRS:         SRS-BUILDANDDO-TRUST-001
+// SRS:         SRS-BUILDANDDO-TRUST-001, SRS-BUILDANDDO-UPGRADE-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-TRUST-001
+// Dispatch:    VCC-BUILDANDDO-TRUST-001, VCC-BUILDANDDO-UPGRADE-001
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-23
@@ -25,6 +25,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import pb from '@/lib/pocketbaseClient';
 import { PASSWORD_MIN_LENGTH, authFailureKind } from '@/lib/authErrors';
+import { PUBLIC_ACTIONS, publicActionSection, trackPublicAction } from '@/lib/publicActions';
 
 const FAILURE_MESSAGE = {
     rejected:
@@ -60,16 +61,22 @@ export default function ResetPasswordPage() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (status === 'submitting') return;
+        const section = publicActionSection();
         setFailure('');
-        if (!validate()) return;
+        if (!validate()) {
+            trackPublicAction(PUBLIC_ACTIONS.PASSWORD_RESET_COMPLETE, 'failure', 'validation', undefined, { section });
+            return;
+        }
         setStatus('submitting');
         try {
             await pb.collection('users').confirmPasswordReset(token, password, confirm);
+            trackPublicAction(PUBLIC_ACTIONS.PASSWORD_RESET_COMPLETE, 'success', 'confirmed', undefined, { section });
             setPassword('');
             setConfirm('');
             setStatus('success');
         } catch (err) {
             const kind = authFailureKind(err);
+            trackPublicAction(PUBLIC_ACTIONS.PASSWORD_RESET_COMPLETE, 'failure', kind === 'not_found' ? 'rejected' : kind, undefined, { section });
             setFailure(FAILURE_MESSAGE[kind === 'not_found' ? 'rejected' : kind]);
             setStatus('error');
         }

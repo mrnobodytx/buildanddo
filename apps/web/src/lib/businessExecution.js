@@ -21,17 +21,30 @@ import { validateMissionReplay } from './missionReplay.js';
  * @param {object} options Native client, identity and scope guard.
  * @returns {object} Scoped list and command functions.
  */
-export function createBusinessClient({ client, workspaceId, accountId, isCurrent }) {
+export function createBusinessClient({ client, workspaceId, accountId, isCurrent,
+    observe = (_name, _verb, operation) => operation() }) {
     const current = () => Boolean(workspaceId && accountId && isCurrent() && client.authStore.record?.id === accountId);
     const base = `/api/buildanddo/workspaces/${encodeURIComponent(workspaceId)}/business`;
     const request = async (method, body, query) => {
-        if (!current()) return { ok: false, stale: true };
+        if (!current()) {
+            const result = { ok: false, stale: true };
+            return method === 'POST' ? observe('business_jobs', body?.action, () => result) : result;
+        }
         try {
-            const value = await client.send(base, { method, body, query, requestKey: null });
-            if (!current()) return { ok: false, stale: true };
-            if (value?.workspace !== workspaceId || method === 'GET' && (!Array.isArray(value.items) || value.items.some((job) => job.workspace !== workspaceId)))
-                return { ok: false, reason: method === 'POST' ? 'uncertain' : 'rejected', error: 'The action receipt has a different workspace scope.' };
-            return { ok: true, data: value };
+            const operation = async () => {
+                try {
+                    const value = await client.send(base, { method, body, query, requestKey: null });
+                    if (!current()) return { ok: false, stale: true };
+                    if (value?.workspace !== workspaceId || method === 'GET' && (!Array.isArray(value.items) || value.items.some((job) => job.workspace !== workspaceId)))
+                        return { ok: false, reason: method === 'POST' ? 'uncertain' : 'rejected', error: 'The action receipt has a different workspace scope.' };
+                    return { ok: true, data: value };
+                } catch (error) {
+                    if (!current()) return { ok: false, stale: true };
+                    throw error;
+                }
+            };
+            const result = await (method === 'POST' ? observe('business_jobs', body?.action, operation) : operation());
+            return current() ? result : { ok: false, stale: true };
         } catch (error) { return current() ? { ok: false, reason: method === 'POST' && !(error?.status > 0 && error.status < 500) ? 'uncertain' : 'rejected',
             error: error?.response?.message || 'Could not confirm this action. Reload its receipts before retrying.' } : { ok: false, stale: true }; }
     };

@@ -1,18 +1,19 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/src/pages/workspace/FleetPage.jsx
 // Stage:       07_BUILD
-// SRS:         SRS-BUILDANDDO-WORKSPACE-001
+// SRS:         SRS-BUILDANDDO-WORKSPACE-001, SRS-BUILDANDDO-UPGRADE-001
 // CAPS:        pending
 // CK:          pending
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-11
 // Depends:     scripts/ci/fleet_report.py,
 //              apps/web/src/components/workspace/workspaceHelpers.jsx,
-//              apps/web/src/components/site/ui.jsx
+//              apps/web/src/components/site/ui.jsx, apps/web/src/lib/observability/runtime.js, apps/web/src/lib/navigationIntent.js
 // EnumType:    Widget
 // EnumEdges:   CONSUMES apps/web/public/fleet-status.json;
-//              DEPENDS_ON scripts/ci/fleet_report.py
+//              DEPENDS_ON scripts/ci/fleet_report.py; CONSUMES apps/web/src/lib/observability/runtime.js; CONSUMES apps/web/src/lib/navigationIntent.js
 // Intent:      Show the Citadel NNC as three planes of hosts with what actually
 //              runs on each, and label the reading as a recorded observation
 //              rather than dressing a transcription up as a live gauge.
@@ -44,6 +45,8 @@ import { DegradedNotice, ListSkeleton } from '@/components/workspace/WorkspaceNo
 import { formatDate } from '@/lib/format';
 import { cn } from '@/lib/utils';
 import pocketbaseClient from '@/lib/pocketbaseClient';
+import { readFailed } from '@/lib/observability/runtime';
+import { telemetrySection } from '@/lib/navigationIntent';
 
 // The fleet snapshot is no longer a public file: the backend answers this route only to master seats (estate.pb.js).
 const REPORT_ROUTE = '/api/buildanddo/estate/fleet-status';
@@ -230,17 +233,32 @@ export default function FleetPage() {
 
     useEffect(() => {
         let cancelled = false;
+        let received = false;
+        const accountId = pocketbaseClient.authStore.record?.id;
+        const pathname = globalThis.window?.location?.pathname;
+        const section = telemetrySection(pathname);
         setLoading(true);
         setFailed(false);
         pocketbaseClient
             .send(REPORT_ROUTE, { method: 'GET', requestKey: null })
             .then((data) => {
                 if (cancelled) return;
+                received = true;
+                if (!data || typeof data !== 'object' || Array.isArray(data) || data.state !== 'UNMEASURED' &&
+                    (!Array.isArray(data.hosts) || !Array.isArray(data.planes) || !data.totals || !Array.isArray(data.totals.agent_versions) ||
+                        data.hosts.some((host) => !host || !Array.isArray(host.containers)) || data.planes.some((plane) => !plane) ||
+                        data.alerts !== undefined && !Array.isArray(data.alerts))) throw new Error('Unexpected fleet response');
+                if (data.state === 'UNMEASURED' && accountId === pocketbaseClient.authStore.record?.id && pathname === globalThis.window?.location?.pathname)
+                    readFailed(section, 'estate', 'unmeasured', 200);
                 setReport(data);
                 setLoading(false);
             })
-            .catch(() => {
+            .catch((error) => {
                 if (cancelled) return;
+                const aborted = error?.isAbort || error?.name === 'AbortError' || error?.originalError?.name === 'AbortError';
+                const malformed = received || error?.name === 'SyntaxError' || error?.originalError?.name === 'SyntaxError';
+                if (!aborted && accountId === pocketbaseClient.authStore.record?.id && pathname === globalThis.window?.location?.pathname)
+                    readFailed(section, 'estate', malformed ? 'invalid_response' : 'unavailable', received ? 200 : malformed && error?.status === 0 ? undefined : error?.status);
                 setFailed(true);
                 setLoading(false);
             });

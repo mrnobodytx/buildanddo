@@ -111,7 +111,8 @@ export async function importCareerReview(raw, { person, workspace, crypto = glob
 }
 
 /** Read current native history and fence delayed imports and exports after scope changes. */
-export function createCareerClient({ client, accountId, workspaceId, demo = false, isCurrent, crypto = globalThis.crypto, now = () => Date.now() }) {
+export function createCareerClient({ client, accountId, workspaceId, demo = false, isCurrent, crypto = globalThis.crypto, now = () => Date.now(),
+    observe = (_name, _verb, operation) => operation() }) {
     let disposed = false; let generation = 0; let snapshot = null;
     const current = () => !disposed && !demo && isCurrent() && client.authStore.record?.id === accountId;
     const person = `cni://person/pocketbase/${accountId}`;
@@ -130,9 +131,12 @@ export function createCareerClient({ client, accountId, workspaceId, demo = fals
             return snapshot ? { ok: true, snapshot } : { ok: false, error: result.error || 'Current work history is unavailable. Refresh before exporting or importing a review.' };
         },
         async importReview(raw) {
-            if (!readable()) return { ok: false, error: 'Refresh your current work history before loading a career review.' };
+            if (!readable()) return observe('career_reviews', 'review.import', () => ({ ok: false, error: 'Refresh your current work history before loading a career review.' }));
             const request = ++generation;
-            const result = await importCareerReview(raw, { person, workspace: workspaceId, crypto, now: now() });
+            const result = await observe('career_reviews', 'review.import', async () => {
+                const review = await importCareerReview(raw, { person, workspace: workspaceId, crypto, now: now() });
+                return readable() && request === generation ? review : changed();
+            });
             return readable() && request === generation ? result : changed();
         },
         exportWork() {

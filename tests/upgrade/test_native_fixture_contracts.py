@@ -87,6 +87,7 @@ class NativeFixtureContractTests(unittest.TestCase):
             expected = {
                 "1790400000_classroom_rooms.js",
                 "1790600000_classroom_presence.js",
+                "1791100000_room_kind.js",
                 "1791300000_classroom_attendance.js",
                 "1791400000_classroom_media_sessions.js",
                 "1791400001_broadcast_classroom_lessons.js",
@@ -150,6 +151,13 @@ class NativeFixtureContractTests(unittest.TestCase):
                 const globals = { __hooks: hooks,
                     $os: { getenv: () => '' },
                     $apis: { requireAuth: (...collections) => ({ collections }), bodyLimit: (limit) => ({ limit }) },
+                    Middleware: function (definition) {
+                        assert.equal(typeof definition, 'object', 'Middleware requires a definition object');
+                        assert.equal(typeof definition.func, 'function');
+                        this.func = definition.func;
+                        this.priority = definition.priority ?? 0;
+                        assert.ok(Number.isInteger(this.priority));
+                    },
                     routerAdd: (method, path, handler, ...middleware) => routes.set(method + ' ' + path, { handler, middleware }),
                     routerUse: (handler) => middleware.push(handler),
                 };
@@ -172,11 +180,24 @@ class NativeFixtureContractTests(unittest.TestCase):
                 load(hooks + '/classroom-media.js');
                 assert.equal(recordHooks.size, 6);
                 assert.equal(middleware.length, 1);
+                assert.ok(middleware[0] instanceof globals.Middleware);
+                assert.equal(typeof middleware[0].func, 'function');
+                assert.equal(middleware[0].priority, -2000);
                 assert.equal(Object.hasOwn(globals, 'onServe'), false);
-                const observe = vm.runInNewContext('(' + middleware[0].toString() + ')', { __hooks: hooks, require: load });
+                // Extract the registered func, then compile it in a fresh scope;
+                // executing the original closure would hide missing JSVM globals.
+                const isolated = (func) => vm.runInNewContext('(' + func.toString() + ')', { __hooks: hooks, require: load });
+                const observe = isolated(middleware[0].func);
                 let calls = 0;
                 assert.equal(observe({ next: () => { calls++; return 'fixture-next'; } }), 'fixture-next');
                 assert.equal(calls, 1);
+                const failure = new Error('fixture request rejected');
+                assert.throws(() => observe({ next: () => { calls++; throw failure; } }), (error) => error === failure);
+                assert.equal(calls, 2);
+                const registrationOnly = 'not shared with callbacks';
+                const leakingClosure = () => registrationOnly;
+                assert.equal(leakingClosure(), registrationOnly);
+                assert.throws(() => isolated(leakingClosure)(), /registrationOnly is not defined/);
             """.replace("__HOOK_PATH__", json.dumps(str(hooks)))
             self.node(script)
 

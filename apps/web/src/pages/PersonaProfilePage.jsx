@@ -1,10 +1,10 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/src/pages/PersonaProfilePage.jsx
 // Stage:       07_BUILD
-// SRS:         SRS-BUILDANDDO-COMMUNITY-WEB-001
-// CAPS:        B
+// SRS:         SRS-BUILDANDDO-COMMUNITY-WEB-001, SRS-BUILDANDDO-UPGRADE-001
+// CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-COMMUNITY-WEB-001
+// Dispatch:    VCC-BUILDANDDO-COMMUNITY-WEB-001, VCC-BUILDANDDO-UPGRADE-001
 // Seat:        C-ONE
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-22
@@ -15,11 +15,13 @@
 //              and where it posts - and nothing about where it runs.
 // ───────────────────────────────────────────────────────────────
 
+import { useEffect, useRef } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import PublicPage from '@/components/site/PublicPage';
 import { Badge } from '@/components/site/ui';
 import { GUILD_PATH } from '@/lib/communityLinks';
 import { PERSONAS, PERSONA_PAGES, guildLabel, personaBySlug, personaPath } from '@/data/personas';
+import { PUBLIC_ACTIONS, trackPublicAction } from '@/lib/publicActions';
 
 const ACCOUNT_LABEL = { forum: 'Forum profile', wiki: 'Wiki page' };
 
@@ -43,6 +45,13 @@ function UnknownPersona() {
 export default function PersonaProfilePage() {
     const { slug } = useParams();
     const persona = personaBySlug(slug);
+    const reported = useRef(null);
+    useEffect(() => {
+        if (reported.current && reported.current.slug === slug) return;
+        reported.current = { slug };
+        // A lookup result, not another pageview or an identity for the visitor.
+        trackPublicAction(PUBLIC_ACTIONS.PERSONA_RESULT, 'observed', persona ? 'known_profile' : 'unknown_profile');
+    }, [slug, persona]);
     if (!persona) return <UnknownPersona />;
     const route = PERSONA_PAGES.find((page) => page.path === personaPath(persona));
     const guild = guildLabel(persona.guild);

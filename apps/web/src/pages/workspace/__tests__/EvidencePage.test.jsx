@@ -29,7 +29,7 @@ vi.mock('@/lib/pocketbaseClient', async () => {
     const client = createMockPocketBase();
     return { default: client, pocketbaseClient: client };
 });
-vi.mock('@/lib/observability/runtime', () => ({ reportAction: vi.fn(), reportMetric: vi.fn(), trackAuthIdentity: vi.fn() }));
+vi.mock('@/lib/observability/runtime', () => ({ reportAction: vi.fn(), reportMetric: vi.fn(), trackAuthIdentity: vi.fn(), readFailed: vi.fn() }));
 vi.mock('@/lib/telemetry', () => ({ trackEvent: vi.fn() }));
 
 beforeEach(() => { pb.__reset(); setDemoMode(false); });

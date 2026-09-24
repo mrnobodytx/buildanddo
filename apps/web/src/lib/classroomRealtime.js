@@ -290,6 +290,8 @@ export async function inboundAudioStats(pc) {
  * @param {MediaStream} [opts.localStream] existing stream, else getUserMedia is used.
  * @param {() => boolean} [opts.isCurrent] Captured account/room lifetime.
  * @param {(close: () => void) => void} [opts.onCleanup] Register immediate local cancellation.
+ * @param {(state: string) => void} [opts.onConnectionState] Observe actual peer state, not signalling acceptance.
+ * @param {(error: Error) => void} [opts.onDeviceError] Observe combined microphone/camera capture failure.
  * @returns {Promise<object>} handle with { sessionId, pc, tracks, remoteStream, mayPublish, iceComplete, close() }
  */
 export async function joinClassroom(opts = {}) {
@@ -309,8 +311,15 @@ export async function joinClassroom(opts = {}) {
     const remoteStream = typeof MediaStream === 'undefined' ? null : new MediaStream();
     let closed = false, sessionId = '', closeSent = false;
     const isCurrent = () => !closed && (!opts.isCurrent || opts.isCurrent());
+    const observe = (callback, value) => {
+        try {
+            if (isCurrent()) Promise.resolve(callback?.(value)).catch(() => {});
+        } catch { /* Observers cannot change media behaviour. */ }
+    };
+    const connectionChanged = () => observe(opts.onConnectionState, pc.connectionState);
     const close = () => {
         closed = true;
+        try { pc.removeEventListener('connectionstatechange', connectionChanged); } catch { /* Still close the transport. */ }
         for (const media of [stream, remoteStream]) {
             try { for (const track of media?.getTracks() || []) track.stop(); } catch { /* Continue closing the peer. */ }
         }
@@ -325,7 +334,9 @@ export async function joinClassroom(opts = {}) {
     const requireCurrent = () => {
         if (!isCurrent()) { close(); throw new Error('Media join was cancelled.'); }
     };
+    pc.addEventListener('connectionstatechange', connectionChanged);
     opts.onCleanup?.(close);
+    connectionChanged();
     if (remoteStream) {
         pc.addEventListener('track', (event) => {
             if (!isCurrent()) { event.track?.stop(); return; }
@@ -347,7 +358,8 @@ export async function joinClassroom(opts = {}) {
         if (role === 'teach') {
             say('requesting camera and microphone');
             if (!stream) {
-                stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
+                try { stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: true }); }
+                catch (err) { observe(opts.onDeviceError, err); throw err; }
             }
             requireCurrent();
             for (const track of stream.getTracks()) {

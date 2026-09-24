@@ -8,34 +8,48 @@
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-23
-// Depends:     apps/web/src/lib/classroomRealtime.js, tests/upgrade/classroom-media-fixture.mjs
+// Depends:     apps/web/src/lib/classroomRealtime.js, apps/web/src/lib/classroomTelemetry.js, tests/upgrade/classroom-media-fixture.mjs
 // EnumType:    Test
-// EnumEdges:   VALIDATES apps/web/src/lib/classroomRealtime.js; CONSUMES tests/upgrade/classroom-media-fixture.mjs
+// EnumEdges:   VALIDATES apps/web/src/lib/classroomRealtime.js; CONSUMES tests/upgrade/classroom-media-fixture.mjs;
+//              VALIDATES apps/web/src/lib/classroomTelemetry.js
 // Intent:      Exercise real browser signalling against registered scoped handlers with explicit WebRTC and provider doubles and cancellation controls.
 // ----------------------------------------------------------------
 
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { joinClassroom, pullTracks, createPresenceTracker, classroomHealth, presenceHealth,
-    publishPresence, listPresence } from '../../apps/web/src/lib/classroomRealtime.js';
+    publishPresence, listPresence, inboundAudioStats } from '../../apps/web/src/lib/classroomRealtime.js';
 import { mediaFixture } from './classroom-media-fixture.mjs';
+import { createClassroomTelemetry } from '../../apps/web/src/lib/classroomTelemetry.js';
 
-const deferred = () => { let resolve; const promise = new Promise((done) => { resolve = done; }); return { resolve, promise }; };
+const deferred = () => { let resolve, reject; const promise = new Promise((done, fail) => { resolve = done; reject = fail; }); return { resolve, reject, promise }; };
 function browser(t) {
     const f = mediaFixture(), room = f.start(), calls = [], connections = [];
     const overrides = {
         RTCPeerConnection: class {
-            constructor() { this.transceivers = []; this.iceGatheringState = 'complete'; connections.push(this); }
-            addEventListener() {} removeEventListener() {}
+            constructor() {
+                this.transceivers = []; this.iceGatheringState = 'complete'; this.connectionState = 'new';
+                this.listeners = new Map(); this.closeCalls = 0; connections.push(this);
+            }
+            addEventListener(name, listener) {
+                if (!this.listeners.has(name)) this.listeners.set(name, new Set());
+                this.listeners.get(name).add(listener);
+            }
+            removeEventListener(name, listener) { this.listeners.get(name)?.delete(listener); }
+            changeState(state) {
+                this.connectionState = state;
+                for (const listener of this.listeners.get('connectionstatechange') || []) listener();
+            }
             addTransceiver() { const value = { mid: null }; this.transceivers.push(value); return value; }
             async createOffer() { return { type: 'offer', sdp: 'synthetic-offer' }; }
             async createAnswer() { return { type: 'answer', sdp: 'synthetic-answer' }; }
             async setLocalDescription(value) { this.localDescription = value; this.transceivers.forEach((value, i) => { value.mid = String(i); }); }
             async setRemoteDescription() {}
-            close() { this.connectionState = 'closed'; }
+            close() { this.closeCalls++; this.changeState('closed'); }
         },
         RTCSessionDescription: class { constructor(value) { Object.assign(this, value); } },
         MediaStream: class { constructor() { this.tracks = []; } addTrack(track) { this.tracks.push(track); } getTracks() { return this.tracks; } },
+        navigator: { mediaDevices: { getUserMedia: async () => { throw new Error('Unexpected device access in a stubbed source test.'); } } },
         fetch: async (url, init) => {
             const target = new URL(url, 'https://fixture.invalid');
             const path = target.pathname.replace('/hcgi/platform', '');
@@ -187,4 +201,97 @@ test('a legacy or mismatched backend session response cannot authorize a join', 
         assert.equal(f.connections.at(-1).connectionState, 'closed');
     }
     assert.ok(f.calls.every((call) => call.path !== '/api/classroom/tracks'));
+});
+
+test('real peer-state listeners observe recovery and failure without closing media or claiming receipt', async (t) => {
+    const f = browser(t), events = [];
+    const observer = createClassroomTelemetry({ isCurrent: () => true, reportAction: (name, context) => events.push([name, context]) });
+    const handle = await joinClassroom({ room: f.room, authToken: 'owner', onConnectionState: observer.connection });
+    observer.accepted();
+    const pc = handle.pc, listener = [...pc.listeners.get('connectionstatechange')][0];
+    assert.equal(events.filter(([name]) => name === 'classroom.media.connected').length, 0);
+    pc.changeState('connected'); pc.changeState('disconnected');
+    assert.equal(handle.isCurrent(), true); assert.equal(pc.closeCalls, 0);
+    assert.equal(events.filter(([, value]) => value.outcome === 'failure').length, 0);
+    pc.changeState('connected'); pc.changeState('failed'); pc.changeState('closed');
+    assert.equal(pc.closeCalls, 0, 'Telemetry does not own the media lifetime.');
+    assert.deepEqual(events.filter(([name]) => name === 'classroom.media.connected').map(([, value]) => value.reason), ['peer_connected', 'peer_recovered']);
+    assert.deepEqual(events.filter(([name]) => name === 'classroom.media.failure').map(([, value]) => value.reason), ['peer_failed', 'peer_closed']);
+    assert.equal(events.filter(([name]) => name === 'classroom.media.join.result').length, 1);
+    assert.equal(events.filter(([name]) => name === 'classroom.media.received').length, 0);
+    assert.ok(events.every(([, value]) => value.outcome !== 'success'));
+    observer.leave('left'); handle.close();
+    assert.equal(pc.listeners.get('connectionstatechange').size, 0);
+    const ended = events.length;
+    pc.changeState('connected'); listener();
+    assert.equal(events.length, ended);
+});
+
+test('failed joins remove the peer-state listener before closing the connection', async (t) => {
+    const f = browser(t), states = [];
+    await assert.rejects(joinClassroom({ room: f.room, authToken: 'outsider', onConnectionState: (state) => states.push(state) }), /membership/);
+    assert.deepEqual(states, ['new']);
+    assert.equal(f.connections[0].connectionState, 'closed');
+    assert.equal(f.connections[0].listeners.get('connectionstatechange').size, 0);
+});
+
+test('connection observers that throw or reject do not alter successful signalling', async (t) => {
+    const f = browser(t);
+    for (const reject of [false, true]) {
+        const handle = await joinClassroom({ room: f.room, authToken: 'owner', onConnectionState: () => {
+            if (reject) return Promise.reject(new Error('observer unavailable'));
+            throw new Error('observer unavailable');
+        } });
+        assert.ok(handle.sessionId); handle.pc.changeState('connected'); handle.close();
+    }
+    await new Promise((resolve) => setImmediate(resolve));
+});
+
+test('a stubbed device denial reports once and preserves the original rejection despite observer failure', async (t) => {
+    const f = browser(t), error = Object.assign(new Error('private device message'), { name: 'NotAllowedError' });
+    const events = [], observer = createClassroomTelemetry({ isCurrent: () => true, role: 'teach', trackEvent: (name, context) => events.push([name, context]) });
+    navigator.mediaDevices.getUserMedia = async (constraints) => { assert.deepEqual(constraints, { audio: true, video: true }); throw error; };
+    await assert.rejects(joinClassroom({ room: f.room, role: 'teach', authToken: 'owner', onDeviceError: (err) => {
+        observer.deviceError(err); throw new Error('observer failure');
+    } }), (err) => err === error);
+    observer.failure('join_failed', error); observer.leave();
+    assert.deepEqual(events.filter(([name]) => name === 'classroom.media.failure').map(([, value]) => value.reason), ['microphone_camera_denied']);
+    assert.equal(events.filter(([name]) => name === 'classroom.media.join.result').length, 1);
+    assert.doesNotMatch(JSON.stringify(events), /private/);
+    assert.equal(f.calls.length, 0);
+    assert.equal(f.connections[0].listeners.get('connectionstatechange').size, 0);
+});
+
+test('superseding a pending device prompt fences late rejection and retained peer callbacks', async (t) => {
+    const f = browser(t), pending = deferred(), states = [], errors = [];
+    navigator.mediaDevices.getUserMedia = () => pending.promise;
+    let current = true, cancel;
+    const joining = joinClassroom({ room: f.room, role: 'teach', authToken: 'owner', isCurrent: () => current,
+        onCleanup: (close) => { cancel = close; }, onConnectionState: (state) => states.push(state), onDeviceError: (err) => errors.push(err) });
+    const pc = f.connections[0], listener = [...pc.listeners.get('connectionstatechange')][0];
+    current = false;
+    pc.changeState('connected'); listener();
+    cancel(); pending.reject(Object.assign(new Error('late denial'), { name: 'NotAllowedError' }));
+    await assert.rejects(joining, /late denial/);
+    assert.deepEqual(states, ['new']); assert.deepEqual(errors, []);
+    assert.equal(pc.listeners.get('connectionstatechange').size, 0);
+    assert.equal(f.calls.length, 0);
+});
+
+test('the browser stats producer reaches telemetry only as aggregate inbound counters', async () => {
+    const records = [
+        { type: 'inbound-rtp', kind: 'audio', packetsReceived: 3, bytesReceived: 40, id: 'private-track', trackIdentifier: 'private-device' },
+        { type: 'inbound-rtp', kind: 'audio', packetsReceived: 4, bytesReceived: 60, remoteId: 'private-remote' },
+        { type: 'outbound-rtp', kind: 'audio', packetsSent: 100 },
+        { type: 'inbound-rtp', kind: 'video', packetsReceived: 50, bytesReceived: 500 },
+        { type: 'remote-candidate', address: '192.0.2.1' },
+    ];
+    const stats = await inboundAudioStats({ getStats: async () => new Map(records.map((row, i) => [i, row])) });
+    const events = [], observer = createClassroomTelemetry({ isCurrent: () => true, now: () => 0,
+        trackEvent: (name, context) => events.push([name, context]) });
+    observer.stats(stats);
+    const received = events.find(([name]) => name === 'classroom.media.received')[1];
+    assert.deepEqual(received, { section: '/app/classrooms/:room', source: 'classroom_media', operation: 'join', connection_state: 'unknown',
+        outcome: 'observed', reason: 'browser_stats', received_packets: 7, received_bytes: 100, inbound_streams: 2, duration_ms: 0 });
+    assert.doesNotMatch(JSON.stringify(events), /private|192\.0\.2\.1|"success"/);
 });

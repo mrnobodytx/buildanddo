@@ -8,12 +8,14 @@
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-15
-// Depends:     apps/web/src/hooks/useWorkspaceRecords.js, apps/web/src/lib/observability/mutations.js
+// Depends:     apps/web/src/hooks/useWorkspaceRecords.js, apps/web/src/lib/observability/mutations.js,
+//              apps/web/src/lib/observability/runtime.js, apps/web/src/lib/navigationIntent.js
 // EnumType:    Widget
 // EnumEdges:   CONSUMES apps/web/src/hooks/useWorkspaceRecords.js; CONSUMES apps/web/src/lib/observability/mutations.js;
 //              CONSUMES apps/web/src/lib/tutorialCurriculum.js; CONSUMES apps/web/src/components/workspace/TutorialReader.jsx;
 //              CONSUMES apps/pocketbase/pb_migrations/data/starter-tutorials.json; CONSUMES apps/pocketbase/pb_migrations/data/broadcast-classroom-lessons.json;
-//              CONSUMES apps/web/src/lib/tutorialLearning.js; CONSUMES apps/web/src/components/workspace/TutorialGrowth.jsx; CONSUMES apps/web/src/components/workspace/InteractiveTutorial.jsx
+//              CONSUMES apps/web/src/lib/tutorialLearning.js; CONSUMES apps/web/src/components/workspace/TutorialGrowth.jsx; CONSUMES apps/web/src/components/workspace/InteractiveTutorial.jsx;
+//              CONSUMES apps/web/src/lib/observability/runtime.js; CONSUMES apps/web/src/lib/navigationIntent.js
 // DAG Node:    none
 // Intent:      Reuse real lessons and recoverable per-account progress on the home page, Docs and workspace Field Manual.
 // ───────────────────────────────────────────────────────────────
@@ -35,9 +37,12 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useDemoMode } from '@/hooks/useDemoMode';
 import { useRecords } from '@/hooks/useWorkspaceRecords';
 import { observeMutation } from '@/lib/observability/mutations';
+import { readFailed } from '@/lib/observability/runtime';
+import { telemetrySection } from '@/lib/navigationIntent';
 import { lessonProgress, mergeTutorials, selectTutorials, validLesson } from '@/lib/tutorialCurriculum';
 import { createTutorialLearningClient } from '@/lib/tutorialLearning';
 import pb from '@/lib/pocketbaseClient';
+import { PUBLIC_ACTIONS, trackPublicAction } from '@/lib/publicActions';
 
 const authoredLessons = [...curriculum.lessons, ...broadcastCurriculum.lessons, ...authorityCurriculum.lessons];
 function CatalogView({ lessons, progress = [], readingHistory = [], historyKnown = false, progressKnown = false, onGuided, limit = 0, initialCategory = 'all', initialLesson = '', onLinkedLesson }) {
@@ -57,6 +62,13 @@ function CatalogView({ lessons, progress = [], readingHistory = [], historyKnown
     const visible = limit ? matches.slice(0, limit) : matches;
     const completed = lessons.filter((lesson) => lesson.persistedId && progress.find((row) => row.tutorial === lesson.persistedId)?.status === 'completed').length;
     const current = selected && lessons.find((lesson) => lesson.catalogueKey === selected);
+    const openReader = (tutorial, event) => {
+        opener.current = event.currentTarget;
+        const bounds = event.currentTarget.closest('li')?.getBoundingClientRect();
+        origin.current = bounds ? { left: bounds.left, top: bounds.top } : null;
+        setSelected(tutorial.catalogueKey);
+        trackPublicAction(PUBLIC_ACTIONS.LESSON_OPEN, 'opened', 'user_requested', undefined, { mode: 'reader' });
+    };
     return <div className="space-y-5">
         <p className="flex items-center gap-2 text-sm text-muted-foreground"><BookOpen className="h-4 w-4" aria-hidden="true" />
             {progressKnown ? `${completed} of ${lessons.length} guided tutorials completed` : `${lessons.length} lessons to explore`}
@@ -80,7 +92,7 @@ function CatalogView({ lessons, progress = [], readingHistory = [], historyKnown
                     {historical && <p className="text-xs leading-5 text-muted-foreground">Historical reading: {historical} (self-reported, not guided completion).</p>}
                     <div className="mt-auto flex flex-wrap gap-2">
                         {onGuided && tutorial.persistedId && validLesson(tutorial.lesson) && <Button size="sm" aria-label={`Start interactive tutorial: ${tutorial.title}`} onClick={(event) => onGuided(tutorial.persistedId, event.currentTarget)}>Interactive tutorial</Button>}
-                        <Button size="sm" variant="secondary" aria-label={`${action} ${tutorial.title}`} onClick={(event) => { opener.current = event.currentTarget; const bounds = event.currentTarget.closest('li')?.getBoundingClientRect(); origin.current = bounds ? { left: bounds.left, top: bounds.top } : null; setSelected(tutorial.catalogueKey); }}>{action} lesson</Button>
+                        <Button size="sm" variant="secondary" aria-label={`${action} ${tutorial.title}`} onClick={(event) => openReader(tutorial, event)}>{action} lesson</Button>
                     </div>
                 </Card></li>;
             })}
@@ -109,25 +121,35 @@ function SignedInCatalog({ userId, limit, initialCategory, initialLesson, provid
     const refreshGrowth = useCallback(async (page = 1) => {
         const request = ++growthRequest.current;
         setGrowth({ data: null, loading: true, error: '', requestedPage: page });
+        const pathname = globalThis.window?.location?.pathname;
+        const section = telemetrySection(pathname);
         const result = await learning.read('', page);
         if (!mounted.current || request !== growthRequest.current || result.reason === 'scope_changed') return;
+        if (!result.ok && pathname === globalThis.window?.location?.pathname)
+            readFailed(section, 'tutorial_catalog', result.reason === 'wait' ? 'rate_limited' : result.reason);
         setGrowth(result.ok ? { data: result.data, loading: false, error: '', requestedPage: page } :
             { data: null, loading: false, error: result.error, requestedPage: page });
     }, [learning]);
     const refreshStates = useCallback(async () => {
         const request = ++statesRequest.current;
         setStates({ items: [], loading: true, error: '' });
+        const pathname = globalThis.window?.location?.pathname;
+        const section = telemetrySection(pathname);
         const result = await learning.readStates();
         if (!mounted.current || request !== statesRequest.current || result.reason === 'scope_changed') return;
+        if (!result.ok && pathname === globalThis.window?.location?.pathname)
+            readFailed(section, 'tutorial_catalog', result.reason === 'wait' ? 'rate_limited' : result.reason);
         setStates(result.ok ? { items: result.data.items, loading: false, error: '' } : { items: [], loading: false, error: result.error });
     }, [learning]);
     useEffect(() => {
         refreshGrowth(); refreshStates();
         return () => { growthRequest.current++; statesRequest.current++; };
     }, [refreshGrowth, refreshStates]);
-    const openGuided = (tutorialId, opener) => setGuided({ tutorialId, opener,
-        client: createTutorialLearningClient({ client: pb, accountId: userId,
+    const openGuided = (tutorialId, opener) => {
+        setGuided({ tutorialId, opener, client: createTutorialLearningClient({ client: pb, accountId: userId,
             isCurrent: () => mounted.current, observe: observeMutation }) });
+        trackPublicAction(PUBLIC_ACTIONS.LESSON_OPEN, 'opened', 'user_requested', undefined, { mode: 'guided' });
+    };
     const lessons = mergeTutorials(providedLessons || tutorials.records, providedLessons ? [] : authoredLessons);
     const progressKnown = !states.loading && !states.error && !tutorials.loading && !tutorials.degraded;
     return <div className="ph-no-capture space-y-5" data-dd-privacy="mask">

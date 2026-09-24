@@ -601,7 +601,7 @@ test('the health route answers without a room, a credential or a publisher name'
         const missing = mediaFixture();
         missing.migration(migration).down();
         const down = missing.request('GET', '/api/classroom/presence/health', { actor: null });
-        assert.equal(down.status, 200);
+        assert.equal(down.status, 503);
         assert.equal(down.body.ok, false);
         assert.equal(down.body.collection_installed, false);
         assert.equal(missing.requests.length, 0);

@@ -392,7 +392,8 @@
       ],
       "path": "scripts/ci/integrity_regression_check.py",
       "referenced_by": [
-        "scripts/deploy/ship.py"
+        "scripts/deploy/ship.py",
+        "tests/deploy/test_ship_telemetry.py"
       ],
       "wired_into_ci": true
     },
@@ -1251,6 +1252,7 @@
       "apps/web/tools/generate-seo.mjs",
       "apps/web/tools/lint.mjs",
       "apps/web/tools/observability-smoke.mjs",
+      "apps/web/tools/release-telemetry.mjs",
       "apps/web/vite.config.js",
       "scripts/deploy/roadmap_status.py",
       "scripts/deploy/ship.py",
@@ -1356,7 +1358,7 @@
     "js_runners": [
       "vitest"
     ],
-    "js_test_files": 90,
+    "js_test_files": 91,
     "js_test_script": true,
     "junit_configured": true,
     "python_suite_entrypoints": [
