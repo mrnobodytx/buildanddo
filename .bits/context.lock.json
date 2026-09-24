@@ -93,7 +93,7 @@
     },
     {
       "area": "ci",
-      "evidence": "referenced by: scripts/ci/hostinger_checks.py",
+      "evidence": "referenced by: scripts/ci/hostinger_checks.py, scripts/deploy/apply_production_runtime_config.py",
       "severity": "high",
       "srs": "",
       "statement": "scripts/ci/ocn_feature_sweep.py is never executed by GitHub Actions"
@@ -223,6 +223,13 @@
       "severity": "high",
       "srs": "",
       "statement": "scripts/ci/verify_public_disclosure.py is never executed by GitHub Actions"
+    },
+    {
+      "area": "ci",
+      "evidence": "referenced by: nothing in this repo",
+      "severity": "high",
+      "srs": "",
+      "statement": "scripts/ci/workspace_readiness.py is never executed by GitHub Actions"
     },
     {
       "area": "ci",
@@ -392,7 +399,8 @@
     {
       "path": "scripts/ci/ocn_feature_sweep.py",
       "referenced_by": [
-        "scripts/ci/hostinger_checks.py"
+        "scripts/ci/hostinger_checks.py",
+        "scripts/deploy/apply_production_runtime_config.py"
       ],
       "wired_into_ci": false
     },
@@ -533,12 +541,17 @@
       "wired_into_ci": false
     },
     {
+      "path": "scripts/ci/workspace_readiness.py",
+      "referenced_by": [],
+      "wired_into_ci": false
+    },
+    {
       "path": "services/praxis_evidence/run_all_tests.py",
       "referenced_by": [],
       "wired_into_ci": false
     }
   ],
-  "generated_at": "2026-09-24T02:37:22.271173+00:00",
+  "generated_at": "2026-09-24T04:00:05.591758+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -952,17 +965,18 @@
       "apps/web/tools/lint.mjs",
       "apps/web/tools/observability-smoke.mjs",
       "apps/web/vite.config.js",
+      "scripts/deploy/apply_production_runtime_config.py",
       "scripts/deploy/roadmap_status.py",
       "scripts/deploy/ship.py",
       "scripts/deploy/staging-readback.sh"
     ],
     "migrations": 60,
-    "python_files": 303,
+    "python_files": 305,
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 1417,
-    "web_source_files": 371
+    "tracked_files": 1431,
+    "web_source_files": 383
   },
   "schema_version": 1,
   "sprint_readiness": {
@@ -1041,22 +1055,22 @@
         "why": "Competition readiness requires a reproducible end-to-end story and actual submission criteria."
       }
     ],
-    "source_sha256": "5f01a01452dbb13d13660d45d033a95f510247541814faaeee4ec34c17e6a0b6",
+    "source_sha256": "b78deacca6bd309c0781e82a8e9563060134b1f0aef4a72575ce2c5bce726655",
     "state": "PASS"
   },
   "summary": {
-    "findings": 37,
-    "findings_high": 37,
+    "findings": 38,
+    "findings_high": 38,
     "pipelines": 7,
     "srs_open": 33,
     "srs_total": 37,
-    "unwired_gates": 33
+    "unwired_gates": 34
   },
   "tests": {
     "js_runners": [
       "vitest"
     ],
-    "js_test_files": 78,
+    "js_test_files": 90,
     "js_test_script": true,
     "junit_configured": true,
     "python_suite_entrypoints": [
