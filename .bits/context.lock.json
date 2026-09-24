@@ -18,7 +18,7 @@
     },
     {
       "area": "ci",
-      "evidence": "referenced by: nothing in this repo",
+      "evidence": "referenced by: tests/upgrade/test_readme_check.py",
       "severity": "high",
       "srs": "",
       "statement": "scripts/ci/changelog_gen.py is not configured in reachable GitLab jobs"
@@ -193,7 +193,7 @@
     },
     {
       "area": "ci",
-      "evidence": "referenced by: scripts/ci/hostinger_replay.py, scripts/deploy/roadmap_status.py, tools/day21_closure.py, tools/evidence_verify.py",
+      "evidence": "referenced by: scripts/ci/hostinger_replay.py, scripts/deploy/roadmap_status.py, tests/upgrade/test_readme_check.py, tools/day21_closure.py, tools/evidence_verify.py",
       "severity": "high",
       "srs": "",
       "statement": "scripts/ci/sprint_cycle.py is not configured in reachable GitLab jobs"
@@ -289,7 +289,9 @@
         "github"
       ],
       "path": "scripts/ci/changelog_gen.py",
-      "referenced_by": [],
+      "referenced_by": [
+        "tests/upgrade/test_readme_check.py"
+      ],
       "wired_into_ci": false
     },
     {
@@ -534,6 +536,17 @@
     },
     {
       "configured_providers": [
+        "gitlab",
+        "github"
+      ],
+      "path": "scripts/ci/readme_check.py",
+      "referenced_by": [
+        "tests/upgrade/test_readme_check.py"
+      ],
+      "wired_into_ci": true
+    },
+    {
+      "configured_providers": [
         "gitlab"
       ],
       "path": "scripts/ci/selftest_sprint_replay.py",
@@ -546,6 +559,7 @@
       "referenced_by": [
         "scripts/ci/hostinger_replay.py",
         "scripts/deploy/roadmap_status.py",
+        "tests/upgrade/test_readme_check.py",
         "tools/day21_closure.py",
         "tools/evidence_verify.py"
       ],
@@ -583,6 +597,17 @@
         "tests/upgrade/test_gitlab_acceptance.py",
         "tests/upgrade/test_hostinger_readiness.py",
         "tests/upgrade/test_supply_chain.py"
+      ],
+      "wired_into_ci": true
+    },
+    {
+      "configured_providers": [
+        "gitlab",
+        "github"
+      ],
+      "path": "scripts/ci/system_growth.py",
+      "referenced_by": [
+        "tests/upgrade/test_system_growth.py"
       ],
       "wired_into_ci": true
     },
@@ -659,7 +684,7 @@
       "wired_into_ci": true
     }
   ],
-  "generated_at": "2026-09-24T19:58:19.906711+00:00",
+  "generated_at": "2026-09-24T20:05:08.889589+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -717,7 +742,7 @@
       },
       {
         "code": "SRS-BUILDANDDO-CHANGELOG-001",
-        "risk": "A0",
+        "risk": "A2",
         "spec": ".bits/srs/SRS-BUILDANDDO-CHANGELOG-001.md",
         "status": "in_progress",
         "title": "Public record - generated changelog, release summary, README roadmap mirror"
@@ -840,6 +865,13 @@
         "spec": ".bits/srs/SRS-BUILDANDDO-FEDERAL-SEMANTIC-ISR-001.md",
         "status": "proposed",
         "title": "Semantic ISR research"
+      },
+      {
+        "code": "SRS-BUILDANDDO-GROWTH-001",
+        "risk": "A2",
+        "spec": ".bits/srs/SRS-BUILDANDDO-GROWTH-001.md",
+        "status": "in_progress",
+        "title": "System growth lock - per-system development and progression, measured from the repository and recorded on every merge"
       },
       {
         "code": "SRS-BUILDANDDO-HEADERS-001",
@@ -1045,6 +1077,22 @@
       ]
     },
     {
+      "file": ".github/workflows/changelog.yml",
+      "kind": "workflow",
+      "local_actions": [],
+      "name": "BuildAndDo Changelog",
+      "npm_scripts": [],
+      "provider": "github",
+      "scripts": [
+        "scripts/ci/changelog_gen.py",
+        "scripts/ci/readme_check.py"
+      ],
+      "triggers": [
+        "push",
+        "workflow_dispatch"
+      ]
+    },
+    {
       "file": ".github/workflows/citadel-stack-telemetry.yml",
       "kind": "workflow",
       "local_actions": [],
@@ -1093,6 +1141,21 @@
       ]
     },
     {
+      "file": ".github/workflows/growth.yml",
+      "kind": "workflow",
+      "local_actions": [],
+      "name": "BuildAndDo System Growth",
+      "npm_scripts": [],
+      "provider": "github",
+      "scripts": [
+        "scripts/ci/system_growth.py"
+      ],
+      "triggers": [
+        "push",
+        "workflow_dispatch"
+      ]
+    },
+    {
       "file": ".github/workflows/pr-governance.yml",
       "kind": "workflow",
       "local_actions": [
@@ -1105,8 +1168,10 @@
         "scripts/ci/agent_context.py",
         "scripts/ci/changelog_gen.py",
         "scripts/ci/hostinger_readiness.py",
+        "scripts/ci/readme_check.py",
         "scripts/ci/submission_readiness.py",
         "scripts/ci/supply_chain.py",
+        "scripts/ci/system_growth.py",
         "scripts/ci/verify_public_boundary.py"
       ],
       "triggers": [
@@ -1162,16 +1227,20 @@
       "provider": "gitlab",
       "required_scripts": [
         "scripts/ci/integrity_regression_check.py",
+        "scripts/ci/readme_check.py",
         "scripts/ci/selftest_sprint_replay.py",
         "scripts/ci/sprint_replay.py",
+        "scripts/ci/system_growth.py",
         "scripts/ci/verify_public_boundary.py",
         "services/praxis_evidence/run_all_tests.py",
         "tools/buildanddo_release.py"
       ],
       "scripts": [
         "scripts/ci/integrity_regression_check.py",
+        "scripts/ci/readme_check.py",
         "scripts/ci/selftest_sprint_replay.py",
         "scripts/ci/sprint_replay.py",
+        "scripts/ci/system_growth.py",
         "scripts/ci/verify_public_boundary.py",
         "services/praxis_evidence/run_all_tests.py",
         "tools/buildanddo_release.py"
@@ -1274,11 +1343,11 @@
       "scripts/deploy/staging-readback.sh"
     ],
     "migrations": 75,
-    "python_files": 443,
+    "python_files": 447,
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 1807,
+    "tracked_files": 1817,
     "web_source_files": 428
   },
   "schema_version": 1,
@@ -1358,15 +1427,15 @@
         "why": "Competition readiness requires an evidence-backed learning-through-work journey, a reproducible replay and actual submission criteria."
       }
     ],
-    "source_sha256": "d5bd73526a6c605fd0a89b035eca9756b41f8946c206d22d72943879ed3af2c7",
+    "source_sha256": "ffa99d355d8797d3f6eec591f1e7f7900d08c04051fe46babda1498df90ccdd2",
     "state": "PASS"
   },
   "summary": {
     "findings": 36,
     "findings_high": 36,
-    "pipelines": 10,
-    "srs_open": 45,
-    "srs_total": 49,
+    "pipelines": 12,
+    "srs_open": 46,
+    "srs_total": 50,
     "unwired_gates": 33
   },
   "tests": {

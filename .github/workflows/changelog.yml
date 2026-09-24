@@ -1,0 +1,107 @@
+# ─── CGRF Header ───────────────────────────────────────────────
+# File:        .github/workflows/changelog.yml
+# Stage:       11_COMMIT
+# SRS:         SRS-BUILDANDDO-CHANGELOG-001
+# CAPS:        pending
+# CK:          pending
+# Dispatch:    VCC-BUILDANDDO-CHANGELOG-001
+# Seat:        BITS-CODEGEN
+# Owner:       Citadel Nexus Inc.
+# Created:     2026-09-24
+# Depends:     scripts/ci/changelog_gen.py, scripts/ci/readme_check.py, CHANGELOG.md
+# EnumType:    Workflow
+# EnumEdges:   CONSUMES scripts/ci/changelog_gen.py; PRODUCES CHANGELOG.md;
+#              VALIDATES README.md
+# Intent:      Keep CHANGELOG.md equal to the history it claims to describe, without
+#              relying on anyone remembering to regenerate it.
+# ───────────────────────────────────────────────────────────────
+
+name: BuildAndDo Changelog
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write   # CHANGELOG.md is committed back to main; nothing else is written
+
+# Each run regenerates from the whole history, so a newer run supersedes an
+# older one completely. Queue rather than cancel, so a push never loses the
+# race to an older run that finishes after it.
+concurrency:
+  group: buildanddo-changelog
+  cancel-in-progress: false
+
+jobs:
+  changelog:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # The changelog is a function of the full history; a shallow clone
+          # would silently drop every entry older than the fetch depth.
+          fetch-depth: 0
+          ref: ${{ github.ref_name }}
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Regenerate CHANGELOG.md from main history
+        run: python scripts/ci/changelog_gen.py --ref HEAD --no-summary
+
+      # Reported, not blocking: the README gate is enforced on pull requests by
+      # pr-governance.yml. Here it only tells whoever reads the run that main
+      # has drifted.
+      - name: Report README drift
+        continue-on-error: true
+        run: python scripts/ci/readme_check.py --check
+
+      - name: Commit the refreshed changelog
+        run: |
+          set -uo pipefail
+
+          if git diff --quiet -- CHANGELOG.md; then
+            echo "CHANGELOG.md already matches main; nothing to commit."
+            exit 0
+          fi
+
+          git config user.name "BuildAndDo Changelog Bot"
+          git config user.email "buildanddo-changelog@users.noreply.github.com"
+          git add CHANGELOG.md
+
+          # [skip ci] plus the fact that GITHUB_TOKEN pushes do not start new
+          # workflow runs keep this push from retriggering anything. The
+          # `Changelog: skip` trailer keeps the commit out of the changelog
+          # itself; without it the file would be stale again the moment it landed.
+          git commit -m "docs(changelog): refresh from main history [skip ci]" \
+            -m "Written by .github/workflows/changelog.yml from scripts/ci/changelog_gen.py." \
+            -m "SRS: SRS-BUILDANDDO-CHANGELOG-001
+          Changelog: skip"
+
+          # A rejected push means main moved. Regenerating on the new head is
+          # correct and cheap, and the queued run for that push would do the
+          # same, so this retries and then warns rather than failing main.
+          for attempt in 1 2 3; do
+            if git push origin "HEAD:${{ github.ref_name }}"; then
+              echo "changelog pushed on attempt ${attempt}."
+              exit 0
+            fi
+            echo "push rejected; regenerating on the current head (attempt ${attempt})."
+            git fetch origin "${{ github.ref_name }}" || break
+            git reset --hard "origin/${{ github.ref_name }}"
+            python scripts/ci/changelog_gen.py --ref HEAD --no-summary
+            if git diff --quiet -- CHANGELOG.md; then
+              echo "the new head already carries a current changelog."
+              exit 0
+            fi
+            git add CHANGELOG.md
+            git commit -m "docs(changelog): refresh from main history [skip ci]" \
+              -m "Written by .github/workflows/changelog.yml from scripts/ci/changelog_gen.py." \
+              -m "SRS: SRS-BUILDANDDO-CHANGELOG-001
+          Changelog: skip"
+          done
+
+          echo "::warning title=Changelog not pushed::CHANGELOG.md was regenerated but could not be pushed to ${{ github.ref_name }}. The next push to main will regenerate it."

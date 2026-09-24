@@ -17,7 +17,7 @@
 
 # SRS-BUILDANDDO-CHANGELOG-001 — Public record: changelog and roadmap mirror
 
-**Status:** in_progress **Risk:** A0 **Seat:** BITS-CODEGEN
+**Status:** in_progress **Risk:** A2 **Seat:** BITS-CODEGEN **Dispatch:** VCC-BUILDANDDO-CHANGELOG-001
 
 ## Problem
 
@@ -60,6 +60,27 @@ facts as machine-readable telemetry so a pipeline can consume them.
   public record the changelog covers backwards. Hand-mirrored today; the two
   drifting apart is a known cost, recorded here rather than hidden.
 
+### Extension, 2026-09-24 (owner request, VCC-BUILDANDDO-CHANGELOG-001)
+
+Measured before the change: the README named 2 of the 11 directories under `apps/`, none of the
+CI definitions, and had no roadmap section at all. `CHANGELOG.md` stopped at 2026-09-10 while 399
+non-merge commits had landed on `main`. Nothing failed.
+
+- `README.md` rewritten from a survey of the tree: every app and service, the connected external
+  surfaces (by name and variable name only, never a value), the CI definitions and the docs index.
+- The roadmap mirror becomes a generated block between `readme:roadmap` markers, rendered from
+  `scripts/ci/sprint_cycle.py` `MILESTONES` (the canonical plan that `RoadmapPage.jsx` also mirrors)
+  rather than hand-copied, so the "known cost" of drift above is now a failing check.
+- `scripts/ci/readme_check.py`: relative links and anchors resolve; every `apps/*`, `services/*`,
+  `.github/workflows/*.yml` and `.gitlab-ci.yml` is named; the roadmap block matches its source.
+  Blocking in `pr-governance.yml` and in GitLab `integrity_gate`.
+- `.github/workflows/changelog.yml`: on every push to `main`, regenerate `CHANGELOG.md` and commit
+  it back, following `evidence-epoch.yml`'s precedent. Its commit carries a `Changelog: skip`
+  trailer, which `changelog_gen.py` honours, so the file is not stale by its own refresh.
+- A generated README catalogue: every `README.md` in the tree (49 at the time of writing), grouped
+  by area, titled by its first heading and summarised by its CGRF `Intent:` line or opening
+  paragraph. A README added anywhere fails `readme_check.py` until the catalogue carries it.
+
 ## Out of scope
 
 - Tagging or version numbering. That is SRS-BUILDANDDO-RELEASE-TAG-001.
@@ -77,7 +98,15 @@ facts as machine-readable telemetry so a pipeline can consume them.
 4. `state/changelog/latest.json` reports the same entry count as the document
    and lists only SRS codes that appear in real commit messages.
 5. Every row of the README roadmap table matches a `MILESTONES` entry in
-   `apps/web/src/pages/RoadmapPage.jsx` by day, title and planned value.
+   `scripts/ci/sprint_cycle.py` by day, title and planned value
+   (`python scripts/ci/readme_check.py --check`).
+6. `python -m unittest tests.upgrade.test_readme_check` passes, including a control per rule
+   (an undocumented app, a dead link, a dead anchor, a hand-edited roadmap row) that fails the check.
+7. A commit with a `Changelog: skip` trailer is absent from the generated changelog; a commit that
+   only mentions the phrase mid-sentence is present.
+8. No changelog subject carries an address or a fleet machine name: `changelog_gen.py` applies
+   `public_redaction.Rule().redact` to every subject, and
+   `python scripts/ci/public_redaction.py scan CHANGELOG.md README.md` passes.
 
 ## Verification
 
