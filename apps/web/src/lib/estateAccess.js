@@ -10,7 +10,8 @@
 // Depends:     apps/web/src/contexts/AuthContext.jsx, apps/pocketbase/pb_migrations/1789200000_add_users_cnwb_seat_level.js
 // EnumType:    Module
 // EnumEdges:   CONSUMES apps/web/src/contexts/AuthContext.jsx; VALIDATES apps/pocketbase/pb_hooks/estate.pb.js
-// Intent:      Estate surfaces (Fleet) render only for a signed-in user whose account is a master-level CNWB seat.
+// Intent:      Estate surfaces (Fleet, Platform Health) render only for a signed-in user whose account is a
+//              master-level CNWB seat.
 // ───────────────────────────────────────────────────────────────
 
 /**

@@ -71,7 +71,7 @@ const NAV = [
     { to: '/app/roadmap', label: 'Roadmap', icon: Gauge },
     { to: '/app/operations', label: 'Operations Desk', icon: Server },
     { to: '/app/fleet', label: 'Fleet', icon: Network, estate: true },
-    { to: '/app/platforms', label: 'Platform Health', icon: Plug },
+    { to: '/app/platforms', label: 'Platform Health', icon: Plug, estate: true },
     { to: '/app/integrations', label: 'Sinks & extensions', icon: Plug },
     { to: '/app/admin', label: 'Administration', icon: ShieldCheck, admin: true },
     { to: '/app/settings', label: 'Settings', icon: Settings },
@@ -80,7 +80,8 @@ const NAV = [
 function NavList({ onNavigate }) {
     const access = useWorkspaceAccess();
     const { user } = useAuth();
-    // Estate entries (Fleet) are for master-level CNWB seats only; the level is backend-owned (estate.pb.js).
+    // Estate entries (Fleet, Platform Health) are for master-level CNWB seats only; the level is backend-owned
+    // (estate.pb.js). An entry left off this filter stays in the sidebar and bounces the reader back to /app.
     const masterSeat = isMasterSeat(user);
     return (
         <nav className="flex flex-col gap-1" aria-label="Workspace">

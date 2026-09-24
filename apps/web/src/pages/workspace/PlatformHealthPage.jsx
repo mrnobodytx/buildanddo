@@ -7,21 +7,21 @@
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-11
-// Depends:     scripts/ci/fleet_report.py,
+// Depends:     apps/pocketbase/pb_hooks/estate.pb.js,
+//              apps/web/src/lib/pocketbaseClient.js,
 //              apps/web/src/components/workspace/workspaceHelpers.jsx,
 //              apps/web/src/components/site/ui.jsx
 // EnumType:    Widget
-// EnumEdges:   CONSUMES apps/web/public/platform-health.json;
-//              DEPENDS_ON scripts/ci/fleet_report.py
+// EnumEdges:   CONSUMES GET /api/buildanddo/estate/platform-health;
+//              DEPENDS_ON apps/pocketbase/pb_hooks/estate.pb.js
 // Intent:      Say which of the operating company's connected platforms are
-//              actually being used - and say whose they are - keeping "unknown"
-//              separate from "unused" so an unreadable entitlement is never
-//              counted as a deliberate gap.
+//              actually being used, to the operator who owns them, keeping
+//              "unknown" separate from "unused" so an unreadable entitlement is
+//              never counted as a deliberate gap.
 // ───────────────────────────────────────────────────────────────
 
 import {
     ArrowUpDown,
-    Building2,
     CircleSlash,
     Gauge,
     Layers,
@@ -42,25 +42,22 @@ import {
 } from '@/components/workspace/workspaceHelpers';
 import { DegradedNotice, ListSkeleton } from '@/components/workspace/WorkspaceNotices';
 import { formatDate } from '@/lib/format';
+import pocketbaseClient from '@/lib/pocketbaseClient';
 import { cn } from '@/lib/utils';
 
-const REPORT_URL = '/platform-health.json';
+// The full assessment is no longer a published file: the backend answers this route to a master
+// seat and to nobody else (estate.pb.js). The narrowed public file that remains carries only the
+// per-platform state the marketing status page reads.
+const REPORT_ROUTE = '/api/buildanddo/estate/platform-health';
 
+// WHAT A REJECTION HERE MEANS, AND ONLY WHAT IT MEANS. An absent report is not a rejection: the
+// route answers 200 with {state:'UNMEASURED'} for that, handled below. Reaching this branch means
+// the request itself did not complete, so the copy may not name a cause the page does not have.
 const MISSING_REPORT =
-    'platform-health.json was not served. It is written at build time by scripts/ci/fleet_report.py, so an absent file means the projection did not run — not that no platform is connected.';
+    'The platform report could not be read: the request to the estate route did not complete. Nothing is drawn below, because a failed read is not an estate with nothing connected.';
 
 const UNMEASURED_REPORT =
     'The platform report answered but carried no measurement, so there is nothing to show yet.';
-
-// WHOSE ACCOUNTS THESE ARE. The report is one file, built once and served
-// byte-identically to every workspace; this page imports no workspace context
-// because there is no per-workspace reading to import. Someone opening it
-// inside their own workspace will take the numbers for their own unless the
-// page says otherwise before they reach the first one, which a grey provenance
-// tag beside the title never managed to do. So the statement is made twice:
-// here, above the dashboard, and again in the page description.
-const OPERATOR_SCOPE =
-    'Every figure below is read from the vendor accounts of Citadel Nexus Inc, the company that operates this product. It is the same reading for every workspace and does not change with who is signed in.';
 
 const NOT_LIVE = 'Nothing on this page is measured when you open it.';
 
@@ -84,33 +81,29 @@ function ageSentence(hasReport, observedLabel) {
 }
 
 /**
- * The scope statement that sits above the dashboard.
+ * When the reading was taken, and that opening the page does not take a new one.
+ *
+ * This was an amber warning card headed "not your workspace", written to stop a passing workspace
+ * user reading the operating company's vendor figures as their own. The route is now a master
+ * seat's only, so that reader cannot arrive: the warning was addressed to nobody, and it named
+ * whose the accounts are for a second time on a page that already says so in its first sentence.
+ * What it carried that nothing else did - the age of the reading, and that this is a transcription
+ * rather than a gauge - is kept here, in one line, at the weight an owner needs.
  *
  * @param {object} props Component props.
  * @param {boolean} props.hasReport Whether a report has been read at all.
  * @param {string|null} props.observedLabel The formatted observation date, if any.
- * @returns {JSX.Element} The notice.
+ * @returns {JSX.Element} The provenance line.
  */
-function OperatorScopeNotice({ hasReport, observedLabel }) {
+function ReadingProvenance({ hasReport, observedLabel }) {
     return (
-        <Card
+        <p
             role="note"
             data-testid="platform-health-scope"
-            className="border-[hsl(var(--amber))]/40 bg-[hsl(var(--amber))]/10 p-4"
+            className="font-evidence mt-4 border-l-2 border-border/80 pl-3 text-xs leading-relaxed text-muted-foreground"
         >
-            <div className="flex items-start gap-3">
-                <Building2 className="mt-0.5 h-4 w-4 shrink-0 text-amber-warm" />
-                <div className="text-sm leading-relaxed">
-                    <p className="font-semibold text-foreground">
-                        Operating company infrastructure, not your workspace
-                    </p>
-                    <p className="mt-1 text-muted-foreground">{OPERATOR_SCOPE}</p>
-                    <p className="mt-1 text-muted-foreground">
-                        {ageSentence(hasReport, observedLabel)}
-                    </p>
-                </div>
-            </div>
-        </Card>
+            {ageSentence(hasReport, observedLabel)}
+        </p>
     );
 }
 
@@ -272,10 +265,8 @@ export default function PlatformHealthPage() {
         let cancelled = false;
         setLoading(true);
         setFailed(false);
-        fetch(REPORT_URL, { cache: 'no-store' })
-            .then((response) =>
-                response.ok ? response.json() : Promise.reject(new Error(`status ${response.status}`)),
-            )
+        pocketbaseClient
+            .send(REPORT_ROUTE, { method: 'GET', requestKey: null })
             .then((data) => {
                 if (cancelled) return;
                 setReport(data);
@@ -339,7 +330,7 @@ export default function PlatformHealthPage() {
         <div className="space-y-8">
             <PageHeader
                 title="Platform Health"
-                description="Which of the platforms Citadel Nexus Inc connects to are earning their keep. These are the operating company's own accounts and not this workspace's. A feature is only counted against them when it is available and off - an entitlement that could not be read stays Unknown and is left out of the score."
+                description="Which of the vendor platforms Citadel Nexus Inc connects to are earning their keep, read from the operating company's own accounts. A feature is only counted against a platform when it is available and switched off - an entitlement that could not be read stays Unknown and is left out of the score."
                 actions={
                     report ? (
                         <ProvenanceTag
@@ -349,9 +340,9 @@ export default function PlatformHealthPage() {
                         />
                     ) : null
                 }
-            />
-
-            <OperatorScopeNotice hasReport={Boolean(report)} observedLabel={observedLabel} />
+            >
+                <ReadingProvenance hasReport={Boolean(report)} observedLabel={observedLabel} />
+            </PageHeader>
 
             {failed && (
                 <DegradedNotice message={MISSING_REPORT} onRetry={() => setAttempt((n) => n + 1)} />
