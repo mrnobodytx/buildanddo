@@ -87,10 +87,30 @@ path intact.
    `PB_SUPERUSER_PASSWORD` and saves a record; a host without them fails the migration and
    PocketBase does not start. Either set both on the unit for that one restart, or keep the file
    off hosts that already have their superusers. It was withheld from staging for this reason.
-6. **Seat display names.** `BUILDANDDO_SEAT_PERSONAS` (JSON, seat id to persona, 0600
-   EnvironmentFile beside the dossier keyring) on each unit, then one restart, and the classroom
-   roster stops showing machine names. The mapping is derived from the fleet map of record; it
-   is deliberately not written into this repository.
+6. **Seat display names.** On staging this is already done and durable: the six box seats
+   display their guildmaster names, and the migration ledger shows
+   `1791800000_seat_display_is_persona.js` applied on 2026-09-21 with the mapping present at
+   that moment; the variable is no longer on the unit and does not need to be. The migration is
+   one-shot: it reads `BUILDANDDO_SEAT_PERSONAS` when it runs and is then recorded as applied, so
+   on production the mapping must be present on the unit BEFORE that migration first runs, or
+   the migration must be reverted by name (`./pocketbase horizons migrations:revert`, from
+   `custom-migrations-cmd.pb.js`) and re-applied with the mapping present. The mapping is derived
+   from the fleet map of record and is deliberately not written into this repository.
+
+## Acceptance on the current staging (2026-09-23, after the deploy)
+
+- **Four-box guildmaster class** (`scripts/ci/ocn_classroom_fleet.py run`, each seat signing on
+  its own machine): run 3 of 3 passed 19 of 20 checks, readback from a joiner `status=live,
+  participants=4, messages=2`, four distinct egress addresses, membership control refused as
+  required. The one failed check in runs 1 and 3 was the same step, `sterling speaks`, at
+  `stage=ssh` with no HTTP status: the orchestration hop from the release workstation to that
+  box failed on its second consecutive call, not the platform (the box's join seconds earlier
+  answered 200 and the joiner readback counts it present). Run 1 also saw two transient 409
+  "This class changed" refusals that did not recur.
+- **Box-side media proof** (`scripts/ci/classroom_video_proof.py` on the Scholar box against
+  staging): login 200, session 200, transport connected, ICE completed, two tracks pushed,
+  presence health six publishers, verification `ECHO_ON_READ`. Receipt on the box at
+  `/tmp/classroom_video_proof.json`, 23:53:41Z.
 
 ## Rollback
 
