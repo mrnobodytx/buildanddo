@@ -68,6 +68,9 @@ links (#77). The replay had no conflicts. Local run on Windows, from a checkout 
 - `apps/edge/wrangler.toml` carries the Cloudflare account id and one D1 database id, imported as the
   deployed Worker had them. Neither grants access alone; they are recorded here so their presence in a
   public repository is a decision, not an accident.
+  - 2026-09-24, SRS-BUILDANDDO-CF-IDS-001: the owner decided against it. Both ids are out of
+    `wrangler.toml`; `npm run deploy` takes the account from the environment and looks the database
+    up by name. They remain in the history of `8f97751`.
 
 ## Constraints
 

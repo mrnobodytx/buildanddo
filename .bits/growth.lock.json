@@ -1,9 +1,9 @@
 {
   "progression": {
     "dispatch_tasks": {
-      "done": 161,
-      "progress": 0.8385,
-      "total": 192
+      "done": 164,
+      "progress": 0.841,
+      "total": 195
     },
     "dispatches": {
       "USO-BUILDANDDO-CRAWL-001": {
@@ -47,6 +47,12 @@
         "status": "in_progress",
         "tasks_done": 18,
         "tasks_total": 18
+      },
+      "VCC-BUILDANDDO-CF-IDS-001": {
+        "srs": "SRS-BUILDANDDO-CF-IDS-001",
+        "status": "in_progress",
+        "tasks_done": 3,
+        "tasks_total": 3
       },
       "VCC-BUILDANDDO-CHANGELOG-001": {
         "srs": "SRS-BUILDANDDO-CHANGELOG-001",
@@ -221,11 +227,11 @@
       "by_risk": {
         "A0": 2,
         "A1": 28,
-        "A2": 26
+        "A2": 27
       },
       "by_status": {
         "delivered": 4,
-        "in_progress": 46,
+        "in_progress": 47,
         "proposed": 6
       },
       "specs": {
@@ -236,6 +242,7 @@
         "SRS-BUILDANDDO-BUDDI-003": "in_progress",
         "SRS-BUILDANDDO-CAPABILITY-TOKEN-001": "in_progress",
         "SRS-BUILDANDDO-CAREER-001": "in_progress",
+        "SRS-BUILDANDDO-CF-IDS-001": "in_progress",
         "SRS-BUILDANDDO-CHANGELOG-001": "in_progress",
         "SRS-BUILDANDDO-CI-001": "delivered",
         "SRS-BUILDANDDO-CLASSROOM-GLOBAL-001": "in_progress",
@@ -286,7 +293,7 @@
         "SRS-BUILDANDDO-WORKSPACE-001": "in_progress",
         "SRS-BUILDANDDO-WORLD-TWIN-001": "in_progress"
       },
-      "total": 56
+      "total": 57
     }
   },
   "schema": "buildanddo.growth-lock/v1",
@@ -297,7 +304,7 @@
     "pocketbase_hooks": 31,
     "pocketbase_migrations": 67,
     "readmes": 50,
-    "tracked_files": 1814
+    "tracked_files": 1818
   },
   "systems": {
     "apps/career": {
@@ -334,21 +341,22 @@
     },
     "apps/edge": {
       "cgrf_coverage": 1.0,
-      "cgrf_files": 6,
-      "files": 8,
+      "cgrf_files": 8,
+      "files": 10,
       "lines": {
-        "data": 76,
-        "javascript": 1045
+        "data": 80,
+        "javascript": 1226
       },
       "readme": false,
-      "source_files": 6,
-      "source_lines": 1045,
+      "source_files": 8,
+      "source_lines": 1226,
       "srs_codes": [
         "SRS-BUILDANDDO-BUDDI-002",
+        "SRS-BUILDANDDO-CF-IDS-001",
         "SRS-BUILDANDDO-UPGRADE-001",
         "SRS-CN-ENTITY-CATALOGUE-001"
       ],
-      "test_files": 3
+      "test_files": 4
     },
     "apps/estate": {
       "cgrf_coverage": 1.0,
@@ -725,13 +733,13 @@
     }
   },
   "totals": {
-    "cgrf_coverage": 0.8348,
-    "files": 1089,
-    "source_lines": 172415,
+    "cgrf_coverage": 0.8352,
+    "files": 1091,
+    "source_lines": 172596,
     "systems": 23,
     "systems_with_readme": 4,
     "systems_with_tests": 22,
-    "test_files": 228,
+    "test_files": 229,
     "test_files_unattributed": 117
   }
 }

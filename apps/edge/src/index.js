@@ -33,8 +33,9 @@
  *
  *     curl -sSI https://buildanddo.com/ | grep -i content-security-policy
  *
- * DEPLOY: `npx wrangler deploy` from apps/edge. Needs a Cloudflare API token with Workers
- * Scripts Write — the previous one (BND_WORKER_ONE) was rolled.
+ * DEPLOY: `npm run deploy` from apps/edge (tools/deploy.mjs), with CLOUDFLARE_ACCOUNT_ID set.
+ * Needs a Cloudflare API token with Workers Scripts Write and D1 read — the previous one
+ * (BND_WORKER_ONE) was rolled. No Cloudflare id is stored in this repository.
  */
 
 import { handleGraphMatch } from './graph.js';
