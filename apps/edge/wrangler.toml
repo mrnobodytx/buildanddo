@@ -1,14 +1,14 @@
 # ─── CGRF Header ───────────────────────────────────────────────
 # File:        apps/edge/wrangler.toml
 # Stage:       11_COMMIT
-# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-CF-IDS-001
 # CAPS:        pending
 # CK:          pending
 # Dispatch:    VCC-BUILDANDDO-UPGRADE-001
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-22
-# Depends:     apps/edge/src/index.js
+# Depends:     apps/edge/src/index.js, apps/edge/tools/deploy.mjs
 # EnumType:    Config
 # EnumEdges:   DEPLOYS apps/edge/src/index.js
 # DAG Node:    none
@@ -19,10 +19,14 @@
 # already existed in Cloudflare with no source in git, so this config describes what is
 # deployed rather than proposing something new. A `wrangler deploy` from this directory
 # should therefore be a no-op apart from the CSP change in src/index.js.
+#
+# No Cloudflare account or resource id lives in this file (SRS-BUILDANDDO-CF-IDS-001): this
+# repository is public. Deploy with `npm run deploy`, which reads the account from
+# CLOUDFLARE_ACCOUNT_ID and looks the D1 database up by name. A bare `wrangler deploy` fails on
+# the placeholder below instead of guessing.
 name = "buildanddo-edge"
 main = "src/index.js"
 compatibility_date = "2026-09-13"
-account_id = "cc14bd6176a780122231e2570b77928f"
 
 # Read back from the zone's worker routes. The apex and www are covered; staging is NOT,
 # which is why staging keeps the origin nginx header and these two do not.
@@ -51,7 +55,7 @@ enabled = true
 [[d1_databases]]
 binding = "CNI_GRAPH"
 database_name = "cni-edge-graph"
-database_id = "48dbecc3-5cf2-439a-803c-df4561e3b377"
+database_id = "resolved-at-deploy"
 
 # SECRET, not a var — set it out of band and never in this file:
 #

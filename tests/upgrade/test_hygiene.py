@@ -127,6 +127,22 @@ class DocsRedactionGateTests(unittest.TestCase):
         self.assertEqual(self.scan(str(folder)), 1)
 
 
+class RegistryYamlTests(unittest.TestCase):
+    """The repo's own readers parse the registry line by line, so they never noticed a note that broke
+    YAML (an unquoted ": " added by this SRS on 2026-09-24). Any YAML reader would have."""
+
+    def test_the_registry_is_valid_yaml_with_unique_codes(self) -> None:
+        try:
+            import yaml
+        except ImportError:  # pragma: no cover - PyYAML ships with the CI images
+            self.skipTest("PyYAML is not installed")
+        data = yaml.safe_load((ROOT / ".bits/srs_registry.yml").read_text(encoding="utf-8"))
+        codes = [entry["code"] for value in data.values() if isinstance(value, list)
+                 for entry in value if isinstance(entry, dict) and "code" in entry]
+        self.assertGreater(len(codes), 0)
+        self.assertEqual(len(codes), len(set(codes)), "a code is registered twice")
+
+
 class KnipConfigTests(unittest.TestCase):
     def test_every_named_entry_exists(self) -> None:
         config = json.loads((ROOT / "knip.json").read_text(encoding="utf-8"))

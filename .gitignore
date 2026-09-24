@@ -74,3 +74,7 @@ apps/web/public/platform-health.json
 
 # BuildAndDo verified release artifacts
 .citadel-release/
+
+# apps/edge/tools/deploy.mjs writes a resolved config here and deletes it; never commit it.
+apps/edge/.wrangler.deploy.toml
+apps/edge/.wrangler/
