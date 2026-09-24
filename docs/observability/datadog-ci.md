@@ -1,3 +1,4 @@
+# CGRF: SRS=SRS-BUILDANDDO-CI-001, SRS-BUILDANDDO-OCN-TELEMETRY-001 | CAPS=B | Seat=C-ONE
 # ─── CGRF Header ───────────────────────────────────────────────
 # File:        docs/observability/datadog-ci.md
 # Stage:       06_PLAN
@@ -345,3 +346,19 @@ An org admin must, once:
   the default branch.
 - `buildanddo.ci.pipeline.succeeded` average below 0.9 — pipeline health.
 - `buildanddo.cd.deployment.lead_time_seconds` p95 trend — DORA lead time.
+
+## OCN probe telemetry (`service:buildanddo-ocn`)
+
+A fourth service name sits next to `buildanddo-web` (CI, RUM, epochs), `buildanddo` (the stack
+collector, SAST) and `buildanddo-public` (release DORA). `scripts/ci/ocn_telemetry.py` publishes what the
+OCN probes measured from the release workstation, off by default. It sends one event per judged run and
+one log per check under `service:buildanddo-ocn`, tagged `env` (the environment probed), `team`,
+`ocn_probe`, `ocn_outcome`, `ocn_persona` and `ocn_run`. No signal carries a host.
+
+Custom metrics exist only behind `--dd-metrics`, which stays off until Plan & Usage has been checked:
+`buildanddo.ocn.run.measured`, `buildanddo.ocn.run.outcome`, `buildanddo.ocn.run.checks_failed` and
+`buildanddo.ocn.feature.alive`. They are gauges tagged `service`, `env`, `team` and `ocn_probe`, and the
+last also `ocn_feature`. The ceiling is 178 series, and no run id, persona or host ever tags a metric.
+Search with `service:buildanddo-ocn ocn_run:<id>`.
+[ocn-telemetry.md](ocn-telemetry.md) holds the event catalogue, the gates, and the verify runbook with
+its controls.
