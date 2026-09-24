@@ -419,8 +419,10 @@ Saved insights keyed on the old event names must move to `is_ocn_agent` and `ocn
 
 ## Checks
 
-- `python scripts/ci/ocn_telemetry.py selftest`: offline, sockets refused, with a planted machine name,
-  documentation address and email built at run time. It is registered as `CHECKS['ocn_telemetry']` at level
-  `source`.
+- `python scripts/ci/ocn_telemetry.py selftest`: offline, sockets refused (and the guard shown to refuse),
+  with a planted machine name, documentation address and email built at run time. It sets its own
+  environment, so the workstation's switch and acknowledgement change nothing. It is registered as
+  `CHECKS['ocn_telemetry']` at level `source`.
 - `python -m unittest tests.upgrade.test_ocn_telemetry tests.upgrade.test_ocn_seat_session`: fakes only,
-  with the environment cleared and every socket blocked.
+  with the environment cleared and every socket blocked. Both modules record every attempt and fail if
+  there was one, because the code under test swallows a refused connection.

@@ -34,6 +34,7 @@ import ipaddress
 import json
 import os
 import re
+import socket
 import subprocess
 import sys
 import tempfile
@@ -75,11 +76,15 @@ NO_ENV = frozenset({"ocn_guild_dogfood", "ocn_mission_work", "ocn_room_probe"})
 KEEP = ("SYSTEMROOT", "WINDIR", "PATH", "PATHEXT", "COMSPEC", "TEMP", "TMP")
 
 _GUARDS: list = []
+_ATTEMPTS: list = []
 
 
 def setUpModule() -> None:  # noqa: N802 - unittest's name
+    """Every way out of this process refuses, and each attempt is recorded. The publisher's own transport
+    turns a refusal into an ordinary dead hop, so only the record shows that something tried."""
     def refuse(*_args, **_kwargs):
-        raise AssertionError("network is forbidden in this test module")
+        _ATTEMPTS.append("socket")
+        raise OSError("network is forbidden in this test module")
 
     for target in ("socket.socket.connect", "socket.socket.connect_ex", "socket.create_connection",
                    "socket.getaddrinfo"):
@@ -91,6 +96,8 @@ def setUpModule() -> None:  # noqa: N802 - unittest's name
 def tearDownModule() -> None:  # noqa: N802
     while _GUARDS:
         _GUARDS.pop().stop()
+    if _ATTEMPTS:
+        raise AssertionError("%d network attempt(s) during the telemetry tests" % len(_ATTEMPTS))
 
 
 def capture_key() -> str:
@@ -1324,16 +1331,19 @@ class FailureTests(Harness):
                          ("BUDGET", "BUDGET"))
 
     def test_a_hanging_connect_cannot_hold_the_real_transport(self):
-        release = threading.Event()
+        release, entered = threading.Event(), threading.Event()
         self.addCleanup(release.set)
 
         def hang(*_args, **_kwargs):
+            entered.set()
             release.wait(30)
             raise OSError("never connected")
 
         started = time.monotonic()
         with mock.patch("socket.create_connection", side_effect=hang):
             block = self.publish(receipts()["ocn_journey_report"], transport=t._send, budget_s=0.5)
+            # The abandoned request is inside the stand-in connect, never the module's guard.
+            self.assertTrue(entered.wait(10))
         self.assertLess(time.monotonic() - started, 2.5)
         self.assertEqual(block["posthog"]["reason"], "TRANSPORT:BUDGET")
 
@@ -2152,6 +2162,30 @@ class WrapperTests(Harness):
         self.assertEqual(done.returncode, 3)
         self.assertEqual(done.stdout, self.direct("sweep", "--json").stdout)
         self.assertIn(b"ocn_telemetry: UNSENT (DISABLED)", done.stderr)
+
+
+class GuardTests(unittest.TestCase):
+    """Both socket guards are shown to refuse. A lookup of a numeric documentation address never reaches
+    the network even with a broken guard, so a guard that does nothing shows up as no refusal."""
+
+    ADDRESS = ".".join(("192", "0", "2", "1"))
+
+    def test_this_modules_guard_refuses_and_records(self):
+        self.assertIsInstance(socket.create_connection, mock.Mock)
+        before = len(_ATTEMPTS)
+        with self.assertRaises(OSError):
+            socket.getaddrinfo(self.ADDRESS, 9)
+        self.assertEqual(len(_ATTEMPTS), before + 1)
+        del _ATTEMPTS[before:]
+
+    def test_the_selftests_guard_refuses_and_counts(self):
+        attempts: list[str] = []
+        before = len(_ATTEMPTS)
+        with t._socket_guard(attempts):
+            with self.assertRaises(OSError):
+                socket.getaddrinfo(self.ADDRESS, 9)
+        del _ATTEMPTS[before:]
+        self.assertEqual(attempts, ["socket"])
 
 
 class SelftestTests(Harness):

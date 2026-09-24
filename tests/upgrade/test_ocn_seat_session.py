@@ -32,6 +32,7 @@ import io
 import json
 from pathlib import Path
 import re
+import socket
 import sys
 import tempfile
 import unittest
@@ -53,6 +54,30 @@ def load():
 
 
 seat_session = load()
+
+_GUARDS: list = []
+_ATTEMPTS: list = []
+
+
+def setUpModule() -> None:  # noqa: N802 - unittest's name
+    """Every way out of this process refuses, and each attempt is recorded. The seat's own http() swallows
+    the error, so a capture path that bypassed it would stay green without the record."""
+    def refuse(*_args, **_kwargs):
+        _ATTEMPTS.append("socket")
+        raise OSError("network is forbidden in this test module")
+
+    for target in ("socket.socket.connect", "socket.socket.connect_ex", "socket.create_connection",
+                   "socket.getaddrinfo"):
+        guard = patch(target, side_effect=refuse)
+        guard.start()
+        _GUARDS.append(guard)
+
+
+def tearDownModule() -> None:  # noqa: N802
+    while _GUARDS:
+        _GUARDS.pop().stop()
+    if _ATTEMPTS:
+        raise AssertionError("%d network attempt(s) during the seat tests" % len(_ATTEMPTS))
 
 # What the removed persona-to-machine table resolved to, per guild. Measured 2026-09-22 on the six
 # boxes that table named: each box's node.json and CBF FLEET_PLACEMENT.json agree on the guild, and
@@ -298,6 +323,13 @@ class PublicSourceTests(unittest.TestCase):
         personas = {entry["persona"] for entry in seat_session.GUILDMASTERS.values()}
         self.assertEqual(len(personas), 8)
         self.assertEqual(personas, set(seat_session.LEXICON))
+
+    def test_the_socket_guard_refuses_and_records(self):
+        before = len(_ATTEMPTS)
+        with self.assertRaises(OSError):
+            socket.getaddrinfo(".".join(("192", "0", "2", "1")), 9)
+        self.assertEqual(len(_ATTEMPTS), before + 1)
+        del _ATTEMPTS[before:]
 
     def test_box_side_capture_is_gone(self):
         source = SCRIPT.read_text(encoding="utf-8")

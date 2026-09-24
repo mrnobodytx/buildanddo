@@ -2619,6 +2619,15 @@ def selftest() -> dict[str, Any]:
     fake = {CAPTURE_KEY: "_".join(("phc", "selftest" * 3)), DD_KEY: "0" * 32, DD_SITE_NAME: DD_SITE}
     with tempfile.TemporaryDirectory(prefix="ocn-telemetry-selftest-") as folder, _socket_guard(attempts), \
             _selftest_environment():
+        # The guard itself, shown to refuse: a numeric lookup never touches the network, so without a
+        # working guard it would simply answer.
+        blocked = False
+        try:
+            socket.getaddrinfo(address, 9)
+        except OSError:
+            blocked = True
+        record("the socket guard refuses a lookup", blocked and attempts == ["socket"])
+        attempts.clear()
         fleet = Path(folder) / "fleet.json"
         fleet.write_text(json.dumps({"boxes": {box: {"guildmaster": "forge", "guild": "builder"}}}), encoding="utf-8")
         ledger = Path(folder) / "ledger"
