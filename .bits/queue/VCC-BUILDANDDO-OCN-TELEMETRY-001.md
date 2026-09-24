@@ -29,17 +29,60 @@ by default and proven by readback, and no fleet box sends or holds anything for 
 
 | # | Task | Gate command | Status |
 |---|------|--------------|--------|
-| 1 | Register the SRS, its spec and this dispatch | `python scripts/ci/agent_context.py --check` after the lock is regenerated | todo |
-| 2 | The publisher: registry, adapters, builders, gates, credentials, transport, ledger, `publish` and `run` | `python -m unittest tests.upgrade.test_ocn_telemetry` | todo |
-| 3 | `verify` with controls C1-C5 and the privacy readbacks, against fakes only | `python -m unittest tests.upgrade.test_ocn_telemetry` | todo |
-| 4 | The offline selftest, registered as `CHECKS['ocn_telemetry']` | `python scripts/ci/ocn_telemetry.py selftest` prints PASS | todo |
-| 5 | Retire box-side capture in `ocn_seat_session.py` | `python -m unittest tests.upgrade.test_ocn_seat_session` | todo |
-| 6 | Docs: `docs/observability/ocn-telemetry.md`, and the service in `datadog-ci.md` | `python scripts/ci/public_redaction.py scan docs/observability` prints PASS | todo |
-| 7 | Regenerate the readiness and context locks, LF | `python scripts/ci/hostinger_readiness.py --check`; `python scripts/ci/agent_context.py --check` | todo |
-| 8 | Repository gates | `python scripts/ci/submission_readiness.py --check`; `python scripts/ci/verify_public_boundary.py` | todo |
-| 9 | Every added line and commit message, scanned with the private fleet map | the added-line sweep and the branch sweep exit 0 | todo |
+| 1 | Register the SRS, its spec and this dispatch | `python scripts/ci/agent_context.py --check` after the lock is regenerated | done |
+| 2 | The publisher: registry, adapters, builders, gates, credentials, transport, ledger, `publish` and `run` | `python -m unittest tests.upgrade.test_ocn_telemetry` | done |
+| 3 | `verify` with controls C1-C5 and the privacy readbacks, against fakes only | `python -m unittest tests.upgrade.test_ocn_telemetry` | done |
+| 4 | The offline selftest, registered as `CHECKS['ocn_telemetry']` | `python scripts/ci/ocn_telemetry.py selftest` prints PASS | done |
+| 5 | Retire box-side capture in `ocn_seat_session.py` | `python -m unittest tests.upgrade.test_ocn_seat_session` | done |
+| 6 | Docs: `docs/observability/ocn-telemetry.md`, and the service in `datadog-ci.md` | `python scripts/ci/public_redaction.py scan docs/observability` prints PASS | done |
+| 7 | Regenerate the readiness and context locks, LF | `python scripts/ci/hostinger_readiness.py --check`; `python scripts/ci/agent_context.py --check` | done |
+| 8 | Repository gates | `python scripts/ci/submission_readiness.py --check`; `python scripts/ci/verify_public_boundary.py` | done |
+| 9 | Every added line and commit message, scanned with the private fleet map | the added-line sweep and the branch sweep exit 0 | done |
+| 10 | Dry run on real receipts with the private map; the operator reviews one payload set | `publish --mode dry-run --receipt state/ocn_feature_sweep/staging.latest.json` shows both gates PASS | pending (next step, no vendor write) |
+| 11 | A3: the estate preconditions, then a verified staging pilot, then the estate drivers | `verify --pending` reads VERIFIED with C1-C5 held | pending (operator) |
 
 Every gate is judged by its exit code, never through a pipe.
+
+## Evidence (2026-09-24, release workstation, Windows, LF checkout)
+
+Built offline in a worktree from the staging line at `def2bfb`. Nothing was sent to PostHog, Datadog
+or anything else: every test and the selftest ran with sockets refused.
+
+- **Unit tests:** `python -m unittest tests.upgrade.test_ocn_telemetry tests.upgrade.test_ocn_seat_session
+  tests.upgrade.test_datadog_metrics` ran 120 of 120 (88, 23 and 9), with the environment cleared.
+- **Controls on the tests.** Thirteen mutations of the guarded behaviour were each caught by the test
+  that guards it, and none of those tests fails on the clean code. The mutations were:
+  - a leak gate or tag gate that passes everything;
+  - an adapter that copies probe text;
+  - a wrapper that adds a byte to stdout;
+  - a switch that defaults to send, or a CI guard that is off;
+  - a ledger that never finds a delivery;
+  - readback that always finds, or a canary that always holds;
+  - a run id spliced into the query;
+  - verify that never waits;
+  - pending runs that include dry runs;
+  - a renamed seat check.
+
+  Run against the previous seat script, the new seat tests fail six assertions.
+- **Selftest:** `python scripts/ci/ocn_telemetry.py selftest` passes 14 of 14 with no socket opened.
+  Run through the harness, `hostinger_readiness.py --run ocn_telemetry` reports PASS with exit 0. The
+  feature sweep and journey selftests are unchanged and exit 0.
+- **The other 16 probes** are byte-identical to `def2bfb`. The seat script is 1,985 bytes smaller: its
+  base64 is 27,648 characters, from 30,296.
+- **AEGIS:** `ocn_telemetry.py`, `ocn_seat_session.py`, `hostinger_checks.py` and both test files audit
+  clean=1, dead_code=0, logic=0.
+- **Locks:** regenerated and converted to LF. `hostinger_readiness.py --check` passes (12 milestones).
+  `agent_context.py --check` passes with 35 findings and 32 unwired gates, the same counts as before this
+  work, and records `scripts/ci/ocn_telemetry.py` as configured in GitLab.
+- **Gates:** `submission_readiness.py --check` passes. `verify_public_boundary.py` passes with 1,788
+  files and 0 failures.
+- **Names and addresses:** `public_redaction.py scan docs/observability` passes with the private fleet
+  map. The added-line sweep finds nothing in any added line of any file type, `.py` included. The branch
+  sweep finds nothing in any commit message. It reads one inherited name in `hostinger_checks.py`: a
+  comment that was already there, which this work does not touch.
+
+Not done here: the plan's later steps are A3 or need the operator. They are a dry run on real receipts
+with the private map, the estate preconditions, a verified live pilot, and the estate driver changes.
 
 ## Constraints
 
@@ -75,11 +118,14 @@ changes; enabling Datadog metrics; anything touching the legacy OCN data in proj
   latency reaches telemetry for them.
 - `classroom_video_proof.py` and `classroom_media_roundtrip.py` also sign in as OCN seats and are not in
   the registry. Joining probe requests to the server's `traceparent` records is not attempted.
+- The comment above the `ocn_feature_sweep` CHECK in `scripts/ci/hostinger_checks.py` names a fleet
+  machine. It predates this work, which adds a CHECK beside it and leaves it as it is. It belongs to the
+  public-redaction cleanup.
 
 ## Definition of done
 
-- [ ] Every gate command passes and its output is in the pull request.
-- [ ] `python scripts/ci/agent_context.py --check` passes.
-- [ ] `python scripts/ci/verify_public_boundary.py` passes.
-- [ ] Registry status updated for the SRS code.
-- [ ] Anything discovered but out of scope is recorded as a finding, not fixed.
+- [x] Every gate command for tasks 1-9 passes; the results are recorded above for the pull request.
+- [x] `python scripts/ci/agent_context.py --check` passes.
+- [x] `python scripts/ci/verify_public_boundary.py` passes.
+- [ ] Registry status updated for the SRS code: it stays `in_progress` until a verified pilot.
+- [x] Anything discovered but out of scope is recorded as a finding, not fixed.
