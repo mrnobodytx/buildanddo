@@ -367,3 +367,11 @@ srs:
     spec: .bits/srs/SRS-BUILDANDDO-CLASSROOM-GLOBAL-001.md
     owner: C-ONE
     notes: Operator decision 2026-09-24 - classes live outside workspaces, the workspace tracks a user's access and shows it as a gallery, so a student who never studies chemistry never sees a chemistry class there. Today classroom_rooms.workspace is REQUIRED and every classroom index is workspace-first, so a class cannot exist without a workspace; a5bc2b0 fanned out client-side across readable workspaces, which finds existing classes but does not make one global. Additive migration - existing rooms stay scope=workspace and keep their behaviour. Guildmaster audit and score land on the class, using the frozen trust vocabulary where VERIFIED needs a resolvable evidence reference. No deployment
+
+  - code: SRS-BUILDANDDO-OCN-TELEMETRY-001
+    title: OCN probe receipts become marked PostHog and Datadog telemetry, published from the release workstation and proven by readback
+    status: in_progress
+    risk: A2
+    spec: .bits/srs/SRS-BUILDANDDO-OCN-TELEMETRY-001.md
+    owner: C-ONE
+    notes: Off by default; live sends, enablement and estate driver changes are A3 and need the operator. Operator decisions 2026-09-24 - PostHog project 597897 with flagged, personless agent events (no person profiles, no $identify, no $pageview) that never keep the sending machine's address; Datadog events and logs only, custom metrics behind a flag that stays off. Only ocn_seat_session.py among the 17 probes changes, and only to retire its box-side capture. Excluding agent events from the public activity figure is an estate precondition outside this repository

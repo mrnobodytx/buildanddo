@@ -1,29 +1,34 @@
 #!/usr/bin/env python3
+# CGRF: SRS=SRS-BUILDANDDO-OCN-TELEMETRY-001 | CAPS=B | Seat=C-ONE
 # ─── CGRF Header ─────────────────────────────────────────────────────────────
 # File:        scripts/ci/ocn_seat_session.py
 # Stage:       09_VERIFY
-# SRS:         SRS-BUILDANDDO-LIVE-UTILIZATION-001, SRS-BUILDANDDO-COMMUNITY-WEB-001
+# SRS:         SRS-BUILDANDDO-LIVE-UTILIZATION-001, SRS-BUILDANDDO-COMMUNITY-WEB-001,
+#              SRS-BUILDANDDO-OCN-TELEMETRY-001
 # CAPS:        B
 # CK:          pending
 # Seat:        C-ONE
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-20
 # Depends:     scripts/ci/ocn_rbac_probe.py (same CitadelKey login path);
-#              apps/web/src/lib/telemetry.js (the event contract this mirrors);
+#              scripts/ci/ocn_telemetry.py (publishes this receipt from the release workstation);
 #              the box's own /opt/citadel/node.json and its CBF blueprints/FLEET_PLACEMENT.json
 # EnumType:    Verifier
-# EnumEdges:   PRODUCES PostHog person + session + events for an OCN seat;
-#              PRODUCES a persona perception record for the systems report
+# EnumEdges:   PRODUCES one seat-session receipt per run, published as marked telemetry by
+#              scripts/ci/ocn_telemetry.py; PRODUCES a persona perception record for the systems report
 # Intent:      Let an agent seat use BuildAndDo as itself, from its own machine, and leave the same
 #              kind of behavioural trail a person leaves - so agent behaviour and human behaviour can
 #              be compared in one place instead of guessed at separately.
 # ─────────────────────────────────────────────────────────────────────────────
-"""ocn_seat_session.py - one OCN seat's session against BuildAndDo, reported to PostHog.
+"""ocn_seat_session.py - one OCN seat's session against BuildAndDo, recorded as one receipt.
 
 RUNS ON A FLEET BOX. The seat signs in with the CitadelKey only that box holds, walks a journey,
-and emits the events a browser would, plus one persona perception record.
+and prints one JSON receipt: every step, plus one persona perception record.
 
-    ocn_seat_session.py [<seat>] [--env staging|production] [--no-capture]
+    ocn_seat_session.py [<seat>] [--env staging|production]
+
+--ph-key and --no-capture are still accepted so that existing driver command lines keep working, and
+they do nothing: nothing on the box sends anything to anyone.
 
 THE SEAT LEARNS WHO IT IS ON ITS OWN BOX. This repository is public, so it carries no table of
 which machine holds which guildmaster (operator rule, 2026-09-22: no public surface names a fleet
@@ -35,23 +40,24 @@ consulted. When the identity is missing, contradicts itself, names a guild with 
 belongs to a different seat than the one asked for, the session REFUSES before any network call or
 telemetry and says why. It never guesses a persona, and never falls back to the hostname.
 
-AGENTS ARE MARKED, NOT DISGUISED. Every person and every event carries `is_ocn_agent: true`,
-`ocn_seat`, `ocn_persona` and `ocn_guild`. That is the point rather than a caveat: analytics that
-silently blends synthetic traffic into human funnels is corrupted analytics, and the operator asked
-for user stats AND agent stats, which needs the two to be separable. Filter the flag out for human
-behaviour, filter it in for agent behaviour.
+AGENTS ARE MARKED, NOT DISGUISED. The receipt names the seat's persona and guild, and its
+distinct_id is `ocn:<persona>`. On the release workstation, scripts/ci/ocn_telemetry.py turns it into
+PostHog events flagged `is_ocn_agent` and Datadog logs under service buildanddo-ocn. That is the
+point rather than a caveat: analytics that silently blends synthetic traffic into human funnels is
+corrupted analytics, and the operator asked for user stats AND agent stats, which needs the two to
+be separable. No box name and no address leaves the workstation's publisher.
 
-SESSIONS, AND WHAT "REPLAY" CAN HONESTLY MEAN HERE. Every event carries one `$session_id`, so
-PostHog groups the journey into a single session with a real timeline and duration. It is NOT a
-video: PostHog's session recording is rrweb DOM capture inside a browser, and there is no DOM here.
-So this also writes an ordered, re-runnable step list - the replay this process can actually honour.
-A visual recording would need a headless browser on the box, which is a separate, heavier thing and
-is deliberately not pretended at.
+WHAT "REPLAY" CAN HONESTLY MEAN HERE. The receipt is an ordered, re-runnable step list - the replay
+this process can actually honour. It is NOT a video: PostHog's session recording is rrweb DOM capture
+inside a browser, and there is no DOM here. A visual recording would need a headless browser on the
+box, which is a separate, heavier thing and is deliberately not pretended at.
 
-CAPTURE IS FIRE-AND-FORGET. Measured 2026-09-20: POST /i/v0/e/ answers 200 {"status":"Ok"} for a
-DELIBERATELY INVALID api key, and that event never appears. A 200 here proves the request was
-accepted for processing and nothing else. Verify ingestion by querying the project with a personal
-API key - see verify_ocn_telemetry() in the estate driver - never by trusting this status code.
+NOTHING ON THE BOX SENDS ANYTHING. Box-side capture was retired (SRS-BUILDANDDO-OCN-TELEMETRY-001):
+it carried the box's name and egress address into PostHog, took the key on the command line, and
+counted a 200 as delivery. Measured 2026-09-20, PostHog's capture endpoint answers 200 {"status":"Ok"}
+for a DELIBERATELY INVALID api key and that event never appears. The workstation publishes this receipt
+with `ocn_telemetry.py publish --probe ocn_seat_session --receipt -`, and delivery is proved only by
+`ocn_telemetry.py verify`, which reads both vendors back with controls.
 
 PERCEPTION IS MEASURED, NOT IMAGINED. The persona chooses WHICH questions get asked; the answers
 come from the bytes actually served. A perception score is derived from status, latency, how much
@@ -72,8 +78,8 @@ import uuid
 
 ENVS = {"staging": "https://staging.buildanddo.com", "production": "https://buildanddo.com"}
 BACKEND = "/hcgi/platform"
-PH_HOST = "https://us.i.posthog.com"
 CBF = "/opt/citadel/cbf"
+TELEMETRY_NOTE = "box-side capture retired; the release workstation publishes this receipt"
 UA = {"User-Agent": "Mozilla/5.0 (compatible; bnd-ocn-seat/1.0)", "Content-Type": "application/json"}
 
 # Where the box keeps its own identity. Both are written on the box by the fleet installer.
@@ -206,50 +212,9 @@ def resolve_identity(seat_arg, node_path, placement_path):
             "identity": {"state": "RESOLVED", "guild_from": sorted(claims), "sources": sources}}
 
 
-class Telemetry:
-    """PostHog capture for one seat session. Marks every payload as agent traffic."""
-
-    def __init__(self, key, seat, meta, enabled=True):
-        self.key, self.seat, self.meta, self.enabled = key, seat, meta, enabled and bool(key)
-        self.distinct_id = "ocn:" + seat
-        self.session_id = str(uuid.uuid4())
-        self.sent, self.refused = 0, 0
-
-    def _post(self, payload):
-        if not self.enabled:
-            return False
-        payload["api_key"] = self.key
-        payload.setdefault("timestamp", datetime.datetime.now(datetime.timezone.utc).isoformat())
-        res = http(PH_HOST + "/i/v0/e/", data=json.dumps(payload).encode(), timeout=20)
-        ok = res["status"] == 200
-        self.sent += int(ok)
-        self.refused += int(not ok)
-        return ok
-
-    def _props(self, extra):
-        base = {"$session_id": self.session_id, "is_ocn_agent": True, "ocn_seat": self.seat,
-                "ocn_persona": self.meta["persona"], "ocn_guild": self.meta["guild"],
-                "ocn_box_ip": self.meta.get("egress_ip"), "$lib": "bnd-ocn-seat"}
-        base.update(extra or {})
-        return base
-
-    def identify(self):
-        """person_profiles is 'identified_only' in the web app, so without this there is no person."""
-        return self._post({"event": "$identify", "distinct_id": self.distinct_id,
-                           "properties": self._props({"$set": {
-                               "is_ocn_agent": True, "ocn_seat": self.seat,
-                               "ocn_persona": self.meta["persona"], "ocn_guild": self.meta["guild"],
-                               "ocn_box_ip": self.meta.get("egress_ip"),
-                               "name": "OCN seat: " + self.seat}})})
-
-    def pageview(self, url, status, ms):
-        return self._post({"event": "$pageview", "distinct_id": self.distinct_id,
-                           "properties": self._props({"$current_url": url, "http_status": status,
-                                                      "latency_ms": ms})})
-
-    def event(self, name, props=None):
-        return self._post({"event": name, "distinct_id": self.distinct_id,
-                           "properties": self._props(props)})
+def persona_slug(persona):
+    """The distinct_id the release workstation publishes under: ocn:<persona>, never a machine."""
+    return re.sub(r"[^a-z0-9]+", "-", persona.lower()).strip("-")
 
 
 def login(seat, base):
@@ -321,8 +286,10 @@ def main() -> int:
     ap.add_argument("seat", nargs="?", default=None,
                     help="this box's seat id; defaults to the one in node.json and must match it when given")
     ap.add_argument("--env", default="staging", choices=sorted(ENVS))
-    ap.add_argument("--ph-key", default="")
-    ap.add_argument("--no-capture", action="store_true")
+    # Accepted and ignored. Dropping them would make existing driver command lines exit 2, which a
+    # driver reads as an identity refusal; the key is never used and never echoed.
+    ap.add_argument("--ph-key", default="", help="ignored: box-side capture is retired")
+    ap.add_argument("--no-capture", action="store_true", help="ignored: nothing on the box sends anything")
     args = ap.parse_args()
     try:
         meta = resolve_identity(args.seat, NODE_JSON, PLACEMENT)
@@ -340,20 +307,18 @@ def main() -> int:
     ip = http("https://api.ipify.org", timeout=12)
     meta["egress_ip"] = ip["body"].decode("utf-8", "replace").strip() if ip["status"] == 200 else None
 
-    tel = Telemetry(args.ph_key, seat, meta, enabled=not args.no_capture)
+    # Every key the estate aggregate reads stays, with the same meaning, so its readers do not break.
     out = {"schema": "buildanddo.ocn-seat-session/v1", "seat": seat, "env": args.env,
            "persona": meta["persona"], "guild": meta["guild"], "egress_ip": meta["egress_ip"],
            "identity": meta["identity"],
-           "session_id": tel.session_id, "distinct_id": tel.distinct_id,
-           "at": datetime.datetime.now(datetime.timezone.utc).isoformat(), "replay": []}
+           "session_id": str(uuid.uuid4()), "distinct_id": "ocn:" + persona_slug(meta["persona"]),
+           "at": datetime.datetime.now(datetime.timezone.utc).isoformat(), "replay": [],
+           "telemetry": {"accepted": 0, "refused": 0, "note": TELEMETRY_NOTE}}
 
     token, uid, state = login(seat, base)
     out["login"] = state
-    tel.identify()
-    tel.event("ocn_session_start", {"env": args.env, "login_state": state})
     out["replay"].append({"step": "ocn_login", "result": state})
     if not token:
-        out["telemetry"] = {"accepted": tel.sent, "refused": tel.refused}
         print(json.dumps(out))
         return 1
 
@@ -363,7 +328,6 @@ def main() -> int:
         html = res["body"].decode("utf-8", "replace")
         page = {"route": route, "status": res["status"], "ms": res["ms"], "text": visible_text(html)}
         pages.append(page)
-        tel.pageview(base + route, res["status"], res["ms"])
         out["replay"].append({"step": "pageview", "route": route, "http": res["status"], "ms": res["ms"],
                               "prerendered_chars": len(page["text"])})
 
@@ -391,19 +355,10 @@ def main() -> int:
             except Exception:  # noqa: BLE001
                 total = None
         api[coll] = {"http": res["status"], "items": total}
-        tel.event("ocn_collection_read", {"collection": coll, "http": res["status"], "items": total})
         out["replay"].append({"step": "api_read", "collection": coll, "http": res["status"], "items": total})
     out["authenticated_reads"] = api
 
-    perception = perceive(seat, meta, pages, data_docs)
-    out["perception"] = perception
-    tel.event("ocn_perception", {"persona": perception["persona"], "guild": perception["guild"],
-                                 **{("perc_" + k): v for k, v in perception["score"].items()},
-                                 "observation_count": len(perception["observations"])})
-    tel.event("ocn_session_end", {"steps": len(out["replay"])})
-    out["telemetry"] = {"accepted": tel.sent, "refused": tel.refused,
-                        "note": "PostHog answers 200 for an invalid key; accepted != ingested. "
-                                "Confirm by querying the project."}
+    out["perception"] = perceive(seat, meta, pages, data_docs)
     print(json.dumps(out))
     return 0
 

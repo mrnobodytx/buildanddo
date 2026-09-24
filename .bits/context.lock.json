@@ -53,7 +53,7 @@
     },
     {
       "area": "ci",
-      "evidence": "referenced by: apps/federal_foundry/operator.py, tests/upgrade/test_datadog_metrics.py",
+      "evidence": "referenced by: apps/federal_foundry/operator.py, tests/upgrade/test_datadog_metrics.py, tests/upgrade/test_ocn_telemetry.py",
       "severity": "high",
       "srs": "",
       "statement": "scripts/ci/emit_datadog_metrics.py is not configured in reachable GitLab jobs"
@@ -95,7 +95,7 @@
     },
     {
       "area": "ci",
-      "evidence": "referenced by: nothing in this repo",
+      "evidence": "referenced by: tests/upgrade/test_ocn_telemetry.py",
       "severity": "high",
       "srs": "",
       "statement": "scripts/ci/ocn_classroom_live.py is not configured in reachable GitLab jobs"
@@ -165,7 +165,7 @@
     },
     {
       "area": "ci",
-      "evidence": "referenced by: tests/upgrade/test_ocn_seat_session.py",
+      "evidence": "referenced by: tests/upgrade/test_ocn_seat_session.py, tests/upgrade/test_ocn_telemetry.py",
       "severity": "high",
       "srs": "",
       "statement": "scripts/ci/ocn_seat_session.py is not configured in reachable GitLab jobs"
@@ -186,7 +186,7 @@
     },
     {
       "area": "ci",
-      "evidence": "referenced by: tests/upgrade/test_platform_health_public_projection.py, tests/upgrade/test_public_redaction.py",
+      "evidence": "referenced by: tests/upgrade/test_ocn_telemetry.py, tests/upgrade/test_platform_health_public_projection.py, tests/upgrade/test_public_redaction.py",
       "severity": "high",
       "srs": "",
       "statement": "scripts/ci/public_redaction.py is not configured in reachable GitLab jobs"
@@ -351,7 +351,8 @@
       "path": "scripts/ci/emit_datadog_metrics.py",
       "referenced_by": [
         "apps/federal_foundry/operator.py",
-        "tests/upgrade/test_datadog_metrics.py"
+        "tests/upgrade/test_datadog_metrics.py",
+        "tests/upgrade/test_ocn_telemetry.py"
       ],
       "wired_into_ci": false
     },
@@ -425,7 +426,9 @@
     {
       "configured_providers": [],
       "path": "scripts/ci/ocn_classroom_live.py",
-      "referenced_by": [],
+      "referenced_by": [
+        "tests/upgrade/test_ocn_telemetry.py"
+      ],
       "wired_into_ci": false
     },
     {
@@ -441,7 +444,8 @@
       "path": "scripts/ci/ocn_feature_sweep.py",
       "referenced_by": [
         "scripts/ci/hostinger_checks.py",
-        "scripts/deploy/apply_production_runtime_config.py"
+        "scripts/deploy/apply_production_runtime_config.py",
+        "tests/upgrade/test_ocn_telemetry.py"
       ],
       "wired_into_ci": true
     },
@@ -463,7 +467,8 @@
       ],
       "path": "scripts/ci/ocn_journey_report.py",
       "referenced_by": [
-        "scripts/ci/hostinger_checks.py"
+        "scripts/ci/hostinger_checks.py",
+        "tests/upgrade/test_ocn_telemetry.py"
       ],
       "wired_into_ci": true
     },
@@ -507,7 +512,8 @@
       "configured_providers": [],
       "path": "scripts/ci/ocn_seat_session.py",
       "referenced_by": [
-        "tests/upgrade/test_ocn_seat_session.py"
+        "tests/upgrade/test_ocn_seat_session.py",
+        "tests/upgrade/test_ocn_telemetry.py"
       ],
       "wired_into_ci": false
     },
@@ -524,9 +530,21 @@
       "wired_into_ci": false
     },
     {
+      "configured_providers": [
+        "gitlab"
+      ],
+      "path": "scripts/ci/ocn_telemetry.py",
+      "referenced_by": [
+        "scripts/ci/hostinger_checks.py",
+        "tests/upgrade/test_ocn_telemetry.py"
+      ],
+      "wired_into_ci": true
+    },
+    {
       "configured_providers": [],
       "path": "scripts/ci/public_redaction.py",
       "referenced_by": [
+        "tests/upgrade/test_ocn_telemetry.py",
         "tests/upgrade/test_platform_health_public_projection.py",
         "tests/upgrade/test_public_redaction.py"
       ],
@@ -659,7 +677,7 @@
       "wired_into_ci": true
     }
   ],
-  "generated_at": "2026-09-24T11:08:18.672512+00:00",
+  "generated_at": "2026-09-24T15:31:56.703328+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -875,6 +893,13 @@
         "spec": ".bits/srs/SRS-BUILDANDDO-LEARNING-NATIVE-001.md",
         "status": "in_progress",
         "title": "Native learning summary and migration replay on declared PocketBase"
+      },
+      {
+        "code": "SRS-BUILDANDDO-OCN-TELEMETRY-001",
+        "risk": "A2",
+        "spec": ".bits/srs/SRS-BUILDANDDO-OCN-TELEMETRY-001.md",
+        "status": "in_progress",
+        "title": "OCN probe receipts become marked PostHog and Datadog telemetry, published from the release workstation and proven by readback"
       },
       {
         "code": "SRS-BUILDANDDO-PB-METRICS-001",
@@ -1193,6 +1218,7 @@
         "scripts/ci/hostinger_readiness.py",
         "scripts/ci/ocn_feature_sweep.py",
         "scripts/ci/ocn_journey_report.py",
+        "scripts/ci/ocn_telemetry.py",
         "scripts/ci/submission_readiness.py",
         "scripts/ci/supply_chain.py",
         "scripts/ci/verify_public_boundary.py",
@@ -1205,6 +1231,7 @@
         "scripts/ci/hostinger_readiness.py",
         "scripts/ci/ocn_feature_sweep.py",
         "scripts/ci/ocn_journey_report.py",
+        "scripts/ci/ocn_telemetry.py",
         "scripts/ci/submission_readiness.py",
         "scripts/ci/supply_chain.py",
         "scripts/ci/verify_public_boundary.py",
@@ -1267,11 +1294,11 @@
       "scripts/deploy/staging-readback.sh"
     ],
     "migrations": 75,
-    "python_files": 441,
+    "python_files": 443,
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 1800,
+    "tracked_files": 1805,
     "web_source_files": 428
   },
   "schema_version": 1,
@@ -1351,15 +1378,15 @@
         "why": "Competition readiness requires an evidence-backed learning-through-work journey, a reproducible replay and actual submission criteria."
       }
     ],
-    "source_sha256": "8203016f5d6e287e4573f3e419c1afaa029ee4664fc80565cbc5de4537acb25a",
+    "source_sha256": "e93b3c90f862ad61fa0f82319b6b6a0cae86ca7c06bb2996699332ed5531da40",
     "state": "PASS"
   },
   "summary": {
     "findings": 36,
     "findings_high": 36,
     "pipelines": 10,
-    "srs_open": 44,
-    "srs_total": 48,
+    "srs_open": 45,
+    "srs_total": 49,
     "unwired_gates": 33
   },
   "tests": {
