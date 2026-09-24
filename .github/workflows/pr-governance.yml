@@ -118,6 +118,11 @@ jobs:
       - name: Enforce public/private boundary and contributor visibility
         run: python scripts/ci/verify_public_boundary.py --github-event "$RUNNER_TEMP/governance-pr.json"
 
+      # Operator rule 2026-09-22: no machine name or address in public text. The
+      # boundary scan above checks paths, not prose; this reads the prose.
+      - name: No machine name or address in public docs
+        run: python scripts/ci/public_redaction.py scan docs README.md CHANGELOG.md CLAUDE.md AGENTS.md CONTRIBUTING.md
+
       - name: Verify agent context lock is current
         run: python scripts/ci/agent_context.py --check
 

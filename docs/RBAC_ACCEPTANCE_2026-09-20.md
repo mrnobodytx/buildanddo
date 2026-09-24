@@ -15,9 +15,9 @@ Before any fix, with the same instrument:
 
 | actor | role | `create_mission` in another account's workspace |
 |---|---|---|
-| ray-tor1-4 | **no membership at all** | **200 — record created** |
-| ray-tor1-1 | member of a *different* workspace | **200 — record created** |
-| ray-tor1-3 | viewer | 200 — record created |
+| Seat A | **no membership at all** | **200 — record created** |
+| Seat B | member of a *different* workspace | **200 — record created** |
+| Seat C | viewer | 200 — record created |
 
 Any authenticated user could write into any workspace by supplying its id. The `createRule` in force
 was
@@ -42,16 +42,16 @@ was deployed with `administration.pb.js`.
 > The matrix depends only on the six sources being DISTINCT, which the labels preserve;
 > the addresses themselves were never part of the proof.
 
-Target workspace `56o8prujj51dmu2`, owned by `mesh-control`. Roles granted by its owner.
+Target workspace `56o8prujj51dmu2`, owned by `Seat D`. Roles granted by its owner.
 
 | actor | role | box / egress | `read_ws` | `create_mission` | expected |
 |---|---|---|---|---|---|
-| mesh-control | owner | egress A | 200 | 200 | allow / allow |
-| ray-tor1-1 | admin | egress B | 200 | 200 | allow / allow |
-| ray-tor1-2 | editor | egress C | 200 | 200 | allow / allow |
-| ray-tor1-3 | **viewer** | egress D | 200 | **403** *"Your current workspace role does not allow this action."* | allow / **deny** |
-| ray-tor1-4 | **outsider** | egress E | **404** | **400** — not created | **deny / deny** |
-| mesh-memory | **outsider** | egress F | **404** | **400** — not created | **deny / deny** |
+| Seat D | owner | egress A | 200 | 200 | allow / allow |
+| Seat B | admin | egress B | 200 | 200 | allow / allow |
+| Seat E | editor | egress C | 200 | 200 | allow / allow |
+| Seat C | **viewer** | egress D | 200 | **403** *"Your current workspace role does not allow this action."* | allow / **deny** |
+| Seat A | **outsider** | egress E | **404** | **400** — not created | **deny / deny** |
+| Seat F | **outsider** | egress F | **404** | **400** — not created | **deny / deny** |
 
 Cross-workspace, each actor reaching for a workspace it does not belong to: `read_ws` **404** and
 `create_mission` **400** in every measured pair.
