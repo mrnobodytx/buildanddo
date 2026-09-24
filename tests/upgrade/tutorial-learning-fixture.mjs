@@ -53,7 +53,7 @@ export function faithfulCountRecords(app) {
     };
 }
 
-export function learningFixture() {
+export function learningFixture({ progressAuthority = true } = {}) {
     const f = fixture({
         runtime: {
             $security: { sha256: (text) => createHash('sha256').update(text).digest('hex') },
