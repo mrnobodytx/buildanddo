@@ -41,7 +41,7 @@ from scripts.discordbot.contracts import (
 from scripts.discordbot.grading import Grader, configured_grader
 from scripts.discordbot.public_data import PublicClient
 from scripts.discordbot.service import (
-    COMMANDS, COMMAND_OUTCOMES, CONTROL_ACTIONS, CONTROL_OUTCOMES, OUTCOME_EVENTS,
+    COMMANDS, COMMAND_OUTCOMES, CONTROL_ACTIONS, CONTROL_OUTCOMES, OUTCOME_EVENTS, QUIZ_OUTCOMES,
     CommandService, WORKSPACE_AREAS, log_outcome,
 )
 from scripts.discordbot.research import Attachment, RESEARCH_COMMANDS, ResearchBridge, configured_bridge
@@ -57,7 +57,6 @@ LOG_EVENTS = OUTCOME_EVENTS | {
     # every graded answer into discord.event.unknown/error, a false failure on each correct use.
     "discord.quiz.graded",
 }
-QUIZ_GRADED_OUTCOMES = frozenset({"graded", "unavailable", "error"})
 
 
 def caller_from(interaction: discord.Interaction) -> Caller:
@@ -309,6 +308,7 @@ class ReplyView(discord.ui.View):
                         interaction.user.id, choice, time.monotonic(),
                         lambda quiz, picked: self.service.grade(quiz, picked, caller),
                     )
+                    self.require_owner(interaction)
                     # Ungraded attempts keep the answer menu open for a later retry.
                     for item in self.children:
                         if isinstance(item, discord.ui.Select) and self.session.answered:
@@ -672,7 +672,7 @@ class EventFormatter(logging.Formatter):
         elif name == "discord.control.completed":
             outcomes = CONTROL_OUTCOMES
         elif name == "discord.quiz.graded":
-            outcomes = QUIZ_GRADED_OUTCOMES
+            outcomes = QUIZ_OUTCOMES
         event: dict[str, object] = {
             "event": name, "level": level if level in {"debug", "info", "warning", "error", "critical"} else "info",
             "srs_code": SRS, "seat": "BITS-CODEGEN", "dispatch_id": DISPATCH,

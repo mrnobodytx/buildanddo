@@ -20,6 +20,18 @@
 **Status:** in_progress **Risk:** A2 **Seat:** BITS-CODEGEN
 **Dispatch:** VCC-BUILDANDDO-UPGRADE-001 **Actor:** actor:agent
 
+## PR 112 conflict resolution - 2026-09-24
+
+The owner requests resolving PR 112 against current main on its existing branch.
+Continue this A2 integration dispatch. Preserve the PR's convergence, server-graded
+quiz, README/changelog/growth tooling and reviewed removals together with main's
+telemetry and authority repairs. Reconcile shared code semantically: absent and
+unreadable context remain distinct, discarded reads stop loading without outage
+signals, and Platform Health keeps its authenticated estate route and failure
+measurement. Regenerate source-bound locks from the resolved tree and retain
+measured local results and unavailable runtime checks. No new feature, external
+write, provider configuration or deployment is part of this continuation.
+
 ## Telemetry coverage repair - 2026-09-24
 
 The owner requests correcting the supplied telemetry coverage audit. Continue

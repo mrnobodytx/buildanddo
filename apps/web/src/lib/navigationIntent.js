@@ -47,7 +47,7 @@ const ENDPOINTS = [
         'confirm-email-change', 'request-otp', 'auth-with-otp', 'records', 'records/:record',
         'records/:record/external-auths', 'records/:record/external-auths/:provider']
         .map((path) => `/api/collections/:collection/${path}`),
-    ...['onboarding', 'career/profile', 'dossier', 'dossier/read', 'estate/fleet-status',
+    ...['onboarding', 'career/profile', 'dossier', 'dossier/read', 'estate/fleet-status', 'estate/platform-health',
         'learning', 'learning/states', 'learning/:tutorial', 'workflow-runs', 'workflow-runs/:run/decisions']
         .map((path) => `/api/buildanddo/${path}`),
     ...['access', 'admin', 'integrations', 'wiki', 'forums', 'forums/:topic', 'community', 'claims',

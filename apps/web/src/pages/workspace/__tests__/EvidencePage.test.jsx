@@ -1,22 +1,24 @@
 // --- CGRF Header ------------------------------------------------
 // File:        apps/web/src/pages/workspace/__tests__/EvidencePage.test.jsx
 // Stage:       08_TEST
-// SRS:         SRS-BUILDANDDO-UPGRADE-001
+// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-WORKSPACE-001
 // CAPS:        pending
 // CK:          pending
 // Dispatch:    VCC-BUILDANDDO-UPGRADE-001
-// Seat:        BITS-CODEGEN
+// Seat:        BITS-CODEGEN, C-ONE
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-23
-// Depends:     apps/web/src/pages/workspace/EvidencePage.jsx, apps/web/src/test/utils.jsx, apps/pocketbase/pb_migrations/data/broadcast-classroom-lessons.json
+// Depends:     apps/web/src/pages/workspace/EvidencePage.jsx, apps/web/src/test/utils.jsx, apps/pocketbase/pb_migrations/data/broadcast-classroom-lessons.json, apps/pocketbase/pb_migrations/data/authority-repairs-lessons.json
 // EnumType:    Test
-// EnumEdges:   VALIDATES apps/web/src/pages/workspace/EvidencePage.jsx; CONSUMES apps/web/src/test/utils.jsx; CONSUMES apps/pocketbase/pb_migrations/data/broadcast-classroom-lessons.json
+// EnumEdges:   VALIDATES apps/web/src/pages/workspace/EvidencePage.jsx; CONSUMES apps/web/src/test/utils.jsx; CONSUMES apps/pocketbase/pb_migrations/data/broadcast-classroom-lessons.json; CONSUMES apps/pocketbase/pb_migrations/data/authority-repairs-lessons.json
 // DAG Node:    none
-// Intent:      Keep source case studies readable and linked without counting them as workspace outcomes or writing learning state.
+// Intent:      Keep source case studies readable and linked without counting them as workspace outcomes or writing learning state,
+//              and hold the page to the promise its own header makes - the copy says the reasoning can be replayed, so the
+//              route that replays it has to be reachable from here and not only from the sidebar.
 // ----------------------------------------------------------------
 
 import React from 'react';
-import { afterEach, beforeEach, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import broadcastCurriculum from '../../../../../pocketbase/pb_migrations/data/broadcast-classroom-lessons.json?public-lessons';
 import authorityCurriculum from '../../../../../pocketbase/pb_migrations/data/authority-repairs-lessons.json?public-lessons';
 import EvidencePage from '@/pages/workspace/EvidencePage';
@@ -165,4 +167,40 @@ it('does not invent output when a source case has no recorded run', async () => 
         expect(panel.queryByRole('link', { name: /Download/ })).not.toBeInTheDocument();
         noWrites();
     } finally { authorityCurriculum.source_evidence = saved; }
+});
+
+// Links are matched by destination rather than by label: a test that matched the
+// wording would go green on a link whose href had quietly rotted, which is the
+// class of defect this file exists to catch.
+const linksTo = (href) =>
+    screen.queryAllByRole('link').filter((link) => link.getAttribute('href') === href);
+
+describe('EvidencePage', () => {
+    // The file-level beforeEach has already reset the client; this block states the empty
+    // evidence set outright so the replay link is proven on a page with nothing else to show.
+    beforeEach(() => {
+        pb.__setRecords('evidence', []);
+    });
+
+    it('renders the page header', async () => {
+        renderWithProviders(<EvidencePage />);
+
+        expect(
+            await screen.findByRole('heading', { name: 'Evidence & replay', level: 1 }),
+        ).toBeInTheDocument();
+    });
+
+    it('links to execution replay, which its own header copy promises', async () => {
+        renderWithProviders(<EvidencePage />);
+        await screen.findByRole('heading', { name: 'Evidence & replay', level: 1 });
+
+        // The promise under test. If this sentence ever leaves the page, the link
+        // below stops being mandatory and this test should be revisited, not muted.
+        expect(screen.getByText(/replay the reasoning/)).toBeInTheDocument();
+
+        const replayLinks = linksTo('/app/replay');
+        expect(replayLinks).toHaveLength(1);
+        expect(replayLinks[0]).toBeVisible();
+        expect(replayLinks[0].textContent).toMatch(/replay/i);
+    });
 });

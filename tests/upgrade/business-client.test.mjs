@@ -58,6 +58,21 @@ test('foreign or malformed receipt pages cannot be rendered as current workspace
     f.client.send = async () => { throw { response: { message: 'A current role is required.' } }; };
     assert.equal((await f.api.list()).error, 'A current role is required.');
 });
+test('observed write failures retain uncertainty while failed reads keep their read-specific explanation', async () => {
+    const f = fixture(), observed = [];
+    f.client.send = async () => { throw Object.assign(new Error('Synthetic unavailable response'), { status: 503 }); };
+    const api = createBusinessClient({ client: f.client, workspaceId: 'ws1', accountId: 'owner', isCurrent: () => true,
+        observe: async (collection, action, operation) => { observed.push([collection, action]); return operation(); } });
+    const read = await api.list();
+    assert.equal(read.reason, 'rejected');
+    assert.match(read.error, /Could not load these action receipts/);
+    assert.doesNotMatch(read.error, /confirm this action/);
+    assert.equal(observed.length, 0);
+    const write = await api.command({ action: 'source.capture' });
+    assert.equal(write.reason, 'uncertain');
+    assert.match(write.error, /Could not confirm this action/);
+    assert.deepEqual(observed, [['business_jobs', 'source.capture']]);
+});
 test('replay preserves uncertain work and actual timestamps without claiming independent verification', () => {
     const first = defaultBusinessAction(), second = defaultBusinessAction(); first.parameters.title = 'Changed';
     assert.equal(second.parameters.title, ''); assert.equal(second.provider, 'erp');

@@ -82,8 +82,17 @@ export default function WorkflowRunsPanel({ workflows, workspaceId, accountId, d
     }, [api, runId, demo]);
     const selectRun = (id) => { const next = new URLSearchParams(params); if (id) next.set('run', id); else next.delete('run'); setParams(next); };
     const saved = (record) => { setSelected(record); if (runId !== record.id) selectRun(record.id); refresh(); onRecordsChanged?.(); };
-    const canStart = !demo && !definitionsUnavailable && !history.loading && !history.error &&
-        workflows.some((record) => record.status === 'active');
+    const hasActiveWorkflow = workflows.some((record) => record.status === 'active');
+    const canStart = !demo && !definitionsUnavailable && !history.loading && !history.error && hasActiveWorkflow;
+    // A new workspace's workflows are all drafts, so the greyed-out primary verb
+    // is the first thing a person meets here and it used to explain nothing. The
+    // other four blockers already print their own line - demo mode and the
+    // unavailable-history alert below, the loading skeleton, and the page's own
+    // definitions notice - so this names activation only when activation is
+    // what is actually in the way. Sending someone to activate a workflow while
+    // the history is simply still loading would be a worse answer than the
+    // silence it replaces.
+    const startBlocked = !demo && !definitionsUnavailable && !history.loading && !history.error && !hasActiveWorkflow;
 
     return (
         <section className="ph-no-capture space-y-4 border-t border-border pt-6" aria-labelledby="workflow-history-title"
@@ -93,9 +102,14 @@ export default function WorkflowRunsPanel({ workflows, workspaceId, accountId, d
                     <h2 id="workflow-history-title" className="font-display text-2xl">Run history</h2>
                     <p className="mt-1 text-sm text-muted-foreground">Recorded work, approval checkpoints and saved evidence for this workspace.</p>
                 </div>
-                <div className="flex flex-wrap gap-2">
-                    <Button type="button" variant="secondary" size="sm" onClick={refresh} disabled={history.loading || demo}>Refresh runs</Button>
-                    <Button type="button" size="sm" onClick={() => setStarting(true)} disabled={!canStart}>Start a run</Button>
+                <div className="flex flex-col items-start gap-2 sm:items-end">
+                    <div className="flex flex-wrap gap-2">
+                        <Button type="button" variant="secondary" size="sm" onClick={refresh} disabled={history.loading || demo}>Refresh runs</Button>
+                        <Button type="button" size="sm" onClick={() => setStarting(true)} disabled={!canStart}
+                            aria-describedby={startBlocked ? 'run-start-blocked' : undefined}>Start a run</Button>
+                    </div>
+                    {startBlocked && <p id="run-start-blocked" className="max-w-xs text-sm text-muted-foreground sm:text-right">
+                        No workflow is active yet, so activate one before starting a run.</p>}
                 </div>
             </div>
             {opening && <p role="status">Loading the saved run and current revision…</p>}

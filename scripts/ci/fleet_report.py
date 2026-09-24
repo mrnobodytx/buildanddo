@@ -11,21 +11,26 @@
 # Depends:     scripts/deploy/roadmap_status.py
 # EnumType:    Service
 # EnumEdges:   USES_TEMPLATE scripts/deploy/roadmap_status.py;
-#              PRODUCES apps/web/public/fleet-status.json;
+#              PRODUCES state/estate/fleet-status.json;
+#              PRODUCES state/estate/platform-health.json;
 #              PRODUCES apps/web/public/platform-health.json;
 #              VERIFIED_BY apps/web/src/pages/workspace/FleetPage.jsx;
 #              VERIFIED_BY apps/web/src/pages/workspace/PlatformHealthPage.jsx
 # Intent:      Project the recorded NNC fleet snapshot and platform assessment
-#              into the two files the workspace pages read, carrying the
+#              into the files the workspace pages read, carrying the
 #              measurement timestamp so the pages can state staleness instead
-#              of implying the numbers are live.
+#              of implying the numbers are live, and publish only a closed set
+#              of fields to the one of those files that anyone can fetch.
 # ───────────────────────────────────────────────────────────────
-"""fleet_report.py - writes the two static JSON files the Fleet and Platform
-Health workspace pages read.
+"""fleet_report.py - writes the JSON the Fleet and Platform Health workspace
+pages read: two estate-only documents under ``state/estate/``, and one public
+projection under ``apps/web/public/``.
 
-Same pattern as ``scripts/deploy/roadmap_status.py``: run before the build,
-write into ``apps/web/public/``, let Vite copy ``public/`` verbatim into
-``dist``. No separate publish step, no runtime backend dependency.
+The public file follows ``scripts/deploy/roadmap_status.py``: run before the
+build, write into ``apps/web/public/``, let Vite copy ``public/`` verbatim into
+``dist``. No separate publish step, no runtime backend dependency. The two
+estate documents are the operator's full reports and are never copied into the
+build; the backend serves them to master seats from ``BUILDANDDO_ESTATE_DIR``.
 
 What this script is NOT: a live poller. The host, container and platform
 figures below are a *recorded observation* of the Citadel NNC taken from
@@ -56,9 +61,22 @@ PUBLIC_DIR = ROOT / "apps" / "web" / "public"
 # The fleet snapshot is estate-only since 2026-09-18: it is written under state/ (gitignored, never copied into dist)
 # and published to the backend host by the estate rail, where estate.pb.js serves it to master seats only.
 FLEET_OUT = ROOT / "state" / "estate" / "fleet-status.json"
+# The platform assessment splits the same way, for the same reason. The full report names which
+# activity would go unseen, which scanners are off, which entitlements cannot be read, and where the
+# config for each lives. None of that is a secret on its own; together, at a stable public URL, it
+# is a target-selection brief. It is estate-only from 2026-09-24.
+PLATFORM_PRIVATE_OUT = ROOT / "state" / "estate" / "platform-health.json"
 PLATFORM_OUT = PUBLIC_DIR / "platform-health.json"
 
 SCHEMA_VERSION = 1
+
+# What the public projection is allowed to carry, named field by field. SELECTED, never subtracted:
+# a denylist publishes every field a later change adds, and that is precisely how this file grew
+# from a status line into 11kB of infrastructure assessment. apps/web/src/lib/communityStatus.js
+# readPlatformHealth already drops everything outside this set - but it does that in the BROWSER, on
+# the way to the screen, which does nothing for a caller that fetches the file directly.
+PUBLIC_SCHEMA = "buildanddo.platform-health.public/v1"
+PUBLIC_PLATFORM_FIELDS = ("id", "label", "state", "verified")
 
 # Wall-clock of the Datadog reading transcribed below. Bump this and the
 # figures together, never one without the other - a fresh timestamp over stale
@@ -595,6 +613,40 @@ def _platform_snapshot() -> dict:
     }
 
 
+def _public_platform_projection(document: dict) -> dict:
+    """Select the public projection of the platform report.
+
+    Every field the site serves at /platform-health.json is named here. A field added to the full
+    report reaches the public file only when someone adds it to PUBLIC_PLATFORM_FIELDS or to the
+    literal below - which is the whole point, and what tests/upgrade/
+    test_platform_health_public_projection.py holds this function to.
+
+    Args:
+        document: The full platform report from _platform_snapshot.
+
+    Returns:
+        A document carrying only the closed set: the two timestamps the reader ages the reading by,
+        and per platform an id, a label, a state and whether the reading was verified.
+    """
+    platforms = []
+    for platform in document.get("platforms", []):
+        entry = {field: platform.get(field) for field in PUBLIC_PLATFORM_FIELDS}
+        # Coerced, so the published value stays a scalar of the declared type even if the full
+        # report later carries something richer under one of these names.
+        entry["id"] = str(entry["id"] or "")
+        entry["label"] = str(entry["label"] or "")
+        entry["state"] = str(entry["state"] or "unknown")
+        entry["verified"] = entry["verified"] is True
+        platforms.append(entry)
+
+    return {
+        "schema": PUBLIC_SCHEMA,
+        "generated_at": document["generated_at"],
+        "observed_at": document["observed_at"],
+        "platforms": platforms,
+    }
+
+
 def _write(path: Path, payload: dict) -> None:
     """Write one JSON document, creating the public directory if needed.
 
@@ -651,20 +703,25 @@ def main(argv: list[str] | None = None) -> int:
             "actual": actual,
         }, indent=2))
 
-    # platform-health.json is public, so it passes the rule on the way out; fleet-status.json stays
-    # in state/ for the operator.
+    # Both full reports stay in state/ for the operator. Only the closed-set projection is published,
+    # and the rule still runs over it as defence in depth: the projection decides WHICH fields ship,
+    # the rule scrubs what is inside the ones that do.
+    public_platform = _public_platform_projection(platform)
     rule = public_redaction.Rule()
-    platform, withheld = rule.redact_document(platform)
+    public_platform, withheld = rule.redact_document(public_platform)
     public_redaction.report_withheld(rule, withheld, PLATFORM_OUT.name)
     _write(FLEET_OUT, fleet)
-    _write(PLATFORM_OUT, platform)
+    _write(PLATFORM_PRIVATE_OUT, platform)
+    _write(PLATFORM_OUT, public_platform)
 
     print(json.dumps({
         "fleet_status": str(FLEET_OUT.relative_to(ROOT)),
-        "platform_health": str(PLATFORM_OUT.relative_to(ROOT)),
+        "platform_health_private": str(PLATFORM_PRIVATE_OUT.relative_to(ROOT)),
+        "platform_health_public": str(PLATFORM_OUT.relative_to(ROOT)),
         "observed_at": OBSERVED_AT,
         "fleet_totals": fleet["totals"],
         "platform_totals": platform["totals"],
+        "published_platforms": len(public_platform["platforms"]),
     }, indent=2))
     return 0
 

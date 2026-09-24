@@ -77,6 +77,7 @@ const ROUTES = [
     '/api/buildanddo/workflow-runs/:id/decisions',
     '/api/buildanddo/career/profile',
     '/api/buildanddo/estate/fleet-status',
+    '/api/buildanddo/estate/platform-health',
     '/api/buildanddo/dossier',
     '/api/buildanddo/dossier/read',
     '/api/buildanddo/learning',

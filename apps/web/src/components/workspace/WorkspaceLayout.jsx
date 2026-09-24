@@ -104,7 +104,7 @@ const NAV_GROUPS = [
         { to: '/app/wiki', label: 'Workspace wiki', icon: BookOpen },
         { to: '/app/forums', label: 'Workspace forum', icon: Users },
         { to: '/app/roadmap', label: 'Roadmap', icon: Gauge },
-        { to: '/app/platforms', label: 'Platform Health', icon: Plug },
+        { to: '/app/platforms', label: 'Platform Health', icon: Plug, estate: true },
         { to: '/app/fleet', label: 'Fleet', icon: Network, estate: true },
         { to: '/app/integrations', label: 'Sinks & extensions', icon: Plug },
         { to: '/app/admin', label: 'Administration', icon: ShieldCheck, admin: true },
@@ -146,7 +146,8 @@ function NavList({ onNavigate }) {
     const { user } = useAuth();
     const { pathname } = useLocation();
     const base = useId();
-    // Estate entries (Fleet) are for master-level CNWB seats only; the level is backend-owned (estate.pb.js).
+    // Estate entries (Fleet, Platform Health) are for master-level CNWB seats only; the level is backend-owned
+    // (estate.pb.js). An entry left off this filter stays in the sidebar and bounces the reader back to /app.
     const masterSeat = isMasterSeat(user);
     const allowed = (item) => (!item.admin || access.data?.can_admin) && (!item.estate || masterSeat) && (!item.government || access.data?.government?.allowed);
     const current = groupFor(pathname);

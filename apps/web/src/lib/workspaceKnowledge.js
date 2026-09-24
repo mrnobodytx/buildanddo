@@ -94,14 +94,20 @@ export function createKnowledgeClient({ client, accountId, workspaceId, demo = f
                     { readFailure: { reason: 'degraded', status: 200 } } : {}) };
             } catch (error) {
                 if (!current() || sequence !== attempt) return stale();
-                const forbidden = [401, 403, 404].includes(error?.status);
+                // A 404 is nothing matching, not an entitlement decision: the hook answers it for a mission
+                // it cannot resolve and the router answers it when a deployment never installed the knowledge
+                // route. Reported as lapsed access it sends the reader to an administrator who finds nothing.
+                // Telemetry has no 'missing' reason, so a 404 is reported as unavailable with its status.
+                const forbidden = [401, 403].includes(error?.status); const missing = error?.status === 404;
                 const cancelled = signal?.aborted || error?.isAbort || error?.name === 'AbortError' || error?.originalError?.name === 'AbortError';
                 const malformed = received || error?.name === 'SyntaxError' || error?.originalError?.name === 'SyntaxError';
                 const status = received ? 200 : Number.isInteger(error?.status) && (error.status === 0 || error.status >= 100 && error.status < 600) &&
                     !(malformed && error.status === 0) ? error.status : undefined;
-                return { ok: false, reason: forbidden ? 'forbidden' : 'unavailable',
-                    readFailure: { reason: cancelled ? 'cancelled' : malformed ? 'invalid_response' : forbidden ? 'forbidden' : 'unavailable', status }, error: forbidden ?
-                    'This workspace or mission is no longer available to your account.' : 'Knowledge is unavailable. Retry or ask the workspace operator to check the installed knowledge API.' };
+                return { ok: false, reason: forbidden ? 'forbidden' : missing ? 'missing' : 'unavailable',
+                    readFailure: { reason: cancelled ? 'cancelled' : malformed ? 'invalid_response' : forbidden ? 'forbidden' : 'unavailable', status },
+                    error: forbidden ? 'This workspace or mission is no longer available to your account.' :
+                        missing ? 'Knowledge found no such workspace or mission. Check the selected mission, or ask the workspace operator whether this deployment carries the knowledge route.' :
+                            'Knowledge is unavailable. Retry or ask the workspace operator to check the installed knowledge API.' };
             }
         },
     };

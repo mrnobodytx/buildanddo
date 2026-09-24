@@ -10,7 +10,7 @@
       "enum_type": "ConfigDoc",
       "functions": [],
       "dependencies": [],
-      "lines": 1362,
+      "lines": 1652,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Keep the registered mission research continuation and measured repository inventory reviewable while retaining earlier runtime and governance findings.",
@@ -46,7 +46,8 @@
         "audited-evidence-repairs",
         "broadcast-repairs-and-lessons",
         "test-isolation-and-claim-authority",
-        "telemetry-coverage"
+        "telemetry-coverage",
+        "pr112-integration"
       ],
       "tenant_id": null
     },
@@ -540,7 +541,7 @@
       "dependencies": [
         ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md"
       ],
-      "lines": 64300,
+      "lines": 64202,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Describe the public memory payload that carries this dispatch into the post-merge ingest flow.",
@@ -677,7 +678,7 @@
       "dependencies": [
         ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md"
       ],
-      "lines": 1778,
+      "lines": 1792,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Track the authorized eight-area implementation and its verification gates.",
@@ -701,7 +702,8 @@
         "audited-evidence-repairs",
         "broadcast-repairs-and-lessons",
         "test-isolation-and-claim-authority",
-        "telemetry-coverage"
+        "telemetry-coverage",
+        "pr112-integration"
       ],
       "tenant_id": null
     },
@@ -1005,7 +1007,7 @@
       "dependencies": [
         ".bits/srs_registry.yml"
       ],
-      "lines": 2409,
+      "lines": 2421,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Define acceptance evidence for the eight owner-authorized BuildAndDo upgrades.",
@@ -1029,7 +1031,8 @@
         "audited-evidence-repairs",
         "broadcast-repairs-and-lessons",
         "test-isolation-and-claim-authority",
-        "telemetry-coverage"
+        "telemetry-coverage",
+        "pr112-integration"
       ],
       "tenant_id": null
     },
@@ -1046,7 +1049,7 @@
         ".bits/context.md",
         "scripts/ci/agent_context.py"
       ],
-      "lines": 369,
+      "lines": 411,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Name every SRS code a branch may claim, and where its spec lives.",
@@ -1266,7 +1269,7 @@
         ".gitlab/ci/source-validation.yml",
         "scripts/ci/verify_public_boundary.py"
       ],
-      "lines": 441,
+      "lines": 457,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Preserve automatic public review governance alongside the required GitLab acceptance jobs.",
@@ -1367,7 +1370,7 @@
         ".bits/context.md",
         "CONTRIBUTING.md"
       ],
-      "lines": 87,
+      "lines": 89,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Provide the human-facing companion AGENTS.md declares but the repo never had.",
@@ -3139,7 +3142,7 @@
         "observeRequest"
       ],
       "dependencies": [],
-      "lines": 299,
+      "lines": 300,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Keep backend request and cause observations bounded and content-free without changing application outcomes.",
@@ -3156,7 +3159,8 @@
         "SRS-BUILDANDDO-UPGRADE-001",
         "buildanddo-upgrade",
         "workflow-runs",
-        "telemetry-coverage"
+        "telemetry-coverage",
+        "pr112-integration"
       ],
       "tenant_id": null
     },
@@ -4726,7 +4730,7 @@
         "apps/web/src/hooks/useFailureTelemetry.js",
         "apps/web/src/components/workspace/PageBoundary.jsx"
       ],
-      "lines": 312,
+      "lines": 315,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Route public and workspace views only after native session validation.",
@@ -4841,38 +4845,6 @@
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
         "sprint-user-journey"
-      ],
-      "tenant_id": null
-    },
-    {
-      "type": "A",
-      "file_path": "apps/web/src/components/Reveal.jsx",
-      "cket_stage": "07_BUILD",
-      "srs_codes": [
-        "SRS-BUILDANDDO-UPGRADE-001"
-      ],
-      "enum_type": "Widget",
-      "functions": [],
-      "dependencies": [
-        "@/components/motion/MotionPrimitives",
-        "react"
-      ],
-      "lines": 11,
-      "caps_grade": "pending",
-      "ck_stamp": "pending",
-      "intent_statement": "Reuse one interruptible editorial reveal policy while leaving original page content readable before observation.",
-      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "partial",
-      "supersedes": false,
-      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "seat": "BITS-CODEGEN",
-      "domain": "engineering",
-      "source_type": "seat_dispatch",
-      "tags": [
-        "VCC-BUILDANDDO-UPGRADE-001",
-        "BITS-CODEGEN",
-        "SRS-BUILDANDDO-UPGRADE-001",
-        "editorial-motion"
       ],
       "tenant_id": null
     },
@@ -5776,44 +5748,6 @@
     },
     {
       "type": "A",
-      "file_path": "apps/web/src/components/site/Hero.jsx",
-      "cket_stage": "07_BUILD",
-      "srs_codes": [
-        "SRS-BUILDANDDO-UPGRADE-001"
-      ],
-      "enum_type": "Widget",
-      "functions": [
-        "CockpitHero",
-        "Hero"
-      ],
-      "dependencies": [
-        "@/components/site/ui",
-        "@/contexts/MotionContext",
-        "framer-motion",
-        "lucide-react",
-        "react"
-      ],
-      "lines": 271,
-      "caps_grade": "pending",
-      "ck_stamp": "pending",
-      "intent_statement": "Coordinate existing headline entrances and illustrative hero replay with personal motion choices and visible activity.",
-      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "partial",
-      "supersedes": false,
-      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "seat": "BITS-CODEGEN",
-      "domain": "engineering",
-      "source_type": "seat_dispatch",
-      "tags": [
-        "VCC-BUILDANDDO-UPGRADE-001",
-        "BITS-CODEGEN",
-        "SRS-BUILDANDDO-UPGRADE-001",
-        "editorial-motion"
-      ],
-      "tenant_id": null
-    },
-    {
-      "type": "A",
       "file_path": "apps/web/src/components/site/PublicPage.jsx",
       "cket_stage": "07_BUILD",
       "srs_codes": [
@@ -5927,108 +5861,6 @@
     },
     {
       "type": "A",
-      "file_path": "apps/web/src/components/ui/alert-dialog.jsx",
-      "cket_stage": "07_BUILD",
-      "srs_codes": [
-        "SRS-BUILDANDDO-UPGRADE-001"
-      ],
-      "enum_type": "Widget",
-      "functions": [],
-      "dependencies": [
-        "@/components/ui/button",
-        "@/lib/utils",
-        "@radix-ui/react-alert-dialog",
-        "react"
-      ],
-      "lines": 99,
-      "caps_grade": "pending",
-      "ck_stamp": "pending",
-      "intent_statement": "Make shared alert dialog interactions respect personal motion choices while retaining existing keyboard, focus and dismissal behavior.",
-      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "partial",
-      "supersedes": false,
-      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "seat": "BITS-CODEGEN",
-      "domain": "engineering",
-      "source_type": "seat_dispatch",
-      "tags": [
-        "VCC-BUILDANDDO-UPGRADE-001",
-        "BITS-CODEGEN",
-        "SRS-BUILDANDDO-UPGRADE-001",
-        "editorial-motion"
-      ],
-      "tenant_id": null
-    },
-    {
-      "type": "A",
-      "file_path": "apps/web/src/components/ui/button.jsx",
-      "cket_stage": "07_BUILD",
-      "srs_codes": [
-        "SRS-BUILDANDDO-UPGRADE-001"
-      ],
-      "enum_type": "Widget",
-      "functions": [],
-      "dependencies": [
-        "@/lib/utils",
-        "@radix-ui/react-slot",
-        "class-variance-authority",
-        "react"
-      ],
-      "lines": 48,
-      "caps_grade": "pending",
-      "ck_stamp": "pending",
-      "intent_statement": "Make shared button interactions respect personal motion choices while retaining existing keyboard, focus and dismissal behavior.",
-      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "partial",
-      "supersedes": false,
-      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "seat": "BITS-CODEGEN",
-      "domain": "engineering",
-      "source_type": "seat_dispatch",
-      "tags": [
-        "VCC-BUILDANDDO-UPGRADE-001",
-        "BITS-CODEGEN",
-        "SRS-BUILDANDDO-UPGRADE-001",
-        "editorial-motion"
-      ],
-      "tenant_id": null
-    },
-    {
-      "type": "A",
-      "file_path": "apps/web/src/components/ui/context-menu.jsx",
-      "cket_stage": "07_BUILD",
-      "srs_codes": [
-        "SRS-BUILDANDDO-UPGRADE-001"
-      ],
-      "enum_type": "Widget",
-      "functions": [],
-      "dependencies": [
-        "@/lib/utils",
-        "@radix-ui/react-context-menu",
-        "lucide-react",
-        "react"
-      ],
-      "lines": 158,
-      "caps_grade": "pending",
-      "ck_stamp": "pending",
-      "intent_statement": "Make shared context menu interactions respect personal motion choices while retaining existing keyboard, focus and dismissal behavior.",
-      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "partial",
-      "supersedes": false,
-      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "seat": "BITS-CODEGEN",
-      "domain": "engineering",
-      "source_type": "seat_dispatch",
-      "tags": [
-        "VCC-BUILDANDDO-UPGRADE-001",
-        "BITS-CODEGEN",
-        "SRS-BUILDANDDO-UPGRADE-001",
-        "editorial-motion"
-      ],
-      "tenant_id": null
-    },
-    {
-      "type": "A",
       "file_path": "apps/web/src/components/ui/dialog.jsx",
       "cket_stage": "07_BUILD",
       "srs_codes": [
@@ -6058,181 +5890,6 @@
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
         "buildanddo-upgrade"
-      ],
-      "tenant_id": null
-    },
-    {
-      "type": "A",
-      "file_path": "apps/web/src/components/ui/dropdown-menu.jsx",
-      "cket_stage": "07_BUILD",
-      "srs_codes": [
-        "SRS-BUILDANDDO-UPGRADE-001"
-      ],
-      "enum_type": "Widget",
-      "functions": [],
-      "dependencies": [
-        "@/lib/utils",
-        "@radix-ui/react-dropdown-menu",
-        "lucide-react",
-        "react"
-      ],
-      "lines": 160,
-      "caps_grade": "pending",
-      "ck_stamp": "pending",
-      "intent_statement": "Make shared dropdown menu interactions respect personal motion choices while retaining existing keyboard, focus and dismissal behavior.",
-      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "partial",
-      "supersedes": false,
-      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "seat": "BITS-CODEGEN",
-      "domain": "engineering",
-      "source_type": "seat_dispatch",
-      "tags": [
-        "VCC-BUILDANDDO-UPGRADE-001",
-        "BITS-CODEGEN",
-        "SRS-BUILDANDDO-UPGRADE-001",
-        "editorial-motion"
-      ],
-      "tenant_id": null
-    },
-    {
-      "type": "A",
-      "file_path": "apps/web/src/components/ui/hover-card.jsx",
-      "cket_stage": "07_BUILD",
-      "srs_codes": [
-        "SRS-BUILDANDDO-UPGRADE-001"
-      ],
-      "enum_type": "Widget",
-      "functions": [],
-      "dependencies": [
-        "@/lib/utils",
-        "@radix-ui/react-hover-card",
-        "react"
-      ],
-      "lines": 26,
-      "caps_grade": "pending",
-      "ck_stamp": "pending",
-      "intent_statement": "Make shared hover card interactions respect personal motion choices while retaining existing keyboard, focus and dismissal behavior.",
-      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "partial",
-      "supersedes": false,
-      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "seat": "BITS-CODEGEN",
-      "domain": "engineering",
-      "source_type": "seat_dispatch",
-      "tags": [
-        "VCC-BUILDANDDO-UPGRADE-001",
-        "BITS-CODEGEN",
-        "SRS-BUILDANDDO-UPGRADE-001",
-        "editorial-motion"
-      ],
-      "tenant_id": null
-    },
-    {
-      "type": "A",
-      "file_path": "apps/web/src/components/ui/menubar.jsx",
-      "cket_stage": "07_BUILD",
-      "srs_codes": [
-        "SRS-BUILDANDDO-UPGRADE-001"
-      ],
-      "enum_type": "Widget",
-      "functions": [
-        "MenubarMenu",
-        "MenubarGroup",
-        "MenubarPortal",
-        "MenubarRadioGroup",
-        "MenubarSub"
-      ],
-      "dependencies": [
-        "@/lib/utils",
-        "@radix-ui/react-menubar",
-        "lucide-react",
-        "react"
-      ],
-      "lines": 200,
-      "caps_grade": "pending",
-      "ck_stamp": "pending",
-      "intent_statement": "Make shared menubar interactions respect personal motion choices while retaining existing keyboard, focus and dismissal behavior.",
-      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "partial",
-      "supersedes": false,
-      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "seat": "BITS-CODEGEN",
-      "domain": "engineering",
-      "source_type": "seat_dispatch",
-      "tags": [
-        "VCC-BUILDANDDO-UPGRADE-001",
-        "BITS-CODEGEN",
-        "SRS-BUILDANDDO-UPGRADE-001",
-        "editorial-motion"
-      ],
-      "tenant_id": null
-    },
-    {
-      "type": "A",
-      "file_path": "apps/web/src/components/ui/navigation-menu.jsx",
-      "cket_stage": "07_BUILD",
-      "srs_codes": [
-        "SRS-BUILDANDDO-UPGRADE-001"
-      ],
-      "enum_type": "Widget",
-      "functions": [],
-      "dependencies": [
-        "@/lib/utils",
-        "@radix-ui/react-navigation-menu",
-        "class-variance-authority",
-        "lucide-react",
-        "react"
-      ],
-      "lines": 106,
-      "caps_grade": "pending",
-      "ck_stamp": "pending",
-      "intent_statement": "Make shared navigation menu interactions respect personal motion choices while retaining existing keyboard, focus and dismissal behavior.",
-      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "partial",
-      "supersedes": false,
-      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "seat": "BITS-CODEGEN",
-      "domain": "engineering",
-      "source_type": "seat_dispatch",
-      "tags": [
-        "VCC-BUILDANDDO-UPGRADE-001",
-        "BITS-CODEGEN",
-        "SRS-BUILDANDDO-UPGRADE-001",
-        "editorial-motion"
-      ],
-      "tenant_id": null
-    },
-    {
-      "type": "A",
-      "file_path": "apps/web/src/components/ui/popover.jsx",
-      "cket_stage": "07_BUILD",
-      "srs_codes": [
-        "SRS-BUILDANDDO-UPGRADE-001"
-      ],
-      "enum_type": "Widget",
-      "functions": [],
-      "dependencies": [
-        "@/lib/utils",
-        "@radix-ui/react-popover",
-        "react"
-      ],
-      "lines": 30,
-      "caps_grade": "pending",
-      "ck_stamp": "pending",
-      "intent_statement": "Make shared popover interactions respect personal motion choices while retaining existing keyboard, focus and dismissal behavior.",
-      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "partial",
-      "supersedes": false,
-      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "seat": "BITS-CODEGEN",
-      "domain": "engineering",
-      "source_type": "seat_dispatch",
-      "tags": [
-        "VCC-BUILDANDDO-UPGRADE-001",
-        "BITS-CODEGEN",
-        "SRS-BUILDANDDO-UPGRADE-001",
-        "editorial-motion"
       ],
       "tenant_id": null
     },
@@ -6302,74 +5959,6 @@
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
         "buildanddo-upgrade"
-      ],
-      "tenant_id": null
-    },
-    {
-      "type": "A",
-      "file_path": "apps/web/src/components/ui/toast.jsx",
-      "cket_stage": "07_BUILD",
-      "srs_codes": [
-        "SRS-BUILDANDDO-UPGRADE-001"
-      ],
-      "enum_type": "Widget",
-      "functions": [],
-      "dependencies": [
-        "@/lib/utils",
-        "@radix-ui/react-toast",
-        "class-variance-authority",
-        "lucide-react",
-        "react"
-      ],
-      "lines": 86,
-      "caps_grade": "pending",
-      "ck_stamp": "pending",
-      "intent_statement": "Make shared toast interactions respect personal motion choices while retaining existing keyboard, focus and dismissal behavior.",
-      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "partial",
-      "supersedes": false,
-      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "seat": "BITS-CODEGEN",
-      "domain": "engineering",
-      "source_type": "seat_dispatch",
-      "tags": [
-        "VCC-BUILDANDDO-UPGRADE-001",
-        "BITS-CODEGEN",
-        "SRS-BUILDANDDO-UPGRADE-001",
-        "editorial-motion"
-      ],
-      "tenant_id": null
-    },
-    {
-      "type": "A",
-      "file_path": "apps/web/src/components/ui/tooltip.jsx",
-      "cket_stage": "07_BUILD",
-      "srs_codes": [
-        "SRS-BUILDANDDO-UPGRADE-001"
-      ],
-      "enum_type": "Widget",
-      "functions": [],
-      "dependencies": [
-        "@/lib/utils",
-        "@radix-ui/react-tooltip",
-        "react"
-      ],
-      "lines": 27,
-      "caps_grade": "pending",
-      "ck_stamp": "pending",
-      "intent_statement": "Make shared tooltip interactions respect personal motion choices while retaining existing keyboard, focus and dismissal behavior.",
-      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "partial",
-      "supersedes": false,
-      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "seat": "BITS-CODEGEN",
-      "domain": "engineering",
-      "source_type": "seat_dispatch",
-      "tags": [
-        "VCC-BUILDANDDO-UPGRADE-001",
-        "BITS-CODEGEN",
-        "SRS-BUILDANDDO-UPGRADE-001",
-        "editorial-motion"
       ],
       "tenant_id": null
     },
@@ -6833,7 +6422,7 @@
         "apps/web/src/pages/workspace/CareerPage.jsx",
         "apps/web/src/lib/workspaceControl.js"
       ],
-      "lines": 381,
+      "lines": 382,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Keep workspace navigation tied to observed account and government membership while preserving ordinary work areas.",
@@ -6942,7 +6531,7 @@
       "dependencies": [
         "apps/web/src/components/workspace/TutorialCatalog.jsx"
       ],
-      "lines": 394,
+      "lines": 393,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Exercise shared lesson progress across pages without anonymous reads, demo writes or duplicate retries.",
@@ -6995,39 +6584,6 @@
         "SRS-BUILDANDDO-UPGRADE-001",
         "workspace-integration",
         "test-isolation-and-claim-authority"
-      ],
-      "tenant_id": null
-    },
-    {
-      "type": "A",
-      "file_path": "apps/web/src/components/workspace/componentCatalogData.jsx",
-      "cket_stage": "07_BUILD",
-      "srs_codes": [
-        "SRS-BUILDANDDO-UPGRADE-001"
-      ],
-      "enum_type": "ConfigDoc",
-      "functions": [
-        "catalogByCategory"
-      ],
-      "dependencies": [
-        "apps/web/src/components/ui"
-      ],
-      "lines": 1172,
-      "caps_grade": "pending",
-      "ck_stamp": "pending",
-      "intent_statement": "One registry entry per UI primitive module so a contributor can see what already exists.",
-      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "partial",
-      "supersedes": false,
-      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "seat": "BITS-CODEGEN",
-      "domain": "engineering",
-      "source_type": "seat_dispatch",
-      "tags": [
-        "VCC-BUILDANDDO-UPGRADE-001",
-        "BITS-CODEGEN",
-        "SRS-BUILDANDDO-UPGRADE-001",
-        "buildanddo-upgrade"
       ],
       "tenant_id": null
     },
@@ -7401,7 +6957,7 @@
         "apps/web/src/components/workspace/workflows/StartWorkflowRun.jsx",
         "apps/web/src/components/workspace/workflows/WorkflowRunReview.jsx"
       ],
-      "lines": 168,
+      "lines": 182,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Show scoped paginated run history and approval checkpoints with distinct loading, empty, unavailable and demo states.",
@@ -8022,7 +7578,8 @@
       ],
       "enum_type": "Adapter",
       "functions": [
-        "useWorkspaceControl"
+        "useWorkspaceControl",
+        "describeAccess"
       ],
       "dependencies": [
         "apps/web/src/lib/workspaceControl.js",
@@ -8030,7 +7587,7 @@
         "apps/web/src/lib/observability/runtime.js",
         "apps/web/src/lib/navigationIntent.js"
       ],
-      "lines": 95,
+      "lines": 134,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Discard stale control responses and preserve failed form state while coordinating versioned saves and refreshed views.",
@@ -8048,7 +7605,8 @@
         "workspace-administration",
         "government-research-assurance",
         "audited-evidence-repairs",
-        "telemetry-coverage"
+        "telemetry-coverage",
+        "pr112-integration"
       ],
       "tenant_id": null
     },
@@ -8450,7 +8008,7 @@
       "dependencies": [
         "apps/pocketbase/pb_hooks/suite.pb.js"
       ],
-      "lines": 114,
+      "lines": 118,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Call one scoped mission API while recovering uncertain writes and discarding private state after account changes.",
@@ -8611,7 +8169,8 @@
         "srs-buildanddo-upgrade-001",
         "classrooms",
         "interactive-learning",
-        "telemetry-coverage"
+        "telemetry-coverage",
+        "pr112-integration"
       ],
       "tenant_id": null
     },
@@ -9932,7 +9491,7 @@
         "react",
         "react-router-dom"
       ],
-      "lines": 560,
+      "lines": 572,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Keep community coordination and pending social connections separate from reviewed content production using scoped mutations and demo guards.",
@@ -9977,7 +9536,7 @@
         "lucide-react",
         "react"
       ],
-      "lines": 124,
+      "lines": 139,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Keep workspace writes attributed to real backend outcomes and expose actionable failure states in this page.",
@@ -10130,7 +9689,7 @@
         "apps/web/src/lib/workspaceActions.js",
         "apps/web/src/components/workspace/EvidenceInspector.jsx"
       ],
-      "lines": 499,
+      "lines": 505,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Make the evidence trail searchable and linkable, so a ledger stays a ledger past its first thirty entries.",
@@ -10287,7 +9846,7 @@
         "apps/pocketbase/pb_migrations/1789000000_extend_workspace_operations.js",
         "apps/web/src/components/workspace/IntegrationControls.jsx"
       ],
-      "lines": 617,
+      "lines": 628,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Give the operations surface the two things it was missing — the runbook text and the record of each time a human ran it.",
@@ -10322,7 +9881,7 @@
         "apps/web/src/components/workspace/NextWorkspaceActions.jsx",
         "apps/web/src/lib/onboarding.js"
       ],
-      "lines": 522,
+      "lines": 526,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Answer \"what is happening in this workspace\" in one screen — one merged activity feed, counts that mean something, and an honest statement when the data layer cannot be read.",
@@ -10560,7 +10119,7 @@
         "lucide-react",
         "react"
       ],
-      "lines": 101,
+      "lines": 158,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Keep workspace writes attributed to real backend outcomes and expose actionable failure states in this page.",
@@ -10594,7 +10153,7 @@
         "apps/web/src/components/workspace/ComponentCatalog.jsx",
         "apps/web/src/components/workspace/missions/MissionGuide.jsx"
       ],
-      "lines": 73,
+      "lines": 61,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Use the same saved lesson progress as Docs and the front page while loading the component reference separately.",
@@ -11253,7 +10812,7 @@
       "dependencies": [
         "apps/web/tools/release-telemetry.mjs"
       ],
-      "lines": 85,
+      "lines": 94,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Keep offline builds usable while binding designated release telemetry to the actual build.",
@@ -11269,7 +10828,8 @@
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
         "buildanddo-upgrade",
-        "telemetry-coverage"
+        "telemetry-coverage",
+        "pr112-integration"
       ],
       "tenant_id": null
     },
@@ -11291,7 +10851,7 @@
         "apps/web/src/lib/tutorialCurriculum.js",
         "apps/pocketbase/pb_migrations/data/starter-tutorials.json"
       ],
-      "lines": 112,
+      "lines": 132,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Keep Discord documentation and teaching content on the same authored curriculum and release as the public site.",
@@ -11612,7 +11172,7 @@
         "docs/private-dossiers.md",
         "docs/discord-activation.md"
       ],
-      "lines": 227,
+      "lines": 260,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Explain the implemented Discord experience, its real public data sources and the remaining private activation requirements.",
@@ -16548,7 +16108,7 @@
         ".bits/srs_registry.yml",
         "scripts/ci/gitlab_ci.py"
       ],
-      "lines": 494,
+      "lines": 542,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Give every agent turn the same measured view of the repo instead of a hand-written brief that silently goes stale.",
@@ -16826,7 +16386,8 @@
       "file_path": "scripts/discordbot/bot.py",
       "cket_stage": "07_BUILD",
       "srs_codes": [
-        "SRS-BUILDANDDO-UPGRADE-001"
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "SRS-BUILDANDDO-QUIZ-001"
       ],
       "enum_type": "Service",
       "functions": [
@@ -16841,9 +16402,10 @@
         "scripts/discordbot/service.py",
         "scripts/discordbot/contracts.py",
         "scripts/discordbot/research.py",
-        "scripts/discordbot/dossier.py"
+        "scripts/discordbot/dossier.py",
+        "scripts/discordbot/grading.py"
       ],
-      "lines": 706,
+      "lines": 722,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Serve useful public Discord interactions with explicit scope, private replies and no import-time activation.",
@@ -16859,7 +16421,8 @@
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
         "discord-community",
-        "telemetry-coverage"
+        "telemetry-coverage",
+        "pr112-integration"
       ],
       "tenant_id": null
     },
@@ -16888,7 +16451,7 @@
         "scripts/discordbot/contracts.py",
         "apps/web/tools/generate-community.mjs"
       ],
-      "lines": 227,
+      "lines": 226,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Reject malformed community feeds and render complete authored lessons without reading private records.",
@@ -16934,7 +16497,7 @@
       "dependencies": [
         ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md"
       ],
-      "lines": 265,
+      "lines": 264,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Bound bot configuration, replies and personal interactions without granting workspace authority.",
@@ -16972,7 +16535,7 @@
         "scripts/discordbot/dossier.py",
         "apps/research/contracts.py"
       ],
-      "lines": 120,
+      "lines": 132,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Report actual local bot and worker prerequisites without exposing configuration values, contacting services or implying runtime activation.",
@@ -17112,7 +16675,8 @@
       "file_path": "scripts/discordbot/service.py",
       "cket_stage": "07_BUILD",
       "srs_codes": [
-        "SRS-BUILDANDDO-UPGRADE-001"
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "SRS-BUILDANDDO-QUIZ-001"
       ],
       "enum_type": "Service",
       "functions": [
@@ -17123,9 +16687,10 @@
       ],
       "dependencies": [
         "scripts/discordbot/catalogue.py",
-        "scripts/discordbot/public_data.py"
+        "scripts/discordbot/public_data.py",
+        "scripts/discordbot/grading.py"
       ],
-      "lines": 334,
+      "lines": 357,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Connect useful community commands to dated public evidence and the site's authored teaching content.",
@@ -17141,7 +16706,8 @@
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
         "discord-community",
-        "telemetry-coverage"
+        "telemetry-coverage",
+        "pr112-integration"
       ],
       "tenant_id": null
     },
@@ -17725,7 +17291,7 @@
         "apps/web/tools/generate-seo.mjs",
         "apps/web/tools/release-telemetry.mjs"
       ],
-      "lines": 395,
+      "lines": 436,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Verify release identity and real generated crawler artifacts without network dependencies.",
@@ -17741,7 +17307,8 @@
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
         "buildanddo-upgrade",
-        "telemetry-coverage"
+        "telemetry-coverage",
+        "pr112-integration"
       ],
       "tenant_id": null
     },
@@ -18194,7 +17761,7 @@
       "dependencies": [
         "apps/web/tools/generate-community.mjs"
       ],
-      "lines": 92,
+      "lines": 96,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Verify the real community artifact preserves public lesson parity and excludes private or malformed data.",
@@ -19204,7 +18771,7 @@
         "tests/upgrade/discord_sdk_double.py",
         "apps/web/tools/generate-community.mjs"
       ],
-      "lines": 343,
+      "lines": 379,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Verify private replies, owned controls and deliberate synchronization while keeping SDK-double results distinct from native acceptance.",
@@ -19242,7 +18809,7 @@
         "scripts/discordbot/catalogue.py",
         "apps/web/tools/generate-community.mjs"
       ],
-      "lines": 274,
+      "lines": 298,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Verify real generated learning content, scope enforcement, dated evidence and useful bot command outcomes without private access.",
@@ -19275,7 +18842,7 @@
       "dependencies": [
         "scripts/discordbot/doctor.py"
       ],
-      "lines": 111,
+      "lines": 125,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Verify startup diagnostics expose only prerequisites and never read credential files, contact services or assert activation.",
@@ -19348,7 +18915,7 @@
         "scripts/discordbot/public_data.py",
         "scripts/discordbot/contracts.py"
       ],
-      "lines": 306,
+      "lines": 319,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Prove bounded public HTTP, cancellation, scope limits and private learning controls without contacting Discord.",
@@ -20170,7 +19737,7 @@
         "apps/web/src/hooks/useWorkspaceKnowledge.js",
         "apps/web/src/hooks/useFailureTelemetry.js"
       ],
-      "lines": 73,
+      "lines": 107,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Surface automatically assembled mission context with readable citations, explicit omissions and an intentional export.",
@@ -20186,7 +19753,8 @@
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
         "workspace-knowledge",
-        "telemetry-coverage"
+        "telemetry-coverage",
+        "pr112-integration"
       ],
       "tenant_id": null
     },
@@ -20278,7 +19846,7 @@
       "dependencies": [
         "apps/pocketbase/pb_hooks/knowledge.pb.js"
       ],
-      "lines": 127,
+      "lines": 133,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Deliver current scoped graph responses and cited context without retaining private data across accounts.",
@@ -20296,7 +19864,8 @@
         "workspace-knowledge",
         "sprint-completion",
         "workspace-assistant",
-        "telemetry-coverage"
+        "telemetry-coverage",
+        "pr112-integration"
       ],
       "tenant_id": null
     },
@@ -25378,26 +24947,6 @@
     },
     {
       "type": "B",
-      "source": "apps/web/src/components/workspace/componentCatalogData.jsx",
-      "target": "apps/web/src/components/ui",
-      "edge_type": "VALIDATES",
-      "weight": 1.0,
-      "description": "apps/web/src/components/workspace/componentCatalogData.jsx validates apps/web/src/components/ui.",
-      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "created_by": "BITS-CODEGEN"
-    },
-    {
-      "type": "B",
-      "source": "apps/web/src/components/workspace/componentCatalogData.jsx",
-      "target": "apps/web/src/components/ui",
-      "edge_type": "CONSUMES",
-      "weight": 1.0,
-      "description": "apps/web/src/components/workspace/componentCatalogData.jsx consumes apps/web/src/components/ui.",
-      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "created_by": "BITS-CODEGEN"
-    },
-    {
-      "type": "B",
       "source": "apps/web/src/components/workspace/missions/MissionBuilder.jsx",
       "target": "apps/web/src/lib/missionLearning.js",
       "edge_type": "DEPENDS_ON",
@@ -26963,16 +26512,6 @@
       "edge_type": "CONSUMES",
       "weight": 1.0,
       "description": "apps/web/src/pages/workspace/TutorialsPage.jsx consumes apps/web/src/components/workspace/TutorialCatalog.jsx.",
-      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "created_by": "BITS-CODEGEN"
-    },
-    {
-      "type": "B",
-      "source": "apps/web/src/pages/workspace/TutorialsPage.jsx",
-      "target": "apps/web/src/components/workspace/ComponentCatalog.jsx",
-      "edge_type": "CONSUMES",
-      "weight": 1.0,
-      "description": "apps/web/src/pages/workspace/TutorialsPage.jsx consumes apps/web/src/components/workspace/ComponentCatalog.jsx.",
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "created_by": "BITS-CODEGEN"
     },
@@ -38908,7 +38447,7 @@
       "dependencies": [
         ".bits/hostinger-readiness.lock.json"
       ],
-      "lines": 1345,
+      "lines": 1321,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Distinguish reviewed source fingerprints from execution or deployment evidence.",
@@ -38932,7 +38471,8 @@
         "audited-evidence-repairs",
         "broadcast-repairs-and-lessons",
         "test-isolation-and-claim-authority",
-        "telemetry-coverage"
+        "telemetry-coverage",
+        "pr112-integration"
       ],
       "tenant_id": null
     },
@@ -40887,7 +40427,7 @@
         "apps/pocketbase/pb_hooks/business-actions.js",
         "apps/web/src/lib/missionReplay.js"
       ],
-      "lines": 91,
+      "lines": 100,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Expose scope-bound business commands and replay facts without inventing external outcomes.",
@@ -40903,7 +40443,8 @@
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
         "sprint-user-journey",
-        "telemetry-coverage"
+        "telemetry-coverage",
+        "pr112-integration"
       ],
       "tenant_id": null
     },
@@ -41107,7 +40648,7 @@
         "apps/web/src/lib/businessExecution.js",
         "apps/web/src/components/workspace/MissionReplayCapture.jsx"
       ],
-      "lines": 109,
+      "lines": 117,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Replay and export actual bounded-action receipts without treating recorded results as independent verification.",
@@ -41123,7 +40664,8 @@
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
         "sprint-user-journey",
-        "telemetry-coverage"
+        "telemetry-coverage",
+        "pr112-integration"
       ],
       "tenant_id": null
     },
@@ -41141,7 +40683,7 @@
         "apps/web/src/hooks/useWorkspaceKnowledge.js",
         "apps/web/src/pages/workspace/ExecutionReplayPage.jsx"
       ],
-      "lines": 108,
+      "lines": 116,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Make room modes act on current workspace evidence and retained execution replay while preserving separate estate publication.",
@@ -41158,7 +40700,8 @@
         "SRS-BUILDANDDO-UPGRADE-001",
         "sprint-completion",
         "workspace-assistant",
-        "telemetry-coverage"
+        "telemetry-coverage",
+        "pr112-integration"
       ],
       "tenant_id": null
     },
@@ -41177,7 +40720,7 @@
       "dependencies": [
         "apps/web/src/hooks/useWorkspaceRecords.js"
       ],
-      "lines": 85,
+      "lines": 107,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Restore scoped specialist work desks while retaining the separate Capability Passport and existing work tools.",
@@ -41467,7 +41010,7 @@
         "apps/web/src/lib/businessExecution.js",
         "apps/web/src/lib/workflowRuns.js"
       ],
-      "lines": 73,
+      "lines": 88,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Verify scoped native business receipt transport, uncertain retries and honest replay projections.",
@@ -41483,7 +41026,8 @@
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
         "sprint-completion",
-        "workspace-assistant"
+        "workspace-assistant",
+        "pr112-integration"
       ],
       "tenant_id": null
     },
@@ -48186,7 +47730,7 @@
       "enum_type": "Doc",
       "functions": [],
       "dependencies": [],
-      "lines": 189,
+      "lines": 584,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Explain the educational collaboration product, its learning and evidence loop, and the application domains so contributors understand what BuildAndDo is for.",
@@ -56494,7 +56038,7 @@
         "apps/web/src/test/utils.jsx",
         "apps/pocketbase/pb_migrations/data/broadcast-classroom-lessons.json"
       ],
-      "lines": 168,
+      "lines": 206,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Keep source case studies readable and linked without counting them as workspace outcomes or writing learning state.",
@@ -57658,7 +57202,7 @@
         "services/praxis_evidence/run_all_tests.py",
         ".gitlab/ci/day21-submission.yml"
       ],
-      "lines": 139,
+      "lines": 143,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Keep GitLab testing blocking while isolating mutating Praxis suites from shared backends and production credentials.",
@@ -60950,7 +60494,7 @@
         "apps/web/src/lib/observability/runtime.js",
         "apps/web/src/lib/navigationIntent.js"
       ],
-      "lines": 540,
+      "lines": 559,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Show the Citadel NNC as three planes of hosts with what actually runs on each, and label the reading as a recorded observation rather than dressing a transcription up as a live gauge.",
@@ -60979,19 +60523,22 @@
       ],
       "enum_type": "Widget",
       "functions": [
+        "ageSentence",
+        "ReadingProvenance",
         "PlatformCard"
       ],
       "dependencies": [
-        "scripts/ci/fleet_report.py",
+        "apps/pocketbase/pb_hooks/estate.pb.js",
+        "apps/web/src/lib/pocketbaseClient.js",
         "apps/web/src/components/workspace/workspaceHelpers.jsx",
         "apps/web/src/components/site/ui.jsx",
         "apps/web/src/lib/observability/runtime.js",
         "apps/web/src/lib/navigationIntent.js"
       ],
-      "lines": 520,
+      "lines": 597,
       "caps_grade": "pending",
       "ck_stamp": "pending",
-      "intent_statement": "Say which connected platforms are actually being used, keeping \"unknown\" separate from \"unused\" so an unreadable entitlement is never counted as a deliberate gap.",
+      "intent_statement": "Say which of the operating company's connected platforms are actually being used, to the operator who owns them, keeping \"unknown\" separate from \"unused\" so an unreadable entitlement is never counted as a deliberate gap.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
       "outcome": "partial",
       "supersedes": false,
@@ -61003,7 +60550,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "telemetry-coverage"
+        "telemetry-coverage",
+        "pr112-integration"
       ],
       "tenant_id": null
     },
@@ -61537,7 +61085,7 @@
         "apps/web/src/pages/workspace/OperatorPage.jsx",
         "apps/web/src/pages/workspace/RoomsPage.jsx"
       ],
-      "lines": 986,
+      "lines": 1008,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Connect actual public action handlers to both offline SDK doubles and assert privacy, truthful outcomes and unchanged retry lifetimes.",
@@ -61552,7 +61100,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "telemetry-coverage"
+        "telemetry-coverage",
+        "pr112-integration"
       ],
       "tenant_id": null
     },
@@ -61569,7 +61118,8 @@
         "fixture",
         "clientFixture",
         "mountShared",
-        "page"
+        "page",
+        "knowledgeResults"
       ],
       "dependencies": [
         "apps/web/src/lib/workspaceRecords.js",
@@ -61581,7 +61131,7 @@
         "apps/web/src/components/site/StatusPanels.jsx",
         "apps/web/src/pages"
       ],
-      "lines": 549,
+      "lines": 619,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Exercise real read clients and hook closures with local transport, hook, clock and telemetry sink doubles, without vendor or API access.",
@@ -61596,7 +61146,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "telemetry-coverage"
+        "telemetry-coverage",
+        "pr112-integration"
       ],
       "tenant_id": null
     },
@@ -61729,7 +61280,7 @@
         "tests/upgrade/test_discordbot_adapter.py",
         "tests/upgrade/discord_sdk_double.py"
       ],
-      "lines": 573,
+      "lines": 633,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Verify personless command and control outcomes with synthetic permissions, clocks and transports without SDK login or hosting claims.",
@@ -61744,7 +61295,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "telemetry-coverage"
+        "telemetry-coverage",
+        "pr112-integration"
       ],
       "tenant_id": null
     },
@@ -63112,16 +62664,6 @@
     {
       "type": "B",
       "source": "apps/web/src/pages/workspace/PlatformHealthPage.jsx",
-      "target": "apps/web/public/platform-health.json",
-      "edge_type": "CONSUMES",
-      "weight": 0.8,
-      "description": "apps/web/src/pages/workspace/PlatformHealthPage.jsx CONSUMES apps/web/public/platform-health.json",
-      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "created_by": "BITS-CODEGEN"
-    },
-    {
-      "type": "B",
-      "source": "apps/web/src/pages/workspace/PlatformHealthPage.jsx",
       "target": "apps/web/src/lib/navigationIntent.js",
       "edge_type": "CONSUMES",
       "weight": 0.8,
@@ -63136,16 +62678,6 @@
       "edge_type": "CONSUMES",
       "weight": 0.8,
       "description": "apps/web/src/pages/workspace/PlatformHealthPage.jsx CONSUMES apps/web/src/lib/observability/runtime.js",
-      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "created_by": "BITS-CODEGEN"
-    },
-    {
-      "type": "B",
-      "source": "apps/web/src/pages/workspace/PlatformHealthPage.jsx",
-      "target": "scripts/ci/fleet_report.py",
-      "edge_type": "DEPENDS_ON",
-      "weight": 0.8,
-      "description": "apps/web/src/pages/workspace/PlatformHealthPage.jsx DEPENDS_ON scripts/ci/fleet_report.py",
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "created_by": "BITS-CODEGEN"
     },
@@ -64283,12 +63815,382 @@
       "timestamp": "2026-09-24T20:37:16.802967+00:00",
       "commit_sha": null,
       "smoke_result": "1358/1359 Node; 1274/1289 Python; two unknown-status red/green controls; native BLOCKED"
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/growth.lock.json",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-GROWTH-001",
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "ConfigDoc",
+      "functions": [],
+      "dependencies": [
+        "scripts/ci/system_growth.py"
+      ],
+      "lines": 702,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Bind regenerated growth metadata to the reconciled source without claiming runtime acceptance.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "pr112-integration"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/growth.lock.json.cgrf.yaml",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-GROWTH-001",
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "ConfigDoc",
+      "functions": [],
+      "dependencies": [
+        "scripts/ci/system_growth.py"
+      ],
+      "lines": 15,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Bind regenerated growth metadata to the reconciled source without claiming runtime acceptance.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "pr112-integration"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/pr112-merge-report.md",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "tests/upgrade/read-failure-telemetry.test.mjs",
+        "tests/upgrade/public-action-telemetry.test.mjs",
+        "tests/upgrade/build.test.mjs",
+        "tests/upgrade/test_discordbot_telemetry.py"
+      ],
+      "lines": 156,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Retain PR 112's semantic merge decisions and measured integration limits without substituting source checks for runtime acceptance.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "pr112-integration"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "CHANGELOG.md",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-CHANGELOG-001",
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "scripts/ci/changelog_gen.py"
+      ],
+      "lines": 604,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Record what actually landed on main, generated from the commits themselves.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "pr112-integration"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/components/workspace/__tests__/KnowledgeContext.test.jsx",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [],
+      "dependencies": [
+        "apps/web/src/components/workspace/KnowledgeContext.jsx"
+      ],
+      "lines": 88,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Hold the knowledge context to rendering absence as absence, because the payload it is handed does not always carry one and it used to take the whole page down.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "pr112-integration"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "B",
+      "source": ".bits/growth.lock.json.cgrf.yaml",
+      "target": "scripts/ci/system_growth.py",
+      "edge_type": "CONSUMES",
+      "weight": 0.8,
+      "description": ".bits/growth.lock.json.cgrf.yaml CONSUMES scripts/ci/system_growth.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/growth.lock.json.cgrf.yaml",
+      "target": ".bits/growth.lock.json",
+      "edge_type": "VALIDATES",
+      "weight": 0.8,
+      "description": ".bits/growth.lock.json.cgrf.yaml VALIDATES .bits/growth.lock.json",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/pr112-merge-report.md",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/memory.json",
+      "edge_type": "CONSUMES",
+      "weight": 0.8,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/pr112-merge-report.md CONSUMES .bits/out/VCC-BUILDANDDO-UPGRADE-001/memory.json",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/pr112-merge-report.md",
+      "target": "tests/upgrade/build.test.mjs",
+      "edge_type": "VERIFIED_BY",
+      "weight": 0.8,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/pr112-merge-report.md VERIFIED_BY tests/upgrade/build.test.mjs",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/pr112-merge-report.md",
+      "target": "tests/upgrade/public-action-telemetry.test.mjs",
+      "edge_type": "VERIFIED_BY",
+      "weight": 0.8,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/pr112-merge-report.md VERIFIED_BY tests/upgrade/public-action-telemetry.test.mjs",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/pr112-merge-report.md",
+      "target": "tests/upgrade/read-failure-telemetry.test.mjs",
+      "edge_type": "VERIFIED_BY",
+      "weight": 0.8,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/pr112-merge-report.md VERIFIED_BY tests/upgrade/read-failure-telemetry.test.mjs",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/pr112-merge-report.md",
+      "target": "tests/upgrade/test_discordbot_telemetry.py",
+      "edge_type": "VERIFIED_BY",
+      "weight": 0.8,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/pr112-merge-report.md VERIFIED_BY tests/upgrade/test_discordbot_telemetry.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "CHANGELOG.md",
+      "target": "git history",
+      "edge_type": "CONSUMES",
+      "weight": 0.8,
+      "description": "CHANGELOG.md CONSUMES git history",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "CHANGELOG.md",
+      "target": "scripts/ci/changelog_gen.py",
+      "edge_type": "VALIDATES",
+      "weight": 0.8,
+      "description": "CHANGELOG.md VALIDATES scripts/ci/changelog_gen.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/workspace/__tests__/KnowledgeContext.test.jsx",
+      "target": "apps/web/src/components/workspace/KnowledgeContext.jsx",
+      "edge_type": "VALIDATES",
+      "weight": 0.8,
+      "description": "apps/web/src/components/workspace/__tests__/KnowledgeContext.test.jsx VALIDATES apps/web/src/components/workspace/KnowledgeContext.jsx",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/workspace/PlatformHealthPage.jsx",
+      "target": "GET /api/buildanddo/estate/platform-health",
+      "edge_type": "CONSUMES",
+      "weight": 0.8,
+      "description": "apps/web/src/pages/workspace/PlatformHealthPage.jsx CONSUMES GET /api/buildanddo/estate/platform-health",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/workspace/PlatformHealthPage.jsx",
+      "target": "apps/pocketbase/pb_hooks/estate.pb.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 0.8,
+      "description": "apps/web/src/pages/workspace/PlatformHealthPage.jsx DEPENDS_ON apps/pocketbase/pb_hooks/estate.pb.js",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/workspace/__tests__/EvidencePage.test.jsx",
+      "target": "apps/pocketbase/pb_migrations/data/authority-repairs-lessons.json",
+      "edge_type": "CONSUMES",
+      "weight": 0.8,
+      "description": "apps/web/src/pages/workspace/__tests__/EvidencePage.test.jsx CONSUMES apps/pocketbase/pb_migrations/data/authority-repairs-lessons.json",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/discord-bot.md",
+      "target": "apps/pocketbase/pb_hooks/community-quiz.pb.js",
+      "edge_type": "CONSUMES",
+      "weight": 0.8,
+      "description": "docs/discord-bot.md CONSUMES apps/pocketbase/pb_hooks/community-quiz.pb.js",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/discord-bot.md",
+      "target": "scripts/discordbot/grading.py",
+      "edge_type": "CONSUMES",
+      "weight": 0.8,
+      "description": "docs/discord-bot.md CONSUMES scripts/discordbot/grading.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "scripts/discordbot/bot.py",
+      "target": "scripts/discordbot/grading.py",
+      "edge_type": "CONSUMES",
+      "weight": 0.8,
+      "description": "scripts/discordbot/bot.py CONSUMES scripts/discordbot/grading.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "scripts/discordbot/service.py",
+      "target": "scripts/discordbot/grading.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 0.8,
+      "description": "scripts/discordbot/service.py DEPENDS_ON scripts/discordbot/grading.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "C",
+      "event_type": "smoke_run",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/pr112-merge-report.md",
+      "description": "PR 112 source integration resolves nine conflict paths while retaining private estate reads, safe context absence, discarded-replay states, server-graded quizzes, telemetry lifetime guards and the README/growth/hygiene changes. Connected controls also repair quiz outcome logging and the build wrapper ordering before telemetry finalization. Current metadata retires only thirteen file entries already removed by the reviewed hygiene change; all earlier events remain. The final Node source run has 1444 passes and one missing-bundler skip; Python has 1336 passes, seven existing governance failures and eight dependency skips. No frontend/native/hosted/deployed acceptance or external effects are inferred.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-24T22:00:30.656955+00:00",
+      "commit_sha": null,
+      "smoke_result": "1444/1445 Node; 1336/1351 Python; 43 governance-tool regressions; native/rendered unavailable"
+    },
+    {
+      "type": "C",
+      "event_type": "smoke_run",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/pr112-merge-report.md",
+      "description": "The PR 112 remote head advanced during validation to 4c61592bf9a53f98ac956034f44620265b96a073. The follow-up merge retains that history and its inline context parsing, unpublished-projection classification and Vite failure handling, along with local lifecycle regressions and post-answer-scan telemetry finalization. After reconciliation, the affected Node selection has 180 passes and one missing-bundler skip, and the Discord selection has 86 passes and one missing native-SDK skip. No new remote publication or runtime acceptance is asserted.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-24T22:21:39.771991+00:00",
+      "commit_sha": null,
+      "smoke_result": "180/181 affected Node checks; 86/87 Discord checks; one dependency skip per selection"
+    },
+    {
+      "type": "C",
+      "event_type": "smoke_run",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/pr112-merge-report.md",
+      "description": "Both broad source suites were repeated after the PR 112 concurrent update was reconciled. The retained source_node-package-1790288940062578019 receipt and TAP log record 1444 passes, zero failures and one missing-Vite skip. An earlier retry failed to load the diagnostic ESLint from the Node 22 global prefix; its failure was retained and the existing global ESLint was selected without package or test changes. The source_python-package-1790288560501148929 receipt records 1336 passes, the same seven readiness/submission failures and eight dependency skips. Dependency lock, reviewed governance bindings and public boundary pass; rendered, native, hosted and deployment acceptance remain unestablished.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-24T22:32:18.571940+00:00",
+      "commit_sha": null,
+      "smoke_result": "1444/1445 Node, zero failures; 1336/1351 Python, seven failures and eight skips"
     }
   ],
   "summary": {
-    "type_a_count": 991,
-    "type_b_count": 2540,
-    "type_c_count": 242,
+    "type_a_count": 983,
+    "type_b_count": 2552,
+    "type_c_count": 245,
     "ioo_compliance": true,
     "dkg_orphans": 0,
     "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",

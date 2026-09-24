@@ -22,6 +22,8 @@ import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'nod
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import test from 'node:test';
+import { fileURLToPath } from 'node:url';
+import vm from 'node:vm';
 import { resolveBuildRelease } from '../../scripts/ci/release.mjs';
 import { generatePublicAssets, generatePageHeads } from '../../apps/web/tools/generate-seo.mjs';
 import { PUBLIC_PAGES, SITE_ORIGIN } from '../../apps/web/src/lib/publicPages.js';
@@ -37,6 +39,45 @@ function temporary(t) {
     t.after(() => rmSync(root, { recursive: true, force: true }));
     return root;
 }
+
+test('the actual build wrapper scans generated feeds before finalizing release telemetry', async () => {
+    const wrapper = readFileSync(new URL('../../apps/web/tools/build.mjs', import.meta.url), 'utf8')
+        .replace(/^#!.*\n/, '').replace(/^import .*;$/gm, '')
+        .replaceAll('import.meta.url', '__moduleUrl').replace("await import('vite')", '__vite');
+    for (const mode of ['release', 'ordinary', 'build_failure', 'answer_leak']) {
+        const calls = [], original = new Error('Synthetic bundler failure');
+        const contract = mode === 'ordinary' ? null : { publicConfig: {} };
+        const release = { commit_sha: 'a'.repeat(40), version: '38+aaaaaaa' };
+        const finish = () => { calls.push('telemetry'); };
+        const context = {
+            URL, fileURLToPath, TELEMETRY_MANIFEST,
+            __moduleUrl: new URL('../../apps/web/tools/build.mjs', import.meta.url).href,
+            process: { env: {}, exit: (code) => { throw Object.assign(new Error('Build refused'), { exitCode: code }); } },
+            console: { error() {} },
+            rmSync: () => calls.push('clear_manifest'),
+            resolveBuildRelease: () => release,
+            releaseTelemetryContract: () => contract,
+            releaseTelemetryPlugin: () => ({ plugin: { name: 'synthetic-observer' }, finish }),
+            generatePublicAssets: () => calls.push('public_assets'),
+            spawnSync: () => { calls.push('projection'); return { status: 0 }; },
+            __vite: { build: async (options) => {
+                calls.push('build');
+                assert.equal(options.build.emptyOutDir, true);
+                assert.equal(options.plugins.length, contract ? 1 : 0);
+                if (mode === 'build_failure') throw original;
+            } },
+            generatePageHeads: () => calls.push('page_heads'),
+            generateCommunityCatalogue: () => calls.push('community_feed'),
+            findLessonAnswers: () => { calls.push('answer_scan'); return mode === 'answer_leak' ? [{ slug: 'synthetic', file: 'community-catalog.json' }] : []; },
+        };
+        const run = vm.runInNewContext(`(async () => { ${wrapper}\n })()`, context);
+        if (mode === 'build_failure' || mode === 'answer_leak') await assert.rejects(run, (error) => error.exitCode === 1);
+        else await run;
+        assert.deepEqual(calls, ['clear_manifest', 'public_assets', 'projection', 'build',
+            ...(mode === 'build_failure' ? [] : ['page_heads', 'community_feed', 'answer_scan']),
+            ...(mode === 'release' ? ['telemetry'] : [])], mode);
+    }
+});
 
 test('one release is stable across build and CLI consumers', () => {
     const release = resolveBuildRelease();

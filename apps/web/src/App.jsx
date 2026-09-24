@@ -98,8 +98,8 @@ const LiveExperimentRoomPage = lazy(() => import('./pages/workspace/LiveExperime
 // TelemetryBoundary still catches everything, but a root catch replaces the
 // whole screen — one broken page would take the navigation with it and leave
 // the operator with nothing but a reload.
-// Estate surfaces (Fleet) exist only for a signed-in master-level CNWB seat. Anyone else is sent to the workspace front
-// page: not a 403 page, because the surface should not exist for them at all. The level is backend-owned.
+// Estate surfaces (Fleet, Platform Health) exist only for a signed-in master-level CNWB seat. Anyone else is sent to the
+// workspace front page: not a 403 page, because the surface should not exist for them at all. The level is backend-owned.
 function EstateOnly({ enabled, children }) {
     const { user } = useAuth();
     if (enabled && !isMasterSeat(user)) return <Navigate to="/app" replace />;
@@ -119,7 +119,10 @@ const WORKSPACE_ROUTES = [
     { path: 'erp', label: 'ERP', element: ErpPage },
     { path: 'operations', label: 'Operations', element: OperationsPage },
     { path: 'fleet', label: 'Fleet', element: FleetPage, estate: true },
-    { path: 'platforms', label: 'Platform Health', element: PlatformHealthPage },
+    // Platform Health reads the same operating-company estate data as Fleet - whose vendor accounts
+    // are connected, and what is switched off inside them - so it carries the same flag. Without it
+    // the surface rendered to every authenticated workspace user.
+    { path: 'platforms', label: 'Platform Health', element: PlatformHealthPage, estate: true },
     { path: 'evidence', label: 'Evidence Ledger', element: EvidencePage },
     { path: 'research', label: 'Mission research', element: ResearchPage },
     { path: 'knowledge', label: 'Knowledge & context', element: KnowledgePage },

@@ -307,11 +307,18 @@ export default function FleetPage() {
 
     const observedLabel = report?.observed_at ? formatDate(report.observed_at) : null;
 
+    // The host count used to be spelled out in prose, so it was true only for as long as the
+    // fleet did not change - and it went on claiming seven hosts across three planes even when
+    // the report carried no hosts at all. It is read from the measurement, or it is not made.
+    const fleetDescription = totals
+        ? `The Citadel NNC as it was last recorded: ${totals.hosts} hosts across ${planes.length} planes, and what runs on each. These figures are a transcribed Datadog reading projected at build time, not a live gauge — the observation date is stated below.`
+        : 'The Citadel NNC as it was last recorded, and what runs on each host. These figures are a transcribed reading projected at build time, not a live gauge. Nothing is shown until a measurement is available.';
+
     return (
         <div className="space-y-8">
             <PageHeader
                 title="Fleet"
-                description="The Citadel NNC as it was last recorded: seven hosts across three planes, and what runs on each. These figures are a transcribed Datadog reading projected at build time, not a live gauge — the observation date is stated below."
+                description={fleetDescription}
                 actions={
                     report ? (
                         <ProvenanceTag
@@ -325,6 +332,18 @@ export default function FleetPage() {
 
             {failed && (
                 <DegradedNotice message={MISSING_REPORT} onRetry={() => setAttempt((n) => n + 1)} />
+            )}
+
+            {/* THE REPORT CAN SUCCEED AND STILL CARRY NO MEASUREMENT. estate.pb.js answers HTTP
+                200 with {state:'UNMEASURED', reason} and no totals, so `failed` stays false, the
+                spinner stops, and the body below - gated on `totals` - renders nothing at all.
+                The page showed a title, a provenance tag and empty space, with no error and no
+                retry. An unmeasured fleet is a state worth saying out loud, not a blank. */}
+            {!loading && !failed && report && !totals && (
+                <DegradedNotice
+                    message={report.reason || 'The fleet report answered but carried no measurement, so there is nothing to show yet.'}
+                    onRetry={() => setAttempt((n) => n + 1)}
+                />
             )}
 
             {loading && <ListSkeleton rows={4} />}

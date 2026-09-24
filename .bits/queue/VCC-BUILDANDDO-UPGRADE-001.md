@@ -20,6 +20,20 @@
 **SRS:** SRS-BUILDANDDO-UPGRADE-001 **Risk:** A2 **Seat:** BITS-CODEGEN
 **Status:** in_progress **Actor:** actor:agent
 
+## PR 112 conflict resolution - 2026-09-24
+
+The owner requests integrating current main into `claude/keen-pasteur-aoyiht`.
+This source-only continuation retains both parents' behavior and existing evidence.
+The concurrent remote update at `4c61592bf9a53f98ac956034f44620265b96a073`
+is also retained. The initial nine-path merge and subsequent fourteen-path
+reconciliation preserve both histories and the same runtime acceptance limits.
+
+| # | Task | Gate command | Status |
+|---|------|--------------|--------|
+| 1 | MP-1: Resolve conflicting source and generated paths in both integrations | `git ls-files --unmerged`; connected read/mutation/replay tests | done: no unresolved paths; concurrent-update controls have 180 Node passes and 86 Discord passes, with one dependency skip in each selection |
+| 2 | MP-2: Regenerate context, readiness, growth and changelog artifacts | Existing generators and their check modes | done: combined-source outputs regenerated and checked |
+| 3 | MP-3: Validate the integrated source and retain the review handoff | Source suites, public boundary, report and memory validation | done: 1,444 Node passes with one prerequisite skip; broad Python retains seven existing failures and eight skips; quiz/build integration controls pass and runtime limits are recorded in pr112-merge-report.md |
+
 ## Telemetry coverage repair - 2026-09-24
 
 The owner supplies a reviewed coverage audit and requests source improvements.
