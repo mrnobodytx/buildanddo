@@ -32,7 +32,7 @@ that gained commits since this ledger was written:
 ```
 bash .bits/handoffs/branch-archive-2026-09-23/archive_merged_branches.sh tier1   # 77 GitHub + 3 GitLab names, 0 ahead of main
 bash .bits/handoffs/branch-archive-2026-09-23/archive_merged_branches.sh tier2   # 18 GitHub c-one/* names, after the converge PR merges
-bash .bits/handoffs/branch-archive-2026-09-23/archive_merged_branches.sh local   # clean worktrees and merged local branches on the workstation
+(the workstation-local tier stays with the release seat; it names paths on that machine)
 ```
 
 Every deletion is recoverable from the tips recorded below: `git push origin <tip>:refs/heads/<name>`.
