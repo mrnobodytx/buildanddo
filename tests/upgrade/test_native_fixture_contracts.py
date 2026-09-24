@@ -90,6 +90,7 @@ class NativeFixtureContractTests(unittest.TestCase):
                 "1791300000_classroom_attendance.js",
                 "1791400000_classroom_media_sessions.js",
                 "1791400001_broadcast_classroom_lessons.js",
+                "1791500002_authority_repair_lessons.js",
             }
             self.assertEqual(set(classroom.MIGRATIONS), expected)
             self.assertEqual(
@@ -116,7 +117,7 @@ class NativeFixtureContractTests(unittest.TestCase):
                     (ROOT / "apps/pocketbase/pb_hooks" / name).read_bytes(),
                 )
             data_dir = (server.root / "hooks/../pb_migrations/data").resolve()
-            for name in ("starter-tutorials.json", "broadcast-classroom-lessons.json"):
+            for name in ("starter-tutorials.json", "broadcast-classroom-lessons.json", "authority-repairs-lessons.json"):
                 self.assertEqual(
                     (data_dir / name).read_bytes(),
                     (ROOT / "apps/pocketbase/pb_migrations/data" / name).read_bytes(),
@@ -210,7 +211,7 @@ class NativeFixtureContractTests(unittest.TestCase):
             self.assertNotIn(
                 "bdobroadcast001", {item["id"] for item in original["lessons"]}
             )
-            for name in ("starter-tutorials.json", "broadcast-classroom-lessons.json"):
+            for name in ("starter-tutorials.json", "broadcast-classroom-lessons.json", "authority-repairs-lessons.json"):
                 self.assertEqual(
                     (data_dir / name).read_bytes(),
                     (ROOT / "apps/pocketbase/pb_migrations/data" / name).read_bytes(),
@@ -238,6 +239,12 @@ class NativeFixtureContractTests(unittest.TestCase):
             )
             self.assertNotIn("new Record(progress)", learning.SEED)
             self.assertNotIn("set('certificate'", learning.SEED)
+            for name in ("1791500000_learning_progress_authority.js", "1791500002_authority_repair_lessons.js"):
+                self.assertEqual((server.root / "migrations" / name).read_bytes(),
+                                 (ROOT / "apps/pocketbase/pb_migrations" / name).read_bytes())
+            authority = json.loads((data_dir / "authority-repairs-lessons.json").read_text())
+            self.assertEqual(authority["lessons"][0]["id"], "bdoauthority001")
+            self.assertNotIn("new Record(progress)", (server.root / "migrations/1791500000_learning_progress_authority.js").read_text())
 
     def test_workspace_installs_usage_migration_and_unmodified_registered_hook(
         self,
@@ -248,7 +255,7 @@ class NativeFixtureContractTests(unittest.TestCase):
                 (server.root / "migrations" / name).read_bytes(),
                 (ROOT / "apps/pocketbase/pb_migrations" / name).read_bytes(),
             )
-            for name in ("assistant.pb.js", "workspace-assistant.js"):
+            for name in ("assistant.pb.js", "workspace-assistant.js", "workspace-claims.js", "workspace-claims.pb.js"):
                 self.assertEqual(
                     (server.root / "hooks" / name).read_bytes(),
                     (ROOT / "apps/pocketbase/pb_hooks" / name).read_bytes(),
@@ -259,8 +266,11 @@ class NativeFixtureContractTests(unittest.TestCase):
             self.assertEqual(migrations[0], "0000000001_auth.js")
             self.assertEqual(
                 migrations[-2:],
-                ["1791300001_assistant_turn_usage.js", "1999999000_seed.js"],
+                ["1791500001_workspace_claim_authority.js", "1999999000_seed.js"],
             )
+            name = "1791500001_workspace_claim_authority.js"
+            self.assertEqual((server.root / "migrations" / name).read_bytes(),
+                             (ROOT / "apps/pocketbase/pb_migrations" / name).read_bytes())
 
     def test_usage_field_and_actual_assistant_hook_handle_null_missing_field(
         self,
@@ -449,7 +459,7 @@ class NativeFixtureContractTests(unittest.TestCase):
         for case, floor in (
             (classroom.NativeClassroomTests, 3),
             (workspace.NativeWorkspaceTests, 7),
-            (learning.NativeLearningTests, 4),
+            (learning.NativeLearningTests, 10),
         ):
             self.assertGreaterEqual(
                 unittest.defaultTestLoader.loadTestsFromTestCase(case).countTestCases(),

@@ -8,12 +8,14 @@
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-15
-// Depends:     apps/pocketbase/pb_hooks/administration.pb.js, apps/pocketbase/pb_hooks/government.pb.js
+// Depends:     apps/pocketbase/pb_hooks/administration.pb.js, apps/pocketbase/pb_hooks/government.pb.js, apps/web/src/lib/workspaceClaims.js
 // EnumType:    Adapter
-// EnumEdges:   CONSUMES apps/pocketbase/pb_hooks/administration.pb.js; CONSUMES apps/pocketbase/pb_hooks/government.pb.js
+// EnumEdges:   CONSUMES apps/pocketbase/pb_hooks/administration.pb.js; CONSUMES apps/pocketbase/pb_hooks/government.pb.js; CONSUMES apps/web/src/lib/workspaceClaims.js
 // DAG Node:    none
 // Intent:      Keep administration and community requests bound to one account/workspace with stable recovery after uncertain saves.
 // ───────────────────────────────────────────────────────────────
+
+import { CLAIM_ACTIONS } from './workspaceClaims.js';
 
 const ROLES = ['owner', 'admin', 'editor', 'viewer'];
 const ACTIONS = ['settings.save', 'member.set', 'member.remove', 'integration.save', 'integration.check',
@@ -85,7 +87,8 @@ function readShape(value, workspace, section) {
     const admin = ['owner', 'admin'].includes(value.role);
     if (section === 'admin') return admin && strings(value, ['name']) && validId(value.owner) && page(value.members) && page(value.audit) &&
         value.members.items.every((item) => validId(item.id) && validId(item.user) && ROLES.includes(item.role) && strings(item, ['invited_by', 'created'])) &&
-        value.audit.items.every((item) => validId(item.id) && validId(item.actor) && validId(item.target) && ACTIONS.includes(item.action) && revision(item.revision, 1) && strings(item, ['created']));
+        value.audit.items.every((item) => validId(item.id) && validId(item.actor) && validId(item.target) &&
+            (ACTIONS.includes(item.action) || CLAIM_ACTIONS.includes(item.action)) && revision(item.revision, 1) && strings(item, ['created']));
     if (value.can_admin !== admin || value.can_write !== (value.role !== 'viewer') || value.can_grant_admin !== (value.role === 'owner')) return false;
     if (section === 'access') return true;
     if (section === 'government') return value.government?.allowed === true && value.government?.tier === 'government' &&

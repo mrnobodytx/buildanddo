@@ -31,6 +31,8 @@ function enforce(e, operation) {
     access.authenticated(e);
     const record = e.record;
     const name = record.collection().name;
+    if (['support_sources', 'corrections', 'daily_editions', 'specialist_desks', 'social_content', 'social_channels', 'seat_events'].includes(name))
+        throw new ForbiddenError('Use the scoped workspace claim commands. Raw claim writes are disabled.');
     const workspace = record.getString('workspace');
     const { role } = access.requireRole(e.app, e.auth, workspace,
         ADMIN_ONLY.includes(name) ? ['owner', 'admin'] : ['owner', 'admin', 'editor']);

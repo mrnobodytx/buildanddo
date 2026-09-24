@@ -31,10 +31,24 @@ vi.mock('@/lib/pocketbaseClient', async () => {
     return { default: client, pocketbaseClient: client };
 });
 vi.mock('@/lib/observability/runtime', () => ({ reportAction: vi.fn(), reportMetric: vi.fn(), trackAuthIdentity: vi.fn() }));
+const access = vi.hoisted(() => ({ data: { role: 'admin', can_write: true, can_admin: true }, loading: false, error: '' }));
+vi.mock('@/contexts/WorkspaceAccessContext', () => ({ useWorkspaceAccess: () => access }));
 const objective = { id: 'objective1', title: 'Reduce response time', description: 'A bounded test.', success_metric: 'Compare the observed median over one week.', status: 'active', due_date: '', workspace: 'ws_test', owner: 'user_test' };
 const draft = { id: 'draft1', title: 'How to review a draft', format: 'blog', audience: 'New editors', brief: 'A synthetic editorial exercise.', body: '# Useful steps\n\n- Read the source\n- Record the limitation', call_to_action: '', channel: '', objective: '', status: 'draft', workspace: 'ws_test', owner: 'user_test' };
 beforeEach(() => {
     pb.__reset(); setDemoMode(false);
+    access.data = { role: 'admin', can_write: true, can_admin: true }; access.loading = false; access.error = '';
+    // Transport-only fixture: native policy is exercised in workspace-claims.test.mjs.
+    pb.send = vi.fn(async (_path, { body }) => {
+        const { id, values } = body.payload;
+        const before = id ? await pb.__collection('social_content').getOne(id) : {};
+        const record = { ...before, ...values, id: id || 'commanddraft1', owner: before.owner || 'user_test',
+            workspace: 'ws_test', claim_revision: body.revision + 1, created: before.created || new Date().toISOString(), updated: new Date().toISOString() };
+        if (values.status === 'approved') { record.reviewed_by = 'user_test'; record.reviewed_at = new Date().toISOString(); }
+        if (values.status === 'published') { record.published_by = 'user_test'; record.published_at = new Date().toISOString(); }
+        pb.__setRecords('social_content', [record]);
+        return { id: record.id, workspace: 'ws_test', action: body.action, revision: body.revision + 1, record, replayed: false };
+    });
     pb.__setRecords('erp_objectives', [objective]);
     pb.__setRecords('erp_contacts', [{ id: 'contact1', name: 'Training coordinator', role: 'Staff', email: 'coordinator@example.com', notes: '', workspace: 'ws_test', owner: 'user_test' }]);
     vi.spyOn(console, 'error').mockImplementation(() => {});
@@ -152,7 +166,10 @@ describe('content production', () => {
         expect(screen.getByRole('dialog').querySelector('img')).toBeNull();
         await user.click(form.getByRole('button', { name: 'Save draft' }));
         expect(await screen.findByText('Draft saved. Request review when the copy is ready.')).toBeVisible();
-        expect(pb.__collection('social_content').create).toHaveBeenCalledWith(expect.objectContaining({ status: 'draft', format: 'blog', owner: 'user_test', workspace: 'ws_test' }));
+        expect(pb.send).toHaveBeenCalledWith('/api/buildanddo/workspaces/ws_test/claims', expect.objectContaining({ body: expect.objectContaining({
+            action: 'content.save', revision: 0, payload: { id: '', values: expect.objectContaining({ status: 'draft', format: 'blog' }) },
+        }) }));
+        expect(pb.__collection('social_content').create).not.toHaveBeenCalled();
     });
 
     it('requires confirmation before replacing copy and retains it after a save failure', async () => {
@@ -163,7 +180,7 @@ describe('content production', () => {
         await user.click(form.getByRole('button', { name: 'Create outline' }));
         expect(form.getByLabelText('Draft body')).toHaveValue(draft.body);
         await user.click(form.getByRole('button', { name: 'Keep draft' }));
-        pb.__collection('social_content').update.mockRejectedValueOnce(mockPocketBaseError('Save was rejected', 403));
+        pb.send.mockRejectedValueOnce(mockPocketBaseError('Save was rejected', 403));
         await user.click(form.getByRole('button', { name: 'Save draft' }));
         expect(await form.findByRole('alert')).toHaveTextContent('Save was rejected');
         expect(form.getByLabelText('Draft body')).toHaveValue(draft.body);
@@ -177,11 +194,14 @@ describe('content production', () => {
         expect(detail.getByRole('button', { name: 'Approve reviewed copy' })).toBeDisabled();
         for (const checkbox of detail.getAllByRole('checkbox')) await user.click(checkbox);
         await user.type(detail.getByLabelText('Review note'), 'Checked sources and the synthetic example.');
-        pb.__collection('social_content').update.mockRejectedValueOnce(mockPocketBaseError('Owner or admin required', 403));
+        pb.send.mockRejectedValueOnce(mockPocketBaseError('Owner or admin required', 403));
         await user.click(detail.getByRole('button', { name: 'Approve reviewed copy' }));
         expect(await detail.findByRole('alert')).toHaveTextContent('Owner or admin required');
         expect(detail.getByLabelText('Review note')).toHaveValue('Checked sources and the synthetic example.');
-        expect(pb.__collection('social_content').update).toHaveBeenCalledWith('draft1', expect.objectContaining({ status: 'approved', review_checks: { accuracy: true, privacy: true, rights: true, accessibility: true } }));
+        expect(pb.send).toHaveBeenCalledWith('/api/buildanddo/workspaces/ws_test/claims', expect.objectContaining({ body: expect.objectContaining({
+            action: 'content.save', payload: { id: 'draft1', values: expect.objectContaining({ status: 'approved', review_checks: { accuracy: true, privacy: true, rights: true, accessibility: true } }) },
+        }) }));
+        expect(pb.__collection('social_content').update).not.toHaveBeenCalled();
     });
 
     it('records a planned date without claiming delivery and requires a checked publication URL', async () => {
@@ -193,13 +213,11 @@ describe('content production', () => {
         fireEvent.change(detail.getByLabelText('Planned publication date'), { target: { value: '2026-10-02' } });
         await user.click(detail.getByRole('button', { name: 'Save publication plan' }));
         expect(await detail.findByText('Planned saved.')).toBeVisible();
-        expect(pb.__collection('social_content').update).toHaveBeenCalledWith('draft1', { status: 'scheduled', scheduled_for: '2026-10-02 12:00:00.000Z' });
+        expect(pb.send).toHaveBeenCalledWith('/api/buildanddo/workspaces/ws_test/claims', expect.objectContaining({ body: expect.objectContaining({
+            action: 'content.save', payload: { id: 'draft1', values: { status: 'scheduled', scheduled_for: '2026-10-02 12:00:00.000Z' } },
+        }) }));
         expect(detail.getByText('This saves a date; it does not schedule an external job.')).toBeVisible();
         await user.type(detail.getByLabelText('Checked publication URL'), 'https://example.com/article');
-        pb.__collection('social_content').update.mockImplementationOnce(async (id, fields) => {
-            const record = { ...approved, ...fields, published_by: 'user_test', published_at: new Date().toISOString() };
-            pb.__setRecords('social_content', [record]); return record;
-        });
         await user.click(detail.getByRole('button', { name: 'Record publication' }));
         expect(await detail.findByRole('link', { name: /Open recorded publication/ })).toHaveAttribute('href', 'https://example.com/article');
         expect(detail.queryByRole('button', { name: 'Edit draft' })).not.toBeInTheDocument();
@@ -217,5 +235,40 @@ describe('content production', () => {
         setDemoMode(true); renderWithProviders(<ContentStudio />);
         expect(screen.getByRole('button', { name: 'New draft' })).toBeDisabled();
         expect(pb.__collection('social_content').create).not.toHaveBeenCalled();
+    });
+
+    it('does not let another editor edit a draft but permits a separate authored copy', async () => {
+        access.data = { role: 'editor', can_write: true, can_admin: false };
+        pb.__setRecords('social_content', [{ ...draft, owner: 'another-author', claim_revision: 2 }]);
+        renderWithProviders(<ContentStudio />);
+        await setupUser().click(await screen.findByRole('button', { name: `Open ${draft.title}` }));
+        const detail = within(screen.getByRole('dialog'));
+        expect(detail.getByRole('button', { name: 'Edit draft' })).toBeDisabled();
+        expect(detail.getByRole('button', { name: 'Request review' })).toBeDisabled();
+        expect(detail.getByRole('button', { name: 'Copy to a new draft' })).toBeEnabled();
+    });
+
+    it('retains the original revision after the list refreshes while an editor is open', async () => {
+        const saved = { ...draft, claim_revision: 2 };
+        pb.__setRecords('social_content', [saved]); renderWithProviders(<ContentStudio />); const user = setupUser();
+        await user.click(await screen.findByRole('button', { name: `Open ${draft.title}` }));
+        await user.click(within(screen.getByRole('dialog')).getByRole('button', { name: 'Edit draft' }));
+        pb.__setRecords('social_content', [{ ...saved, claim_revision: 3, body: 'A concurrent edit' }]);
+        pb.send.mockRejectedValueOnce(mockPocketBaseError('This record changed. Reload the saved version.', 409));
+        await user.click(within(screen.getByRole('dialog')).getByRole('button', { name: 'Save draft' }));
+        expect(await screen.findByRole('alert')).toHaveTextContent('This record changed');
+        expect(pb.send.mock.calls[0][1].body.revision).toBe(2);
+        expect(within(screen.getByRole('dialog')).getByLabelText('Draft body')).toHaveValue(draft.body);
+    });
+
+    it('offers retry inside the dialog after an uncertain save without issuing raw CRUD', async () => {
+        pb.__setRecords('social_content', [draft]); renderWithProviders(<ContentStudio />); const user = setupUser();
+        await user.click(await screen.findByRole('button', { name: `Open ${draft.title}` }));
+        await user.click(within(screen.getByRole('dialog')).getByRole('button', { name: 'Edit draft' }));
+        pb.send.mockRejectedValueOnce(mockPocketBaseError('Response unavailable', 503));
+        await user.click(within(screen.getByRole('dialog')).getByRole('button', { name: 'Save draft' }));
+        await user.click(await within(screen.getByRole('dialog')).findByRole('button', { name: 'Retry previous content save' }));
+        expect(pb.send.mock.calls[1][1].body).toEqual(pb.send.mock.calls[0][1].body);
+        expect(pb.__collection('social_content').update).not.toHaveBeenCalled();
     });
 });

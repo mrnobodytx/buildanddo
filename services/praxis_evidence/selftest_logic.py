@@ -1,14 +1,29 @@
 #!/usr/bin/env python3
+# --- CGRF Header ------------------------------------------------
+# File: services/praxis_evidence/selftest_logic.py
+# Stage: 08_TEST
+# SRS: SRS-BUILDANDDO-UPGRADE-001
+# CAPS: pending
+# CK: pending
+# Dispatch: VCC-BUILDANDDO-UPGRADE-001
+# Seat: BITS-CODEGEN
+# Owner: Citadel Nexus Inc.
+# Created: 2026-09-23
+# Depends: services/praxis_evidence/isolated_test.py
+# EnumType: Test
+# EnumEdges: CONSUMES services/praxis_evidence/isolated_test.py; VALIDATES services/praxis_evidence/logic.py
+# Intent: Exercise falsification behavior without letting direct selftest execution mutate a shared server.
+# ----------------------------------------------------------------
 """selftest_logic.py - proves logic rules against the real live PocketBase."""
 from __future__ import annotations
 import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from client import PocketBaseClient, require_test_target  # noqa: E402
+from isolated_test import isolated_client  # noqa: E402
 from logic import create_logic_rule, record_falsification  # noqa: E402
 
-client = PocketBaseClient(require_test_target())
+client = isolated_client()
 checks: list[tuple[str, bool]] = []
 created_ids: list[str] = []
 
