@@ -19,6 +19,7 @@ import { MotionEntrance } from '@/components/motion/MotionPrimitives';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button, Card } from '@/components/site/ui';
+import { useSectionFailure } from '@/hooks/useSectionFailure';
 
 export const controlInput = 'min-h-11 w-full min-w-0 rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground';
 export const dateLabel = (value) => value && Number.isFinite(Date.parse(value)) ? new Date(value).toLocaleString() : 'Not recorded';
@@ -30,6 +31,7 @@ export function focusPendingRetry(event) {
 }
 
 export function ControlState({ control, children }) {
+    useSectionFailure(!control.loading && Boolean(control.error || !control.data), 'control_state', 'read_failed', control.error);
     if (control.loading) return <p role="status" className="p-4 text-sm text-muted-foreground">Loading workspace controls…</p>;
     if (control.error || !control.data) return <Card className="space-y-3 p-5">
         <p role="alert" className="text-sm">{control.error || 'Workspace controls are unavailable.'}</p>
@@ -39,6 +41,8 @@ export function ControlState({ control, children }) {
 }
 
 export function ControlFeedback({ control }) {
+    useSectionFailure(Boolean(control.writeError || control.uncertain), 'control_feedback',
+        control.uncertain ? 'write_uncertain' : 'write_failed', control.writeError);
     return <div aria-live="polite" className="space-y-2">
         {control.writeError && <p role="alert" className="text-sm text-destructive">{control.writeError}</p>}
         {control.uncertain && <Button type="button" data-workspace-retry="true" variant="secondary" size="sm" disabled={control.saving} onClick={control.retry}>Retry previous save</Button>}

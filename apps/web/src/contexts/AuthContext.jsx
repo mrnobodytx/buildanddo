@@ -17,6 +17,7 @@
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import pb from '@/lib/pocketbaseClient';
 import { trackAuthIdentity } from '@/lib/observability/runtime';
+import { identifyAnalyticsUser } from '@/lib/telemetry';
 import { createAuthSession } from '@/lib/authSession';
 
 const AuthContext = createContext(null);
@@ -33,7 +34,7 @@ export const AuthProvider = ({ children }) => {
         return () => { controller.stop(); window.removeEventListener('focus', refresh); window.clearInterval(timer); };
     }, [controller]);
 
-    useEffect(() => { trackAuthIdentity(user); }, [user]);
+    useEffect(() => { trackAuthIdentity(user); identifyAnalyticsUser(user); }, [user]);
 
     const value = useMemo(
         () => ({
