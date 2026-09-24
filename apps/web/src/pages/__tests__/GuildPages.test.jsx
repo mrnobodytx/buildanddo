@@ -20,7 +20,6 @@
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import process from 'node:process';
-import { Route, Routes } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { AppRoutes } from '@/App';
@@ -35,14 +34,13 @@ import {
 import { communityLink } from '@/lib/communityLinks';
 import pb from '@/lib/pocketbaseClient';
 import { SITE_ORIGIN } from '@/lib/publicPages';
-import { renderWithProviders, screen, setupUser, waitFor, within } from '@/test/utils';
+import { renderWithProviders, screen, waitFor, within } from '@/test/utils';
 
 vi.mock('@/lib/pocketbaseClient', async () => {
     const { createMockPocketBase } = await import('@/test/pocketbaseMock');
     const client = createMockPocketBase();
     return { default: client, pocketbaseClient: client };
 });
-
 
 beforeEach(() => {
     pb.__reset();
@@ -162,4 +160,3 @@ describe('the guild routes', () => {
         expect(screen.getByRole('link', { name: 'See every guildmaster' })).toHaveAttribute('href', '/guild');
     }, LAZY);
 });
-

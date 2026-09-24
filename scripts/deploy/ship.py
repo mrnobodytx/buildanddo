@@ -61,17 +61,66 @@ NPM = shutil.which("npm") or "npm"
 # the release controller reported the credentials missing. One fact, two stores, neither canonical.
 # workspace.env is the estate's credential store and is now a source here. First readable path
 # wins; CITADEL_WORKSPACE_ENV overrides for a machine that keeps it elsewhere.
-WORKSPACE_ENV_CANDIDATES = (
-    Path(os.environ.get("CITADEL_WORKSPACE_ENV", "")) if os.environ.get("CITADEL_WORKSPACE_ENV")
-    else None,
-    Path(r"D:\citadel_secrets\CNWB\workspace.env"),
-    Path(r"D:\citadel_websites\Citadel-nexus\projects\guilds\CNWB\tools\workspace.env"),
-)
+def _workspace_env_candidates() -> tuple[Path, ...]:
+    """Where the estate credential store might be — without naming it in a public file.
+
+    THE PATH IS NO LONGER HARDCODED. This repository is published to a public mirror that
+    code agents read and act on, and the absolute path of the credential store is the single
+    most useful thing to know before trying to read it: it turns any filesystem access into
+    credential theft. Measured 2026-09-22, that path was sitting in five tracked files.
+
+    Resolution order: CITADEL_WORKSPACE_ENV in the environment, then the same name inside the
+    gitignored secrets/deploy.local.env. A machine supplying neither gets the caller's clear
+    "not set" refusal instead of silently falling through to somebody else's disk layout.
+    """
+    explicit = os.environ.get("CITADEL_WORKSPACE_ENV", "").strip()
+    if not explicit:
+        try:
+            text = (ROOT / "secrets" / "deploy.local.env").read_text(
+                encoding="utf-8", errors="replace")
+        except OSError:
+            text = ""
+        for line in text.splitlines():
+            name, sep, value = line.strip().partition("=")
+            if sep and name.strip() == "CITADEL_WORKSPACE_ENV":
+                explicit = value.strip().strip('"').strip("'")
+                break
+    return (Path(explicit),) if explicit else ()
+
+
+WORKSPACE_ENV_CANDIDATES = _workspace_env_candidates()
 
 # Only these names are taken from the shared store. workspace.env holds 500+ credentials for the
 # whole estate; pulling all of them into a deploy script's environment would hand every subprocess
 # it spawns the keys to everything. A deploy needs two secrets, so it reads two.
-SHARED_KEYS = ("BUILDANDDO_VM_HOST", "BUILDANDDO_SSH_KEY")
+#
+# The frontend identifiers below are NOT a third and fourth secret, and adding them does not widen
+# that blast radius by one credential: every one of them is published inside the browser bundle on
+# purpose. _write_web_env already says so - the PostHog `phc_` value is "a public, client-safe
+# PostHog project key, never a secret", and the Datadog RUM pair is "intake-scoped, no read access".
+# A name that anyone can read off the wire is not what the narrow list exists to protect.
+#
+# WHY THEY ARE HERE AT ALL. Measured 2026-09-22: buildanddo.com has never recorded a single real
+# user. posthog-js ships in the bundle (762 KB) with NO `phc_` key in it, and the only events in
+# PostHog project 597897 come from our own OCN probes (library `bnd-ocn-seat`). The cause is this
+# tuple. BUILDANDDO_PH was in workspace.env the whole time, but workspace.env is only consulted for
+# names listed HERE, so _SECRETS never held it, _write_web_env omits any name it lacks, and
+# telemetry.js returns early when its key is undefined. Three correct-looking behaviours compose
+# into silence: nothing errors, nothing warns, and the dashboard just looks like a quiet product.
+#
+# The same omission disabled Datadog RUM, which is why the generated apps/web/.env contained only
+# VITE_DD_VERSION. Those four names are not in workspace.env yet; listing them now means they bind
+# on the next ship rather than needing this file edited again.
+SHARED_KEYS = (
+    "BUILDANDDO_VM_HOST",
+    "BUILDANDDO_SSH_KEY",
+    "BUILDANDDO_PH",
+    "BUILDANDDO_DD_APPLICATION_ID",
+    "BUILDANDDO_DD_CLIENT_TOKEN",
+    "BUILDANDDO_DD_SESSION_SAMPLE_RATE",
+    "BUILDANDDO_DD_REPLAY_SAMPLE_RATE",
+    "BUILDANDDO_DD_TRACE_SAMPLE_RATE",
+)
 
 
 def _parse_env_file(path: Path) -> dict:
@@ -124,11 +173,21 @@ def _load_local_secrets() -> tuple[dict, dict]:
 
 _SECRETS, SECRET_SOURCES = _load_local_secrets()
 SSH_KEY = _SECRETS.get("BUILDANDDO_SSH_KEY", "")
-# The default stays as a LAST resort and is recorded as such, so a deploy that silently fell back
-# to a hardcoded host is visible in the receipt rather than indistinguishable from a configured one.
-VM_HOST = _SECRETS.get("BUILDANDDO_VM_HOST") or "root@45.82.75.40"
+# NO HARDCODED HOST. This file is published to the public GitHub mirror, and a production
+# address is exactly what has to be scrubbed before release - it was one of seven fleet
+# addresses still sitting in this repo's tracked sources on 2026-09-22.
+#
+# Removing the literal also revives a guard that had been dead the whole time. _sync_remote
+# already refuses with "BUILDANDDO_VM_HOST not set" when VM_HOST is empty, but the old
+# `or "<hardcoded host>"` meant VM_HOST could never BE empty, so that branch was
+# unreachable. The previous comment said a silent fallback should at least be visible in the
+# receipt, which was the right instinct - not guessing a production target at all is
+# stronger, and it is what the surrounding code already expected to happen.
+#
+# The address lives in workspace.env as BUILDANDDO_VM_HOST and resolves from there today.
+VM_HOST = _SECRETS.get("BUILDANDDO_VM_HOST", "")
 if not SECRET_SOURCES.get("BUILDANDDO_VM_HOST"):
-    SECRET_SOURCES["BUILDANDDO_VM_HOST"] = "HARDCODED DEFAULT (no store supplied it)"
+    SECRET_SOURCES["BUILDANDDO_VM_HOST"] = "ABSENT (no store supplied it; deploy stages refuse)"
 if not SECRET_SOURCES.get("BUILDANDDO_SSH_KEY"):
     SECRET_SOURCES["BUILDANDDO_SSH_KEY"] = "ABSENT (ssh will use the agent/default identity)"
 

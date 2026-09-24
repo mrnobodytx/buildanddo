@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Buddi in the product</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,500&amp;family=Inter:wght@400;600&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap">
+<style>
+body{margin:0;font-family:Inter,ui-sans-serif,system-ui,sans-serif;background:hsl(42,30%,94%);color:hsl(220,16%,12%)}
+a{color:hsl(0,70%,40%)}a:hover{color:hsl(0,70%,30%)}
+</style>
+</helmet>
+<div style="width: 1280px; height: 960px; box-sizing: border-box; background: hsl(42, 30%, 94%); color: hsl(220, 16%, 12%); display: flex; flex-direction: column">
+<header style="height: 64px; box-sizing: border-box; padding: 0 32px; display: flex; align-items: center; gap: 40px; background: hsl(40, 18%, 96%); border-bottom: 2px solid hsl(220, 16%, 12%)">
+<a href="#" style="display: flex; align-items: center; gap: 10px; text-decoration: none; color: hsl(220, 16%, 12%)">
+<dc-import name="Mark" size="30" hint-size="30px,30px"></dc-import>
+<span style="font-family: Newsreader, Georgia, serif; font-size: 22px; line-height: 1; font-weight: 600; letter-spacing: -0.025em">Build<span style="font-style: italic; font-weight: 500; color: hsl(0, 70%, 40%)">And</span>Do</span>
+</a>
+<nav aria-label="Workspace" style="display: flex; gap: 28px; font-size: 14px; font-weight: 600">
+<a href="#" style="color: hsl(220, 16%, 12%); text-decoration: none; padding: 21px 0 19px; border-bottom: 3px solid hsl(0, 70%, 40%)">Missions</a>
+<a href="#" style="color: hsl(220, 10%, 38%); text-decoration: none; padding: 21px 0">Classrooms</a>
+<a href="#" style="color: hsl(220, 10%, 38%); text-decoration: none; padding: 21px 0">Evidence</a>
+<a href="#" style="color: hsl(220, 10%, 38%); text-decoration: none; padding: 21px 0">Tutorials</a>
+</nav>
+</header>
+<div style="flex-grow: 1; box-sizing: border-box; padding: 32px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px">
+<section aria-label="Assistant" style="box-sizing: border-box; padding: 20px; background: hsl(40, 18%, 97%); border: 1px solid hsl(220, 12%, 74%); display: flex; flex-direction: column; gap: 14px">
+<div style="display: flex; align-items: center; gap: 12px; padding-bottom: 12px; border-bottom: 1px solid hsl(220, 12%, 74%)">
+<dc-import name="Buddi" pose="calm" size="44" hint-size="44px,48px"></dc-import>
+<div style="display: flex; flex-direction: column">
+<span style="font-family: Newsreader, Georgia, serif; font-size: 20px; line-height: 28px; font-weight: 600">Buddi</span>
+<span style="font-size: 12px; line-height: 16px; color: hsl(220, 10%, 38%)">Workspace assistant</span>
+</div>
+</div>
+<div style="align-self: flex-end; max-width: 320px; padding: 10px 14px; background: hsl(40, 16%, 90%); font-size: 14px; line-height: 22px">What should I work on next?</div>
+<div style="display: flex; gap: 10px; align-items: flex-start">
+<dc-import name="Buddi" pose="calm" size="28" hint-size="28px,31px"></dc-import>
+<div style="max-width: 400px; padding: 10px 14px; border: 1px solid hsl(220, 12%, 74%); background: hsl(42, 30%, 94%); display: flex; flex-direction: column; gap: 6px">
+<span style="font-size: 14px; line-height: 22px">Your draft mission needs a testing method before it can be approved. Open the TEVV step to add it.</span>
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: hsl(220, 10%, 38%)">grounded in: mission draft · [TIME]</span>
+</div>
+</div>
+<div style="margin-top: auto; display: flex; gap: 10px; align-items: flex-end">
+<div style="flex-grow: 1; display: flex; flex-direction: column; gap: 6px">
+<label for="ask" style="font-size: 12px; font-weight: 600">Ask Buddi</label>
+<input id="ask" type="text" placeholder="Ask about this workspace" style="height: 44px; box-sizing: border-box; padding: 0 12px; border: 1px solid hsl(220, 12%, 60%); background: hsl(40, 18%, 97%); font: inherit; font-size: 14px; border-radius: 0">
+</div>
+<button type="button" style="height: 44px; padding: 0 18px; border: 1px solid hsl(220, 16%, 12%); background: transparent; font: inherit; font-size: 14px; font-weight: 600; color: hsl(220, 16%, 12%); border-radius: 0; cursor: pointer">Send</button>
+</div>
+</section>
+<section aria-label="Empty missions" style="box-sizing: border-box; padding: 20px; background: hsl(40, 18%, 97%); border: 1px solid hsl(220, 12%, 74%); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; text-align: center">
+<dc-import name="Buddi" pose="build" size="150" ground="true" hint-size="150px,164px"></dc-import>
+<h2 style="margin: 4px 0 0; font-family: Newsreader, Georgia, serif; font-size: 26px; line-height: 32px; font-weight: 600">No missions yet</h2>
+<p style="margin: 0; max-width: 400px; font-size: 14px; line-height: 24px; color: hsl(220, 10%, 38%)">Propose a mission to start. Buddi walks you through the plan, the safety check and how you will verify the outcome.</p>
+<button type="button" style="margin-top: 6px; height: 44px; padding: 0 20px; border: none; background: hsl(0, 70%, 40%); color: hsl(42, 30%, 95%); font: inherit; font-size: 14px; font-weight: 600; border-radius: 0; cursor: pointer">Propose a mission</button>
+</section>
+<section aria-label="Checking evidence" style="box-sizing: border-box; padding: 20px; background: hsl(40, 18%, 97%); border: 1px solid hsl(220, 12%, 74%); display: flex; gap: 20px; align-items: center">
+<dc-import name="Buddi" pose="think" size="130" hint-size="130px,142px"></dc-import>
+<div style="flex-grow: 1; display: flex; flex-direction: column; gap: 10px">
+<span style="font-size: 11px; font-weight: 600; letter-spacing: 0.22em; color: hsl(0, 70%, 40%)">MISSION REVIEW</span>
+<h2 style="margin: 0; font-family: Newsreader, Georgia, serif; font-size: 24px; line-height: 30px; font-weight: 600">Checking your evidence</h2>
+<p style="margin: 0; font-size: 14px; line-height: 22px; color: hsl(220, 10%, 38%)">Nothing is marked verified until all four checks pass.</p>
+<div style="display: flex; flex-direction: column; border-top: 1px solid hsl(220, 12%, 74%)">
+<div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid hsl(220, 12%, 74%)">
+<span style="font-size: 14px; font-weight: 600">Test</span>
+<span style="padding: 2px 8px; font-size: 10px; font-weight: 600; letter-spacing: 0.14em; color: hsl(128, 26%, 30%); border: 1px solid hsl(128, 26%, 34%)">PASSED</span>
+</div>
+<div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid hsl(220, 12%, 74%)">
+<span style="font-size: 14px; font-weight: 600">Evaluate</span>
+<span style="padding: 2px 8px; font-size: 10px; font-weight: 600; letter-spacing: 0.14em; color: hsl(128, 26%, 30%); border: 1px solid hsl(128, 26%, 34%)">PASSED</span>
+</div>
+<div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid hsl(220, 12%, 74%)">
+<span style="font-size: 14px; font-weight: 600">Verify</span>
+<span style="padding: 2px 8px; font-size: 10px; font-weight: 600; letter-spacing: 0.14em; color: hsl(38, 60%, 30%); border: 1px solid hsl(38, 58%, 40%); background: hsla(38, 58%, 40%, 0.1)">MEASURING</span>
+</div>
+<div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 0">
+<span style="font-size: 14px; font-weight: 600">Validate</span>
+<span style="padding: 2px 8px; font-size: 10px; font-weight: 600; letter-spacing: 0.14em; color: hsl(220, 10%, 38%); border: 1px dashed hsl(220, 12%, 60%)">NOT STARTED</span>
+</div>
+</div>
+</div>
+</section>
+<section aria-label="Verified and icons" style="display: flex; flex-direction: column; gap: 16px">
+<div role="status" style="box-sizing: border-box; padding: 16px 20px; background: hsl(40, 18%, 97%); border: 1px solid hsl(220, 12%, 74%); border-top: 3px solid hsl(128, 26%, 34%); display: flex; gap: 16px; align-items: center">
+<dc-import name="Buddi" pose="verified" size="72" hint-size="72px,79px"></dc-import>
+<div style="display: flex; flex-direction: column; gap: 4px">
+<span style="font-family: Newsreader, Georgia, serif; font-size: 22px; line-height: 28px; font-weight: 600">Mission verified</span>
+<span style="font-size: 14px; line-height: 22px; color: hsl(220, 10%, 38%)">All four checks passed. The evidence snapshot is saved with the review.</span>
+</div>
+</div>
+<div style="flex-grow: 1; box-sizing: border-box; padding: 20px; background: hsl(40, 18%, 97%); border: 1px solid hsl(220, 12%, 74%); display: flex; flex-direction: column; gap: 16px">
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.08em; color: hsl(220, 10%, 38%)">APP ICON AND BROWSER TAB</span>
+<div style="display: flex; gap: 20px; align-items: center">
+<div style="width: 96px; height: 96px; background: hsl(42, 30%, 94%); border: 1px solid hsl(220, 12%, 74%); display: flex; align-items: center; justify-content: center">
+<dc-import name="Mark" size="72" hint-size="72px,72px"></dc-import>
+</div>
+<div style="width: 96px; height: 96px; background: hsl(220, 16%, 9%); display: flex; align-items: center; justify-content: center">
+<dc-import name="Mark" size="72" dark="true" hint-size="72px,72px"></dc-import>
+</div>
+<div style="width: 96px; height: 96px; background: hsl(0, 70%, 40%); display: flex; align-items: flex-end; justify-content: center; overflow: hidden">
+<dc-import name="Buddi" pose="hello" size="84" hint-size="84px,92px"></dc-import>
+</div>
+<div style="flex-grow: 1; display: flex; flex-direction: column; gap: 0">
+<div style="align-self: flex-start; display: flex; align-items: center; gap: 8px; padding: 8px 14px; background: hsl(40, 18%, 97%); border: 1px solid hsl(220, 12%, 74%); border-bottom: none; font-size: 12px">
+<dc-import name="Mark" size="16" hint-size="16px,16px"></dc-import>
+<span>BuildAndDo · Missions</span>
+</div>
+<div style="height: 30px; border: 1px solid hsl(220, 12%, 74%); background: hsl(40, 16%, 90%); box-sizing: border-box; padding: 0 12px; display: flex; align-items: center; font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: hsl(220, 10%, 38%)">buildanddo.com/workspace/missions</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":960}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

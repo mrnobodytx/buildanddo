@@ -37,7 +37,7 @@ export const PUBLIC_PAGES = [
         label: 'Challenge',
         title: 'BuildAndDo — Hostinger 21-Day Challenge',
         description:
-            'Learn by doing. Verify what you did. Do it together. Explore the proposed objective-to-evidence journey and Hostinger product roles for BuildAndDo.',
+            'See the learning-platform idea, the verified mission story and the Hostinger product roles behind the BuildAndDo challenge entry.',
         type: 'WebPage',
     },
     {

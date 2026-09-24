@@ -1,0 +1,12 @@
+<!-- @dsCard group="Stats" height=120 -->
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600;6..72,700;6..72,800&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap"><title>StatTile</title><style>body{padding:16px;}</style></head>
+<body>
+<div id="root"></div>
+<script>
+  var B = window.BndClassroom, h = React.createElement;
+  ReactDOM.createRoot(document.getElementById('root')).render(h('div',{className:'bc-kpis'}, h(B.StatTile,{label:'People watching now',value:214,series:'human',delta:{value:18,percent:true,period:'same hour last week'},trend:[80,92,120,110,140,160,150,170,190,180,200,214]}), h(B.StatTile,{label:'Agents working',value:3,series:'agent',note:'2 verifying, 1 researching'}), h(B.StatTile,{label:'Minutes watched',value:48210,delta:{value:-6,percent:true,period:'last week'}}), h(B.StatTile,{label:'Countries',icon:'globe'})));
+</script>
+</body>
+</html>

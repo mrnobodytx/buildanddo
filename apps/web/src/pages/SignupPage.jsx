@@ -96,7 +96,7 @@ export default function SignupPage() {
     return (
         <AuthLayout
             title="Create your BuildAndDo account"
-            subtitle="One account, one workspace to start. You’ll set up your business next."
+            subtitle="One account, one workspace to start. You’ll name your workspace next."
             footer={
                 <>
                     Already have an account?{' '}
@@ -136,7 +136,7 @@ export default function SignupPage() {
                         type="email"
                         value={form.email}
                         onChange={(e) => setField('email', e.target.value)}
-                        placeholder="you@business.com"
+                        placeholder="you@example.com"
                         autoComplete="email"
                         aria-invalid={Boolean(errors.email)}
                     />

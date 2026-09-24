@@ -54,7 +54,12 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[2]
 HARNESS = ROOT / "tests" / "upgrade"
-DEFAULT_BINARY = r"D:\HOSTINGER_COMP\tools-cache\pocketbase\0.39.8\pocketbase.exe"
+# No hardcoded workstation path: this file is published to the public mirror, and an absolute
+# path describes the operator's disk layout to anyone who reads it. BUILDANDDO_TEST_POCKETBASE
+# was already the documented way to supply this - the three "set BUILDANDDO_TEST_POCKETBASE"
+# messages below prove the code expected to run without a default - so the literal was only
+# ever masking the case those messages exist to report.
+DEFAULT_BINARY = ""
 ACTIONS = ("room.create", "room.chat", "room.update", "room.start", "room.end", "room.lesson",
            "room.join", "room.leave", "room.message")
 SCHEMA = "buildanddo.classroom-drive/v1"

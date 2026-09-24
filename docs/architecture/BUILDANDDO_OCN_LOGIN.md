@@ -58,7 +58,7 @@ consulted (fail-closed; nothing is ever signed in on a 503).
 | SPA | `apps/web/src/lib/ocnLogin.js` | fetch + `authStore.save`; readable errors; nothing saved unless 200 + token |
 | SPA | `apps/web/src/pages/LoginPage.jsx` | "Citadel seat sign-in" affordance, only on `?ocn=1` or `window.__BND_OCN_HEADER__` |
 | Tests | `apps/web/src/lib/__tests__/ocnLogin.test.js`, `apps/web/src/components/auth/__tests__/LoginPage.ocn.test.jsx` | vitest, mocked fetch |
-| Estate | `D:\HOSTINGER_COMP\tools\citadel_staging_error_corpus.py` (+ `tests/error_corpus`) | `LOGIN_CONTRACT`, `LOGIN_OCN_ROUTE`, `LOGIN_OCN_ROUTE_MISSING`, `LOGIN_OCN_E2E` |
+| Estate | `<estate>/tools/citadel_staging_error_corpus.py` (+ `tests/error_corpus`) | `LOGIN_CONTRACT`, `LOGIN_OCN_ROUTE`, `LOGIN_OCN_ROUTE_MISSING`, `LOGIN_OCN_E2E` |
 
 ## Envelope contract (unchanged from Living Rooms)
 

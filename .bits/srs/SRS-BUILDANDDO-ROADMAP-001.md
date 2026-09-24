@@ -112,3 +112,24 @@ ship.
    `grep -n wiggle apps/web/src/pages/RoadmapPage.jsx` returns nothing.
 6. Public boundary is clean.
    `python scripts/ci/verify_public_boundary.py`
+
+## Continuation (2026-09-23): the guildmasters' own work in the public activity
+
+Operator direction, 2026-09-23: guildmasters question Buddi from their own guild boxes over the OCN network,
+record a mission and its evidence under their own accounts, and have that aggregated as part of the community
+activity. Six did so on staging: Forge, Scholar, Oracle, Alex, Sterling and Muse, following where the
+guildmaster bots run. Each box signed in as its own seat and read its records back.
+
+7. **The public activity projection counts the guildmasters' own records.**
+   - One `guildmaster.<persona>` entry per guildmaster carries its last activity and its 24 h / 7 d count of
+     missions and evidence.
+   - The entries come from the rounds' receipts, and a round counts only when the box's readback was intact.
+   - Persona names only: no box name, address or workspace id.
+   - The producer is `tools/citadel_activity_projection.py` in the estate repository. This repository carries
+     its output, `apps/web/public/activity-status.json`.
+8. **Evidence that is not a web address renders as text.** The projection publishes plain-text evidence for
+   sources a visitor cannot open, such as the private control plane, and the page used to render that text as a
+   broken link.
+
+Acceptance: `RoadmapPage.activity.test.jsx` passes, a control that always renders a link fails it, and
+`public_redaction.py scan apps/web/public/activity-status.json` passes with the private fleet map.

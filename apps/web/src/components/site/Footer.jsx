@@ -1,7 +1,10 @@
-// CGRF: SRS=SRS-BUILDANDDO-COMMUNITY-WEB-001 | CAPS=B | Seat=C-ONE
+// CGRF: SRS=SRS-BUILDANDDO-COMMUNITY-WEB-001, SRS-BUILDANDDO-PURPOSE-001 | CAPS=B | Seat=C-ONE
 import React from 'react';
 import { Link } from 'react-router-dom';
+import BrandMark from '@/components/brand/BrandMark';
+import Wordmark from '@/components/brand/Wordmark';
 import { PUBLIC_NAV } from '@/lib/publicPages';
+import { PURPOSE } from '@/lib/purpose';
 import {
     COMMUNITY_LINKS,
     GUILD_PATH,
@@ -10,7 +13,6 @@ import {
     communityLink,
 } from '@/lib/communityLinks';
 import {
-    Activity,
     AudioLines,
     BookOpen,
     Bot,
@@ -57,17 +59,11 @@ export default function Footer({
                             className="flex items-center gap-2.5"
                             aria-label="BuildAndDo home"
                         >
-                            <span className="flex h-8 w-8 items-center justify-center rounded-md border border-primary/40 bg-primary/10 text-primary">
-                                <Activity className="h-4 w-4" strokeWidth={2.4} />
-                            </span>
-                            <span className="font-display text-base font-semibold tracking-tight">
-                                BuildAndDo
-                            </span>
+                            <BrandMark size={32} decorative />
+                            <Wordmark className="text-base" />
                         </a>
                         <p className="mt-4 max-w-sm text-sm leading-relaxed text-muted-foreground">
-                            An educational collaboration platform where people and AI learn by
-                            doing real work together. Choose an objective, keep the evidence,
-                            and share what you learned.
+                            {PURPOSE.summary}
                         </p>
                     </div>
 

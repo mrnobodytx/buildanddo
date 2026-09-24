@@ -137,7 +137,7 @@
     },
     {
       "area": "ci",
-      "evidence": "referenced by: nothing in this repo",
+      "evidence": "referenced by: tests/upgrade/test_ocn_seat_session.py",
       "severity": "high",
       "srs": "",
       "statement": "scripts/ci/ocn_observation_record.py is not configured in reachable GitLab jobs"
@@ -155,6 +155,13 @@
       "severity": "high",
       "srs": "",
       "statement": "scripts/ci/ocn_rbac_probe.py is not configured in reachable GitLab jobs"
+    },
+    {
+      "area": "ci",
+      "evidence": "referenced by: tests/upgrade/test_public_redaction.py",
+      "severity": "high",
+      "srs": "",
+      "statement": "scripts/ci/public_redaction.py is never executed by GitHub Actions"
     },
     {
       "area": "ci",
@@ -193,7 +200,7 @@
     },
     {
       "area": "ci",
-      "evidence": "referenced by: scripts/ci/hostinger_replay.py, scripts/deploy/roadmap_status.py, tools/day21_closure.py",
+      "evidence": "referenced by: scripts/ci/hostinger_replay.py, scripts/deploy/roadmap_status.py, tools/day21_closure.py, tools/evidence_verify.py",
       "severity": "high",
       "srs": "",
       "statement": "scripts/ci/sprint_cycle.py is not configured in reachable GitLab jobs"
@@ -225,6 +232,13 @@
       "severity": "high",
       "srs": "",
       "statement": "scripts/ci/verify_public_disclosure.py is not configured in reachable GitLab jobs"
+    },
+    {
+      "area": "governance",
+      "evidence": ".bits/srs/SRS-BUILDANDDO-BUDDI-001.md is unregistered, so no branch may claim it",
+      "severity": "high",
+      "srs": "",
+      "statement": "SRS-BUILDANDDO-BUDDI-001 has a spec but is not in the registry"
     },
     {
       "area": "governance",
@@ -543,7 +557,8 @@
       "referenced_by": [
         "scripts/ci/hostinger_replay.py",
         "scripts/deploy/roadmap_status.py",
-        "tools/day21_closure.py"
+        "tools/day21_closure.py",
+        "tools/evidence_verify.py"
       ],
       "wired_into_ci": false
     },

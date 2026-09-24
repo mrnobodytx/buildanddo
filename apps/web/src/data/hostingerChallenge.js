@@ -1,30 +1,34 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/src/data/hostingerChallenge.js
 // Stage:       07_BUILD
-// SRS:         SRS-BUILDANDDO-DAY21-CLOSURE-001, SRS-BUILDANDDO-UPGRADE-001
+// SRS:         SRS-BUILDANDDO-DAY21-CLOSURE-001, SRS-BUILDANDDO-PURPOSE-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-DAY21-CLOSURE-001, VCC-BUILDANDDO-UPGRADE-001
-// Seat:        CLA-INSTALLER
+// Dispatch:    VCC-BUILDANDDO-DAY21-CLOSURE-001, VCC-BUILDANDDO-PURPOSE-001
+// Seat:        CLA-INSTALLER, C-ONE (the educational-platform framing)
 // Owner:       Citadel Nexus Inc.
 // Depends:     docs/day21/JUDGE_STORY.md
 // EnumType:    ConfigDoc
 // EnumEdges:   CONSUMES docs/day21/JUDGE_STORY.md
 // Intent:      Close Hostinger Day-21 runtime evidence and submission packaging gaps without granting deployment authority.
-// ───────────────────────────────────────────────────────────────
+// ----------------------------------------------------------------
+import { PURPOSE } from '@/lib/purpose';
+
+// The entry describes the startup as the operator decided it is: an educational, collaborative platform
+// (2026-09-11), reframed for the entry on 2026-09-23. scripts/ci/day21_submission.py carries the same four
+// texts as its defaults for the judge bundle; src/lib/__tests__/purpose.test.js fails when they drift apart.
 export const HOSTINGER_CHALLENGE = {
     campaign: 'Hostinger 21-Day Startup Challenge 2026',
     deadline: '2026-09-24',
-    promise:
-        'BuildAndDo is an educational collaboration platform for turning an objective into real, evidence-backed experience. People learn with other people and AI, work on actual projects, preserve what they did, and build reusable knowledge from the result.',
+    promise: PURPOSE.summary,
     target:
-        'Learners, educators, builders, researchers and teams with something they want to build or accomplish together.',
+        'People who learn best by doing: learners, teams and builders, beginners included, who want to work through a real project together with other people and AI agents, and keep proof of what they built.',
     problem:
-        'People need to connect lessons and shared methods to real projects, inspect what happened, and carry that experience into the next attempt.',
+        'Online learning mostly stops at watching and reading. People rarely work through a real project with guidance and with others, and when they do, little records what they actually built or whether it worked.',
     solution:
-        'BuildAndDo connects objectives, lessons, classrooms, collaboration, bounded missions, evidence and reflection. Software, research, business, community, creative and proposal projects share that learning loop.',
+        'BuildAndDo turns one real question or project into a bounded mission: it keeps the sources, asks for approval before anything runs, records the work, verifies the outcome and keeps the evidence, with classrooms, guilds and AI guildmaster agents to learn alongside.',
     demo:
-        'Planned walkthrough: choose a project objective, study a relevant method with a class or collaborator, carry out one approved mission, inspect the result with a separate reviewer, and retain a reflection with evidence. Record only steps actually completed on the accepted candidate.',
+        'A learner’s project becomes a source-bound mission; a bounded action is performed; a separate verifier checks the result; the readback and the Daily Edition explain what happened and what remains uncertain.',
     products: [
         {
             name: 'Unlimited Web Hosting',

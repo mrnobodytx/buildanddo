@@ -62,6 +62,7 @@ import argparse
 import datetime as dt
 import json
 import re
+import subprocess
 import sys
 from pathlib import Path
 
@@ -91,6 +92,35 @@ RULES: list[tuple[str, str, re.Pattern, str]] = [
      re.compile(r"(?i)kvm\d|\brig[12]\b|mesh-(?:control|memory|dev)|ray-tor1-\d|srv\d{6,}"
                 r"|hstgr\.cloud|CNI-SERVICE-BOX"),
      "internal host name"),
+    # Added 2026-09-22. The rule above lists BOX names and had no opinion about SERVICE
+    # hostnames, so `apps/web/public/activity-status.json` was serving
+    # the private GitLab host (x3) and the memory-substrate host to anyone who fetched
+    # https://buildanddo.com/activity-status.json - a 200, in the built public surface this
+    # scan already covers. The private GitLab and the MCP substrate are the two endpoints an
+    # attacker would most want named, and they were named on the product's own status file.
+    # buildanddo.com itself is deliberately excluded: it is the public product.
+    # NAMED INTERNAL SUBDOMAINS ONLY. The first version of this matched any
+    # *.citadel-nexus.com and immediately flagged ten footer, contact and policy links plus
+    # workshop.citadel-nexus.com - the company's own PUBLIC surface, which the product is
+    # supposed to link to. That is the "cries wolf" failure the IGNORED comment below warns
+    # about, so the rule names the control-plane subdomains instead of guessing from shape.
+    ("citadel_service_host", WARN,
+     re.compile(r"(?i)\b(?:gitlab|mcp|memory|nats|vault|panel|ops|forge|hub|runner|registry)"
+                r"\.citadel-nexus\.com\b"),
+     "private Citadel control-plane hostname"),
+    # Public addresses. Added 2026-09-22 after SEVEN fleet IPs were found sitting in tracked
+    # files - docs/RBAC_ACCEPTANCE_2026-09-20.md carried a full box-name-to-address-to-role
+    # table, submissions/hostinger/submission.json cited five of them as evidence, and
+    # scripts/deploy/ship.py hardcoded the production VM as a fallback. Every one was a PUBLIC
+    # DigitalOcean or Hostinger address, so `private_ipv4` above could never have matched them.
+    #
+    # The estate's own addresses are deliberately NOT enumerated here: writing them into a file
+    # that ships to the public mirror would publish exactly what the rule exists to keep out.
+    # So the rule flags EVERY public IPv4 literal and BENIGN_IPV4 subtracts the known-harmless
+    # ones - which means a NEW fleet address is caught by default, rather than by somebody
+    # remembering to add it to a list.
+    ("public_ipv4", WARN, re.compile(r"\b(?:\d{1,3}\.){3}\d{1,3}\b"),
+     "public IPv4 literal - an operational address for anyone who reads the mirror"),
     ("estate_state_path", WARN, re.compile(r"state/[a-z0-9_]+/[A-Za-z0-9_.-]+"),
      "controller-estate path - reveals private control-plane structure"),
     ("windows_path", WARN, re.compile(r"[A-Z]:\\[A-Za-z0-9_\\/.-]{4,}"),
@@ -109,6 +139,19 @@ IGNORED = re.compile(r"^(?:apps/|src/|public/|docs/|scripts/ci/|scripts/deploy/|
 # two BLOCK findings and this gate would have failed every build on correct source. A gate that
 # cries wolf on working code is a gate somebody switches off, which is worse than no gate.
 CODE_REFERENCE = re.compile(r"^[A-Za-z_$][A-Za-z0-9_$]*(?:\.[A-Za-z_$][A-Za-z0-9_$]*)+$")
+
+# Subtracted from `public_ipv4`: public resolvers, the RFC 5737 documentation ranges, the
+# obvious placeholder, and the RFC1918/loopback/link-local space that `private_ipv4` already
+# reports (listing them here stops one address raising two findings). Anything NOT on this
+# list is treated as a real operational address until a person decides otherwise.
+BENIGN_IPV4 = re.compile(
+    r"^(?:0\.0\.0\.0|255\.255\.255\.255"
+    r"|1\.1\.1\.1|1\.0\.0\.1|8\.8\.8\.8|8\.8\.4\.4|9\.9\.9\.9"           # public resolvers
+    r"|1\.2\.3\.4|192\.0\.2\.\d{1,3}|198\.51\.100\.\d{1,3}|203\.0\.113\.\d{1,3}"  # docs/placeholder
+    r"|127\.\d{1,3}\.\d{1,3}\.\d{1,3}|169\.254\.\d{1,3}\.\d{1,3}"        # loopback, link-local
+    r"|10\.\d{1,3}\.\d{1,3}\.\d{1,3}|192\.168\.\d{1,3}\.\d{1,3}"         # covered by private_ipv4
+    r"|172\.(?:1[6-9]|2\d|3[01])\.\d{1,3}\.\d{1,3})$"
+)
 
 SCAN_DIRS = ("apps/web/public", "dist/apps/web")
 TEXT_EXT = {".json", ".txt", ".html", ".js", ".css", ".xml", ".md", ".svg", ".webmanifest"}
@@ -132,6 +175,8 @@ def scan_text(rel: str, text: str) -> list[dict]:
             hit = m if isinstance(m, str) else str(m)
             if IGNORED.match(hit) or CODE_REFERENCE.match(hit):
                 continue
+            if rule_id == "public_ipv4" and BENIGN_IPV4.match(hit):
+                continue
             key = (rule_id, hit)
             if key in seen:
                 continue
@@ -140,8 +185,38 @@ def scan_text(rel: str, text: str) -> list[dict]:
     return out
 
 
-def scan(root: Path = ROOT) -> dict:
-    """Scan the built public surface.
+def _targets(root: Path, tracked: bool, missing: list[str]):
+    """Yield repo-relative paths to scan, for whichever surface was asked for.
+
+    TWO SURFACES, and conflating them is what let seven fleet addresses through. The built
+    web surface (SCAN_DIRS) is what a visitor to buildanddo.com can fetch. The TRACKED files
+    are what a reader of the public GitHub mirror can clone - a different, larger set that
+    nothing was checking, even though the operator's rule is that GitHub is public-facing and
+    must be scrubbed before release. `docs/`, `submissions/` and `scripts/deploy/` are not
+    served to the web at all, which is exactly why they went unexamined.
+    """
+    if tracked:
+        result = subprocess.run(["git", "ls-files"], cwd=root, capture_output=True, text=True)
+        if result.returncode != 0:
+            missing.append("git ls-files (not a repository?)")
+            return
+        for rel in result.stdout.split("\n"):
+            rel = rel.strip()
+            if rel and Path(rel).suffix.lower() in TEXT_EXT and (root / rel).is_file():
+                yield rel
+        return
+    for rel_dir in SCAN_DIRS:
+        base = root / rel_dir
+        if not base.is_dir():
+            missing.append(rel_dir)
+            continue
+        for path in base.rglob("*"):
+            if path.is_file() and path.suffix.lower() in TEXT_EXT:
+                yield str(path.relative_to(root)).replace("\\", "/")
+
+
+def scan(root: Path = ROOT, tracked: bool = False) -> dict:
+    """Scan the built public surface, or (with tracked=True) every tracked file.
 
     Returns:
         A report dict. `state` is FAIL only on BLOCK findings; WARN findings are reported
@@ -150,19 +225,16 @@ def scan(root: Path = ROOT) -> dict:
     findings: list[dict] = []
     scanned = 0
     missing: list[str] = []
-    for rel_dir in SCAN_DIRS:
-        base = root / rel_dir
-        if not base.is_dir():
-            missing.append(rel_dir)
-            continue
-        for path in base.rglob("*"):
-            if not path.is_file() or path.suffix.lower() not in TEXT_EXT:
-                continue
+    for rel in _targets(root, tracked, missing):
+        path = root / rel
+        try:
             if path.stat().st_size > MAX_BYTES:
                 continue
-            scanned += 1
-            rel = str(path.relative_to(root)).replace("\\", "/")
-            findings.extend(scan_text(rel, path.read_text(encoding="utf-8", errors="replace")))
+            text = path.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            continue
+        scanned += 1
+        findings.extend(scan_text(rel, text))
 
     blocks = [f for f in findings if f["severity"] == BLOCK]
     warns = [f for f in findings if f["severity"] == WARN]
@@ -254,13 +326,16 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--strict", action="store_true", help="exit 1 on WARN as well as BLOCK")
     ap.add_argument("--selftest", action="store_true")
     ap.add_argument("--write", action="store_true", help="write state/public_disclosure/latest.json")
+    ap.add_argument("--repo", action="store_true",
+                    help="scan every TRACKED file (what the public mirror publishes) instead of "
+                         "the built web surface (what buildanddo.com serves)")
     args = ap.parse_args(argv)
 
     if args.selftest:
         return _selftest()
 
     root = Path(args.root).resolve()
-    report = scan(root)
+    report = scan(root, tracked=args.repo)
     print(json.dumps(report, indent=2) if args.json else render(report))
     if args.write:
         out = root / "state" / "public_disclosure" / "latest.json"

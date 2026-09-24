@@ -15,6 +15,7 @@
 // Intent:      Show what agent seats are doing in this workspace, especially when no person is in the class, from the append-only seat feed.
 // ───────────────────────────────────────────────────────────────
 
+import { seatName, withoutMachineNames } from '@/lib/seatDisplay';
 import React from 'react';
 import { Bot, Eye } from 'lucide-react';
 import { Card, StatePill } from '@/components/site/ui';
@@ -88,13 +89,13 @@ export default function AgentActivity({ unattended = false, limit = 12 }) {
                     <StatePill state={state} />
                     <span className="sr-only">{label}</span>
                     <span className="inline-flex items-center gap-1 font-evidence text-xs text-muted-foreground"><Bot className="h-3.5 w-3.5" aria-hidden="true" />{item.seat}</span>
-                    {item.handoffTo && <span className="text-xs text-muted-foreground">to {item.handoffTo}</span>}
+                    {item.handoffTo && <span className="text-xs text-muted-foreground">to {seatName(item.handoffTo, 'another seat')}</span>}
                     <time className="ml-auto font-evidence text-[11px] text-muted-foreground" dateTime={item.createdAt}>{when(item.createdAt)}</time>
                 </div>
-                <p className="break-words text-sm font-semibold leading-6">{item.summary}</p>
-                {detail && <p className="whitespace-pre-wrap break-words text-sm leading-6 text-muted-foreground">{detail}</p>}
+                <p className="break-words text-sm font-semibold leading-6">{withoutMachineNames(item.summary)}</p>
+                {detail && <p className="whitespace-pre-wrap break-words text-sm leading-6 text-muted-foreground">{withoutMachineNames(detail)}</p>}
                 {(item.subject || item.prUrl) && <p className="flex flex-wrap gap-3 font-evidence text-[11px] text-muted-foreground">
-                    {item.subject && <span>{item.subjectType ? `${item.subjectType}: ` : ''}{item.subject}</span>}
+                    {item.subject && <span>{item.subjectType ? `${item.subjectType}: ` : ''}{withoutMachineNames(item.subject)}</span>}
                     {/^https:\/\//.test(item.prUrl || '') && <a href={item.prUrl} target="_blank" rel="noreferrer" className="underline underline-offset-4">Evidence link</a>}
                 </p>}
             </li>;

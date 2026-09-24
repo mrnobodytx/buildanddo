@@ -52,10 +52,13 @@ function callerSeat(e) {
 /**
  * Ask the SFU which tracks it is actually holding for one session.
  *
- * This is the check whose absence made every presence row carry
- * verification:"NOT_ECHOED_BY_SFU". An authorised publisher can advertise a track name it never
- * pushed, so an advertisement alone is not evidence a track exists. Returns the SFU's own list, or
- * a named reason - never an empty list that could be mistaken for "no tracks".
+ * Before this check existed, every presence row carried verification:"NOT_ECHOED_BY_SFU". Now the
+ * presence write path answers "NOT_YET_ECHOED", because it does not wait on the SFU, and the read
+ * path uses this to answer "ECHOED_BY_SFU" (the only verified state), "NOT_HELD_BY_SFU:<names>",
+ * "NO_TRACKS_ADVERTISED" or "SFU_UNREACHABLE:<why>" (SRS-BUILDANDDO-PRESENCE-001). An authorised
+ * publisher can advertise a track name it never pushed, so an advertisement alone is not evidence a
+ * track exists. Returns the SFU's own list, or a named reason - never an empty list that could be
+ * mistaken for "no tracks".
  *
  * @param {string} sessionId The SFU session to read.
  * @returns {{ok: boolean, tracks: string[], reason: string, status: number}}

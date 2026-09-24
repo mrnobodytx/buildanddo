@@ -1,11 +1,11 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/src/pages/HomePage.jsx
 // Stage:       07_BUILD
-// SRS:         SRS-BUILDANDDO-UPGRADE-001
+// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-BUDDI-003
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
-// Seat:        BITS-CODEGEN
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-BUDDI-003
+// Seat:        BITS-CODEGEN, C-ONE (Talk to Buddi)
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-15
 // Depends:     apps/web/src/hooks/useWorkspaceRecords.js, apps/web/src/components/workspace/TutorialCatalog.jsx, apps/web/src/lib/workspaceSummary.js, apps/web/src/components/editorial/EditorialFrontPage.jsx, apps/web/src/hooks/useMissionResearch.js, apps/web/src/components/site/Faq.jsx, apps/web/src/components/site/Footer.jsx, apps/web/src/components/site/EarlyAccess.jsx
@@ -40,6 +40,7 @@ import EditorialStory from '@/components/motion/EditorialStory';
 import EditorialFrontPage from '@/components/editorial/EditorialFrontPage';
 import ReadingProgress from '@/components/motion/ReadingProgress';
 import TutorialCatalog from '@/components/workspace/TutorialCatalog';
+import TalkToBuddi from '@/components/voice/TalkToBuddi';
 import {
     DemoModeBanner,
     DegradedNotice,

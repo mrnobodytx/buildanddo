@@ -179,7 +179,9 @@ function NavList({ onNavigate }) {
     );
 }
 
-function BrandMark() {
+// The mark and the wordmark together. Named for what it is, so it no longer collides with the
+// mark component it now draws.
+function BrandLockup() {
     return (
         <Link to="/" className="flex items-center gap-2.5" aria-label="BuildAndDo home">
             <LogoMark size={32} className="text-foreground" />
@@ -258,7 +260,7 @@ export default function WorkspaceLayout() {
                 {/* Desktop sidebar */}
                 <aside className="fixed inset-y-0 left-0 z-40 hidden w-60 flex-col border-r border-border/60 bg-secondary/15 lg:flex">
                     <div className="flex h-14 items-center border-b border-border/60 px-4">
-                        <BrandMark />
+                        <BrandLockup />
                     </div>
                     <div className="flex-1 overflow-y-auto px-3 py-4">
                         <NavList />
@@ -294,7 +296,7 @@ export default function WorkspaceLayout() {
                 >
                     <SheetTitle className="sr-only">Workspace navigation</SheetTitle>
                     <div className="flex h-14 items-center border-b border-border/60 px-4">
-                        <BrandMark />
+                        <BrandLockup />
                     </div>
                     <div className="px-3 py-4">
                         <NavList onNavigate={() => setMobileOpen(false)} />
