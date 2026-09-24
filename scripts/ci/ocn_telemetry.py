@@ -27,10 +27,13 @@ the probe has reached its verdict and publishes what the receipt says. No fleet 
 holds a key for it, and no probe script imports it.
 
     ocn_telemetry.py run [--telemetry off|dry-run|send] [--sinks posthog,datadog] [--probe NAME]
-                         [--expect allow|deny] [--dd-metrics] [--fleet-map PATH] -- <probe command...>
+                         [--expect allow|deny] [--dd-metrics] [--fleet-map PATH] [--verify]
+                         -- <probe command...>
     ocn_telemetry.py publish --receipt PATH|- [--probe NAME] [--mode off|dry-run|send] [--sinks ...]
                              [--tee] [--force] [--expect allow|deny] [--env staging|production]
                              [--fleet-map PATH] [--probe-digest HEX] [--dd-metrics] [--strict]
+    ocn_telemetry.py verify (--pending | --run ID | --receipt PATH [--update-receipt] | --tags)
+                            [--wait 120]
     ocn_telemetry.py probes
 
 OFF BY DEFAULT. Nothing is sent unless BUILDANDDO_OCN_TELEMETRY or --telemetry says `send`. `dry-run`
@@ -48,6 +51,9 @@ withholds the whole receipt.
 
 A 200 IS NOT DELIVERY. PostHog answers 200 {"status":"Ok"} to a deliberately invalid key and never
 stores that event (measured 2026-09-20). SENT here means only that a vendor accepted a request.
+VERIFIED is written only by `verify`, which reads both vendors back and holds five controls: the
+invalid-key twin is absent, a never-sent run id finds nothing in either vendor, the Citadel-nexus
+project holds nothing of the run, and Datadog refuses an invalid key. A failed control is VOID.
 """
 from __future__ import annotations
 
@@ -64,6 +70,7 @@ import subprocess
 import sys
 import time
 import urllib.error
+import urllib.parse
 import urllib.request
 import uuid
 from dataclasses import dataclass
@@ -86,6 +93,8 @@ USER_AGENT = LIB + "/" + LIB_VERSION
 # POSTHOG_PROJECT_ID name the Citadel-nexus project, so none of them decides where capture goes.
 PH_PROJECT = 597897
 PH_CAPTURE = "https://us.i.posthog.com/batch/"
+PH_QUERY_BASE = "https://us.posthog.com/api/projects/"
+PH_QUERY = PH_QUERY_BASE + str(PH_PROJECT) + "/query/"
 PH_NOTE = "200 = accepted, not stored"
 
 # Datadog: us5 only. .gitlab-ci.yml falls back to the US1 site; that fallback must never be copied.
@@ -95,6 +104,10 @@ DD_API = "https://api." + DD_SITE
 DD_EVENTS = DD_API + "/api/v1/events"
 DD_SERIES = DD_API + "/api/v2/series"
 DD_LOGS = "https://http-intake.logs." + DD_SITE + "/api/v2/logs"
+DD_EVENTS_SEARCH = DD_API + "/api/v2/events/search"
+DD_LOGS_SEARCH = DD_API + "/api/v2/logs/events/search"
+DD_METRIC_QUERY = DD_API + "/api/v1/query"
+DD_ALL_TAGS = DD_API + "/api/v2/metrics/%s/all-tags"
 SERVICE = "buildanddo-ocn"
 TEAM = "citadel-nexus"
 
@@ -122,8 +135,13 @@ ALLOW_CI_ENV = "BUILDANDDO_OCN_TELEMETRY_ALLOW_CI"
 STORE_ENV = "CITADEL_WORKSPACE_ENV"
 FLEET_ENV = "CITADEL_FLEET_MAP"
 CAPTURE_KEY = "BUILDANDDO_PH"
+READ_KEYS = ("POSTHOG_PERSONAL_API_KEY", "BAD_PERSONAL_PH_KEY")
+CANARY_PROJECT = "POSTHOG_PROJECT_ID"
 DD_KEY = "DD_API_KEY"
+DD_APP_KEY = "DD_APP_KEY"
 DD_SITE_NAME = "DD_SITE"
+POLL_S = 10.0
+WAIT_S = 120.0
 
 # The unspecified address. Sent as $ip on agent events, AFTER the gates, so PostHog keeps no address
 # of the machine that published (operator decision 2026-09-24). Built here rather than written out.
@@ -1818,9 +1836,323 @@ def summary_line(block: dict[str, Any]) -> str:
     """The one line `run` prints on stderr after the probe has finished."""
     reason = " (%s)" % block["reason"] if block.get("reason") else ""
     degraded = " degraded" if block.get("degraded") else ""
-    return "ocn_telemetry: %s%s run=%s posthog=%s datadog=%s%s" % (
+    checked = " verify=%s" % block["verification"]["state"] if isinstance(block.get("verification"), dict) else ""
+    return "ocn_telemetry: %s%s run=%s posthog=%s datadog=%s%s%s" % (
         block.get("state"), reason, block.get("run_id") or "-", (block.get("posthog") or {}).get("state"),
-        (block.get("datadog") or {}).get("state"), degraded)
+        (block.get("datadog") or {}).get("state"), degraded, checked)
+
+
+# ── verify: delivery proved by readback, with controls ───────────────────────────────────────
+
+READ_TIMEOUT_S = 30.0
+# The run id reaches HogQL as a value, never spliced into the query text.
+Q_RUN = ("SELECT event, count(DISTINCT uuid), "
+         "countIf(coalesce(toString(properties.$ip), '') NOT IN ('', {unspecified})), "
+         "countIf(isNotNull(properties.ocn_seat) OR isNotNull(properties.ocn_box_ip)) "
+         "FROM events WHERE properties.ocn_run_id = {run_id} "
+         "AND timestamp >= toDateTime({since}) AND timestamp <= toDateTime({until}) GROUP BY event")
+Q_PERSONS = "SELECT count() FROM persons WHERE properties.is_ocn_agent = true AND created_at >= toDateTime({since})"
+ALL_TAG_KEYS = frozenset({"service", "team", "env", "ocn_probe", "ocn_feature"})
+VERDICTS = ("VOID", "UNMEASURED", "NOT_FOUND")
+
+
+@dataclass
+class Readback:
+    """What verify needs to reach the vendors: keys by name, one transport, a clock and a sleep."""
+
+    values: dict[str, str]
+    provenance: dict[str, str]
+    transport: Callable[..., Any]
+    sleep: Callable[[float], None]
+    monotonic: Callable[[], float]
+    now: dt.datetime
+
+
+def readback(credentials: dict[str, str] | None = None, transport: Callable[..., Any] | None = None,
+             sleep: Callable[[float], None] | None = None, monotonic: Callable[[], float] | None = None,
+             now: dt.datetime | None = None) -> Readback:
+    names = [*READ_KEYS, CANARY_PROJECT, DD_KEY, DD_APP_KEY, DD_SITE_NAME]
+    if credentials is None:
+        values, provenance = resolve_credentials(names)
+    else:
+        values = {name: credentials[name] for name in names if credentials.get(name)}
+        provenance = {name: "argument" if name in values else "absent" for name in names}
+    return Readback(values, provenance, transport or _send, sleep or time.sleep, monotonic or time.monotonic,
+                    now or _utcnow())
+
+
+def _hogql(query: str, values: dict[str, Any]) -> dict[str, Any]:
+    return {"query": {"kind": "HogQLQuery", "query": query, "values": values}, "refresh": "blocking"}
+
+
+def _clock(stamp: dt.datetime) -> str:
+    return stamp.astimezone(dt.timezone.utc).strftime("%Y-%m-%d %H:%M:%S")
+
+
+def _window(entry: dict[str, Any]) -> tuple[dt.datetime, dt.datetime]:
+    at = parse_time(entry.get("receipt_at")) or _utcnow()
+    return at - dt.timedelta(hours=1), at + dt.timedelta(hours=1)
+
+
+def _ph_counts(read: Readback, key: str, project: str, run_id: str,
+               window: tuple[dt.datetime, dt.datetime]) -> tuple[int, dict[str, list[int]] | None]:
+    """(status, {event: [distinct uuids, events keeping an address, events carrying box properties]})."""
+    values = {"run_id": run_id, "unspecified": UNSPECIFIED_IP, "since": _clock(window[0]), "until": _clock(window[1])}
+    status, _detail, document = read.transport("POST", PH_QUERY_BASE + project + "/query/", _hogql(Q_RUN, values),
+                                               {"Authorization": "Bearer " + key}, READ_TIMEOUT_S)
+    rows = document.get("results") if isinstance(document, dict) else None
+    if status != 200 or not isinstance(rows, list):
+        return status, None
+    counts: dict[str, list[int]] = {}
+    for row in rows:
+        if isinstance(row, list) and len(row) >= 4 and isinstance(row[0], str):
+            counts[row[0]] = [_int(row[1]) or 0, _int(row[2]) or 0, _int(row[3]) or 0]
+    return status, counts
+
+
+def _ph_found(counts: dict[str, list[int]] | None, expected: dict[str, int]) -> bool:
+    return counts is not None and all(counts.get(event, [0])[0] == number for event, number in expected.items()
+                                      if event != "ocn_telemetry_control")
+
+
+def _canary(read: Readback, key: str, run_id: str, window: tuple[dt.datetime, dt.datetime]) -> str:
+    """C3: the project named by POSTHOG_PROJECT_ID must hold nothing of this run."""
+    project = read.values.get(CANARY_PROJECT, "").strip()
+    if not project.isdigit() or project == str(PH_PROJECT):
+        return "NOT_CHECKED"
+    _status, counts = _ph_counts(read, key, project, run_id, window)
+    if counts is None:
+        return "NOT_CHECKED"
+    return "HELD" if not any(value[0] for value in counts.values()) else "FAILED"
+
+
+def _agent_persons(read: Readback, key: str, since: dt.datetime) -> str:
+    status, _detail, document = read.transport("POST", PH_QUERY, _hogql(Q_PERSONS, {"since": _clock(since)}),
+                                               {"Authorization": "Bearer " + key}, READ_TIMEOUT_S)
+    rows = document.get("results") if status == 200 and isinstance(document, dict) else None
+    if not isinstance(rows, list) or not rows or not isinstance(rows[0], list) or not rows[0]:
+        return "UNMEASURED"
+    return "CLEAN" if not _int(rows[0][0]) else "FOUND"
+
+
+def verify_posthog(entry: dict[str, Any], read: Readback, wait: float) -> dict[str, Any]:
+    expected = (entry.get("expected") or {}).get("posthog") or {}
+    name, key = next(((name, read.values[name]) for name in READ_KEYS if read.values.get(name)), (READ_KEYS[0], ""))
+    if not key or key.startswith("phc_"):
+        return {"state": "UNMEASURED", "reason": "NO_KEY:" + name if not key else "KEY_SHAPE", "expected": expected}
+    run_id, window = entry["run_id"], _window(entry)
+    started = read.monotonic()
+    while True:
+        status, counts = _ph_counts(read, key, str(PH_PROJECT), run_id, window)
+        if status in (401, 403):
+            return {"state": "UNMEASURED", "reason": "HTTP_%d" % status, "expected": expected}
+        if _ph_found(counts, expected) or read.monotonic() - started >= wait:
+            break
+        read.sleep(POLL_S)
+    if counts is None:
+        return {"state": "UNMEASURED", "reason": "TRANSPORT:%s" % (status or "no answer"), "expected": expected}
+    _never_status, never = _ph_counts(read, key, str(PH_PROJECT), str(uuid.uuid4()), window)
+    controls = {"C1_invalid_key_absent": "HELD" if not counts.get("ocn_telemetry_control", [0])[0] else "FAILED",
+                "C2_never_sent_id_empty": ("UNMEASURED" if never is None
+                                           else "HELD" if not any(value[0] for value in never.values()) else "FAILED"),
+                "C3_other_project_empty": _canary(read, key, run_id, window)}
+    seen = any(value[0] for value in counts.values())
+    since = parse_time(entry.get("first_published_at")) or window[0]
+    privacy = {"ip": ("UNMEASURED" if not seen else "CLEAN" if not sum(v[1] for v in counts.values())
+                      else "IP_STORED"),
+               "legacy_properties": ("UNMEASURED" if not seen else "CLEAN" if not sum(v[2] for v in counts.values())
+                                     else "FOUND"),
+               "agent_persons": _agent_persons(read, key, since)}
+    if "FAILED" in controls.values():
+        state = "VOID"
+    elif controls["C2_never_sent_id_empty"] == "UNMEASURED":
+        state = "UNMEASURED"
+    else:
+        state = "VERIFIED" if _ph_found(counts, expected) else "NOT_FOUND"
+    return {"state": state, "reason": "" if state == "VERIFIED" else state, "expected": expected,
+            "counts": {event: value[0] for event, value in sorted(counts.items())}, "controls": controls,
+            "privacy": privacy, "key": name}
+
+
+def _dd_search(read: Readback, url: str, query: str, window: tuple[dt.datetime, dt.datetime],
+               headers: dict[str, str]) -> tuple[int, int | None]:
+    body = {"filter": {"query": query, "from": iso(window[0]), "to": iso(window[1])}, "page": {"limit": 100}}
+    status, _detail, document = read.transport("POST", url, body, headers, READ_TIMEOUT_S)
+    data = document.get("data") if isinstance(document, dict) else None
+    return status, (len(data) if status == 200 and isinstance(data, list) else None)
+
+
+def invalid_datadog_key(run_id: str) -> str:
+    """32 hex characters no Datadog org issued, derived at run time."""
+    return uuid.uuid5(NAMESPACE, "invalid-datadog-key:" + run_id).hex
+
+
+def control_log(entry: dict[str, Any]) -> list[dict[str, Any]]:
+    """The run's summary, rebuilt from the ledger, for C4: it goes out under an invalid key and must be refused."""
+    tags = ["service:" + SERVICE, "env:" + entry["env"], "team:" + TEAM, "ocn_probe:" + entry["probe"],
+            "ocn_outcome:" + entry["outcome"], "ocn_persona:" + entry["persona"], "ocn_run:" + entry["run_id"]]
+    return [{"ddsource": SERVICE, "service": SERVICE, "ddtags": ",".join(tags), "status": "info",
+             "message": "ocn %s %s control invalid_key run=%s" % (entry["probe"], entry["env"], entry["run_id"]),
+             "ocn": _allow({"run_id": entry["run_id"], "receipt_sha256": entry.get("receipt_sha256"),
+                            "probe": entry["probe"], "env": entry["env"], "persona": entry["persona"],
+                            "outcome": entry["outcome"]}, DD_RUN_ATTRS)}]
+
+
+def _dd_metric(read: Readback, entry: dict[str, Any], headers: dict[str, str]) -> str:
+    since, until = _window(entry)
+    query = "max:%s{env:%s,ocn_probe:%s}" % (METRIC_MEASURED, entry["env"], entry["probe"])
+    url = DD_METRIC_QUERY + "?" + urllib.parse.urlencode({"from": int(since.timestamp()), "to": int(until.timestamp()),
+                                                         "query": query})
+    status, _detail, document = read.transport("GET", url, None, headers, READ_TIMEOUT_S)
+    series = document.get("series") if status == 200 and isinstance(document, dict) else None
+    if not isinstance(series, list):
+        return "UNMEASURED"
+    return "FOUND" if any(isinstance(item, dict) and item.get("pointlist") for item in series) else "NOT_FOUND"
+
+
+def verify_datadog(entry: dict[str, Any], read: Readback, wait: float) -> dict[str, Any]:
+    expected = (entry.get("expected") or {}).get("datadog") or {}
+    api, app = read.values.get(DD_KEY, ""), read.values.get(DD_APP_KEY, "")
+    refusal = ("NO_KEY:" + DD_KEY if not api else "NO_KEY:" + DD_APP_KEY if not app
+               else "" if dd_site(read.values.get(DD_SITE_NAME, "")) in DD_SITES_ALLOWED else "SITE_NOT_ALLOWED")
+    if refusal:
+        return {"state": "UNMEASURED", "reason": refusal, "expected": expected}
+    if entry.get("env") not in ENVS or entry.get("probe") not in PROBES:
+        return {"state": "UNMEASURED", "reason": "LEDGER_SHAPE", "expected": expected}
+    headers = {"DD-API-KEY": api, "DD-APPLICATION-KEY": app}
+    run_id, window = entry["run_id"], _window(entry)
+    started = read.monotonic()
+    while True:
+        event_status, events = (_dd_search(read, DD_EVENTS_SEARCH, "ocn_run:" + run_id, window, headers)
+                                if expected.get("events") else (200, 0))
+        log_status, logs = _dd_search(read, DD_LOGS_SEARCH, "service:%s ocn_run:%s" % (SERVICE, run_id), window,
+                                      headers)
+        refused = next((code for code in (event_status, log_status) if code in (401, 403)), 0)
+        if refused:
+            return {"state": "UNMEASURED", "reason": "HTTP_%d" % refused, "expected": expected}
+        found = events == expected.get("events", 0) and logs == expected.get("logs", 0)
+        if found or read.monotonic() - started >= wait:
+            break
+        read.sleep(POLL_S)
+    status, _detail, _document = read.transport("POST", DD_LOGS, control_log(entry),
+                                                {"DD-API-KEY": invalid_datadog_key(run_id)}, READ_TIMEOUT_S)
+    never = str(uuid.uuid4())
+    _event_status, never_events = _dd_search(read, DD_EVENTS_SEARCH, "ocn_run:" + never, window, headers)
+    _log_status, never_logs = _dd_search(read, DD_LOGS_SEARCH, "service:%s ocn_run:%s" % (SERVICE, never), window,
+                                         headers)
+    controls = {"C4_invalid_key_refused": ("HELD" if status == 403 else "FAILED" if 200 <= status < 300
+                                           else "UNMEASURED"),
+                "C5_never_sent_id_empty": ("UNMEASURED" if never_events is None or never_logs is None
+                                           else "HELD" if not never_events and not never_logs else "FAILED")}
+    metrics = _dd_metric(read, entry, headers) if expected.get("series") else "NOT_SENT"
+    if "FAILED" in controls.values():
+        state, reason = "VOID", "VOID"
+    elif "UNMEASURED" in controls.values() or events is None or logs is None:
+        state, reason = "UNMEASURED", "UNMEASURED"
+    elif found and metrics in ("FOUND", "NOT_SENT"):
+        state, reason = "VERIFIED", ""
+    else:
+        state = "NOT_FOUND"
+        reason = ("LOGS_NOT_FOUND" if events == expected.get("events", 0) and logs != expected.get("logs", 0)
+                  else "METRICS_NOT_FOUND" if found else "NOT_FOUND")
+    return {"state": state, "reason": reason, "expected": expected,
+            "counts": {"events": events, "logs": logs, "metrics": metrics}, "controls": controls}
+
+
+def _maybe_delivered(sink: dict[str, Any]) -> bool:
+    """Accepted, or cut off mid-request: a timed-out send stays UNSENT until a readback finds it."""
+    return sink.get("state") in ("SENT", "VERIFIED") or str(sink.get("reason", "")).startswith("TRANSPORT:")
+
+
+def verify_entry(entry: dict[str, Any], read: Readback, wait: float = WAIT_S) -> dict[str, Any]:
+    """Read one published run back from both vendors. VERIFIED only when every sent sink is."""
+    result: dict[str, Any] = {"run_id": entry.get("run_id"), "verified_at": iso(read.now)}
+    sinks = entry.get("sinks") or {}
+    for name, check in (("posthog", verify_posthog), ("datadog", verify_datadog)):
+        sink = sinks.get(name) if isinstance(sinks.get(name), dict) else {}
+        result[name] = (check(entry, read, wait) if _maybe_delivered(sink)
+                        else {"state": "NOT_CHECKED", "reason": "NOT_SENT"})
+    states = [result[name]["state"] for name in ("posthog", "datadog") if result[name]["state"] != "NOT_CHECKED"]
+    result["state"] = ("NOT_CHECKED" if not states
+                       else next((verdict for verdict in VERDICTS if verdict in states), "VERIFIED"))
+    return result
+
+
+def record_verification(ledger_dir: Path, entry: dict[str, Any], result: dict[str, Any]) -> dict[str, Any]:
+    updated = dict(entry, verification=result)
+    sinks = dict(entry.get("sinks") or {})
+    for name in ("posthog", "datadog"):
+        if result.get(name, {}).get("state") == "VERIFIED" and isinstance(sinks.get(name), dict):
+            sinks[name] = dict(sinks[name], state="VERIFIED", reason="")
+    updated["sinks"] = sinks
+    write_ledger(ledger_dir, updated)
+    return updated
+
+
+def block_from_ledger(entry: dict[str, Any], ledger_dir: Path) -> dict[str, Any]:
+    """The receipt's ocn_telemetry block, rebuilt from what the ledger recorded and verify found."""
+    sinks = entry.get("sinks") or {}
+    ids = {"run_id": entry.get("run_id", ""), "sha": entry.get("receipt_sha256", "")}
+    block = _block(entry.get("mode", "send"), ids=ids, probe=entry.get("probe", ""),
+                   posthog=dict(sinks.get("posthog") or {}),
+                   datadog=dict(sinks.get("datadog") or {}), credentials=entry.get("credentials") or {},
+                   ledger=_relative(ledger_file(ledger_dir, entry.get("run_id", ""))))
+    block["verification"] = entry.get("verification")
+    return block
+
+
+def pending_entries(ledger_dir: Path) -> list[dict[str, Any]]:
+    """Every sent run not yet VERIFIED, so an operator verifies without typing an id."""
+    entries = []
+    for path in sorted((Path(ledger_dir) / "runs").glob("*.json")):
+        try:
+            entry = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            continue
+        sinks = [sink for sink in (entry.get("sinks") or {}).values() if isinstance(sink, dict)]
+        verified = (entry.get("verification") or {}).get("state") == "VERIFIED"
+        if entry.get("mode") == "send" and not verified and any(_maybe_delivered(sink) for sink in sinks):
+            entries.append(entry)
+    return entries
+
+
+def persisted_receipt(path: Path) -> bool:
+    """Only the receipts probes persist with --write are rewritten: state/<probe>/<env>.latest.json."""
+    parts = Path(path).resolve().parts
+    folders = {Path(probe.write_path).parent.name for probe in REGISTRY if probe.write_path}
+    return (len(parts) >= 3 and parts[-3] == "state" and parts[-2] in folders
+            and parts[-1] in {"%s.latest.json" % env for env in ENVS})
+
+
+def verify_tags(read: Readback) -> dict[str, Any]:
+    """The opt-in metrics' tag keys, read back: a subset of five, values inside their enums. Never values."""
+    api, app = read.values.get(DD_KEY, ""), read.values.get(DD_APP_KEY, "")
+    if not api or not app:
+        return {"state": "UNMEASURED", "reason": "NO_KEY:" + (DD_KEY if not api else DD_APP_KEY)}
+    enums = {"service": {SERVICE}, "team": {TEAM}, "env": set(ENVS), "ocn_probe": set(PROBES),
+             "ocn_feature": set(catalogue().features)}
+    report: dict[str, Any] = {}
+    for metric in METRICS:
+        status, _detail, document = read.transport("GET", DD_ALL_TAGS % metric, None,
+                                                   {"DD-API-KEY": api, "DD-APPLICATION-KEY": app}, READ_TIMEOUT_S)
+        if status == 404:
+            report[metric] = {"state": "NOT_FOUND"}
+            continue
+        data = document.get("data") if status == 200 and isinstance(document, dict) else None
+        tags = ((data or {}).get("attributes") or {}).get("tags") if isinstance(data, dict) else None
+        if not isinstance(tags, list):
+            report[metric] = {"state": "UNMEASURED", "reason": "HTTP_%d" % status}
+            continue
+        pairs = [str(tag).partition(":") for tag in tags]
+        strange_keys = sum(1 for key, _sep, _value in pairs if key not in ALL_TAG_KEYS)
+        strange_values = sum(1 for key, _sep, value in pairs if key in enums and value not in enums[key])
+        report[metric] = {"state": "CLEAN" if not strange_keys and not strange_values else "UNEXPECTED",
+                          "keys": sorted({key for key, _sep, _value in pairs if key in ALL_TAG_KEYS}),
+                          "unexpected_keys": strange_keys, "unexpected_values": strange_values}
+    states = [item["state"] for item in report.values()]
+    state = ("UNEXPECTED" if "UNEXPECTED" in states else "UNMEASURED" if "UNMEASURED" in states
+             else "CLEAN")
+    return {"state": state, "metrics": report}
 
 
 # ── reading a receipt ────────────────────────────────────────────────────────────────────────
@@ -1977,12 +2309,25 @@ def run_command(options: argparse.Namespace, command: list[str], *, stdout: Any 
         child.stdout.close()
     try:
         block = _publish_run(options, argv, probe, script, bytes(captured), snapshots, err, publisher or publish)
+        if getattr(options, "verify", False) and block.get("state") == "SENT" and block.get("run_id"):
+            block["verification"] = _verify_after_run(block, options)
         print(summary_line(block), file=err)
     except KeyboardInterrupt:
         print("ocn_telemetry: interrupted; nothing was published", file=err)
     except Exception as error:  # noqa: BLE001 - the probe's exit code is returned whatever happens here
         print("ocn_telemetry: UNSENT (PUBLISHER_ERROR:%s)" % type(error).__name__, file=err)
     return code
+
+
+def _verify_after_run(block: dict[str, Any], options: argparse.Namespace) -> dict[str, Any]:
+    """`run --verify`: read the run just sent back from both vendors, polling up to WAIT_S."""
+    ledger_dir = Path(options.ledger_dir) if options.ledger_dir else LEDGER_DIR
+    entry = read_ledger(ledger_dir, block["run_id"])
+    if entry is None or ci_guard():
+        return {"state": "UNMEASURED", "reason": "CI_GUARD" if entry is not None else "NOT_IN_LEDGER"}
+    result = verify_entry(entry, readback(), WAIT_S)
+    record_verification(ledger_dir, entry, result)
+    return result
 
 
 def _publish_run(options: argparse.Namespace, argv: list[str], probe: str, script: Path | None, stdout: bytes,
@@ -2025,6 +2370,7 @@ def run_main(argv: list[str], *, stdout: Any = None, stderr: Any = None) -> int:
     parser.add_argument("--expect", choices=("allow", "deny"), default=None)
     parser.add_argument("--dd-metrics", action="store_true")
     parser.add_argument("--fleet-map", default=None)
+    parser.add_argument("--verify", action="store_true", help="after a send, read the run back (A3)")
     parser.add_argument("--ledger-dir", default=None)
     options = parser.parse_args(argv[:split])
     command = argv[split + 1:]
@@ -2060,6 +2406,59 @@ def publish_main(args: argparse.Namespace) -> int:
     return 1 if args.strict and not _strict_ok(block) else 0
 
 
+def _verify_targets(args: argparse.Namespace, ledger_dir: Path, read: Readback) -> list[dict[str, Any]]:
+    receipt, path = None, None
+    if args.pending:
+        entries = pending_entries(ledger_dir)
+    elif args.run:
+        if not _UUID.fullmatch(args.run):
+            return [{"run_id": "", "state": "UNMEASURED", "reason": "NOT_A_RUN_ID"}]
+        entry = read_ledger(ledger_dir, args.run.lower())
+        if entry is None:
+            return [{"run_id": args.run.lower(), "state": "UNMEASURED", "reason": "NOT_IN_LEDGER"}]
+        entries = [entry]
+    else:
+        path = Path(args.receipt)
+        receipt = extract_receipt(decode_bytes(path.read_bytes())) if path.is_file() else None
+        if receipt is None:
+            return [{"run_id": "", "state": "UNMEASURED", "reason": "NO_RECEIPT"}]
+        entry = read_ledger(ledger_dir, receipt_ids(receipt)["run_id"])
+        if entry is None:
+            return [{"run_id": receipt_ids(receipt)["run_id"], "state": "UNMEASURED", "reason": "NOT_IN_LEDGER"}]
+        entries = [entry]
+    results = []
+    for entry in entries:
+        result = verify_entry(entry, read, args.wait)
+        updated = record_verification(ledger_dir, entry, result)
+        if receipt is not None and path is not None and args.update_receipt:
+            result["receipt_updated"] = persisted_receipt(path)
+            if result["receipt_updated"]:
+                # The digest excludes this block, so the receipt keeps its run id after the rewrite.
+                with open(path, "w", encoding="utf-8", newline="\n") as handle:
+                    handle.write(json.dumps({**receipt, "ocn_telemetry": block_from_ledger(updated, ledger_dir)},
+                                            indent=2) + "\n")
+        results.append(result)
+    return results
+
+
+def verify_main(args: argparse.Namespace, read: Readback | None = None) -> int:
+    """verify runs on the release workstation and is itself an A3 action: C4 posts under an invalid key."""
+    ledger_dir = Path(args.ledger_dir) if args.ledger_dir else LEDGER_DIR
+    if ci_guard():
+        report: dict[str, Any] = {"contract": CONTRACT, "state": "UNMEASURED", "reason": "CI_GUARD", "results": []}
+    elif args.tags:
+        report = {"contract": CONTRACT, **verify_tags(read or readback())}
+    else:
+        results = _verify_targets(args, ledger_dir, read or readback())
+        states = [result["state"] for result in results]
+        state = (next((verdict for verdict in (*VERDICTS, "NOT_CHECKED") if verdict in states), "VERIFIED")
+                 if states else "NOT_CHECKED")
+        report = {"contract": CONTRACT, "state": state, "results": results}
+    print(json.dumps(report))
+    print("ocn_telemetry verify: %s" % report["state"], file=sys.stderr)
+    return 1 if args.strict and report["state"] not in ("VERIFIED", "CLEAN") else 0
+
+
 def probes_main() -> int:
     print(json.dumps({"contract": CONTRACT, "probes": [
         {"name": probe.name, "schema": probe.schema or "key-shape", "env_default": probe.env_default,
@@ -2087,6 +2486,17 @@ def build_parser() -> argparse.ArgumentParser:
     pub.add_argument("--dd-metrics", action="store_true")
     pub.add_argument("--strict", action="store_true")
     pub.add_argument("--ledger-dir", default=None)
+    ver = sub.add_parser("verify", help="read published runs back from both vendors, with controls (A3)")
+    target = ver.add_mutually_exclusive_group(required=True)
+    target.add_argument("--pending", action="store_true", help="every sent run the ledger has not verified")
+    target.add_argument("--run", default=None, help="one run id")
+    target.add_argument("--receipt", default=None, help="the run a receipt file was published as")
+    target.add_argument("--tags", action="store_true", help="read back the opt-in metrics' tag keys")
+    ver.add_argument("--update-receipt", action="store_true",
+                     help="write the verified block into a persisted state/<probe>/<env>.latest.json")
+    ver.add_argument("--wait", type=float, default=WAIT_S, help="seconds to poll for ingestion (default 120)")
+    ver.add_argument("--ledger-dir", default=None)
+    ver.add_argument("--strict", action="store_true")
     sub.add_parser("probes", help="print the closed probe registry")
     return parser
 
@@ -2098,6 +2508,8 @@ def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
     if args.command == "publish":
         return publish_main(args)
+    if args.command == "verify":
+        return verify_main(args)
     return probes_main()
 
 

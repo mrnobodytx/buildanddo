@@ -918,6 +918,268 @@ class ReceiptParsingTests(Harness):
         self.assertEqual(json.loads(done.stdout.strip().splitlines()[-1]), [])
 
 
+def read_keys(**overrides: str) -> dict[str, str]:
+    values = {"POSTHOG_PERSONAL_API_KEY": "_".join(("phx", "read" * 5)), "DD_API_KEY": datadog_key(),
+              "DD_APP_KEY": datadog_key()[::-1], "DD_SITE": "us5.datadoghq.com", "POSTHOG_PROJECT_ID": "123456"}
+    values.update(overrides)
+    return {name: value for name, value in values.items() if value}
+
+
+class Vendor:
+    """Canned PostHog and Datadog readback. A run counts as sent when the ledger holds it."""
+
+    def __init__(self, ledger: Path, **settings):
+        self.ledger = ledger
+        self.s = {"ph_status": 200, "run": 1, "checks": 3, "control": 0, "ip_kept": 0, "legacy": 0,
+                  "never_rows": 0, "canary_status": 200, "canary_rows": 0, "persons": 0, "late": 0,
+                  "dd_status": 200, "events": 1, "logs": 4, "never_events": 0, "never_logs": 0,
+                  "invalid_status": 403, "points": True, "tags": ["env:staging", "service:buildanddo-ocn"]}
+        self.s.update(settings)
+        self.calls: list[dict] = []
+
+    def mine(self, run_id: str) -> bool:
+        return t.ledger_file(self.ledger, run_id).is_file()
+
+    def __call__(self, method, url, body, headers, timeout):
+        self.calls.append({"method": method, "url": url, "body": copy.deepcopy(body), "headers": sorted(headers)})
+        s = self.s
+        if url.startswith(t.PH_QUERY_BASE):
+            project = url[len(t.PH_QUERY_BASE):].split("/")[0]
+            query, values = body["query"]["query"], body["query"]["values"]
+            if "FROM persons" in query:
+                return s["ph_status"], "", {"results": [[s["persons"]]]}
+            if project != str(t.PH_PROJECT):
+                return s["canary_status"], "", {"results": [["ocn_probe_run", s["canary_rows"], 0, 0]]}
+            if s["ph_status"] != 200:
+                return s["ph_status"], "", {"detail": "refused"}
+            if not self.mine(values["run_id"]):
+                return 200, "", {"results": [["ocn_probe_run", s["never_rows"], 0, 0]] if s["never_rows"] else []}
+            if s["late"]:
+                s["late"] -= 1
+                return 200, "", {"results": []}
+            rows = [["ocn_probe_run", s["run"], s["ip_kept"], s["legacy"]], ["ocn_probe_check", s["checks"], 0, 0]]
+            if s["control"]:
+                rows.append(["ocn_telemetry_control", s["control"], 0, 0])
+            return 200, "", {"results": rows}
+        if url in (t.DD_EVENTS_SEARCH, t.DD_LOGS_SEARCH):
+            if s["dd_status"] != 200:
+                return s["dd_status"], "", {"errors": ["Forbidden"]}
+            run_id = re.search(r"ocn_run:([0-9a-f-]{36})", body["filter"]["query"]).group(1)
+            if url == t.DD_EVENTS_SEARCH:
+                count = s["events"] if self.mine(run_id) else s["never_events"]
+            else:
+                count = s["logs"] if self.mine(run_id) else s["never_logs"]
+            return 200, "", {"data": [{"id": str(index)} for index in range(count)]}
+        if url == t.DD_LOGS:
+            return s["invalid_status"], "", {}
+        if url.startswith(t.DD_METRIC_QUERY):
+            return 200, "", {"series": [{"pointlist": [[1, 1.0]]}] if s["points"] else []}
+        if url.startswith(t.DD_API + "/api/v2/metrics/"):
+            if "feature" in url:
+                return 404, "", {"errors": ["not found"]}
+            return 200, "", {"data": {"attributes": {"tags": s["tags"]}}}
+        raise AssertionError("an unexpected request")
+
+
+class VerifyTests(Harness):
+    def sent(self, receipt: dict | None = None) -> dict:
+        block = self.publish(receipt or receipts()["ocn_journey_report"], transport=Recorder(), force=True)
+        self.assertEqual(block["state"], "SENT")
+        return t.read_ledger(self.ledger, block["run_id"])
+
+    def read(self, vendor: Vendor, **overrides: str) -> t.Readback:
+        ticks = iter(range(0, 10 ** 6, 10))
+        return t.readback(credentials=read_keys(**overrides), transport=vendor, sleep=lambda seconds: None,
+                          monotonic=lambda: float(next(ticks)), now=NOW)
+
+    def verify(self, entry: dict, wait: float = 0, **settings) -> dict:
+        return t.verify_entry(entry, self.read(Vendor(self.ledger, **settings)), wait)
+
+    def test_a_delivered_run_is_verified_with_every_control_held(self):
+        entry = self.sent()
+        result = self.verify(entry)
+        self.assertEqual(result["state"], "VERIFIED")
+        self.assertEqual(result["posthog"]["counts"], {"ocn_probe_check": 3, "ocn_probe_run": 1})
+        self.assertEqual(set(result["posthog"]["controls"].values()), {"HELD"})
+        self.assertEqual(set(result["datadog"]["controls"].values()), {"HELD"})
+        self.assertEqual(result["posthog"]["privacy"], {"ip": "CLEAN", "legacy_properties": "CLEAN",
+                                                        "agent_persons": "CLEAN"})
+        updated = t.record_verification(self.ledger, entry, result)
+        self.assertEqual(t.block_from_ledger(updated, self.ledger)["state"], "VERIFIED")
+        self.assertEqual(t.read_ledger(self.ledger, entry["run_id"])["sinks"]["posthog"]["state"], "VERIFIED")
+
+    def test_nothing_found_is_not_found(self):
+        result = self.verify(self.sent(), run=0, checks=0, events=0, logs=0)
+        self.assertEqual((result["state"], result["posthog"]["state"], result["datadog"]["state"]),
+                         ("NOT_FOUND", "NOT_FOUND", "NOT_FOUND"))
+
+    def test_an_event_without_its_logs_is_reported_and_never_verified(self):
+        result = self.verify(self.sent(), logs=2)
+        self.assertEqual((result["datadog"]["state"], result["datadog"]["reason"]), ("NOT_FOUND", "LOGS_NOT_FOUND"))
+        self.assertEqual(result["state"], "NOT_FOUND")
+
+    def test_a_failed_control_voids_the_run(self):
+        cases = {"control": ("posthog", "C1_invalid_key_absent"), "never_rows": ("posthog", "C2_never_sent_id_empty"),
+                 "canary_rows": ("posthog", "C3_other_project_empty"),
+                 "never_logs": ("datadog", "C5_never_sent_id_empty")}
+        for setting, (sink, control) in cases.items():
+            with self.subTest(control=control):
+                result = self.verify(self.sent(), **{setting: 1})
+                self.assertEqual(result[sink]["controls"][control], "FAILED")
+                self.assertEqual((result[sink]["state"], result["state"]), ("VOID", "VOID"))
+        accepted = self.verify(self.sent(), invalid_status=202)
+        self.assertEqual(accepted["datadog"]["controls"]["C4_invalid_key_refused"], "FAILED")
+        self.assertEqual(accepted["state"], "VOID")
+
+    def test_no_read_key_or_a_refusal_is_unmeasured(self):
+        entry = self.sent()
+        no_key = t.verify_entry(entry, self.read(Vendor(self.ledger), POSTHOG_PERSONAL_API_KEY="", DD_APP_KEY=""), 0)
+        self.assertEqual(no_key["posthog"]["reason"], "NO_KEY:POSTHOG_PERSONAL_API_KEY")
+        self.assertEqual(no_key["datadog"]["reason"], "NO_KEY:DD_APP_KEY")
+        self.assertEqual(no_key["state"], "UNMEASURED")
+        fallback = t.verify_entry(entry, self.read(Vendor(self.ledger), POSTHOG_PERSONAL_API_KEY="",
+                                                   BAD_PERSONAL_PH_KEY="_".join(("phx", "other" * 4))), 0)
+        self.assertEqual((fallback["posthog"]["state"], fallback["posthog"]["key"]),
+                         ("VERIFIED", "BAD_PERSONAL_PH_KEY"))
+        capture = t.verify_entry(entry, self.read(Vendor(self.ledger), POSTHOG_PERSONAL_API_KEY=capture_key()), 0)
+        self.assertEqual(capture["posthog"]["reason"], "KEY_SHAPE")
+        for status in (401, 403):
+            with self.subTest(status=status):
+                refused = self.verify(entry, ph_status=status, dd_status=status)
+                self.assertEqual(refused["posthog"]["reason"], "HTTP_%d" % status)
+                self.assertEqual(refused["datadog"]["reason"], "HTTP_%d" % status)
+                self.assertEqual(refused["state"], "UNMEASURED")
+
+    def test_the_canary_project_is_not_checked_when_unreadable(self):
+        entry = self.sent()
+        absent = t.verify_entry(entry, self.read(Vendor(self.ledger), POSTHOG_PROJECT_ID=""), 0)
+        self.assertEqual(absent["posthog"]["controls"]["C3_other_project_empty"], "NOT_CHECKED")
+        self.assertEqual(absent["state"], "VERIFIED")
+        forbidden = self.verify(entry, canary_status=403)
+        self.assertEqual(forbidden["posthog"]["controls"]["C3_other_project_empty"], "NOT_CHECKED")
+        same = t.verify_entry(entry, self.read(Vendor(self.ledger), POSTHOG_PROJECT_ID=str(t.PH_PROJECT)), 0)
+        self.assertEqual(same["posthog"]["controls"]["C3_other_project_empty"], "NOT_CHECKED")
+
+    def test_a_kept_address_and_legacy_properties_are_reported(self):
+        result = self.verify(self.sent(), ip_kept=1, legacy=1, persons=2)
+        self.assertEqual(result["posthog"]["privacy"], {"ip": "IP_STORED", "legacy_properties": "FOUND",
+                                                        "agent_persons": "FOUND"})
+        self.assertEqual(result["posthog"]["state"], "VERIFIED")
+
+    def test_the_run_id_is_a_value_never_query_text(self):
+        entry = self.sent()
+        vendor = Vendor(self.ledger)
+        t.verify_entry(entry, self.read(vendor), 0)
+        queries = [call["body"]["query"] for call in vendor.calls if call["url"].startswith(t.PH_QUERY_BASE)]
+        self.assertTrue(queries)
+        for query in queries:
+            self.assertNotIn(entry["run_id"], query["query"])
+        self.assertIn(entry["run_id"], [query["values"].get("run_id") for query in queries])
+        self.assertTrue(all(call["body"].get("refresh") == "blocking" for call in vendor.calls
+                            if call["url"].startswith(t.PH_QUERY_BASE)))
+
+    def test_verify_polls_until_ingestion_and_then_stops(self):
+        entry = self.sent()
+        slept: list[float] = []
+        ticks = iter(range(0, 10 ** 6, 10))
+        read = t.readback(credentials=read_keys(), transport=Vendor(self.ledger, late=2), sleep=slept.append,
+                          monotonic=lambda: float(next(ticks)), now=NOW)
+        self.assertEqual(t.verify_entry(entry, read, 120)["posthog"]["state"], "VERIFIED")
+        self.assertEqual(slept, [10.0, 10.0])
+        impatient = t.readback(credentials=read_keys(), transport=Vendor(self.ledger, late=5), sleep=slept.append,
+                               monotonic=lambda: float(next(ticks)), now=NOW)
+        self.assertEqual(t.verify_entry(entry, impatient, 0)["posthog"]["state"], "NOT_FOUND")
+
+    def test_nothing_sent_is_not_checked(self):
+        dry = self.publish(receipts()["ocn_journey_report"], mode="dry-run")
+        result = self.verify(t.read_ledger(self.ledger, dry["run_id"]))
+        self.assertEqual(result["state"], "NOT_CHECKED")
+
+    def args(self, **values) -> argparse.Namespace:
+        base = {"pending": False, "run": None, "receipt": None, "tags": False, "update_receipt": False, "wait": 0,
+                "ledger_dir": str(self.ledger), "strict": False}
+        base.update(values)
+        return argparse.Namespace(**base)
+
+    def verify_main(self, vendor: Vendor, **values) -> tuple[int, dict]:
+        out = io.StringIO()
+        with contextlib.redirect_stdout(out), contextlib.redirect_stderr(io.StringIO()):
+            code = t.verify_main(self.args(**values), read=self.read(vendor))
+        lines = out.getvalue().splitlines()
+        self.assertEqual(len(lines), 1)
+        return code, json.loads(lines[0])
+
+    def test_pending_verifies_every_sent_run_and_skips_dry_runs(self):
+        first = self.sent()
+        second = self.sent(dict(receipts()["ocn_journey_report"], at="2026-09-24T12:00:30+00:00"))
+        self.publish(dict(receipts()["ocn_journey_report"], at="2026-09-24T12:00:40+00:00"), mode="dry-run")
+        code, report = self.verify_main(Vendor(self.ledger), pending=True)
+        self.assertEqual(code, 0)
+        self.assertEqual(sorted(result["run_id"] for result in report["results"]),
+                         sorted([first["run_id"], second["run_id"]]))
+        self.assertEqual(report["state"], "VERIFIED")
+        _code, again = self.verify_main(Vendor(self.ledger), pending=True)
+        self.assertEqual(again["results"], [])
+
+    def test_a_run_id_must_be_a_run_id(self):
+        _code, report = self.verify_main(Vendor(self.ledger), run="not-a-run")
+        self.assertEqual(report["results"][0]["reason"], "NOT_A_RUN_ID")
+        code, missing = self.verify_main(Vendor(self.ledger), run="00000000-0000-5000-8000-000000000000", strict=True)
+        self.assertEqual((code, missing["results"][0]["reason"]), (1, "NOT_IN_LEDGER"))
+
+    def test_update_receipt_rewrites_only_a_persisted_receipt_and_keeps_its_run_id(self):
+        persisted = self.dir / "state" / "ocn_feature_sweep" / "staging.latest.json"
+        persisted.parent.mkdir(parents=True)
+        receipt = receipts()["ocn_feature_sweep"]
+        persisted.write_text(json.dumps(receipt, indent=2), encoding="utf-8")
+        self.publish(t.extract_receipt(persisted.read_text(encoding="utf-8")), transport=Recorder())
+        vendor = Vendor(self.ledger, checks=0, logs=5)
+        _code, report = self.verify_main(vendor, receipt=str(persisted), update_receipt=True)
+        self.assertIs(report["results"][0]["receipt_updated"], True)
+        written = json.loads(persisted.read_text(encoding="utf-8"))
+        self.assertEqual(written["ocn_telemetry"]["state"], "VERIFIED")
+        self.assertEqual(t.receipt_ids(written), t.receipt_ids(receipt))
+        loose = self.dir / "receipt.json"
+        loose.write_text(json.dumps(receipt), encoding="utf-8")
+        _code, report = self.verify_main(vendor, receipt=str(loose), update_receipt=True)
+        self.assertIs(report["results"][0]["receipt_updated"], False)
+        self.assertNotIn("ocn_telemetry", json.loads(loose.read_text(encoding="utf-8")))
+
+    def test_verify_refuses_under_ci(self):
+        vendor = Vendor(self.ledger)
+        with mock.patch.dict(os.environ, {"CI": "true"}):
+            _code, report = self.verify_main(vendor, pending=True)
+        self.assertEqual((report["state"], report["reason"]), ("UNMEASURED", "CI_GUARD"))
+        self.assertEqual(vendor.calls, [])
+
+    def test_tags_read_back_keys_and_never_values(self):
+        _code, clean = self.verify_main(Vendor(self.ledger), tags=True)
+        self.assertEqual(clean["state"], "CLEAN")
+        self.assertEqual(clean["metrics"][t.METRIC_ALIVE]["state"], "NOT_FOUND")
+        self.assertNotIn("staging", json.dumps(clean))
+        _code, odd = self.verify_main(Vendor(self.ledger, tags=["env:staging", "host:" + BOX, "env:elsewhere"]),
+                                      tags=True)
+        self.assertEqual(odd["state"], "UNEXPECTED")
+        self.assertEqual(odd["metrics"][t.METRIC_MEASURED]["unexpected_keys"], 1)
+        self.assertEqual(odd["metrics"][t.METRIC_MEASURED]["unexpected_values"], 1)
+        self.assertNotIn(BOX, json.dumps(odd))
+
+    def test_run_verify_reads_the_run_back_after_the_send(self):
+        probe = self.dir / "scripts" / "ci" / "ocn_journey_report.py"
+        probe.parent.mkdir(parents=True)
+        probe.write_text("import json\nprint(json.dumps(%r))\n" % receipts()["ocn_journey_report"], encoding="utf-8")
+        options = argparse.Namespace(telemetry="send", sinks=t.SINKS, probe="", expect=None, dd_metrics=False,
+                                     fleet_map=str(self.fleet), ledger_dir=str(self.ledger), verify=True)
+        publisher = functools.partial(t.publish, transport=Recorder(), credentials=keys(), now=NOW)
+        err = io.StringIO()
+        with mock.patch.dict(os.environ, read_keys()), mock.patch.object(t, "_send", Vendor(self.ledger)):
+            code = t.run_command(options, [str(probe), "walk", "--json"], stdout=io.BytesIO(), stderr=err,
+                                 publisher=publisher)
+        self.assertEqual(code, 0)
+        self.assertIn("ocn_telemetry: SENT", err.getvalue())
+        self.assertIn("verify=VERIFIED", err.getvalue())
+
+
 FAKE_PROBE = r'''
 import json, os, sys
 receipt = json.loads(%r)
