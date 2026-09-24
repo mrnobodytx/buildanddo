@@ -132,9 +132,10 @@ acceptance. The contract does not assert a percentage or rewrite sprint state.
 `docs/workspace-assistant.md` explain the implemented paths, personal-data
 boundaries, runtime bindings, acceptance commands and remaining owner decisions.
 
-The live Praxis suite and fleet/deployment tools retain their separately scoped
-runtime requirements. Do not silently run them against a shared backend or hide
-unwired-gate findings to make a progress indicator green.
+The Praxis suite now requires its runner-owned disposable native backend on both
+declared profiles; standalone selftests cannot inherit a shared target. Actual
+native runs are still required. Fleet/deployment tools retain separately scoped
+runtime authority. Never hide unwired-gate findings to make a progress indicator green.
 
 Findings that are not yet specs appear in the briefing with their evidence.
 Promote one to a spec rather than fixing it inline in an unrelated PR.

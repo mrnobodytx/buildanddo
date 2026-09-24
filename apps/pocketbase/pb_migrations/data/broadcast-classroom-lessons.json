@@ -140,6 +140,7 @@
     }
   ],
   "source_evidence": {
+    "source_revision": "27787309877afbc3e64346e2f3b537c79497cd47",
     "boundary": "source regression evidence; hosted media/native/rendered status require recorded results",
     "validation": [
       {

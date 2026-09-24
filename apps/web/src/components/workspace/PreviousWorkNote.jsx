@@ -1,9 +1,10 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/src/components/workspace/PreviousWorkNote.jsx
 // Stage:       07_BUILD
-// SRS:         SRS-BUILDANDDO-COMMUNITY-001
+// SRS:         SRS-BUILDANDDO-COMMUNITY-001, SRS-BUILDANDDO-UPGRADE-001
 // CAPS:        pending
 // CK:          pending
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-10
@@ -17,7 +18,8 @@
 
 import React from 'react';
 import { History } from 'lucide-react';
-import { StatusBadge, WORK_STATE } from '@/components/workspace/workspaceHelpers';
+import { WORK_STATE } from '@/components/workspace/workspaceHelpers';
+import { StatePill } from '@/components/site/ui';
 import { RUN_STATUS } from '@/lib/workflowRuns';
 
 function timeAgo(iso) {
@@ -53,14 +55,14 @@ export default function PreviousWorkNote({ history, onRetry }) {
                 <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
                     Previous work
                 </span>
-                {events.length > 0 && <StatusBadge map={WORK_STATE} value={history.state} />}
+                {events.length > 0 && <><StatePill state="reported" /><span className="text-xs text-muted-foreground">Reported state: {WORK_STATE[history.state]?.label || history.state}</span></>}
             </div>
 
             <ul className="mt-2 space-y-1 text-xs text-muted-foreground">
                 {seats.map((seat) => (
-                    <li key={seat.seat} className="flex flex-wrap items-baseline gap-x-2">
+                    <li key={JSON.stringify([seat.owner, seat.seat, seat.actorType])} className="flex flex-wrap items-baseline gap-x-2">
                         <span className="font-evidence text-foreground">{seat.seat}</span>
-                        <span>({seat.actorType})</span>
+                        <span>(claimed {seat.actorType}; submitting account: {seat.owner || 'not recorded'})</span>
                         <span>
                             {seat.lastEvent} · {timeAgo(seat.lastAt)} ·{' '}
                             {seat.eventCount} event{seat.eventCount === 1 ? '' : 's'}

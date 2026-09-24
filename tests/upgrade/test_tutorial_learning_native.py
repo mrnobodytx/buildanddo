@@ -8,9 +8,9 @@
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-19
-# Depends:     tests/upgrade/test_classroom_native.py, apps/pocketbase/pb_hooks/tutorial-learning.js, apps/pocketbase/pb_migrations/1790600000_tutorial_learning.js, apps/pocketbase/pb_migrations/1791400001_broadcast_classroom_lessons.js, apps/pocketbase/pb_migrations/1791500100_tutorial_answer_wait.js
+# Depends:     tests/upgrade/test_classroom_native.py, apps/pocketbase/pb_hooks/tutorial-learning.js, apps/pocketbase/pb_migrations/1790600000_tutorial_learning.js, apps/pocketbase/pb_migrations/1791400001_broadcast_classroom_lessons.js, apps/pocketbase/pb_migrations/1791500000_learning_progress_authority.js, apps/pocketbase/pb_migrations/1791500100_tutorial_answer_wait.js
 # EnumType:    Test
-# EnumEdges:   CONSUMES tests/upgrade/test_classroom_native.py; VALIDATES apps/pocketbase/pb_hooks/tutorial-learning.js; VALIDATES apps/pocketbase/pb_migrations/1790600000_tutorial_learning.js; VALIDATES apps/pocketbase/pb_migrations/1791400001_broadcast_classroom_lessons.js; VALIDATES apps/pocketbase/pb_migrations/1791500100_tutorial_answer_wait.js
+# EnumEdges:   CONSUMES tests/upgrade/test_classroom_native.py; VALIDATES apps/pocketbase/pb_hooks/tutorial-learning.js; VALIDATES apps/pocketbase/pb_migrations/1790600000_tutorial_learning.js; VALIDATES apps/pocketbase/pb_migrations/1791400001_broadcast_classroom_lessons.js; VALIDATES apps/pocketbase/pb_migrations/1791500000_learning_progress_authority.js; VALIDATES apps/pocketbase/pb_migrations/1791500100_tutorial_answer_wait.js
 # DAG Node:    none
 # Intent:      Require real PocketBase auth, concurrent completion and migration retention before accepting installed interactive learning.
 # ───────────────────────────────────────────────────────────────
@@ -41,6 +41,8 @@ MIGRATION = "1790600000_tutorial_learning.js"
 MIGRATIONS = (
     MIGRATION,
     "1791400001_broadcast_classroom_lessons.js",
+    "1791500000_learning_progress_authority.js",
+    "1791500002_authority_repair_lessons.js",
     "1791500100_tutorial_answer_wait.js",
 )
 SEED = r"""
@@ -73,12 +75,12 @@ migrate((app) => {
         lesson.set('curriculum_version', curriculum.version); app.save(lesson);
     }
     const progress = new Collection({ name: 'tutorial_progress', type: 'base',
-        listRule: '@request.auth.id != "" && owner = @request.auth.id',
-        viewRule: '@request.auth.id != "" && owner = @request.auth.id',
-        createRule: '@request.auth.id != "" && @request.body.owner = @request.auth.id',
-        updateRule: '@request.auth.id != "" && owner = @request.auth.id',
-        deleteRule: '@request.auth.id != "" && owner = @request.auth.id',
-        fields: [{ name: 'owner', type: 'relation', collectionId: users.id, maxSelect: 1, required: true },
+        listRule: "@request.auth.id != '' && @request.auth.id = owner",
+        viewRule: "@request.auth.id != '' && @request.auth.id = owner",
+        createRule: "@request.auth.id != '' && @request.auth.id = @request.body.owner",
+        updateRule: "@request.auth.id != '' && @request.auth.id = owner",
+        deleteRule: "@request.auth.id != '' && @request.auth.id = owner",
+        fields: [{ name: 'owner', type: 'relation', collectionId: users.id, maxSelect: 1, required: true, cascadeDelete: true },
             { name: 'tutorial', type: 'relation', collectionId: tutorials.id, maxSelect: 1, required: true },
             { name: 'status', type: 'select', values: ['not_started', 'in_progress', 'completed'], maxSelect: 1, required: true },
             { name: 'progress', type: 'number', min: 0, max: 100 },
@@ -158,7 +160,7 @@ class LearningServer(DiagnosticNativeServer):
                     ROOT / "apps/pocketbase/pb_migrations" / name, migrations / name
                 )
             data_dir.mkdir(parents=True)
-            for name in ("starter-tutorials.json", "broadcast-classroom-lessons.json"):
+            for name in ("starter-tutorials.json", "broadcast-classroom-lessons.json", "authority-repairs-lessons.json"):
                 shutil.copyfile(
                     ROOT / "apps/pocketbase/pb_migrations/data" / name, data_dir / name
                 )
@@ -239,8 +241,11 @@ class NativeLearningTests(unittest.TestCase):
         progress = self.server.request(
             "GET", "/api/collections/tutorial_progress/records", token=self.owner
         )[1]
-        self.assertEqual(progress["totalItems"], 1)
-        self.assertEqual(progress["items"][0]["status"], "completed")
+        self.assertEqual(progress["totalItems"], 0)
+        states = self.server.request(
+            "GET", "/api/buildanddo/learning/states", token=self.owner
+        )[1]
+        self.assertEqual(states["items"][0]["status"], "completed")
 
     def test_authentication_grading_and_native_record_rules(self) -> None:
         self.assertIn(self.server.request("GET", self.path)[0], (401, 403))
@@ -257,7 +262,14 @@ class NativeLearningTests(unittest.TestCase):
         waiting = self.command("answer", {"choice": answer})
         self.assertEqual(waiting[0], 429)
         self.assertRegex(waiting[1]["message"], r"again in \d+ seconds")
-        completed = wrong[1]["enrollment"]
+        self.server.fixture_change("""
+            const record = app.findFirstRecordByFilter('tutorial_learning', 'owner = "accountalice001"');
+            record.set('answer_retry_at', '2000-01-01T00:00:00.000Z'); app.save(record);
+        """)
+        status, result = self.command("answer", {"choice": answer})
+        self.assertEqual(status, 200)
+        completed = result["enrollment"]
+        self.assertIsNotNone(completed["certificate"])
         self.assertIsNone(
             self.server.request("GET", self.path, token=self.other)[1]["enrollment"]
         )
@@ -327,7 +339,7 @@ class NativeLearningTests(unittest.TestCase):
             "answer", {"choice": self.server.lesson["lesson"]["check"]["answer"]}
         )[1]["enrollment"]["certificate"]
         tutorials = self.server.stored("tutorials")
-        self.assertEqual(len(tutorials), 26)
+        self.assertEqual(len(tutorials), 27)
         self.server.stop()
         self.server.migrate("down", str(len(MIGRATIONS)))
         # `serve` applies pending migrations on start (PocketBase 0.23+), so the
@@ -351,7 +363,7 @@ class NativeLearningTests(unittest.TestCase):
     ) -> None:
         lesson = self.server.broadcast["lessons"][0]
         path = "/api/buildanddo/learning/" + lesson["id"]
-        self.assertEqual(len(self.server.stored("tutorials")), 26)
+        self.assertEqual(len(self.server.stored("tutorials")), 27)
         for _ in range(2):
             code, detail = self.server.request("GET", path, token=self.owner)
             self.assertEqual(code, 200)
@@ -360,15 +372,14 @@ class NativeLearningTests(unittest.TestCase):
                 detail["tutorial"]["curriculum_version"],
                 self.server.broadcast["version"],
             )
-            public = {
+            learner_lesson = {
                 **lesson["lesson"],
                 "check": {
-                    key: value
-                    for key, value in lesson["lesson"]["check"].items()
-                    if key not in ("answer", "explanation")
+                    key: lesson["lesson"]["check"][key]
+                    for key in ("question", "choices")
                 },
             }
-            self.assertEqual(detail["tutorial"]["lesson"], public)
+            self.assertEqual(detail["tutorial"]["lesson"], learner_lesson)
         self.assertEqual(self.server.stored("tutorial_learning"), [])
         self.assertEqual(self.server.stored("tutorial_progress"), [])
         tutorial = detail["tutorial"]
@@ -391,9 +402,7 @@ class NativeLearningTests(unittest.TestCase):
         self.assertEqual(enrolled["enrollment"]["points"], 0)
         self.assertIsNone(enrolled["enrollment"]["certificate"])
         progress = self.server.stored("tutorial_progress")
-        self.assertEqual(len(progress), 1)
-        self.assertEqual(progress[0]["status"], "in_progress")
-        self.assertEqual(progress[0]["progress"], 0)
+        self.assertEqual(progress, [])
         self.assertIn(
             self.server.request(
                 "PATCH",
@@ -444,6 +453,210 @@ class NativeLearningTests(unittest.TestCase):
             self.assertEqual(summary["points"], 0)
             self.assertEqual(summary["certificates"]["items"], [])
         self.assertEqual(self.server.stored("tutorial_progress"), progress)
+
+    def test_authority_lesson_read_and_enrollment_keep_results_unawarded(self) -> None:
+        path = "/api/buildanddo/learning/bdoauthority001"
+        before = self.server.stored("tutorial_learning")
+        status, detail = self.server.request("GET", path, token=self.owner)
+        self.assertEqual(status, 200)
+        self.assertEqual(detail["tutorial"]["curriculum_version"], "2026.09.authority.1")
+        self.assertNotIn("answer", detail["tutorial"]["lesson"]["check"])
+        self.assertIsNone(detail["enrollment"])
+        self.assertEqual(self.server.stored("tutorial_learning"), before)
+        status, started = self.server.request("POST", path, {
+            "action": "start", "content_digest": detail["tutorial"]["content_digest"], "payload": {},
+        }, self.owner)
+        self.assertEqual(status, 200)
+        self.assertEqual(started["enrollment"]["points"], 0)
+        self.assertIsNone(started["enrollment"]["certificate"])
+        self.assertEqual(self.server.stored("tutorial_progress"), [])
+        status, states = self.server.request("GET", "/api/buildanddo/learning/states", token=self.owner)
+        self.assertEqual(status, 200)
+        self.assertEqual(states["items"][0]["tutorial"], "bdoauthority001")
+        self.assertEqual(states["items"][0]["status"], "in_progress")
+
+    def test_keyless_responses_keep_full_snapshots_and_server_feedback(self) -> None:
+        check = self.server.lesson["lesson"]["check"]
+        expected = {key: check[key] for key in ("question", "choices")}
+        self.assertEqual(
+            self.server.request("GET", self.path, token=self.owner)[1]["tutorial"][
+                "lesson"
+            ]["check"],
+            expected,
+        )
+        self.practice()
+        before = self.server.stored("tutorial_learning")[0]
+        snapshot = json.loads(before["snapshot"])
+        self.assertEqual(snapshot["lesson"], self.server.lesson["lesson"])
+        for choice in ((check["answer"] + 1) % len(check["choices"]), check["answer"]):
+            if choice == check["answer"]:
+                self.assertEqual(self.command("answer", {"choice": choice})[0], 429)
+                self.server.fixture_change("""
+                    const record = app.findFirstRecordByFilter('tutorial_learning', 'owner = "accountalice001"');
+                    record.set('answer_retry_at', '2000-01-01T00:00:00.000Z'); app.save(record);
+                """)
+            status, result = self.command("answer", {"choice": choice})
+            self.assertEqual(status, 200)
+            self.assertEqual(result["tutorial"]["lesson"]["check"], expected)
+            self.assertEqual(
+                result["feedback"],
+                {"correct": True, "explanation": check["explanation"]}
+                if choice == check["answer"] else {
+                    "correct": False,
+                    "explanation": "Not the expected answer. Review the lesson sections, then try again.",
+                    "retry_after": 30,
+                },
+            )
+        after = self.server.stored("tutorial_learning")[0]
+        self.assertEqual(after["snapshot"], before["snapshot"])
+        self.assertEqual(after["content_digest"], before["content_digest"])
+        self.assertIn(
+            "open-book tutorial completion; practice self-reported",
+            result["enrollment"]["certificate"]["scope"],
+        )
+
+    def test_hookless_progress_write_denial_retains_owner_only_duplicate_history(
+        self,
+    ) -> None:
+        self.server.fixture_change("""
+            const collection = app.findCollectionByNameOrId('tutorial_progress');
+            for (const status of ['completed', 'in_progress']) {
+                const record = new Record(collection);
+                record.set('owner', 'accountalice001'); record.set('tutorial', 'bdo25lesson0001');
+                record.set('status', status); record.set('progress', status === 'completed' ? 100 : 50); app.save(record);
+            }
+        """)
+        before = self.server.stored("tutorial_progress")
+        self.assertEqual(len(before), 2)
+        self.assertEqual(self.command("start")[0], 200)
+        self.assertEqual(
+            self.command("start")[1]["enrollment"]["status"], "in_progress"
+        )
+        self.assertEqual(self.server.stored("tutorial_progress"), before)
+        self.server.stop()
+        hook = self.server.root / "hooks/tutorial-learning.pb.js"
+        hook.rename(hook.with_suffix(".disabled"))
+        self.server.start()
+        self.assertFalse(list((self.server.root / "hooks").glob("*.pb.js")))
+        raw = "/api/collections/tutorial_progress/records"
+        for token in (self.owner, self.other):
+            for method, suffix, body in (
+                (
+                    "POST",
+                    "",
+                    {
+                        "owner": "accountalice001",
+                        "tutorial": "bdo25lesson0001",
+                        "status": "completed",
+                        "progress": 100,
+                    },
+                ),
+                ("PATCH", "/" + before[0]["id"], {"status": "completed"}),
+                ("DELETE", "/" + before[0]["id"], None),
+            ):
+                self.assertIn(
+                    self.server.request(method, raw + suffix, body, token)[0],
+                    (400, 403, 404),
+                )
+        self.assertEqual(
+            self.server.request("GET", raw, token=self.owner)[1]["totalItems"], 2
+        )
+        self.assertEqual(
+            self.server.request("GET", raw, token=self.other)[1]["totalItems"], 0
+        )
+        self.assertEqual(
+            self.server.request("GET", raw + "/" + before[0]["id"], token=self.other)[
+                0
+            ],
+            404,
+        )
+        self.assertEqual(self.server.stored("tutorial_progress"), before)
+        for rule in ("createRule", "updateRule", "deleteRule"):
+            self.assertIsNone(self.server.collection("tutorial_progress")[rule])
+
+    def test_canonical_state_pages_cover_more_than_five_certificates(self) -> None:
+        tutorials = self.server.stored("tutorials")
+        for index, tutorial in enumerate(tutorials):
+            path = "/api/buildanddo/learning/" + tutorial["id"]
+            detail = self.server.request("GET", path, token=self.owner)[1]
+            digest = detail["tutorial"]["content_digest"]
+            lesson = json.loads(tutorial["lesson"])
+            actions = [("start", {})]
+            if index < 6:
+                actions += [
+                    ("section", {"index": i}) for i in range(len(lesson["sections"]))
+                ]
+                actions += [
+                    (
+                        "practice",
+                        {"checks": [True] * len(lesson["exercise"]["checklist"])},
+                    ),
+                    ("answer", {"choice": lesson["check"]["answer"]}),
+                ]
+            for action, payload in actions:
+                self.assertEqual(
+                    self.server.request(
+                        "POST",
+                        path,
+                        {
+                            "action": action,
+                            "payload": payload,
+                            "content_digest": digest,
+                        },
+                        self.owner,
+                    )[0],
+                    200,
+                )
+        first = self.server.request(
+            "GET", "/api/buildanddo/learning/states?page=1", token=self.owner
+        )[1]
+        second = self.server.request(
+            "GET", "/api/buildanddo/learning/states?page=2", token=self.owner
+        )[1]
+        self.assertEqual(len(first["items"]), 20)
+        self.assertTrue(first["has_more"])
+        self.assertFalse(second["has_more"])
+        items = first["items"] + second["items"]
+        self.assertEqual(len({item["tutorial"] for item in items}), len(tutorials))
+        self.assertEqual(sum(item["status"] == "completed" for item in items), 6)
+        self.assertEqual(
+            self.server.request(
+                "GET", "/api/buildanddo/learning/states", token=self.other
+            )[1]["items"],
+            [],
+        )
+        self.assertEqual(
+            len(
+                self.server.request(
+                    "GET", "/api/buildanddo/learning", token=self.owner
+                )[1]["certificates"]["items"]
+            ),
+            5,
+        )
+
+    def test_revoked_lesson_context_denies_current_reads_and_replay_without_changing_saved_bytes(
+        self,
+    ) -> None:
+        self.practice()
+        self.assertEqual(
+            self.command(
+                "answer", {"choice": self.server.lesson["lesson"]["check"]["answer"]}
+            )[0],
+            200,
+        )
+        saved = self.server.stored("tutorial_learning")
+        self.server.fixture_change("""
+            const tutorials = app.findCollectionByNameOrId('tutorials');
+            tutorials.viewRule = "@request.auth.id = 'accountbravo001'"; app.save(tutorials);
+        """)
+        for path in (
+            self.path,
+            "/api/buildanddo/learning",
+            "/api/buildanddo/learning/states",
+        ):
+            self.assertEqual(self.server.request("GET", path, token=self.owner)[0], 403)
+        self.assertEqual(self.command("start")[0], 403)
+        self.assertEqual(self.server.stored("tutorial_learning"), saved)
 
 
 if __name__ == "__main__":

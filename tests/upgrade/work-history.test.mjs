@@ -107,6 +107,16 @@ test('single and batch history use the same sources and preserve terminal seat s
     assert.equal((await workflow.lookupPreviousWork({ workspaceId: 'ws1', subjectType: 'workflow', subject: 'workflow1' })).runs.length, 1);
 });
 
+test('claimed seat labels do not collapse reports from different submitting accounts', async () => {
+    const f = fixture({ seat_events: [event({ owner: 'account1' }), event({ id: 'event2', owner: 'account2' })] });
+    const history = await f.lookupPreviousWork({ workspaceId: 'ws1', subjectType: 'mission', subject: 'mission1' });
+    assert.deepEqual(plain(history.events.map((item) => item.owner)), ['account1', 'account2']);
+    assert.equal(history.seats.length, 2);
+    assert.deepEqual(plain(history.seats.map((item) => item.owner)), ['account1', 'account2']);
+    assert.ok(history.events.every((item) => item.attribution === 'reported'));
+    assert.equal(history.state, 'completed', 'the historical report stays completed, not independently verified');
+});
+
 test('a failed evidence read retains available events and reports incomplete history', async () => {
     const f = fixture({ seat_events: [event()] });
     f.fail.add('evidence');

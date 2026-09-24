@@ -1,10 +1,10 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/pocketbase/pb_migrations/1791500100_tutorial_answer_wait.js
 // Stage:       07_BUILD
-// SRS:         SRS-BUILDANDDO-TRUST-001
+// SRS:         SRS-BUILDANDDO-TRUST-001, SRS-BUILDANDDO-UPGRADE-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-TRUST-001
+// Dispatch:    VCC-BUILDANDDO-TRUST-001, VCC-BUILDANDDO-UPGRADE-001
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-23

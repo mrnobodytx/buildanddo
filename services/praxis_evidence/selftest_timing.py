@@ -1,4 +1,19 @@
 #!/usr/bin/env python3
+# --- CGRF Header ------------------------------------------------
+# File: services/praxis_evidence/selftest_timing.py
+# Stage: 08_TEST
+# SRS: SRS-BUILDANDDO-UPGRADE-001
+# CAPS: pending
+# CK: pending
+# Dispatch: VCC-BUILDANDDO-UPGRADE-001
+# Seat: BITS-CODEGEN
+# Owner: Citadel Nexus Inc.
+# Created: 2026-09-23
+# Depends: services/praxis_evidence/isolated_test.py
+# EnumType: Test
+# EnumEdges: CONSUMES services/praxis_evidence/isolated_test.py; VALIDATES services/praxis_evidence/timing.py
+# Intent: Measure test timing distributions only against runner-owned disposable records.
+# ----------------------------------------------------------------
 """selftest_timing.py - proves timing distributions are honest: n=1 stays
 n=1, NO_DATA stays NO_DATA, real percentiles for real samples."""
 from __future__ import annotations
@@ -6,11 +21,11 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from client import PocketBaseClient, require_test_target  # noqa: E402
+from isolated_test import isolated_client  # noqa: E402
 from methods import create_method  # noqa: E402
 from timing import record_timing, timing_distribution  # noqa: E402
 
-client = PocketBaseClient(require_test_target())
+client = isolated_client()
 checks: list[tuple[str, bool]] = []
 
 method = create_method(client, objective="reach clean F barre chord criterion", domain="music.guitar")

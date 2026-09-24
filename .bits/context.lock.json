@@ -624,7 +624,9 @@
       ],
       "path": "services/praxis_evidence/run_all_tests.py",
       "referenced_by": [
-        "tests/praxis_evidence/test_target_guard.py"
+        "services/praxis_evidence/isolated_test.py",
+        "tests/praxis_evidence/test_target_guard.py",
+        "tests/upgrade/test_praxis_isolation.py"
       ],
       "wired_into_ci": true
     },
@@ -1240,8 +1242,8 @@
       "scripts/deploy/ship.py",
       "scripts/deploy/staging-readback.sh"
     ],
-    "migrations": 70,
-    "python_files": 435,
+    "migrations": 63,
+    "python_files": 415,
     "services": [
       "praxis_evidence"
     ],
@@ -1254,7 +1256,7 @@
     "pieces": [
       {
         "id": "HS-01",
-        "next_step": "Run the local acceptance gate against the pinned backend build. GitHub Actions is not the gate here - the operator has confirmed this estate's CI is GitLab, and the stored GitHub credential returns 401, so its check state cannot be measured from this seat and should not be read as signal. On project 104, restore the GitLab instance's write path before reading any pipeline as a code verdict: measured 2026-09-21, its reads answered in 8-12s while a pipeline retry returned 500, a second timed out and pipeline creation returned 502.",
+        "next_step": "The CI owner must confirm public candidate delivery, trusted review metadata and same-revision GitLab statuses before updating required-check settings. Execute the complete governance/source matrices, isolated Praxis profiles and all eighteen acceptance profiles with retained artifacts; Cloudflare needs its separate diagnostic. Privately audit past shared test destinations without running mutating probes against them.",
         "owner": "BITS-CODEGEN / repository owner",
         "why": "A repeatable candidate and visible failed gates are prerequisites for every demo claim."
       },
@@ -1340,7 +1342,7 @@
     "js_runners": [
       "vitest"
     ],
-    "js_test_files": 89,
+    "js_test_files": 78,
     "js_test_script": true,
     "junit_configured": true,
     "python_suite_entrypoints": [

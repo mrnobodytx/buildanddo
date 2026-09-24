@@ -529,7 +529,7 @@ function DailyEdition({ editions }) {
                     <div className="flex flex-wrap items-center gap-3">
                         <StatePill state={edition.status} />
                         <span className="text-xs text-muted-foreground">
-                            {recordTimestamp(edition.edition_date || edition.created)}
+                            {recordTimestamp(edition.published_at)}
                         </span>
                     </div>
                     <h3 className="font-display text-2xl font-semibold">{edition.title}</h3>
@@ -555,7 +555,7 @@ function SupportRevenue({ support }) {
         <PreviewSection
             id="support-revenue"
             label="Business projects · Support & Revenue"
-            title="Reported amounts, source by source."
+            title="Support requests and historical reports."
             icon={Gauge}
             href="/app/support"
             source={support}
@@ -569,7 +569,7 @@ function SupportRevenue({ support }) {
                                 <h3 className="font-display text-xl font-semibold">
                                     {record.provider}
                                 </h3>
-                                <StatePill state={record.status} />
+                                <StatePill state="reported" />
                             </div>
                             {hasReportedRevenue(record) ? (
                                 <>
@@ -614,8 +614,8 @@ function SupportRevenue({ support }) {
                                 </>
                             ) : (
                                 <p className="text-sm text-muted-foreground">
-                                    No synced amount is available. A connection request is not a
-                                    payment record.
+                                    No provider-confirmed revenue is available. Historical amounts and
+                                    health labels remain self-reported, not metrics. A request is not a payment.
                                 </p>
                             )}
                         </Card>

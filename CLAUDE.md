@@ -71,8 +71,10 @@ GitLab status publication must come from the receiving CI integration.
   the weeks of silently empty builds that taught this.
 - The root `npm test` and `npm run test:coverage` run the web Vitest suite.
   Missing dependencies or skipped runtime tests cannot establish acceptance.
-- The Python evidence suites need a live PocketBase, which is why public CI does
-  not run them yet. Do not "fix" that by mocking them out.
+- Praxis tests need real disposable PocketBase processes, not a shared backend.
+  Their GitLab job runs both declared profiles through the isolated runner;
+  missing binaries remain BLOCKED. Never point selftests at production or replace
+  native acceptance with mocked results.
 - Datadog steps are deliberately no-ops without `DD_API_KEY`. A `SKIP:` line in
   the log is expected behaviour, not a failure.
 - After changing pipelines, gates or governance files, run

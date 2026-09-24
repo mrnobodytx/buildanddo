@@ -8,9 +8,9 @@
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-15
-// Depends:     apps/pocketbase/pb_hooks/business-policy.js, apps/pocketbase/pb_hooks/tutorial-learning.js, apps/pocketbase/pb_hooks/business.pb.js, apps/pocketbase/pb_migrations/1789700000_expand_business_learning.js, apps/pocketbase/pb_migrations/data/starter-tutorials.json, apps/web/src/lib/businessPlanning.js, apps/web/src/lib/tutorialCurriculum.js
+// Depends:     apps/pocketbase/pb_hooks/business-policy.js, apps/pocketbase/pb_hooks/business.pb.js, apps/pocketbase/pb_migrations/1789700000_expand_business_learning.js, apps/pocketbase/pb_migrations/data/starter-tutorials.json, apps/web/src/lib/businessPlanning.js, apps/web/src/lib/tutorialCurriculum.js
 // EnumType:    Test
-// EnumEdges:   VALIDATES apps/pocketbase/pb_hooks/business-policy.js; CONSUMES apps/pocketbase/pb_hooks/tutorial-learning.js; VALIDATES apps/pocketbase/pb_hooks/business.pb.js; VALIDATES apps/pocketbase/pb_migrations/1789700000_expand_business_learning.js; VALIDATES apps/pocketbase/pb_migrations/data/starter-tutorials.json; VALIDATES apps/web/src/lib/businessPlanning.js; VALIDATES apps/web/src/lib/tutorialCurriculum.js
+// EnumEdges:   VALIDATES apps/pocketbase/pb_hooks/business-policy.js; VALIDATES apps/pocketbase/pb_hooks/business.pb.js; VALIDATES apps/pocketbase/pb_migrations/1789700000_expand_business_learning.js; VALIDATES apps/pocketbase/pb_migrations/data/starter-tutorials.json; VALIDATES apps/web/src/lib/businessPlanning.js; VALIDATES apps/web/src/lib/tutorialCurriculum.js
 // DAG Node:    none
 // Intent:      Exercise authored lesson structure, migration retention and replay, ERP isolation and content approval against the production source contracts.
 // ───────────────────────────────────────────────────────────────
@@ -429,45 +429,52 @@ test('legacy planned records cannot forge a review and only drafts can be delete
     f.records.social_content[0].status = 'failed'; assert.equal(f.content({ status: 'draft' }).run(), 'saved');
 });
 
-test('progress remains with its account and lesson, and review cannot downgrade completion', () => {
+test('raw progress creates, updates and deletes are denied even for their owner', () => {
     const f = fixture();
     const progress = { id: 'progress1', owner: 'owner1', tutorial: curriculum.lessons[0].id, status: 'in_progress', progress: 999 };
-    const save = f.request('tutorial_progress', progress, {}, 'owner1', true, 'progress'); save.run(); assert.equal(save.record.getString('progress'), '50');
-    for (const patch of [{ owner: 'other' }, { tutorial: curriculum.lessons[1].id }, { status: 'verified' }])
-        reject(f.request('tutorial_progress', progress, patch, 'owner1', false, 'progress').run, 400);
+    for (const account of ['owner1', 'other', null]) for (const creating of [true, false, undefined]) {
+        const request = f.request('tutorial_progress', progress, { status: 'completed' }, account, creating, 'progress');
+        reject(request.run, 403); assert.equal(request.calls(), 0);
+        assert.equal(request.record.getString('progress'), '999');
+    }
+    assert.equal(f.records.tutorial_progress.length, 0);
+    for (const patch of [{ owner: 'other' }, { tutorial: curriculum.lessons[1].id }, { status: 'verified' }, { status: 'not_started' }, {}])
+        reject(f.request('tutorial_progress', progress, patch, 'owner1', false, 'progress').run, 403);
     f.denied.add(progress.tutorial); reject(f.request('tutorial_progress', progress, {}, 'owner1', false, 'progress').run, 403); f.denied.clear();
-    f.certify('owner1', progress.tutorial);
-    const completed = f.request('tutorial_progress', progress, { status: 'completed' }, 'owner1', false, 'progress'); completed.run(); assert.equal(completed.record.getString('progress'), '100');
-    reject(f.request('tutorial_progress', completed.record.data, { status: 'in_progress' }, 'owner1', false, 'progress').run, 400);
-    assert.equal(f.request('tutorial_progress', completed.record.data, {}, 'owner1', false, 'progress').run(), 'saved');
-    const notStarted = f.request('tutorial_progress', progress, { status: 'not_started' }, 'owner1', true, 'progress'); notStarted.run(); assert.equal(notStarted.record.getString('progress'), '0');
+    const historical = { ...progress, status: 'completed', progress: 100 };
+    f.records.tutorial_progress.push(historical);
+    reject(f.request('tutorial_progress', historical, { status: 'in_progress' }, 'owner1', false, 'progress').run, 403);
+    reject(f.request('tutorial_progress', historical, {}, 'owner1', false, 'progress').run, 403);
+    assert.deepEqual(f.records.tutorial_progress, [historical]);
 });
 
-test('interactive lesson completion needs the learner\'s own server-issued certificate; reading-only lessons are unchanged', () => {
+test('certificates, reading-only lessons and incomplete learning schemas never reopen raw progress writes', () => {
     const f = fixture({ seedCustom: true });
     const progress = { id: 'progress1', owner: 'owner1', tutorial: curriculum.lessons[0].id, status: 'in_progress', progress: 50 };
-    f.request('tutorial_progress', progress, {}, 'owner1', true, 'progress').run();
+    f.records.tutorial_progress.push(plain(progress));
+    const before = plain(f.records.tutorial_progress), saves = f.saves();
     const complete = (account = 'owner1', data = f.records.tutorial_progress[0]) =>
         f.request('tutorial_progress', data, { status: 'completed' }, account, false, 'progress');
-    reject(complete().run, 400);
-    reject(f.request('tutorial_progress', { ...progress, id: 'progress2', status: 'completed' }, {}, 'owner1', true, 'progress').run, 400);
+    reject(complete().run, 403);
+    reject(f.request('tutorial_progress', { ...progress, id: 'progress2', status: 'completed' }, {}, 'owner1', true, 'progress').run, 403);
     f.certify('other', progress.tutorial);
-    reject(complete().run, 400);
+    reject(complete().run, 403);
     f.records.tutorial_learning.push({ id: 'unfinished', owner: 'owner1', tutorial: progress.tutorial, completed_at: '', certificate: null });
-    reject(complete().run, 400);
+    reject(complete().run, 403);
     const learning = f.collections.get('tutorial_learning');
     learning.updateRule = ''; f.certify('owner1', progress.tutorial, 'certified1');
     f.records.tutorial_learning = f.records.tutorial_learning.filter((row) => row.id !== 'unfinished');
-    reject(complete().run, 400);
+    reject(complete().run, 403);
     learning.updateRule = null;
-    assert.equal(complete().run(), 'saved');
-    assert.equal(f.records.tutorial_progress[0].progress, 100);
+    reject(complete().run, 403);
     const reading = { id: 'progress3', owner: 'owner1', tutorial: 'custom1', status: 'completed', progress: 0 };
-    assert.equal(f.request('tutorial_progress', reading, {}, 'owner1', true, 'progress').run(), 'saved');
+    reject(f.request('tutorial_progress', reading, {}, 'owner1', true, 'progress').run, 403);
     f.collections.delete('tutorial_learning');
     const second = { id: 'progress4', owner: 'owner1', tutorial: curriculum.lessons[1].id, status: 'completed', progress: 0 };
-    reject(f.request('tutorial_progress', second, {}, 'owner1', true, 'progress').run, 400);
-    assert.equal(f.request('tutorial_progress', { ...reading, id: 'progress5' }, {}, 'owner1', true, 'progress').run(), 'saved');
+    reject(f.request('tutorial_progress', second, {}, 'owner1', true, 'progress').run, 403);
+    reject(f.request('tutorial_progress', { ...reading, id: 'progress5' }, {}, 'owner1', true, 'progress').run, 403);
+    assert.deepEqual(f.records.tutorial_progress, before);
+    assert.equal(f.saves(), saves);
 });
 
 test('native request registrations resolve their policy inside each isolated callback', () => {
@@ -475,10 +482,11 @@ test('native request registrations resolve their policy inside each isolated cal
     const context = { __hooks: '/hooks', require(path) { assert.equal(path, '/hooks/business-policy.js'); return Object.fromEntries(['erp', 'content', 'removeContent', 'progress'].map((name) => [name, (event, creating) => ({ name, event, creating })])); } };
     for (const kind of ['Create', 'Update', 'Delete']) context[`onRecord${kind}Request`] = (callback, ...collections) => registrations.push({ callback, collections, kind });
     vm.runInNewContext(source('apps/pocketbase/pb_hooks/business.pb.js'), context, { filename: new URL('apps/pocketbase/pb_hooks/business.pb.js', root).href });
-    assert.equal(registrations.length, 7);
+    assert.equal(registrations.length, 8);
+    assert.deepEqual(registrations.filter((row) => row.collections.includes('tutorial_progress')).map((row) => row.kind), ['Create', 'Update', 'Delete']);
     for (const registration of registrations) {
         const result = registration.callback('event'); assert.equal(result.event, 'event');
-        if (registration.kind !== 'Delete') assert.equal(result.creating, registration.kind === 'Create');
+        if (registration.kind !== 'Delete' && result.name !== 'progress') assert.equal(result.creating, registration.kind === 'Create');
     }
     assert.deepEqual(plain(registrations[0].collections), ['erp_objectives', 'erp_tasks', 'erp_contacts']);
 });
