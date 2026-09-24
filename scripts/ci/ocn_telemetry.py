@@ -414,11 +414,15 @@ def detect_probe(receipt: dict[str, Any]) -> str:
     return ""
 
 
+# The probes whose receipt names the subcommand that produced it: the receipt decides, not the argv.
+COMMAND_RECEIPTS = frozenset({"ocn_classroom_fleet", "ocn_classroom_live", "ocn_project_fleet"})
+
+
 def publishable(probe: Probe, receipt: dict[str, Any]) -> bool:
     """A selftest, a route list or a seat roll call shares its probe's schema and is never published."""
     if probe.commands is None:
         return True
-    if probe.name in ("ocn_classroom_fleet", "ocn_classroom_live", "ocn_project_fleet"):
+    if probe.name in COMMAND_RECEIPTS:
         return receipt.get("command") == "run"
     if probe.name == "ocn_journey_report":
         return all(key in receipt for key in ("box", "env", "legs"))
@@ -2393,14 +2397,15 @@ def _fingerprint(path: Path) -> tuple[int, int, str] | None:
         return None
 
 
-def _write_paths(probe: str, script: Path | None) -> dict[Path, tuple[int, int, str] | None]:
-    """The receipts a probe persists with --write, fingerprinted before it runs."""
+def _write_paths(probe: str, script: Path | None, argv: list[str]) -> dict[Path, tuple[int, int, str] | None]:
+    """The receipt this invocation persists with --write, fingerprinted before it runs. Only its own env's
+    file: a concurrent run for the other env rewriting its file must never be taken for this one."""
     spec = PROBES.get(probe)
     parents = script.resolve().parents if script is not None else ()
     if spec is None or not spec.write_path or len(parents) < 3:
         return {}
-    paths = [parents[2] / spec.write_path.format(env=env) for env in ENVS]
-    return {path: _fingerprint(path) for path in paths}
+    path = parents[2] / spec.write_path.format(env=_argv_env(argv) or spec.env_default)
+    return {path: _fingerprint(path)}
 
 
 def _changed_receipt(snapshots: dict[Path, tuple[int, int, str] | None]) -> dict[str, Any] | None:
@@ -2454,7 +2459,7 @@ def run_command(options: argparse.Namespace, command: list[str], *, stdout: Any 
     environment = dict(os.environ)
     environment["PYTHONIOENCODING"] = "utf-8"
     probe = normalize_probe(options.probe or (script.stem if script is not None else ""))
-    snapshots = _write_paths(probe, script)
+    snapshots = _write_paths(probe, script, argv)
     try:
         child = subprocess.Popen(argv, stdout=subprocess.PIPE, env=environment)
     except OSError as error:
@@ -2500,7 +2505,10 @@ def _publish_run(options: argparse.Namespace, argv: list[str], probe: str, scrip
     if mode == "off":
         return _block(mode, reason="DISABLED", probe=probe)
     spec = PROBES.get(probe)
-    if spec is not None and spec.commands is not None and _subcommand(argv, script) not in spec.commands:
+    # A receipt that names its own subcommand is judged by publishable(): the argv cannot tell a
+    # subcommand from the value of an option before it (`ocn_classroom_live.py --host forge run`).
+    if (spec is not None and spec.commands is not None and probe not in COMMAND_RECEIPTS
+            and _subcommand(argv, script) not in spec.commands):
         return _block(mode, reason="NOT_PUBLISHABLE", probe=probe)
     receipt = extract_receipt(decode_bytes(stdout)) or _changed_receipt(snapshots)
     if receipt is None:

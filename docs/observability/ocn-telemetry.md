@@ -68,11 +68,14 @@ python scripts/ci/ocn_telemetry.py selftest
   own exit code. Only after the probe has exited does it read the receipt and publish, then print one
   summary line on stderr. After a KeyboardInterrupt it waits for the probe and publishes nothing. An
   interrupt while publishing may leave the publish partial: what already went out is in the ledger, and
-  `verify --pending` reads it back. `selftest`, `routes`, `legs` and `seats` are never published. The
-  receipt is found in this order:
+  `verify --pending` reads it back. `selftest`, `routes`, `legs` and `seats` are never published: for the
+  sweep and the journey the subcommand after the script decides, and for the classroom and project
+  orchestrators the receipt's own `command` does, since an option value can come before their command
+  (`ocn_classroom_live.py --host forge run`). The receipt is found in this order:
   - the whole stdout as one JSON document;
   - else the last line that starts with `{`, or an indented document that starts on such a line;
-  - else the file the probe wrote with `--write`.
+  - else the file the probe wrote with `--write`, for this invocation's own `--env` only, so a concurrent
+    run for the other environment is never taken for it.
 
   Options: `--sinks posthog,datadog`, `--probe NAME`, `--expect allow|deny` (rbac matrix cells),
   `--dd-metrics`, `--fleet-map PATH`, `--verify` (read the run back straight after a send).

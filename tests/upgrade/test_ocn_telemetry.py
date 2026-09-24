@@ -1963,6 +1963,21 @@ sys.exit(3)
 '''
 
 
+WRITING_PROBE = r'''
+import json, sys
+from pathlib import Path
+state = Path(__file__).resolve().parents[2] / "state" / "ocn_feature_sweep"
+env = sys.argv[sys.argv.index("--env") + 1]
+other = "staging" if env == "production" else "production"
+receipt = json.loads(%r)
+# A run for the other env rewrites its own file while this one is running.
+(state / (other + ".latest.json")).write_text(json.dumps(dict(receipt, env=other)), encoding="utf-8")
+(state / (env + ".latest.json")).write_text(json.dumps(dict(receipt, env=env)), encoding="utf-8")
+print("OCN feature sweep: the table only")
+sys.exit(1)
+'''
+
+
 class WrapperTests(Harness):
     def setUp(self) -> None:
         super().setUp()
@@ -2060,6 +2075,48 @@ class WrapperTests(Harness):
         self.assertEqual(code, 130)
         self.assertEqual(out.getvalue(), b"rest")
         publisher.assert_not_called()
+
+    def test_nothing_is_loaded_before_the_probe_and_no_error_changes_its_code(self):
+        direct = self.direct("sweep", "--json")
+        with mock.patch.object(t, "catalogue", side_effect=ImportError("a sibling module is broken")):
+            code, out, _err = self.wrapped(self.options(None), "sweep", "--json")
+        self.assertEqual((code, out), (direct.returncode, direct.stdout))
+        code, out, err = self.wrapped(self.options("dry-run"), "sweep", "--json",
+                                      publisher=mock.Mock(side_effect=OSError("disk full")))
+        self.assertEqual((code, out), (direct.returncode, direct.stdout))
+        self.assertIn("ocn_telemetry: UNSENT (PUBLISHER_ERROR:OSError)", err)
+
+    def test_a_probe_that_cannot_start_exits_127(self):
+        err = io.StringIO()
+        code = t.run_command(self.options("dry-run"), [str(self.dir / "no-such-probe.exe")], stdout=io.BytesIO(),
+                             stderr=err)
+        self.assertEqual(code, 127)
+        self.assertIn("the probe could not be started", err.getvalue())
+
+    def test_a_persisted_receipt_is_this_invocations_own(self):
+        state = self.dir / "state" / "ocn_feature_sweep"
+        state.mkdir(parents=True)
+        for env in ("staging", "production"):
+            (state / (env + ".latest.json")).write_text(json.dumps({"env": env, "at": "old"}), encoding="utf-8")
+        self.probe.write_text(WRITING_PROBE % json.dumps(receipts()["ocn_feature_sweep"]), encoding="utf-8")
+        publisher = mock.Mock(return_value=t._block("dry-run", reason="DRY_RUN"))
+        code, _, _ = self.wrapped(self.options("dry-run"), "sweep", "--env", "production", "--write",
+                                  publisher=publisher)
+        self.assertEqual(code, 1)
+        receipt, options = publisher.call_args.args[0], publisher.call_args.kwargs
+        self.assertEqual((receipt["env"], options["env"]), ("production", "production"))
+
+    def test_a_receipt_that_names_its_command_is_judged_by_it(self):
+        live = self.dir / "scripts" / "ci" / "ocn_classroom_live.py"
+        for command, reason in (("run", "DRY_RUN"), ("seats", "NOT_PUBLISHABLE")):
+            live.write_text("import json\nprint(json.dumps(%r))\n" % dict(receipts()["ocn_classroom_live"],
+                                                                         command=command), encoding="utf-8")
+            # --host and --join take values before the positional command, so the argv cannot name it.
+            for argv in (["--host", "forge", "run", "--json"], ["run", "--host", "forge"], ["--json", "run"]):
+                with self.subTest(command=command, argv=argv):
+                    err = io.StringIO()
+                    t.run_command(self.options("dry-run"), [str(live), *argv], stdout=io.BytesIO(), stderr=err)
+                    self.assertIn("ocn_telemetry: UNSENT (%s)" % reason, err.getvalue())
 
     def test_the_command_line_passes_the_exit_code_through(self):
         environment = {key: value for key, value in os.environ.items()}
