@@ -81,6 +81,9 @@ services:
       BUILDER_MAILER_SENDER_ADDRESS: ${BUILDER_MAILER_SENDER_ADDRESS:-}
       REACH_API_URL: ${REACH_API_URL:-}
       REACH_API_TOKEN: ${REACH_API_TOKEN:-}
+      # Community bot quiz grading (pb_hooks/community-quiz.pb.js). Unset, the
+      # route answers 503 and the bot reports grading as unavailable.
+      BUILDANDDO_COMMUNITY_BOT_TOKEN: ${BUILDANDDO_COMMUNITY_BOT_TOKEN:-}
       # Live classroom media (pb_hooks/classroom-realtime.pb.js). Values come from
       # your shell or an untracked .env, never this file. Unset, the classroom
       # reports "not configured on this server" and keeps shared lessons and text.

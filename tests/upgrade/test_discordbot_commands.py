@@ -1,10 +1,10 @@
 # ─── CGRF Header ───────────────────────────────────────────────
 # File:        tests/upgrade/test_discordbot_commands.py
 # Stage:       08_TEST
-# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-QUIZ-001
 # CAPS:        pending
 # CK:          pending
-# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-QUIZ-001
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-15
@@ -26,7 +26,7 @@ import subprocess
 import unittest
 
 from scripts.discordbot.catalogue import Catalogue, reference_url
-from scripts.discordbot.contracts import Caller, DataFault, DataUnavailable, PersonalSession, Settings, SITE_ORIGIN
+from scripts.discordbot.contracts import Caller, DataFault, DataUnavailable, Page, PersonalSession, Quiz, Settings, SITE_ORIGIN
 from scripts.discordbot.public_data import Observation, PublicClient, Resource
 from scripts.discordbot.service import COMMANDS, CommandService, WORKSPACE_AREAS
 
@@ -127,6 +127,15 @@ class CommandTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(self.source["site_origin"], SITE_ORIGIN)
         # Exercise the full catalogue over simulated time without bypassing the
         # real per-channel limit or expiring the catalogue cache.
+        # The feed only asks; nothing in it can grade an answer.
+        self.assertNotIn('"answer"', json.dumps(self.source))
+        self.assertNotIn('"explanation"', json.dumps(self.source))
+        sent: list[tuple[str, int]] = []
+
+        async def grade(quiz: Quiz, choice: int) -> tuple[Page, bool]:
+            sent.append((quiz.slug, choice))
+            return Page("Knowledge check", "Graded by the server."), True
+
         clock = [0.0]
         self.service.clock = lambda: clock[0]
         for index, lesson in enumerate(catalogue.lessons):
@@ -141,11 +150,15 @@ class CommandTests(unittest.IsolatedAsyncioTestCase):
                     self.assertIn(part.strip(), rendered)
                 quiz = await self.service.execute("quiz", lesson.slug, caller)
                 self.assertEqual(quiz.pages[0].body.split("\n\n")[0], lesson.question)
-                self.assertIsNotNone(quiz.quiz)
-                answered = PersonalSession(caller.user_id, quiz, now=0).answer(caller.user_id, lesson.quiz.answer, 1)
-                self.assertIn("Correct.", answered.body)
-                self.assertIn(lesson.quiz.explanation, answered.body)
+                if lesson.category == "Government submissions":
+                    self.assertIsNone(quiz.quiz, "members-only lessons are graded on the website")
+                    self.assertIn("graded on the website", quiz.pages[0].body)
+                    continue
+                self.assertEqual(quiz.quiz, Quiz(lesson.slug, lesson.quiz.choices))
+                answered = await PersonalSession(caller.user_id, quiz, now=0).answer(caller.user_id, 0, 1, grade)
+                self.assertEqual(answered.title, "Knowledge check")
         self.assertEqual(self.reads, ["/community-catalog.json"])
+        self.assertEqual([slug for slug, _ in sent], [item.slug for item in catalogue.lessons if item.category != "Government submissions"])
 
     async def test_search_selection_and_autocomplete_reuse_the_loaded_catalogue(self) -> None:
         self.assertEqual(self.service.suggestions("mission", CALLER), ())
@@ -226,6 +239,16 @@ class CommandTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual((await self.service.execute("learn", "", CALLER)).outcome, "rate_limited")
         self.assertEqual(self.reads, [])
 
+    async def test_quiz_grading_logs_only_its_outcome(self) -> None:
+        with self.assertLogs("buildanddo.discord", level="INFO") as captured:
+            page, graded = await self.service.grade(Quiz("evidence-private-slug", ("A", "B")), 1, Caller(12345678901234567, 20, 30))
+        self.assertFalse(graded)
+        self.assertEqual(page.title, "Grading unavailable")
+        record = captured.records[0]
+        self.assertEqual((record.command, record.outcome), ("quiz", "unavailable"))
+        self.assertNotIn("evidence-private-slug", str(record.__dict__))
+        self.assertNotIn("12345678901234567", str(record.__dict__))
+
     async def test_telemetry_omits_arguments_identifiers_and_provider_payloads(self) -> None:
         with self.assertLogs("buildanddo.discord", level="INFO") as captured:
             await self.service.execute("docs", "personal-search-phrase", Caller(12345678901234567, 20, 30))
@@ -251,8 +274,9 @@ class CatalogueTests(unittest.TestCase):
             lambda data: data["lessons"].append(data["lessons"][0]),
             lambda data: data["lessons"][0].update(effort_minutes=True),
             lambda data: data["lessons"][0].update(slug="../private"),
-            lambda data: data["lessons"][0]["lesson"]["check"].update(answer=True),
-            lambda data: data["lessons"][0]["lesson"]["check"].update(answer=99),
+            lambda data: data.update(schema_version=1),
+            lambda data: data["lessons"][0]["lesson"]["check"].update(answer=1),
+            lambda data: data["lessons"][0]["lesson"]["check"].update(explanation="A published explanation."),
             lambda data: data["lessons"][0]["lesson"]["check"].update(choices=["Only one"]),
             lambda data: data["lessons"][0]["lesson"]["sections"][0].update(paragraphs=[]),
             lambda data: data["lessons"][0]["lesson"].update(schema_version=2),
