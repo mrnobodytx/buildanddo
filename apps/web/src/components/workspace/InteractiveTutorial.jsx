@@ -45,12 +45,12 @@ export default function InteractiveTutorial({ tutorialId, client, onSaved, onClo
     const focus = useRef(null);
     const load = useCallback(async () => {
         const request = ++sequence.current;
-        setLoading(true); setError('');
+        setLoading(true); setData(null); setFeedback(null); setAnswer(null); setChecks([]); setError(''); setWaiting(false); setNotice('');
         const result = await client.read(tutorialId);
-        if (!alive.current || request !== sequence.current || result.reason === 'scope_changed') return;
+        if (!alive.current || request !== sequence.current) return;
         setLoading(false);
         if (result.ok) { setData(result.data); setStep(currentStep(result.data)); }
-        else setError(result.error);
+        else setError(result.error || 'Your learning access changed. Reopen the tutorial from your current account.');
     }, [client, tutorialId]);
     useEffect(() => {
         alive.current = true; load();
@@ -62,9 +62,13 @@ export default function InteractiveTutorial({ tutorialId, client, onSaved, onClo
         saving.current = true; setBusy(true); setError(''); setNotice(''); setWaiting(false);
         const result = await (retry ? client.retry() : client.command(tutorialId, action, data.tutorial.content_digest, payload));
         saving.current = false;
-        if (!alive.current || result.reason === 'scope_changed') return;
+        if (!alive.current) return;
         setBusy(false);
-        if (!result.ok) { setError(result.error); setUncertain(result.reason === 'uncertain'); setWaiting(result.reason === 'wait'); return; }
+        if (!result.ok) {
+            if (!['uncertain', 'wait'].includes(result.reason)) { setData(null); setFeedback(null); setAnswer(null); setChecks([]); }
+            setError(result.error || 'Your learning access changed. Reopen the tutorial from your current account.');
+            setUncertain(result.reason === 'uncertain'); setWaiting(result.reason === 'wait'); return;
+        }
         setUncertain(false); setData(result.data); setFeedback(result.data.feedback); setStep(currentStep(result.data));
         setNotice(result.data.feedback?.correct === false ? '' : result.data.enrollment.certificate ? 'Tutorial complete. Your certificate and 100 learning points are saved.' : 'Checkpoint saved. You can leave and continue later.');
         onSaved?.();
@@ -84,7 +88,7 @@ export default function InteractiveTutorial({ tutorialId, client, onSaved, onClo
             <div className="ph-no-capture min-w-0 space-y-6 break-words">
                 <DialogHeader><p className="text-xs font-semibold uppercase tracking-wider text-primary">Interactive Field Manual</p>
                     <DialogTitle ref={heading} tabIndex={-1} className="font-display text-2xl">{tutorial?.title || 'Interactive tutorial'}</DialogTitle>
-                    <DialogDescription>Learn one step at a time. Your saved checkpoints lead to a completion certificate.</DialogDescription>
+                    <DialogDescription>Open-book tutorial completion; practice self-reported. Saved checkpoints are not independently verified mastery.</DialogDescription>
                 </DialogHeader>
                 {loading && <p role="status" className="text-sm text-muted-foreground">Loading your saved tutorial…</p>}
                 {error && <div role="alert" className="space-y-3 border border-destructive/40 p-4"><p className="text-sm">{error}</p>
@@ -102,7 +106,7 @@ export default function InteractiveTutorial({ tutorialId, client, onSaved, onClo
                     <h3 ref={focus} tabIndex={-1} className="font-display text-xl font-semibold">{headingText}</h3>
                     {step < 0 ? <div className="space-y-5"><p className="text-sm leading-7">{lesson.why}</p><ul className="list-disc space-y-2 pl-5 text-sm leading-6">{lesson.outcomes.map((outcome) => <li key={outcome}>{outcome}</li>)}</ul>
                         <Card className="space-y-3 p-4"><h4 className="font-semibold">Before you start</h4><ul className="list-disc space-y-2 pl-5 text-sm leading-6">{lesson.preparation.map((item) => <li key={item}>{item}</li>)}</ul></Card>
-                        <p className="text-sm leading-6 text-muted-foreground">Finish each section, work through the practice checklist, and pass the final question to earn your certificate and 100 learning points.</p>
+                        <p className="text-sm leading-6 text-muted-foreground">Finish each section, self-report the practice checklist, and answer the final question to earn a completion certificate and 100 learning points. Grading keys remain public in the authored source, not in browser previews; this is not a secure exam.</p>
                         <Button disabled={busy || uncertain} onClick={() => save('start')}>{busy ? 'Saving…' : 'Start and save my progress'}<ArrowRight className="h-4 w-4" aria-hidden="true" /></Button>
                     </div> : section ? <div className="space-y-5">{section.paragraphs?.map((paragraph, index) => <p className="whitespace-pre-wrap text-sm leading-7" key={index}>{paragraph}</p>)}
                         {section.steps && <ol className="list-decimal space-y-3 pl-6 text-sm leading-7">{section.steps.map((item, index) => <li key={index}>{item}</li>)}</ol>}

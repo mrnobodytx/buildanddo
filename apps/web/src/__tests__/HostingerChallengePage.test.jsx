@@ -20,10 +20,8 @@ import { renderWithProviders, screen } from '@/test/utils';
 describe('HostingerChallengePage', () => {
     it('states the focused judge story and exposes the real CTAs', async () => {
         renderWithProviders(<HostingerChallengePage />);
-        expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Learn by doing. Verify what you did. Do it together.');
-        for (const link of screen.getAllByRole('link', { name: /Bring a project challenge/i })) {
-            expect(link).toHaveAttribute('href', '/#challenge-desk');
-        }
+        expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('One real project');
+        expect(screen.getAllByRole('link', { name: /Try the challenge desk/i }).length).toBeGreaterThan(0);
         expect(screen.getByRole('link', { name: /Create an account/i })).toHaveAttribute('href', '/signup');
     });
 

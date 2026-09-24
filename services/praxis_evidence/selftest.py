@@ -1,4 +1,19 @@
 #!/usr/bin/env python3
+# --- CGRF Header ------------------------------------------------
+# File: services/praxis_evidence/selftest.py
+# Stage: 08_TEST
+# SRS: SRS-BUILDANDDO-UPGRADE-001
+# CAPS: pending
+# CK: pending
+# Dispatch: VCC-BUILDANDDO-UPGRADE-001
+# Seat: BITS-CODEGEN
+# Owner: Citadel Nexus Inc.
+# Created: 2026-09-23
+# Depends: services/praxis_evidence/isolated_test.py
+# EnumType: Test
+# EnumEdges: CONSUMES services/praxis_evidence/isolated_test.py; VALIDATES services/praxis_evidence/claims.py
+# Intent: Exercise real claim transitions only inside the runner-owned disposable backend.
+# ----------------------------------------------------------------
 """selftest.py - proves the claim/evidence/audit vertical slice against the REAL
 live PocketBase, not a mock. Creates real records, asserts real state transitions."""
 from __future__ import annotations
@@ -7,10 +22,11 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from client import PocketBaseClient, PocketBaseError, require_test_target  # noqa: E402
+from client import PocketBaseError  # noqa: E402
+from isolated_test import isolated_client  # noqa: E402
 from claims import create_source, create_claim, audit_claim  # noqa: E402
 
-client = PocketBaseClient(require_test_target())
+client = isolated_client()
 checks: list[tuple[str, bool]] = []
 
 

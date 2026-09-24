@@ -12,7 +12,7 @@
 // EnumType:    Widget
 // EnumEdges:   CONSUMES apps/web/src/lib/tutorialCurriculum.js; CONSUMES apps/web/src/components/ui/dialog.jsx
 // DAG Node:    none
-// Intent:      Let learners read complete lessons and preview the knowledge check, leaving graded completion to the interactive tutorial.
+// Intent:      Keep read-only lessons and keyless question previews separate from saved guided learning completion.
 // ───────────────────────────────────────────────────────────────
 
 import ReadingProgress from '@/components/motion/ReadingProgress';
@@ -24,8 +24,8 @@ import { Button, Card } from '@/components/site/ui';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { lessonLink, validLesson } from '@/lib/tutorialCurriculum';
 
-/** @param {{tutorial: object, completed: boolean, canSave: boolean, busy: boolean, error: string, saved: string, onSave: Function, onClose: Function, opener: HTMLElement|null}} props Reader state. @returns {React.ReactElement} Lesson dialog. */
-export default function TutorialReader({ tutorial, completed, canSave, busy, error, saved, onSave, onGuided, onClose, opener, origin }) {
+/** @param {{tutorial: object, completed: boolean, onGuided?: Function, onClose: Function, opener: HTMLElement|null, origin?: object}} props Reader state. @returns {React.ReactElement} Read-only open-book lesson dialog. */
+export default function TutorialReader({ tutorial, completed, onGuided, onClose, opener, origin }) {
     const heading = useRef(null);
     const article = useRef(null);
     const { enabled, motion } = useMotionCategory('layout');
@@ -34,7 +34,7 @@ export default function TutorialReader({ tutorial, completed, canSave, busy, err
     }, enabled && Boolean(origin)), [origin, enabled, motion.duration.layout, motion.ease]);
     const lesson = tutorial.lesson;
     const available = validLesson(lesson);
-    return <Dialog open onOpenChange={(open) => { if (!open && !busy) onClose(); }}>
+    return <Dialog open onOpenChange={(open) => { if (!open) onClose(); }}>
         <DialogContent data-reading-scroll className="max-h-[92dvh] max-w-3xl overflow-y-auto"
             data-dd-privacy="mask" onOpenAutoFocus={(event) => { event.preventDefault(); heading.current?.focus(); }}
             onCloseAutoFocus={(event) => { event.preventDefault(); opener?.focus(); }}>
@@ -65,7 +65,7 @@ export default function TutorialReader({ tutorial, completed, canSave, busy, err
                     </section>)}
                     <details className="border border-border p-4">
                         <summary className="cursor-pointer py-2 text-sm font-semibold">Walk through this lesson</summary>
-                        <div className="mt-4"><StepSequence title={tutorial.title} steps={lesson.sections.slice(0, 5).map((section) => ({ title: section.heading, body: [...(section.paragraphs || []), ...(section.steps || [])].join(' ') }))} /></div>
+                        <div className="mt-4"><StepSequence title="Steps in this lesson" steps={lesson.sections.slice(0, 5).map((section) => ({ title: section.heading, body: [...(section.paragraphs || []), ...(section.steps || [])].join(' ') }))} /></div>
                     </details>
                     <section className="space-y-3 rounded-md border border-border p-4">
                         <h3 className="font-display text-xl font-semibold">Practice</h3>
@@ -87,15 +87,11 @@ export default function TutorialReader({ tutorial, completed, canSave, busy, err
                     </nav>
                 </>}
                 <div className="space-y-3 border-t border-border pt-4">
-                    {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
-                    {saved && <p role="status" className="text-sm text-success">{saved}</p>}
-                    {!canSave && <p className="text-sm text-muted-foreground">Reading preview only. Saved progress needs a signed-in account, a persisted lesson and an available backend.</p>}
-                    {completed ? <p className="text-sm text-success">Completed. Reviewing keeps your saved completion.</p> : <div className="flex flex-wrap gap-2">
-                        <Button size="sm" variant="secondary" disabled={!canSave || busy || !available} onClick={() => onSave('in_progress')}>Save reading progress</Button>
-                    </div>}
-                    <p className="text-xs leading-6 text-muted-foreground">Reading progress records your own learning activity. Finish the interactive tutorial to complete this lesson and earn its certificate and learning points.</p>
-                    {onGuided && available && <Button size="sm" disabled={busy} onClick={onGuided}>Start interactive tutorial</Button>}
-                    <Button size="sm" variant="ghost" disabled={busy} onClick={onClose}>Close lesson</Button>
+                    <p className="text-sm text-muted-foreground">Open-book reading and practice preview only. Reading and self-reported practice here are not saved and do not award guided completion, certificates or learning points.</p>
+                    {completed && <p className="text-sm text-success">Guided tutorial completed. Reading practice does not change your saved completion.</p>}
+                    <p className="text-xs leading-6 text-muted-foreground">Grading keys remain public in the authored source, not in browser previews. Finish the interactive tutorial to complete this lesson with saved checkpoints, not independently verified mastery.</p>
+                    {onGuided && available && <Button size="sm" onClick={onGuided}>Start interactive tutorial</Button>}
+                    <Button size="sm" variant="ghost" onClick={onClose}>Close lesson</Button>
                 </div>
             </div>
         </DialogContent>

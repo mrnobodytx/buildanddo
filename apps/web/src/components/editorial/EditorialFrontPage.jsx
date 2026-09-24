@@ -200,7 +200,7 @@ export default function EditorialFrontPage({ sources = {}, workspaceControls, wo
                     </header>
                     <div className="frontpage-running-line">
                         <span className="editorial-eyebrow">{edition ? 'From your workspace' : 'The front page'}</span>
-                        <span>{edition ? `Published ${editorialDate(edition.edition_date || edition.created)}` : 'Learn with people and AI. Build together. Keep the evidence.'}</span>
+                        <span>{edition ? `Published ${editorialDate(edition.published_at)}` : 'Learn with people and AI. Build together. Keep the evidence.'}</span>
                     </div>
                     <section className="frontpage-lead">
                         <h2>{edition ? edition.title : <>Learn by doing.<br />Build something<br /><em>real. Together.</em></>}</h2>
@@ -222,7 +222,7 @@ export default function EditorialFrontPage({ sources = {}, workspaceControls, wo
                                 <div><dt>Sources marked connected</dt><dd>{accountCount(sources.services, (sources.services?.records || []).filter((record) => record.status === 'connected').length)}</dd></div>
                                 <div><dt>Active missions</dt><dd>{accountCount(sources.missions, activeMissions(sources.missions?.records || []).length)}</dd></div>
                                 <div><dt>Marked verified today</dt><dd>{accountCount(sources.evidence, verifiedEvidence(sources.evidence?.records || []).filter((record) => isToday(record.created, now)).length)}</dd></div>
-                                <div><dt>Published edition</dt><dd>{accountCount(sources.editions, edition ? editorialDate(edition.edition_date || edition.created) : 'None yet')}</dd></div>
+                                <div><dt>Published edition</dt><dd>{accountCount(sources.editions, edition ? editorialDate(edition.published_at) : 'None yet')}</dd></div>
                             </dl>
                             <Link className="editorial-text-link" to={isAuthed ? '/app' : '/login'}>
                                 {isAuthed ? 'Open your workspace' : 'Sign in to your workspace'} <ArrowRight size={13} aria-hidden="true" />

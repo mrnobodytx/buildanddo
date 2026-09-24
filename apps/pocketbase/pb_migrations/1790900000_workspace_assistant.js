@@ -16,6 +16,14 @@
 // ───────────────────────────────────────────────────────────────
 
 migrate((app) => {
+    // PocketBase 0.39.8 does not expose Field properties as plain values: `type`
+    // is a METHOD (reflect.methodValueCall) and numeric bounds like `min` are
+    // *float64 POINTERS that read as typeof 'object'. Strict equality therefore
+    // reports every existing field as drift. Resolve, then compare as text.
+    const bound = (field, key) => {
+        const value = field[key];
+        return String(typeof value === 'function' ? value() : value);
+    };
     const relation = (name, target) => ({ name, type: 'relation', maxSelect: 1, required: true,
         collectionId: app.findCollectionByNameOrId(target).id, cascadeDelete: false });
     const common = () => [relation('workspace', 'workspaces'), relation('owner', 'users'),
@@ -46,7 +54,7 @@ migrate((app) => {
             for (const field of fields) {
                 const old = existing.fields.getByName(field.name);
                 if (!old && field.name === 'protocol_version') existing.fields.add(new Field(field));
-                else if (!old || Object.entries(field).some(([key, value]) => old[key] !== value))
+                else if (!old || Object.entries(field).some(([key, value]) => bound(old, key) !== String(value)))
                     throw new Error('Review assistant field identity before migration.');
             }
             app.save(existing);

@@ -25,6 +25,27 @@
     },
     {
       "area": "ci",
+      "evidence": "referenced by: nothing in this repo",
+      "severity": "high",
+      "srs": "",
+      "statement": "scripts/ci/classroom_media_roundtrip.py is not configured in reachable GitLab jobs"
+    },
+    {
+      "area": "ci",
+      "evidence": "referenced by: nothing in this repo",
+      "severity": "high",
+      "srs": "",
+      "statement": "scripts/ci/classroom_video_proof.py is not configured in reachable GitLab jobs"
+    },
+    {
+      "area": "ci",
+      "evidence": "referenced by: nothing in this repo",
+      "severity": "high",
+      "srs": "",
+      "statement": "scripts/ci/curriculum_link_gate.py is not configured in reachable GitLab jobs"
+    },
+    {
+      "area": "ci",
       "evidence": "referenced by: scripts/deploy/ship.py",
       "severity": "high",
       "srs": "",
@@ -46,7 +67,7 @@
     },
     {
       "area": "ci",
-      "evidence": "referenced by: nothing in this repo",
+      "evidence": "referenced by: tests/upgrade/test_public_redaction.py",
       "severity": "high",
       "srs": "",
       "statement": "scripts/ci/fleet_report.py is not configured in reachable GitLab jobs"
@@ -56,7 +77,28 @@
       "evidence": "referenced by: nothing in this repo",
       "severity": "high",
       "srs": "",
+      "statement": "scripts/ci/migration_preflight.py is not configured in reachable GitLab jobs"
+    },
+    {
+      "area": "ci",
+      "evidence": "referenced by: nothing in this repo",
+      "severity": "high",
+      "srs": "",
       "statement": "scripts/ci/ocn_box_exercise.py is not configured in reachable GitLab jobs"
+    },
+    {
+      "area": "ci",
+      "evidence": "referenced by: nothing in this repo",
+      "severity": "high",
+      "srs": "",
+      "statement": "scripts/ci/ocn_classroom_fleet.py is not configured in reachable GitLab jobs"
+    },
+    {
+      "area": "ci",
+      "evidence": "referenced by: nothing in this repo",
+      "severity": "high",
+      "srs": "",
+      "statement": "scripts/ci/ocn_classroom_live.py is not configured in reachable GitLab jobs"
     },
     {
       "area": "ci",
@@ -91,7 +133,21 @@
       "evidence": "referenced by: nothing in this repo",
       "severity": "high",
       "srs": "",
+      "statement": "scripts/ci/ocn_mission_work.py is not configured in reachable GitLab jobs"
+    },
+    {
+      "area": "ci",
+      "evidence": "referenced by: nothing in this repo",
+      "severity": "high",
+      "srs": "",
       "statement": "scripts/ci/ocn_observation_record.py is not configured in reachable GitLab jobs"
+    },
+    {
+      "area": "ci",
+      "evidence": "referenced by: nothing in this repo",
+      "severity": "high",
+      "srs": "",
+      "statement": "scripts/ci/ocn_project_fleet.py is not configured in reachable GitLab jobs"
     },
     {
       "area": "ci",
@@ -109,7 +165,7 @@
     },
     {
       "area": "ci",
-      "evidence": "referenced by: nothing in this repo",
+      "evidence": "referenced by: tests/upgrade/test_ocn_seat_session.py",
       "severity": "high",
       "srs": "",
       "statement": "scripts/ci/ocn_seat_session.py is not configured in reachable GitLab jobs"
@@ -130,7 +186,14 @@
     },
     {
       "area": "ci",
-      "evidence": "referenced by: scripts/ci/hostinger_replay.py, scripts/deploy/roadmap_status.py, tools/day21_closure.py",
+      "evidence": "referenced by: tests/upgrade/test_public_redaction.py",
+      "severity": "high",
+      "srs": "",
+      "statement": "scripts/ci/public_redaction.py is not configured in reachable GitLab jobs"
+    },
+    {
+      "area": "ci",
+      "evidence": "referenced by: scripts/ci/hostinger_replay.py, scripts/deploy/roadmap_status.py, tools/day21_closure.py, tools/evidence_verify.py",
       "severity": "high",
       "srs": "",
       "statement": "scripts/ci/sprint_cycle.py is not configured in reachable GitLab jobs"
@@ -154,6 +217,13 @@
       "evidence": "referenced by: nothing in this repo",
       "severity": "high",
       "srs": "",
+      "statement": "scripts/ci/verifier_control_gate.py is not configured in reachable GitLab jobs"
+    },
+    {
+      "area": "ci",
+      "evidence": "referenced by: nothing in this repo",
+      "severity": "high",
+      "srs": "",
       "statement": "scripts/ci/verify_public_disclosure.py is not configured in reachable GitLab jobs"
     },
     {
@@ -162,6 +232,13 @@
       "severity": "high",
       "srs": "",
       "statement": "SRS-BUILDANDDO-COMMUNITY-001 has a spec but is not in the registry"
+    },
+    {
+      "area": "governance",
+      "evidence": ".bits/srs/SRS-BUILDANDDO-COMMUNITY-WEB-001.md is unregistered, so no branch may claim it",
+      "severity": "high",
+      "srs": "",
+      "statement": "SRS-BUILDANDDO-COMMUNITY-WEB-001 has a spec but is not in the registry"
     },
     {
       "area": "governance",
@@ -205,6 +282,34 @@
         "github"
       ],
       "path": "scripts/ci/changelog_gen.py",
+      "referenced_by": [],
+      "wired_into_ci": false
+    },
+    {
+      "configured_providers": [
+        "gitlab"
+      ],
+      "path": "scripts/ci/classroom_drive.py",
+      "referenced_by": [
+        "scripts/ci/hostinger_checks.py"
+      ],
+      "wired_into_ci": true
+    },
+    {
+      "configured_providers": [],
+      "path": "scripts/ci/classroom_media_roundtrip.py",
+      "referenced_by": [],
+      "wired_into_ci": false
+    },
+    {
+      "configured_providers": [],
+      "path": "scripts/ci/classroom_video_proof.py",
+      "referenced_by": [],
+      "wired_into_ci": false
+    },
+    {
+      "configured_providers": [],
+      "path": "scripts/ci/curriculum_link_gate.py",
       "referenced_by": [],
       "wired_into_ci": false
     },
@@ -260,7 +365,9 @@
     {
       "configured_providers": [],
       "path": "scripts/ci/fleet_report.py",
-      "referenced_by": [],
+      "referenced_by": [
+        "tests/upgrade/test_public_redaction.py"
+      ],
       "wired_into_ci": false
     },
     {
@@ -291,7 +398,25 @@
     },
     {
       "configured_providers": [],
+      "path": "scripts/ci/migration_preflight.py",
+      "referenced_by": [],
+      "wired_into_ci": false
+    },
+    {
+      "configured_providers": [],
       "path": "scripts/ci/ocn_box_exercise.py",
+      "referenced_by": [],
+      "wired_into_ci": false
+    },
+    {
+      "configured_providers": [],
+      "path": "scripts/ci/ocn_classroom_fleet.py",
+      "referenced_by": [],
+      "wired_into_ci": false
+    },
+    {
+      "configured_providers": [],
+      "path": "scripts/ci/ocn_classroom_live.py",
       "referenced_by": [],
       "wired_into_ci": false
     },
@@ -300,6 +425,16 @@
       "path": "scripts/ci/ocn_content_assessment.py",
       "referenced_by": [],
       "wired_into_ci": false
+    },
+    {
+      "configured_providers": [
+        "gitlab"
+      ],
+      "path": "scripts/ci/ocn_feature_sweep.py",
+      "referenced_by": [
+        "scripts/ci/hostinger_checks.py"
+      ],
+      "wired_into_ci": true
     },
     {
       "configured_providers": [],
@@ -314,6 +449,16 @@
       "wired_into_ci": false
     },
     {
+      "configured_providers": [
+        "gitlab"
+      ],
+      "path": "scripts/ci/ocn_journey_report.py",
+      "referenced_by": [
+        "scripts/ci/hostinger_checks.py"
+      ],
+      "wired_into_ci": true
+    },
+    {
       "configured_providers": [],
       "path": "scripts/ci/ocn_mission_lifecycle.py",
       "referenced_by": [],
@@ -321,7 +466,19 @@
     },
     {
       "configured_providers": [],
+      "path": "scripts/ci/ocn_mission_work.py",
+      "referenced_by": [],
+      "wired_into_ci": false
+    },
+    {
+      "configured_providers": [],
       "path": "scripts/ci/ocn_observation_record.py",
+      "referenced_by": [],
+      "wired_into_ci": false
+    },
+    {
+      "configured_providers": [],
+      "path": "scripts/ci/ocn_project_fleet.py",
       "referenced_by": [],
       "wired_into_ci": false
     },
@@ -340,7 +497,9 @@
     {
       "configured_providers": [],
       "path": "scripts/ci/ocn_seat_session.py",
-      "referenced_by": [],
+      "referenced_by": [
+        "tests/upgrade/test_ocn_seat_session.py"
+      ],
       "wired_into_ci": false
     },
     {
@@ -353,6 +512,14 @@
       "configured_providers": [],
       "path": "scripts/ci/ocn_subsystem_probe.py",
       "referenced_by": [],
+      "wired_into_ci": false
+    },
+    {
+      "configured_providers": [],
+      "path": "scripts/ci/public_redaction.py",
+      "referenced_by": [
+        "tests/upgrade/test_public_redaction.py"
+      ],
       "wired_into_ci": false
     },
     {
@@ -369,7 +536,8 @@
       "referenced_by": [
         "scripts/ci/hostinger_replay.py",
         "scripts/deploy/roadmap_status.py",
-        "tools/day21_closure.py"
+        "tools/day21_closure.py",
+        "tools/evidence_verify.py"
       ],
       "wired_into_ci": false
     },
@@ -425,6 +593,12 @@
       "wired_into_ci": false
     },
     {
+      "configured_providers": [],
+      "path": "scripts/ci/verifier_control_gate.py",
+      "referenced_by": [],
+      "wired_into_ci": false
+    },
+    {
       "configured_providers": [
         "gitlab",
         "github"
@@ -450,7 +624,9 @@
       ],
       "path": "services/praxis_evidence/run_all_tests.py",
       "referenced_by": [
-        "tests/praxis_evidence/test_target_guard.py"
+        "services/praxis_evidence/isolated_test.py",
+        "tests/praxis_evidence/test_target_guard.py",
+        "tests/upgrade/test_praxis_isolation.py"
       ],
       "wired_into_ci": true
     },
@@ -467,7 +643,7 @@
       "wired_into_ci": true
     }
   ],
-  "generated_at": "2026-09-24T02:22:55.016079+00:00",
+  "generated_at": "2026-09-24T04:32:58.416391+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -503,6 +679,13 @@
         "title": "Brand mark and the Buddi mascot with server-confirmed achievements"
       },
       {
+        "code": "SRS-BUILDANDDO-BUDDI-003",
+        "risk": "A2",
+        "spec": ".bits/srs/SRS-BUILDANDDO-BUDDI-003.md",
+        "status": "in_progress",
+        "title": "Talk to Buddi on the home page - an in-page voice session with the official ElevenLabs SDK"
+      },
+      {
         "code": "SRS-BUILDANDDO-CAPABILITY-TOKEN-001",
         "risk": "A1",
         "spec": ".bits/srs/SRS-BUILDANDDO-CAPABILITY-TOKEN-001.md",
@@ -531,6 +714,13 @@
         "title": "CI Visibility, DORA, build telemetry and baseline deltas"
       },
       {
+        "code": "SRS-BUILDANDDO-CLASSROOM-GLOBAL-001",
+        "risk": "A2",
+        "spec": ".bits/srs/SRS-BUILDANDDO-CLASSROOM-GLOBAL-001.md",
+        "status": "in_progress",
+        "title": "A class is a global object; the workspace holds a person's access to classes and renders it as their gallery"
+      },
+      {
         "code": "SRS-BUILDANDDO-CRAWL-001",
         "risk": "A1",
         "spec": ".bits/srs/SRS-BUILDANDDO-CRAWL-001.md",
@@ -550,6 +740,13 @@
         "spec": ".bits/srs/SRS-BUILDANDDO-DECISION-001.md",
         "status": "in_progress",
         "title": "BuildAndDo Decision Runtime Phase 1 typed decision primitive"
+      },
+      {
+        "code": "SRS-BUILDANDDO-DEPLOY-SWAP-001",
+        "risk": "A2",
+        "spec": ".bits/srs/SRS-BUILDANDDO-DEPLOY-SWAP-001.md",
+        "status": "in_progress",
+        "title": "A deploy copies the build beside the live site and swaps it in, so the live site is never emptied first"
       },
       {
         "code": "SRS-BUILDANDDO-DEVELOPMENT-LOOP-001",
@@ -629,6 +826,13 @@
         "title": "Semantic ISR research"
       },
       {
+        "code": "SRS-BUILDANDDO-HEADERS-001",
+        "risk": "A1",
+        "spec": ".bits/srs/SRS-BUILDANDDO-HEADERS-001.md",
+        "status": "in_progress",
+        "title": "Every location in the staging web container sends the server's security headers, built assets included"
+      },
+      {
         "code": "SRS-BUILDANDDO-INTEGRITY-001",
         "risk": "A1",
         "spec": ".bits/srs/SRS-BUILDANDDO-INTEGRITY-001.md",
@@ -669,6 +873,27 @@
         "spec": ".bits/srs/SRS-BUILDANDDO-PLATFORM-001.md",
         "status": "in_progress",
         "title": "MetaFunction Fabric platform page - VFX, architecture visuals, and capability dashboard"
+      },
+      {
+        "code": "SRS-BUILDANDDO-PRESENCE-001",
+        "risk": "A1",
+        "spec": ".bits/srs/SRS-BUILDANDDO-PRESENCE-001.md",
+        "status": "in_progress",
+        "title": "Classroom presence states one verification contract in its route, its shared library and its test"
+      },
+      {
+        "code": "SRS-BUILDANDDO-PUBLIC-REDACTION-001",
+        "risk": "A2",
+        "spec": ".bits/srs/SRS-BUILDANDDO-PUBLIC-REDACTION-001.md",
+        "status": "in_progress",
+        "title": "No fleet machine name or IP address in the generated JSON or the site bundle"
+      },
+      {
+        "code": "SRS-BUILDANDDO-PURPOSE-001",
+        "risk": "A1",
+        "spec": ".bits/srs/SRS-BUILDANDDO-PURPOSE-001.md",
+        "status": "in_progress",
+        "title": "Every public page says BuildAndDo is an educational, collaborative platform"
       },
       {
         "code": "SRS-BUILDANDDO-QUIZ-001",
@@ -947,8 +1172,11 @@
       "provider": "gitlab",
       "required_scripts": [
         "scripts/ci/agent_context.py",
+        "scripts/ci/classroom_drive.py",
         "scripts/ci/day21_submission.py",
         "scripts/ci/hostinger_readiness.py",
+        "scripts/ci/ocn_feature_sweep.py",
+        "scripts/ci/ocn_journey_report.py",
         "scripts/ci/submission_readiness.py",
         "scripts/ci/supply_chain.py",
         "scripts/ci/verify_public_boundary.py",
@@ -956,8 +1184,11 @@
       ],
       "scripts": [
         "scripts/ci/agent_context.py",
+        "scripts/ci/classroom_drive.py",
         "scripts/ci/day21_submission.py",
         "scripts/ci/hostinger_readiness.py",
+        "scripts/ci/ocn_feature_sweep.py",
+        "scripts/ci/ocn_journey_report.py",
         "scripts/ci/submission_readiness.py",
         "scripts/ci/supply_chain.py",
         "scripts/ci/verify_public_boundary.py",
@@ -1018,13 +1249,13 @@
       "scripts/deploy/ship.py",
       "scripts/deploy/staging-readback.sh"
     ],
-    "migrations": 58,
-    "python_files": 415,
+    "migrations": 75,
+    "python_files": 439,
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 1584,
-    "web_source_files": 385
+    "tracked_files": 1789,
+    "web_source_files": 416
   },
   "schema_version": 1,
   "sprint_readiness": {
@@ -1032,7 +1263,7 @@
     "pieces": [
       {
         "id": "HS-01",
-        "next_step": "The CI owner must confirm public candidate delivery, trusted review metadata and same-revision GitLab statuses before updating required-check settings. Execute the complete governance/source matrices and all eighteen acceptance profiles with retained artifacts; Cloudflare needs its separate diagnostic.",
+        "next_step": "The CI owner must confirm public candidate delivery, trusted review metadata and same-revision GitLab statuses before updating required-check settings. Execute the complete governance/source matrices, isolated Praxis profiles and all eighteen acceptance profiles with retained artifacts; Cloudflare needs its separate diagnostic. Privately audit past shared test destinations without running mutating probes against them.",
         "owner": "BITS-CODEGEN / repository owner",
         "why": "A repeatable candidate and visible failed gates are prerequisites for every demo claim."
       },
@@ -1044,7 +1275,7 @@
       },
       {
         "id": "HS-03",
-        "next_step": "Execute both expanded native runtime profiles, including media-session and lesson installation, typed track responses, ownership/revocation and rollback. Have the release owner install matching backend migrations/hooks before the frontend and measure actual provider delivery and stream revocation on staging.",
+        "next_step": "Migration rollout is now validated on BOTH environments: preflighted against a disposable copy of live data, applied behind a database backup, and confirmed by an authenticated readback from a second box (production at 72 applied migrations, 79 collections, 33 lessons). Recovery is still unexercised - backups were taken but no restore has been performed, so rollback remains a claim rather than an observation. Exercise a restore onto a disposable profile and record it.",
         "owner": "BITS-CODEGEN / IDE1",
         "why": "Persisted work and tenant isolation make the application useful beyond a visual prototype."
       },
@@ -1073,10 +1304,16 @@
         "why": "A saved integration setting must not be mistaken for a working service connection."
       },
       {
+        "id": "HS-12",
+        "next_step": "The rooms overlay landed on 2026-09-18 (RoomCanvas, UtilizationPanel and useRoomProjection reading staging projections). The four outward bridges remain open; bind each one with its own bounded authority and prove the data boundary it states.",
+        "owner": "BITS-CODEGEN / IDE1",
+        "why": "A verified record is only worth keeping if it can reach the people it is about, under an authority stated per surface rather than a blanket key."
+      },
+      {
         "id": "HS-08",
         "next_step": "Run native/browser business journeys, inspect the executed task and its mission/evidence links, and review the objective outcome separately.",
         "owner": "BITS-CODEGEN / IDE1",
-        "why": "Objectives, tasks and contacts make the demonstrated outcome actionable for a small organization."
+        "why": "Objectives, tasks and contacts make the demonstrated outcome actionable for a guild working together."
       },
       {
         "id": "HS-09",
@@ -1097,22 +1334,22 @@
         "why": "Competition readiness requires an evidence-backed learning-through-work journey, a reproducible replay and actual submission criteria."
       }
     ],
-    "source_sha256": "0034bf5394654bf64e10652876e4b46f187dfd9c019f0e82c2ec9107b9b40295",
+    "source_sha256": "d01ac0be7b6a7b25f82693271b8fd6659a322b197a5ba1b360a0b47fb6bfe4f4",
     "state": "PASS"
   },
   "summary": {
-    "findings": 24,
-    "findings_high": 24,
+    "findings": 35,
+    "findings_high": 35,
     "pipelines": 10,
-    "srs_open": 37,
-    "srs_total": 41,
-    "unwired_gates": 22
+    "srs_open": 44,
+    "srs_total": 48,
+    "unwired_gates": 32
   },
   "tests": {
     "js_runners": [
       "vitest"
     ],
-    "js_test_files": 77,
+    "js_test_files": 90,
     "js_test_script": true,
     "junit_configured": true,
     "python_suite_entrypoints": [

@@ -1,7 +1,7 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/src/lib/workspaceKnowledge.js
 // Stage:       07_BUILD
-// SRS:         SRS-BUILDANDDO-UPGRADE-001
+// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-BUDDI-001
 // CAPS:        pending
 // CK:          pending
 // Dispatch:    VCC-BUILDANDDO-UPGRADE-001
@@ -15,7 +15,7 @@
 // Intent:      Deliver current scoped graph responses and cited context without retaining private data across accounts.
 // ───────────────────────────────────────────────────────────────
 
-export const KNOWLEDGE_KINDS = { mission: 'Missions', evidence: 'Evidence', research: 'Research', signal: 'Signals', wiki: 'Wiki pages', assistant_pattern: 'My action patterns', assistant_session: 'My assistant sessions' };
+export const KNOWLEDGE_KINDS = { mission: 'Missions', evidence: 'Evidence', research: 'Research', signal: 'Signals', wiki: 'Wiki pages', assistant_pattern: 'My action patterns', assistant_session: 'My Buddi sessions' };
 const COLLECTIONS = { mission: 'missions', evidence: 'evidence', research: 'research_submissions', signal: 'signals', wiki: 'wiki_pages' };
 const RELATIONS = new Set(['CATEGORIZED_AS', 'TAGGED_WITH', 'EVIDENCE_FOR', 'RESEARCH_FOR', 'DERIVED_FROM']);
 const id = (value) => typeof value === 'string' && /^[a-zA-Z0-9_-]{1,64}$/.test(value);

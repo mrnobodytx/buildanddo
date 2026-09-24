@@ -1,0 +1,261 @@
+{
+  "version": "2026.09.authority.1",
+  "lessons": [
+    {
+      "id": "bdoauthority001",
+      "slug": "test-isolation-and-claim-authority",
+      "title": "Repairing test isolation and claim authority",
+      "summary": "Separate reported work, ordered open-book learning, independent review and payment observations while repairing test destinations and write boundaries.",
+      "category": "Source case studies",
+      "effort_minutes": 20,
+      "prerequisites": "Read the work-loop lesson. Inspect public source and use synthetic local fixtures, never shared PocketBase credentials or private records.",
+      "order": 27,
+      "lesson": {
+        "schema_version": 1,
+        "outcomes": [
+          "Distinguish a report, ordered open-book completion, independent review and a payment observation.",
+          "Require a fresh runner-owned loopback backend before a mutating test imports deployment configuration or sends credentials.",
+          "Explain why keyless guided responses and locked progress writes do not turn public-source quizzes into a secure exam.",
+          "Use native scoped commands without granting raw-write permission or promoting legacy claims.",
+          "Retain dated, bounded source results without inventing workspace outcomes or current full-test acceptance."
+        ],
+        "why": "An authenticated account can report work without independently proving its result. A server can record ordered learning without measuring mastery, and a support request can exist without a payment. This source repair closes specific test and write boundaries; it does not create a new truth store, a secure examination system or verified mission receipts.",
+        "preparation": [
+          "The public references inspect pre-repair revision 8794db89880a7d5b644fe9b3da5f5b1ab47244ad. Record the repair candidate separately; those links do not claim to contain the changes being tested.",
+          "Use Node 22 and the repository's installed test dependencies. Missing tools or declared PocketBase binaries remain blocked, not passing checks. This lesson does not authorize installs, provider calls or shared-backend writes.",
+          "New candidate files are plain repository paths, not published links: services/praxis_evidence/isolated_test.py, apps/pocketbase/pb_hooks/workspace-claims.js, apps/pocketbase/pb_migrations/1791500002_authority_repair_lessons.js and tests/upgrade/authority-repairs-lessons.test.mjs.",
+          "Keep all exercise identities, observations and payment examples synthetic and local. Do not copy learner data, tokens, deployment configuration or private evidence into this public case."
+        ],
+        "sections": [
+          {
+            "heading": "Four claims with different authority",
+            "paragraphs": [
+              "A report says what its author or agent claims happened. Native account attribution identifies the submitter, not the truth of a seat label or a completed status. Historical reading and legacy correction reports remain reports, not newly verified history.",
+              "Ordered open-book completion records the server-accepted sequence of lesson sections, self-reported practice and an answer against the retained lesson snapshot. It is not independent review of real work or independently verified mastery.",
+              "Independent review needs an eligible reviewer separate from the producer, the exact scoped evidence and the existing review contract. A payment observation needs actual provider evidence and provenance; a support request, selected provider, amount or connected label is not proof of money received.",
+              "Missions already produce scoped observations through existing execution paths. The correction is not to invent missing observations or automatically mint a verified receipt from a mission's status. Preserve the observed trail and require its existing independent review."
+            ],
+            "steps": [
+              "Classify four synthetic statements: an agent reports done; a guided lesson records completion; another eligible reviewer checks a bounded outcome; a provider reports a payment. State the additional evidence each claim still needs.",
+              "Remove the reviewer or provider provenance from the last two examples. Keep the result unverified or unmeasured rather than trusting a supplied status field."
+            ]
+          },
+          {
+            "heading": "Run mutating tests only in an owned fixture",
+            "paragraphs": [
+              "The inspected Praxis source had a public-backend fallback and imported deployment configuration for selftests. That is an unsafe source path, not evidence that production CI variables were inspected or that a public write actually occurred.",
+              "The repair requires services/praxis_evidence/run_all_tests.py to create a fresh disposable PocketBase process on literal loopback for each suite, with synthetic accounts and a runner-owned lifetime. Selftests must reject an absent or foreign fixture before authentication or writes. Do not supply a shared PB_API_URL or inherit shared PocketBase variables or deployment secrets; the runner supplies only its own fixture context.",
+              "A loopback-looking URL alone is insufficient: an unrelated local service is still not the runner's disposable database. Reject wrong lifetime, target or fixture proof, redirects and proxy escape. Retain missing-binary and rejected-target results instead of redirecting tests to staging or production."
+            ],
+            "steps": [
+              "Use tests/upgrade/test_praxis_isolation.py for synthetic rejection-before-I/O controls. Compare absent, stale, foreign and mismatched contexts with the runner's positive control without contacting a shared backend.",
+              "On an authorized receiving runner, supply the installed binary for each declared profile to run_all_tests.py. Confirm that each suite owns a fresh loopback process and cleanup, even after failure. Never invoke a legacy mutating selftest directly to bypass the guard."
+            ]
+          },
+          {
+            "heading": "Guided progress is canonical, not a secure exam",
+            "paragraphs": [
+              "Guided learner responses omit the grading key and pre-answer explanation. The server still grades the full authored lesson and preserves the original enrollment snapshot, content digest and certificate. Catalogue completion comes from canonical guided states, not owner-edited reading history.",
+              "Raw progress writes are locked; an explicit authenticated learning command advances the saved ordered checkpoints. Preserve old reading rows and certificates without treating legacy reading completion as guided completion. Reading, opening this case and local quiz practice create no progress, evidence or XP.",
+              "No leaked answer in a guided response does not mean a secure exam. This is open-source software (OSS): grading keys are public in authored source and bundled previews. Ordered open-book learning and self-reported practice can be useful without claiming proctoring, anti-cheating guarantees or independently verified mastery."
+            ],
+            "steps": [
+              "Read the candidate lesson through the guided projection and the full public preview. Expect no grading key in the guided response, while the authored source retains its quiz and explanation.",
+              "In a synthetic fixture, retain a prior reading-completed row and an enrolled snapshot. Replaying the data migration must not award completion, replace that snapshot, duplicate learning points or rewrite an operator's lesson."
+            ]
+          },
+          {
+            "heading": "Scoped commands are not raw-write permission",
+            "paragraphs": [
+              "The claim-authority repair locks ordinary raw writes for seven collections: support_sources, corrections, daily_editions, specialist_desks, social_content, social_channels and seat_events. It reuses native authentication and explicit scoped commands; it does not grant a new agent identity or broader collection-write authority.",
+              "Commands must check current workspace membership, role, record ownership and revision. Author-owned drafts and administrator publication stay distinct. Support or channel requests cannot overwrite provider-observation fields, a correction cannot verify itself, and a seat report retains the actual submitting account separately from claimed labels.",
+              "Retain legacy bytes as historical reports without fabricated reviewer or provider provenance. Do not turn old paid, connected, completed or verified labels into new payment observations, learning certificates or independently reviewed outcomes."
+            ],
+            "steps": [
+              "Pair an allowed scoped command with foreign-workspace, revoked-membership, stale-revision and unauthorized publication controls. Assert rejection before any record or provider effect.",
+              "Test raw create, update and delete denial with hooks absent on both disposable native profiles. Source storage doubles cannot establish PocketBase rule evaluation. Keep prior reports unchanged during replay and rollback."
+            ]
+          },
+          {
+            "heading": "Keep the evidence dated and bounded",
+            "paragraphs": [
+              "Source repair case; a dated local source result is recorded; rendered and native acceptance are blocked; deployment and payment observations remain unmeasured.",
+              "The evidence panel at /app/evidence retains a 135-check source run after the publisher-recovery review: 99 Node behavior checks and 36 Python guard/fixture-assembly checks passed with zero failures or skips. Its runtime, timestamp, commands, output and explicit source fingerprint are inspectable. Earlier 152-check and 128-check captures remain history, not proof for the later recovery changes. Process and storage doubles do not execute PocketBase or prove deployment. Vitest and both declared native binaries were unavailable.",
+              "The earlier broadcast capture remains a dated historical artifact with its original digests and limited file scope. It is not this repair's result or a current full-test gate. A local source pass cannot establish native rule evaluation, rendered browser behavior, deployed acceptance or real payment receipt.",
+              "The new lesson migration only adds a missing tutorial. Down and replay retain operator edits, original lesson snapshots, progress, certificates and existing evidence. An ID or slug collision must stop rather than replace another record."
+            ],
+            "steps": [
+              "Run the listed source and rendered checks on the repair candidate. Preserve failures and skipped or unavailable prerequisites with the same care as passes.",
+              "Before native acceptance, include the new lesson migration and its data file in the receiving disposable fixtures. Execute native_learning and native_workspace for both declared profiles; do not infer installation from a source fixture.",
+              "Keep actual deployment, independent review and payment evidence with their receiving owners. This public learning case neither publishes an epoch nor verifies a workspace mission."
+            ]
+          }
+        ],
+        "exercise": {
+          "prompt": "Prepare a local four-row claim review: reported work, ordered open-book completion, independent outcome review and payment observation. Name each authority, missing provenance and a positive/negative control. Record actual output or pending status; do not submit these illustrative rows as verified workspace evidence.",
+          "checklist": [
+            "Distinguish an agent report from its authenticated submitter and from independent verification.",
+            "Explain public OSS answer keys and ordered open-book learning without promising a secure exam or promoting historical reading.",
+            "Require actual independent-review and payment-observation provenance instead of supplied statuses.",
+            "Use fresh runner-owned loopback fixtures, rejection-before-I/O controls and native scoped commands, never shared PB variables or raw-write grants.",
+            "Preserve snapshots, operator edits and historical broadcast evidence; keep pending source/native/rendered results explicit and create no progress, evidence or XP by reading."
+          ]
+        },
+        "check": {
+          "question": "An agent reports done, a guided lesson records completion and a support row says paid, but there is no independent review or provider payment observation. What is justified?",
+          "choices": [
+            "The mission, learner mastery and payment are all verified by their status labels.",
+            "Keep the report and ordered open-book completion distinct; independent review and payment remain unverified without their own evidence.",
+            "Removing the guided answer key makes the public-source quiz a secure exam."
+          ],
+          "answer": 1,
+          "explanation": "These claims have different authorities. Native commands can record ordered progress and attributed reports, but OSS grading keys remain public, a mission status cannot mint an independent receipt, and a support label cannot prove payment."
+        },
+        "references": [
+          {
+            "label": "Praxis runner at the inspected pre-repair revision",
+            "url": "https://github.com/mrnobodytx/buildanddo/blob/8794db89880a7d5b644fe9b3da5f5b1ab47244ad/services/praxis_evidence/run_all_tests.py"
+          },
+          {
+            "label": "Guided learning source at the inspected pre-repair revision",
+            "url": "https://github.com/mrnobodytx/buildanddo/blob/8794db89880a7d5b644fe9b3da5f5b1ab47244ad/apps/pocketbase/pb_hooks/tutorial-learning.js"
+          },
+          {
+            "label": "Workspace record policy at the inspected pre-repair revision",
+            "url": "https://github.com/mrnobodytx/buildanddo/blob/8794db89880a7d5b644fe9b3da5f5b1ab47244ad/apps/pocketbase/pb_hooks/workspace-record-policy.js"
+          },
+          {
+            "label": "Mission observation source at the inspected pre-repair revision",
+            "url": "https://github.com/mrnobodytx/buildanddo/blob/8794db89880a7d5b644fe9b3da5f5b1ab47244ad/apps/pocketbase/pb_hooks/business-actions.js"
+          },
+          {
+            "label": "Learning source tests at the inspected pre-repair revision",
+            "url": "https://github.com/mrnobodytx/buildanddo/blob/8794db89880a7d5b644fe9b3da5f5b1ab47244ad/tests/upgrade/tutorial-learning-system.test.mjs"
+          },
+          {
+            "label": "Open Evidence and its separate Source case studies panel",
+            "url": "/app/evidence"
+          },
+          {
+            "label": "Download the dated local source-test capture",
+            "url": "/authority-repairs-recovery-source.txt"
+          },
+          {
+            "label": "Earlier governance-bound capture before publisher recovery",
+            "url": "/authority-repairs-final-source.txt"
+          },
+          {
+            "label": "Earlier source capture before the final governance header",
+            "url": "/authority-repairs-source.txt"
+          }
+        ]
+      }
+    }
+  ],
+  "source_evidence": {
+    "source_revision": "be857104b1954f90dcdaddce8602a24e26bd3756",
+    "boundary": "Source repair case; a dated local source result is recorded; rendered and native acceptance are blocked; deployment and payment observations remain unmeasured.",
+    "validation": [
+      {
+        "label": "Source regression",
+        "status": "recorded source pass",
+        "description": "The latest dated capture contains 99 passing Node behavior checks and 36 passing Python safety/fixture-assembly checks, with zero failures or skips. Earlier 152-check and 128-check captures are retained separately. The fingerprint covers the latest source scope, including publisher recovery, not native rules, rendered pages or external outcomes.",
+        "commands": [
+          "node --test tests/upgrade/tutorial-learning-system.test.mjs tests/upgrade/tutorial-learning-client.test.mjs tests/upgrade/workspace-claims.test.mjs",
+          "python -m unittest tests.upgrade.test_praxis_isolation tests.upgrade.test_native_fixture_contracts",
+          "node --test tests/upgrade/authority-repairs-lessons.test.mjs tests/upgrade/broadcast-lessons.test.mjs"
+        ]
+      },
+      {
+        "label": "Rendered UI",
+        "status": "blocked",
+        "description": "The rendered command could not start because Vitest is unavailable. Both case-study renderers, canonical learning and scoped editorial actions still require the locked frontend toolchain. Source parsing is not rendered acceptance.",
+        "commands": [
+          "npm run test --prefix apps/web -- src/components/workspace/__tests__/TutorialCatalog.test.jsx src/pages/workspace/__tests__/EvidencePage.test.jsx"
+        ]
+      },
+      {
+        "label": "Native PocketBase",
+        "status": "blocked",
+        "description": "PocketBase 0.39.8 and 0.28.4 are unavailable here; no native suite passed or used a shared server. The receiving runner must use the declared binaries and isolated fixtures, including hookless raw-write denial, original snapshots and history-preserving rollback. Source fixture checks cannot replace native execution.",
+        "commands": [
+          "python services/praxis_evidence/run_all_tests.py --profile package --binary /path/to/declared-package-pocketbase",
+          "python services/praxis_evidence/run_all_tests.py --profile compose --binary /path/to/declared-compose-pocketbase",
+          "python scripts/ci/hostinger_readiness.py --run native_learning --runtime package",
+          "python scripts/ci/hostinger_readiness.py --run native_learning --runtime compose",
+          "python scripts/ci/hostinger_readiness.py --run native_workspace --runtime package",
+          "python scripts/ci/hostinger_readiness.py --run native_workspace --runtime compose"
+        ]
+      },
+      {
+        "label": "Deployment and payment observations",
+        "status": "unmeasured",
+        "description": "Actual release readback, independent outcome review and provider payment observations require separate receiving authority and evidence. This source-only exercise makes no provider call, publishes no epoch and verifies no workspace outcome.",
+        "commands": []
+      }
+    ],
+    "artifact": {
+      "url": "/authority-repairs-recovery-source.txt",
+      "sha256": "66d344a2097d45d97e25d87534cfb9a44361fc71ab207ca56c8ef69f2532e8d0"
+    },
+    "previous_artifacts": [
+      {
+        "url": "/authority-repairs-source.txt",
+        "sha256": "412cd115310c0546a95d8cc87bc6798172ea0476e01726dab2179aa24e163f02",
+        "label": "Earlier 152-check source capture before the final governance header"
+      },
+      {
+        "url": "/authority-repairs-final-source.txt",
+        "sha256": "3436b762de7d3432542f9f7c9d9b275a3d5e593336d08028c6f413a42c0387d7",
+        "label": "Earlier 128-check governance-bound capture before publisher recovery"
+      }
+    ],
+    "observation": {
+      "kind": "local_source_regression",
+      "observed_at": "2026-09-24T01:05:44.065059+00:00",
+      "runtime": "Node v22.17.0 / Python 3.12.13",
+      "command": "node --test tests/upgrade/tutorial-learning-system.test.mjs tests/upgrade/tutorial-learning-client.test.mjs tests/upgrade/workspace-claims.test.mjs\npython -m unittest tests.upgrade.test_praxis_isolation tests.upgrade.test_native_fixture_contracts",
+      "exit_code": 0,
+      "counts": { "tests": 135, "pass": 135, "fail": 0, "skipped": 0 },
+      "output_sha256": "ae9248c55ff3940be73a1d136077c2e4ba9457025c45af9a3e0b477b7d2afa40",
+      "source_sha256": "56f5da80d2516a7e63bccced0ce8880bc9835f37f9d201e3757c0a053b767b91",
+      "source_files": [
+        ".gitlab-ci.yml",
+        "apps/pocketbase/pb_hooks/business-policy.js",
+        "apps/pocketbase/pb_hooks/tutorial-learning.js",
+        "apps/pocketbase/pb_hooks/tutorial-learning.pb.js",
+        "apps/pocketbase/pb_hooks/workspace-claims.js",
+        "apps/pocketbase/pb_hooks/workspace-claims.pb.js",
+        "apps/pocketbase/pb_hooks/workspace-record-policy.js",
+        "apps/pocketbase/pb_migrations/1791500000_learning_progress_authority.js",
+        "apps/pocketbase/pb_migrations/1791500001_workspace_claim_authority.js",
+        "apps/pocketbase/pb_migrations/1791500002_authority_repair_lessons.js",
+        "apps/web/src/lib/seatComms.js",
+        "apps/web/src/lib/tutorialLearnerLesson.js",
+        "apps/web/src/lib/tutorialLearning.js",
+        "apps/web/src/lib/workHistory.js",
+        "apps/web/src/lib/workspaceClaims.js",
+        "apps/web/src/lib/workspaceRecords.js",
+        "apps/web/src/lib/workspaceSummary.js",
+        "services/praxis_evidence/client.py",
+        "services/praxis_evidence/isolated_test.py",
+        "services/praxis_evidence/run_all_tests.py",
+        "services/praxis_evidence/selftest.py",
+        "services/praxis_evidence/selftest_beliefs.py",
+        "services/praxis_evidence/selftest_dogfood_pilots.py",
+        "services/praxis_evidence/selftest_knowledge_health.py",
+        "services/praxis_evidence/selftest_lineage.py",
+        "services/praxis_evidence/selftest_logic.py",
+        "services/praxis_evidence/selftest_pricing.py",
+        "services/praxis_evidence/selftest_reputation.py",
+        "services/praxis_evidence/selftest_research_quests.py",
+        "services/praxis_evidence/selftest_timing.py",
+        "tests/upgrade/test_native_fixture_contracts.py",
+        "tests/upgrade/test_praxis_isolation.py",
+        "tests/upgrade/tutorial-learning-client.test.mjs",
+        "tests/upgrade/tutorial-learning-system.test.mjs",
+        "tests/upgrade/workspace-claims.test.mjs"
+      ]
+    }
+  }
+}

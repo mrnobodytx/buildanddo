@@ -106,8 +106,9 @@ test('daily highlights select today only and retain recorded verification distin
     const data = {
         editions: source([
             { id: 'draft', status: 'draft', title: 'Not published', created: today },
-            { id: 'later', status: 'published', title: 'Tomorrow', created: tomorrow },
-            { id: 'published', status: 'published', title: 'Today’s edition', created: today },
+            { id: 'later', status: 'published', title: 'Tomorrow', created: tomorrow, published_at: tomorrow, published_by: 'admin', claim_revision: 2 },
+            { id: 'published', status: 'published', title: 'Today’s edition', created: yesterday, edition_date: yesterday, published_at: today, published_by: 'admin', claim_revision: 2 },
+            { id: 'legacy', status: 'published', title: 'Unbound legacy label', created: today },
         ]),
         evidence: source([
             { id: 'old', type: 'verified', title: 'Yesterday', created: yesterday },

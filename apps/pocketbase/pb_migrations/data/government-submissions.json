@@ -1,634 +1,819 @@
 {
-  "version": "2026.09.gov.1",
-  "reference_status": "Official starting points; not fetched by the suite. The current opportunity and amendments control.",
-  "mission": {
-    "title": "Prepare an evidence-backed government solution brief",
-    "description": "Build a public-safe, source-backed solution brief and demonstrate the supporting mission suite. Complete the government-submission learning path, review real capability evidence and prepare a human submission decision. Actual portal submission requires separate authority and its own receipt.",
-    "priority": "normal",
-    "mission_plan": {
-      "version": 1,
-      "risk": "A2",
-      "purpose": "Produce a reviewable solution brief grounded in the actual opportunity and observed capability.",
-      "beneficiary": "The company proposal reviewer and intended government mission user.",
-      "in_scope": "One chosen opportunity, its current amendments, a single candidate brief, public-safe capability evidence, bounded suite analysis and human review.",
-      "out_of_scope": "Automatic portal submission, certifications, government CUI, production deployment, operational cue admission and invented commercial facts.",
-      "baseline": "Establish the initial number of open requirements and unsupported claims using the official notice; no measurement is claimed yet.",
-      "target": "Every applicable requirement has a cited rule, responsible reviewer and supporting evidence. The rendered artifact passes the actual format limits and all unresolved gaps are recorded before a human decision.",
-      "authorization": "The workspace owner approves this saved plan before work starts. Public/commercial processing is separately scoped by source rights. A named company representative authorizes any eventual submission.",
-      "input_validation": "Validate source identities, time, geometry, bounded records and current rights. Use official requirement references and the measured count and hash of the final artifact.",
-      "data_handling": "Use public, synthetic or permitted commercial inputs only. Keep credentials, restricted records and CUI outside the mission and logs.",
-      "rollback": "Cancel queued work or disable the mission suite. Retain prior inputs and receipts for review. Stop submission preparation on changed instructions or unresolved authority.",
-      "test": "Run valid, malformed, duplicate, late, conflicting and rights-denied cases. Verify stale leases and revoked identities cannot save results.",
-      "evaluate": "Compare observed results to criteria fixed before execution. Report fixture coverage separately from live-source, recipient and operational acceptance.",
-      "verify": "Review source/input/result fingerprints, replay the same input and inspect the rendered document against cited official rules.",
-      "validate": "Have the intended mission user assess usefulness and the authorized company reviewer accept the preparation outcome. Store any later portal acknowledgment as separate evidence."
-    }
+ "version": "2026.09.gov.1",
+ "reference_status": "Official starting points; not fetched by the suite. The current opportunity and amendments control.",
+ "mission": {
+  "title": "Prepare an evidence-backed government solution brief",
+  "description": "Build a public-safe, source-backed solution brief and demonstrate the supporting mission suite. Complete the government-submission learning path, review real capability evidence and prepare a human submission decision. Actual portal submission requires separate authority and its own receipt.",
+  "priority": "normal",
+  "mission_plan": {
+   "version": 1,
+   "risk": "A2",
+   "purpose": "Produce a reviewable solution brief grounded in the actual opportunity and observed capability.",
+   "beneficiary": "The company proposal reviewer and intended government mission user.",
+   "in_scope": "One chosen opportunity, its current amendments, a single candidate brief, public-safe capability evidence, bounded suite analysis and human review.",
+   "out_of_scope": "Automatic portal submission, certifications, government CUI, production deployment, operational cue admission and invented commercial facts.",
+   "baseline": "Establish the initial number of open requirements and unsupported claims using the official notice; no measurement is claimed yet.",
+   "target": "Every applicable requirement has a cited rule, responsible reviewer and supporting evidence. The rendered artifact passes the actual format limits and all unresolved gaps are recorded before a human decision.",
+   "authorization": "The workspace owner approves this saved plan before work starts. Public/commercial processing is separately scoped by source rights. A named company representative authorizes any eventual submission.",
+   "input_validation": "Validate source identities, time, geometry, bounded records and current rights. Use official requirement references and the measured count and hash of the final artifact.",
+   "data_handling": "Use public, synthetic or permitted commercial inputs only. Keep credentials, restricted records and CUI outside the mission and logs.",
+   "rollback": "Cancel queued work or disable the mission suite. Retain prior inputs and receipts for review. Stop submission preparation on changed instructions or unresolved authority.",
+   "test": "Run valid, malformed, duplicate, late, conflicting and rights-denied cases. Verify stale leases and revoked identities cannot save results.",
+   "evaluate": "Compare observed results to criteria fixed before execution. Report fixture coverage separately from live-source, recipient and operational acceptance.",
+   "verify": "Review source/input/result fingerprints, replay the same input and inspect the rendered document against cited official rules.",
+   "validate": "Have the intended mission user assess usefulness and the authorized company reviewer accept the preparation outcome. Store any later portal acknowledgment as separate evidence."
+  }
+ },
+ "lessons": [
+  {
+   "id": "bdgovlesson0001",
+   "slug": "read-the-government-opportunity",
+   "title": "Read the opportunity and freeze its rules",
+   "summary": "Build a requirement matrix from the current official notice, amendments and submission instructions.",
+   "category": "Government submissions",
+   "effort_minutes": 15,
+   "prerequisites": "Use an authorized workspace and one actual official notice, or a labelled practice exercise.",
+   "order": 101,
+   "lesson": {
+    "schema_version": 1,
+    "outcomes": [
+     "Distinguish a contract opportunity, grant, challenge and commercial solution opening.",
+     "Trace each requirement to the actual notice and its current revision."
+    ],
+    "why": "An attractive proposal can be rejected for using the wrong channel, missing an amendment or treating an example as the governing rule.",
+    "preparation": [
+     "Open the preparation mission and its Evidence Ledger.",
+     "Use the current official opportunity; references in these lessons are starting points, not a substitute for its instructions."
+    ],
+    "sections": [
+     {
+      "heading": "Identify the actual opportunity",
+      "paragraphs": [
+       "A public solicitation is a document that tells you how it will be judged. Most of the work of reading one is finding that part and taking it literally, because the evaluation section is a promise about what will actually decide the outcome.",
+       "Start by identifying the METHOD, because the method sets the rules. Texas Government Code section 2155.063 states that a purchase of or contract for goods or services shall, whenever possible, be accomplished through competitive bidding. Competitive sealed PROPOSALS are a different route: section 2156.121 allows an agency to use them where the comptroller determines that competitive sealed bidding and informal competitive bidding are 'not practical or are disadvantageous to the state'. Bids and proposals are judged differently, so knowing which one you are answering changes what you write.",
+       "Then find the evaluation standard, and read it in the chapter that governs YOUR purchase. Section 2155.074 says price and whether the goods or services meet specifications are 'principal considerations that must be balanced with other relevant factors'. If you are selling software, chapter 2157 applies too - and it defines the term differently, which the capability lesson works through.",
+       "Read the dates and the delivery mechanics before the requirements. A brilliant response submitted the wrong way is not a close second; in a sealed process it is usually not a submission at all.",
+       "Write down what the opportunity does NOT ask for. Unasked-for material costs you the reviewer's attention, which is the scarcest thing you are competing for.",
+       "Finally, note who the buyer is as an organisation rather than as a name. A response written for the department that will use the system, when the evaluation is run by a central purchasing function, addresses the wrong reader."
+      ]
+     },
+     {
+      "heading": "Create a source-backed matrix",
+      "steps": [
+       "Find and copy out the evaluation section verbatim before reading anything else.",
+       "Identify the method: sealed bid, competitive sealed proposal, or another route. Note which chapter governs it.",
+       "List every deadline and delivery requirement, including format and addressing.",
+       "List the mandatory qualifications. Mark each as: we meet it, we could, we cannot.",
+       "Write one sentence on why this buyer would choose you over doing nothing.",
+       "Note what is not asked for, and resolve to leave it out."
+      ]
+     },
+     {
+      "heading": "Example: one solution brief",
+      "paragraphs": [
+       "A small platform reads a state opportunity for a scheduling system. Watch the reading do work.",
+       "The evaluation section lists price, technical approach, past performance and support. Copying it out first means the response can be structured in that order - reviewers scoring against a rubric should not have to hunt.",
+       "The method is competitive sealed proposals. Under section 2156.121 that route is available when sealed bidding is 'not practical or disadvantageous', which tells the reader something useful: the buyer expects approaches to differ, not just prices. A pure price response would be answering a different question.",
+       "Because the product is software, chapter 2157 is in scope alongside 2155. That matters concretely and is covered in the capability lesson - the definition of best value is not the same one.",
+       "Mandatory qualifications include three years of operating history. The team has two. That is found on day one rather than day nine, and it converts the decision from 'how do we write this' to 'do we bid at all, or partner'. Finding a disqualifier early is the most valuable outcome of a first read.",
+       "Not asked for: a company history, a founder story, a roadmap. All three would have been included by instinct and none would have earned a point.",
+       "A format limit is worth carrying at the same fidelity as a requirement, because it is the one that silently disqualifies. Planning material for another opportunity in this path describes a deck of up to 15 slides OR a paper of up to 10 pages - illustrative only, owner-supplied and awaiting the actual solicitation. Two things follow. Do not put both a deck and a paper into an upload because the rule said OR, and do not carry these numbers to any other opportunity: populate the mission's limits from the current official rule, every time."
+      ]
+     },
+     {
+      "heading": "When this goes wrong",
+      "paragraphs": [
+       "The failure is reading the requirements and skimming the evaluation.",
+       "The response covers everything asked for and organises it the way the writer finds natural. A reviewer scoring against the published criteria then has to hunt for each one, and anything they cannot find quickly scores as absent - not because they were unfair, but because they have a rubric and a stack.",
+       "The second failure is discovering a mandatory disqualifier late. A team that finds on day nine that it cannot meet an eligibility floor has spent nine days, and worse, will be tempted to argue the requirement rather than accept it.",
+       "The third is answering the wrong method. Writing a price-led response to a proposal process, or an essay to a sealed bid, produces something that reads well and does not fit the process it entered.",
+       "Sections 2155.063, 2155.074, 2156.121 were retrieved on 2026-09-21 from the Texas Legislature's statute host through the legal-research pipeline, which returns the statute text with its URL and a timestamp and renders no opinion on it. Read the chapters in full at https://tcss.legis.texas.gov/resources/GV/htm/GV.2155.htm, https://tcss.legis.texas.gov/resources/GV/htm/GV.2156.htm. This is research and not legal advice, it is Texas-specific, and the opportunity's own instructions govern over any summary here."
+      ]
+     }
+    ],
+    "exercise": {
+     "prompt": "Create a requirement matrix for one real opportunity, or a clearly labelled practice notice.",
+     "checklist": [
+      "Record the official notice and amendments.",
+      "Record the exact deadline and time zone.",
+      "Separate required, conditional and unresolved items.",
+      "Keep example limits out of confirmed requirements."
+     ]
+    },
+    "check": {
+     "question": "A planning document says a deck and paper are both acceptable. What determines the upload?",
+     "choices": [
+      "Upload both to be safe.",
+      "Follow the current opportunity's exact one-document and format instructions.",
+      "Assume every agency uses a 15-slide limit."
+     ],
+     "answer": 1,
+     "explanation": "The current official opportunity controls the format and submission channel. A planning example cannot establish those rules."
+    },
+    "references": [
+     {
+      "label": "SAM.gov contract opportunities",
+      "url": "https://sam.gov/opportunities"
+     },
+     {
+      "label": "Grants.gov",
+      "url": "https://www.grants.gov/"
+     },
+     {
+      "label": "Defense Innovation Unit",
+      "url": "https://www.diu.mil/"
+     }
+    ]
+   }
   },
-  "lessons": [
-    {
-      "id": "bdgovlesson0001",
-      "slug": "read-the-government-opportunity",
-      "title": "Read the opportunity and freeze its rules",
-      "summary": "Build a requirement matrix from the current official notice, amendments and submission instructions.",
-      "category": "Government submissions",
-      "effort_minutes": 15,
-      "prerequisites": "Use an authorized workspace and one actual official notice, or a labelled practice exercise.",
-      "order": 101,
-      "lesson": {
-        "schema_version": 1,
-        "outcomes": [
-          "Distinguish a contract opportunity, grant, challenge and commercial solution opening.",
-          "Trace each requirement to the actual notice and its current revision."
-        ],
-        "why": "An attractive proposal can be rejected for using the wrong channel, missing an amendment or treating an example as the governing rule.",
-        "preparation": [
-          "Open the preparation mission and its Evidence Ledger.",
-          "Use the current official opportunity; references in these lessons are starting points, not a substitute for its instructions."
-        ],
-        "sections": [
-          {
-            "heading": "Identify the actual opportunity",
-            "paragraphs": [
-              "Find the notice on the agency's official site or its designated portal. Record the agency, opportunity number, instrument, topic, deadline with time zone, eligibility, evaluation criteria, submission channel and contact instructions. An announcement is not an award or permission to perform government work.",
-              "SAM.gov, Grants.gov, SBIR/STTR and DIU support different processes. Do not reuse one program's registration, format or submission requirements for another. Follow the specific opportunity and amendments."
-            ]
-          },
-          {
-            "heading": "Create a source-backed matrix",
-            "steps": [
-              "Save the official URL, retrieval date and amendment identifier as an Evidence Ledger record for this mission.",
-              "Give every requirement a stable ID, source location, responsible person and evidence reference.",
-              "Record unknown or conflicting instructions as open questions. Use the notice's designated question channel and retain its answer before closing a gap."
-            ]
-          },
-          {
-            "heading": "Example: one solution brief",
-            "paragraphs": [
-              "Illustrative only: the Sentinel planning material describes one deck of up to 15 slides OR a paper of up to 10 pages. Those are owner-supplied planning constraints awaiting the actual solicitation. Do not put both into an upload or treat these limits as universal. Populate this mission's limits from the current official rule."
-            ]
-          }
-        ],
-        "exercise": {
-          "prompt": "Create a requirement matrix for one real opportunity, or a clearly labelled practice notice.",
-          "checklist": [
-            "Record the official notice and amendments.",
-            "Record the exact deadline and time zone.",
-            "Separate required, conditional and unresolved items.",
-            "Keep example limits out of confirmed requirements."
-          ]
-        },
-        "check": {
-          "question": "A planning document says a deck and paper are both acceptable. What determines the upload?",
-          "choices": [
-            "Upload both to be safe.",
-            "Follow the current opportunity's exact one-document and format instructions.",
-            "Assume every agency uses a 15-slide limit."
-          ],
-          "answer": 1,
-          "explanation": "The current official opportunity controls the format and submission channel. A planning example cannot establish those rules."
-        },
-        "references": [
-          {
-            "label": "SAM.gov contract opportunities",
-            "url": "https://sam.gov/opportunities"
-          },
-          {
-            "label": "Grants.gov",
-            "url": "https://www.grants.gov/"
-          },
-          {
-            "label": "Defense Innovation Unit",
-            "url": "https://www.diu.mil/"
-          }
-        ]
-      }
+  {
+   "id": "bdgovlesson0002",
+   "slug": "government-eligibility-and-authority",
+   "title": "Check company eligibility and submission authority",
+   "summary": "Verify entity facts, required registrations and who may make representations for the company.",
+   "category": "Government submissions",
+   "effort_minutes": 12,
+   "prerequisites": "Read the preceding government-submission lessons; use public-safe material.",
+   "order": 102,
+   "lesson": {
+    "schema_version": 1,
+    "outcomes": [
+     "Identify the eligibility evidence required by the chosen opportunity.",
+     "Separate preparing a draft from authorizing a submission."
+    ],
+    "why": "An account login, source-code result or completed lesson does not authorize contractual representations or prove the company's eligibility.",
+    "preparation": [
+     "Open the preparation mission and its Evidence Ledger.",
+     "Use the current official opportunity; references in these lessons are starting points, not a substitute for its instructions."
+    ],
+    "sections": [
+     {
+      "heading": "Use current entity facts",
+      "paragraphs": [
+       "Eligibility is a floor, not a competition. You either meet it or your response is not scored, and no amount of quality elsewhere compensates. So it is the first thing to check and the cheapest place to save weeks.",
+       "Separate three things people merge. ELIGIBILITY is whether you may bid at all. QUALIFICATION is whether you meet stated minimums such as insurance, registration or operating history. AUTHORITY is whether the person signing may bind your organisation. The third is the one that surfaces late and awkwardly.",
+       "Registration is usually mechanical and time-boxed. Vendor registration, tax status, and any required certifications take calendar days you do not control, which means they belong at the start of a submission plan rather than at the end.",
+       "Some categories carry their own programmes. Texas Government Code chapter 2161 governs historically underutilised businesses, with its own certification and reporting provisions. Whether that applies to you is a question of fact to check, not a box to tick optimistically.",
+       "Be accurate about what you are. Overstating size, history or certification status is the category of error that ends relationships rather than costing points, and it is usually discovered by someone checking a register rather than by a reviewer's judgement."
+      ]
+     },
+     {
+      "heading": "Prepare an authority checklist",
+      "steps": [
+       "List every eligibility requirement and mark each: met, not met, or unknown.",
+       "For anything unknown, find the authoritative source - a register, a certificate, a filing - rather than an internal belief.",
+       "Check registration status and expiry dates now, and note the lead time to fix anything lapsed.",
+       "Identify who may sign and confirm it in writing before the deadline week.",
+       "For anything not met, decide explicitly: withdraw, partner, or ask the buyer whether an equivalent is acceptable."
+      ]
+     },
+     {
+      "heading": "Training example",
+      "paragraphs": [
+       "The scheduling platform works its eligibility before writing a word of the response.",
+       "Vendor registration: active, expiring in four months. Fine for this submission, and noted so it does not lapse mid-contract.",
+       "Insurance: the solicitation requires a level above the current policy. The broker needs eleven days. Started on day one, this is a non-event; started in the final week it is a withdrawal.",
+       "Operating history: three years required, two held. This is the hard one, and it is real - it cannot be written around. The options are to withdraw, or to respond as a subcontractor to a prime who meets it. They choose the second and say so plainly.",
+       "Authority to sign: the person who would have signed is a director, and the company's own rules require two. Discovered in week one it is a fifteen-minute board resolution; discovered on the afternoon of the deadline it is a missed submission.",
+       "Notice that nothing here is about the quality of the product. The floor is indifferent to how good you are, which is exactly why it is checked first."
+      ]
+     },
+     {
+      "heading": "When this goes wrong",
+      "paragraphs": [
+       "The failure is assuming eligibility from memory.",
+       "'We're registered' is usually true and is sometimes true of a registration that lapsed in March. The belief is honest, the register disagrees, and the disagreement surfaces at submission when there is no time to act.",
+       "The second failure is optimistic certification. Claiming a status you are in the process of obtaining feels like a rounding error on the timeline and reads, to a buyer who checks, as a misrepresentation. That is a different category of problem from losing.",
+       "The third is leaving signing authority to the end. It involves other people's calendars, which is the one variable a deadline cannot compress.",
+       "This lesson describes general submission practice and does not rest on any one jurisdiction's procurement statute. Where the other lessons in this path quote Texas Government Code, that text was retrieved on 2026-09-21 through the legal-research pipeline and each chapter is linked there. All of it is research rather than legal advice, and a real submission is governed by the instructions in the opportunity itself."
+      ]
+     }
+    ],
+    "exercise": {
+     "prompt": "Add an eligibility and authority section to the mission without entering passwords, tax records or identity documents.",
+     "checklist": [
+      "Use the exact legal entity.",
+      "Check applicable registration status.",
+      "Name the reviewer and authorized submitter.",
+      "Link the source for every eligibility conclusion."
+     ]
     },
-    {
-      "id": "bdgovlesson0002",
-      "slug": "government-eligibility-and-authority",
-      "title": "Check company eligibility and submission authority",
-      "summary": "Verify entity facts, required registrations and who may make representations for the company.",
-      "category": "Government submissions",
-      "effort_minutes": 12,
-      "prerequisites": "Read the preceding government-submission lessons; use public-safe material.",
-      "order": 102,
-      "lesson": {
-        "schema_version": 1,
-        "outcomes": [
-          "Identify the eligibility evidence required by the chosen opportunity.",
-          "Separate preparing a draft from authorizing a submission."
-        ],
-        "why": "An account login, source-code result or completed lesson does not authorize contractual representations or prove the company's eligibility.",
-        "preparation": [
-          "Open the preparation mission and its Evidence Ledger.",
-          "Use the current official opportunity; references in these lessons are starting points, not a substitute for its instructions."
-        ],
-        "sections": [
-          {
-            "heading": "Use current entity facts",
-            "paragraphs": [
-              "Use the company's exact registered legal name and current authorized contact. For Citadel work the name is Citadel Nexus Inc. Confirm the opportunity's entity, size, ownership, location and teaming requirements with the responsible company representative.",
-              "Record required registration status and identifiers only from official records. A UEI is not itself proof that an entity registration is active. Requirements for SAM registration, CAGE information, representations or other systems depend on the instrument and notice. Do not claim an exemption without its applicable rule."
-            ]
-          },
-          {
-            "heading": "Prepare an authority checklist",
-            "steps": [
-              "Name the person responsible for checking eligibility and representations.",
-              "Record required registration status and any expiration date as public-safe evidence; keep credentials out of notes.",
-              "Assign an authorized human submitter and reviewer. Keep their decision separate from draft preparation.",
-              "Identify lead times and stop if eligibility or representation questions remain unresolved."
-            ]
-          },
-          {
-            "heading": "Training example",
-            "paragraphs": [
-              "A team has built a working prototype but has not checked whether it qualifies for the opportunity. The prototype supports technical evidence; it does not close the eligibility requirement. Keep that row open until an authorized reviewer verifies the applicable facts."
-            ]
-          }
-        ],
-        "exercise": {
-          "prompt": "Add an eligibility and authority section to the mission without entering passwords, tax records or identity documents.",
-          "checklist": [
-            "Use the exact legal entity.",
-            "Check applicable registration status.",
-            "Name the reviewer and authorized submitter.",
-            "Link the source for every eligibility conclusion."
-          ]
-        },
-        "check": {
-          "question": "What does a successful local suite test establish?",
-          "choices": [
-            "Technical behavior for the tested inputs.",
-            "Eligibility for any government opportunity.",
-            "Authorization to certify company representations."
-          ],
-          "answer": 0,
-          "explanation": "Local test evidence supports the tested behavior. Eligibility and submission authority require their own applicable evidence and human decisions."
-        },
-        "references": [
-          {
-            "label": "SAM.gov entity registration",
-            "url": "https://sam.gov/entity-registration"
-          },
-          {
-            "label": "Federal Acquisition Regulation",
-            "url": "https://www.acquisition.gov/browse/index/far"
-          }
-        ]
-      }
+    "check": {
+     "question": "What does a successful local suite test establish?",
+     "choices": [
+      "Technical behavior for the tested inputs.",
+      "Eligibility for any government opportunity.",
+      "Authorization to certify company representations."
+     ],
+     "answer": 0,
+     "explanation": "Local test evidence supports the tested behavior. Eligibility and submission authority require their own applicable evidence and human decisions."
     },
-    {
-      "id": "bdgovlesson0003",
-      "slug": "government-capability-evidence",
-      "title": "Build a capability and claims evidence table",
-      "summary": "Map each technical and commercial claim to measured evidence, an owner report or proposed work.",
-      "category": "Government submissions",
-      "effort_minutes": 18,
-      "prerequisites": "Read the preceding government-submission lessons; use public-safe material.",
-      "order": 103,
-      "lesson": {
-        "schema_version": 1,
-        "outcomes": [
-          "Keep current capability, source implementation and future work distinct.",
-          "Link a proposal claim to a reproducible mission evidence record."
-        ],
-        "why": "Reviewers need to assess what works today and what the requested funding would develop. Unsupported percentages or customer figures weaken that assessment.",
-        "preparation": [
-          "Open the preparation mission and its Evidence Ledger.",
-          "Use the current official opportunity; references in these lessons are starting points, not a substitute for its instructions."
-        ],
-        "sections": [
-          {
-            "heading": "Classify the claim",
-            "paragraphs": [
-              "Use measured with a procedure, date, scope and result when evidence exists. Mark owner-reported facts as awaiting confirmation when their records are unavailable. Mark proposed features and demo targets separately. Missing revenue, customer, team or performance numbers stay unknown, never zero or an invented estimate.",
-              "Source files, unit tests, an image digest, installed runtime behavior and operational acceptance establish different facts. A source fingerprint establishes bytes. It does not establish maritime detection quality or a customer deployment."
-            ]
-          },
-          {
-            "heading": "Attach and review suite evidence",
-            "steps": [
-              "Use the mission suite to analyze permitted observations, inspect conflicts and compare the retained input with its result.",
-              "Write a human review note and attach the result to this mission's Evidence Ledger. The record begins as observed.",
-              "Independently check the procedure, scope, source identity and result before marking the supporting evidence verified using the existing review flow.",
-              "Build a current-versus-funded-work table in the brief and link each claimed current behavior to its evidence."
-            ]
-          },
-          {
-            "heading": "Avoid misleading examples",
-            "paragraphs": [
-              "An observation gap is not proof of unlawful conduct or deliberate AIS shutdown. Check coverage, identity ambiguity and contradictory sources. This suite produces deterministic candidates awaiting NNC admission, so describe that boundary when using its results as evidence."
-            ]
-          }
-        ],
-        "exercise": {
-          "prompt": "Audit five proposed claims and rewrite any unsupported current-capability statement.",
-          "checklist": [
-            "Give each claim an evidence reference and state.",
-            "Include contradictory or unavailable evidence.",
-            "Keep dataset and sample size with measured metrics.",
-            "Leave customer or revenue numbers unclaimed unless verified."
-          ]
-        },
-        "check": {
-          "question": "An immutable hash matches a test report. What is established?",
-          "choices": [
-            "The product is deployed and mission-ready.",
-            "The reported accuracy is necessarily correct.",
-            "The referenced bytes match; the report's scope and conclusions still need review."
-          ],
-          "answer": 2,
-          "explanation": "Integrity checks protect the relationship to bytes. They do not validate the measurement method, semantics or deployment."
-        },
-        "references": [
-          {
-            "label": "BuildAndDo Evidence Ledger",
-            "url": "/app/evidence"
-          },
-          {
-            "label": "BuildAndDo mission suite",
-            "url": "/app/suite"
-          }
-        ]
-      }
+    "references": [
+     {
+      "label": "SAM.gov entity registration",
+      "url": "https://sam.gov/entity-registration"
+     },
+     {
+      "label": "Federal Acquisition Regulation",
+      "url": "https://www.acquisition.gov/browse/index/far"
+     }
+    ]
+   }
+  },
+  {
+   "id": "bdgovlesson0003",
+   "slug": "government-capability-evidence",
+   "title": "Build a capability and claims evidence table",
+   "summary": "Map each technical and commercial claim to measured evidence, an owner report or proposed work.",
+   "category": "Government submissions",
+   "effort_minutes": 18,
+   "prerequisites": "Read the preceding government-submission lessons; use public-safe material.",
+   "order": 103,
+   "lesson": {
+    "schema_version": 1,
+    "outcomes": [
+     "Keep current capability, source implementation and future work distinct.",
+     "Link a proposal claim to a reproducible mission evidence record."
+    ],
+    "why": "Reviewers need to assess what works today and what the requested funding would develop. Unsupported percentages or customer figures weaken that assessment.",
+    "preparation": [
+     "Open the preparation mission and its Evidence Ledger.",
+     "Use the current official opportunity; references in these lessons are starting points, not a substitute for its instructions."
+    ],
+    "sections": [
+     {
+      "heading": "Classify the claim",
+      "paragraphs": [
+       "Capability evidence is the part of a submission where claims must become checkable. A buyer cannot verify that you are 'experienced'; they can verify that you ran a named system for a named organisation for a stated period, and that someone there will confirm it.",
+       "The statute is unusually explicit about what counts. Texas Government Code section 2155.074 lists relevant factors an agency may consider, and among them are 'indicators of probable vendor performance under the contract such as past vendor performance, the vendor's financial resources and ability to perform, the vendor's experience or demonstrated capability and responsibility, and the vendor's ability to provide reliable maintenance agreements and support'. Read that as a checklist: each clause is a thing you can evidence or cannot.",
+       "IF YOU SELL SOFTWARE, READ 2157 TOO, BECAUSE THE DEFINITION CHANGES. Section 2157.003 says 'best value' for purchases of automated information systems 'means the lowest overall cost of an automated information system', and lists factors including compatibility to facilitate the exchange of existing data, the capacity for expanding and upgrading to more advanced levels of technology, quantitative reliability factors, the level of training required to bring persons using the system to a stated level of proficiency, and technical support requirements. Those are not the same things a general services response would emphasise.",
+       "Note the phrase 'quantitative reliability factors'. That is an invitation to supply numbers, and most responses answer it with adjectives. A measured uptime figure with its measurement window beats 'highly reliable' every time, because one of them can be checked.",
+       "Match every claim to a source the buyer could reach without you: a reference who has agreed to be called, a published figure, a certificate, a report. A claim whose only support is your own assertion is a claim the evaluator must discount.",
+       "Past performance is specifically named, so treat references as evidence rather than courtesy. Ask permission, confirm the contact details, and tell them what they are likely to be asked.",
+       "One discipline holds all of this together: for every claim, name the artifact a reviewer could ask for. A reference's contact details, a monitoring export, a signed certificate, a dated report. If no such artifact exists, the claim is an opinion and should be written as one - 'in our experience' is honest, and it scores as what it is rather than being discounted as a failed attempt at evidence.",
+       "And treat the evidence pack as reusable infrastructure. The references, the measured figures and their windows, the certificates and their expiry dates are the same across submissions, and keeping them current between bids turns a fortnight of scrambling into an afternoon of assembly."
+      ]
+     },
+     {
+      "heading": "Attach and review suite evidence",
+      "steps": [
+       "Write out the evaluation factors from the solicitation, and from the chapter that governs it.",
+       "For each factor, write the single strongest piece of evidence you hold - and name its source.",
+       "Mark any factor where your evidence is an adjective. Those are the gaps.",
+       "For 'quantitative reliability', find a real number and its measurement window. If you do not measure it, say what you do measure.",
+       "Confirm every reference by asking, and record that you asked.",
+       "Write the honest sentence for anything you cannot evidence, rather than an impressive one."
+      ]
+     },
+     {
+      "heading": "Avoid misleading examples",
+      "paragraphs": [
+       "The scheduling platform assembles evidence against the 2157.003 factors. Watch adjectives turn into numbers, and watch one gap stay a gap.",
+       "Compatibility for exchanging existing data: they support a documented CSV and an API export, and have completed two migrations from the incumbent product. Evidence is the published API documentation and two named references who did those migrations.",
+       "Capacity for expanding and upgrading: the strongest available evidence is a customer who grew from 12 to 140 users on the same instance, with the dates. That is checkable; 'highly scalable' is not.",
+       "Quantitative reliability: 99.4% availability measured over the last twelve months from an external monitor, with the two incidents named and their durations. Note that this is weaker than 99.9% and far stronger than 'reliable', because it can be verified and it shows they measure it.",
+       "Training level to reach proficiency: a real figure from onboarding records - median 35 minutes to first completed booking, across 60 users. The factor asked how much training is needed; they answered with a measurement rather than a promise.",
+       "Technical support requirements: the gap. They have no 24-hour support and the solicitation implies it. They state the actual coverage, name the escalation path, and do not imply otherwise. A stated limitation costs points on one factor; a discovered overstatement costs the submission."
+      ]
+     },
+     {
+      "heading": "When this goes wrong",
+      "paragraphs": [
+       "The failure is a capability section built from adjectives.",
+       "'Robust, scalable, enterprise-grade, highly reliable' - every one is unverifiable, and an evaluator scoring against factors has nothing to score. The section reads as confident and carries no information, which is worse than a modest section that carries some.",
+       "The second failure is references who were never asked. A reviewer calls, the contact is surprised, has left, or is lukewarm because they were not told what this was about. That damages the factor the statute names first.",
+       "The third is answering the general factors and ignoring the ones specific to your category. A software response that never addresses data exchange, upgrade capacity or training time has left the 2157 factors unanswered while writing at length about the 2155 ones.",
+       "Sections 2155.074, 2157.003 were retrieved on 2026-09-21 from the Texas Legislature's statute host through the legal-research pipeline, which returns the statute text with its URL and a timestamp and renders no opinion on it. Read the chapters in full at https://tcss.legis.texas.gov/resources/GV/htm/GV.2155.htm, https://tcss.legis.texas.gov/resources/GV/htm/GV.2157.htm. This is research and not legal advice, it is Texas-specific, and the opportunity's own instructions govern over any summary here."
+      ]
+     }
+    ],
+    "exercise": {
+     "prompt": "Audit five proposed claims and rewrite any unsupported current-capability statement.",
+     "checklist": [
+      "Give each claim an evidence reference and state.",
+      "Include contradictory or unavailable evidence.",
+      "Keep dataset and sample size with measured metrics.",
+      "Leave customer or revenue numbers unclaimed unless verified."
+     ]
     },
-    {
-      "id": "bdgovlesson0004",
-      "slug": "write-the-government-solution-brief",
-      "title": "Write one reviewable solution brief",
-      "summary": "Connect the mission problem, operational scenario, architecture, evaluation and transition plan in the required format.",
-      "category": "Government submissions",
-      "effort_minutes": 20,
-      "prerequisites": "Read the preceding government-submission lessons; use public-safe material.",
-      "order": 104,
-      "lesson": {
-        "schema_version": 1,
-        "outcomes": [
-          "Write a self-contained solution narrative.",
-          "Check the final rendered artifact against the cited format rules."
-        ],
-        "why": "A reviewer should understand the product and its evidence without reading internal planning files or a second attachment that the portal did not request.",
-        "preparation": [
-          "Open the preparation mission and its Evidence Ledger.",
-          "Use the current official opportunity; references in these lessons are starting points, not a substitute for its instructions."
-        ],
-        "sections": [
-          {
-            "heading": "Tell one technical story",
-            "paragraphs": [
-              "Start with whether the solution is software, hardware or both, the user's problem and the operational output. Follow one representative scenario through source evidence, state, detection, admission and handoff. Show what is working, what is proposed and what remains uncertain.",
-              "For a Sentinel Maritime example, describe replaceable suppliers, persistent evidence-backed state, inspectable detection features, NNC's distinct admission role and integration behind existing government interfaces. Do not claim access to a named government platform's undocumented API."
-            ]
-          },
-          {
-            "heading": "Make the document self-contained",
-            "steps": [
-              "Map the narrative to the current evaluation criteria. Include data rights and costs, performance evidence, team capability, sustainment and a bounded demonstration plan when requested.",
-              "Choose the permitted document format and use that same baseline for internal alternate formats.",
-              "Render the actual PDF, count pages or slides, check readable text, figures, links, accessibility and file-size constraints.",
-              "Fingerprint the final rendered bytes and record the filename, hash, count and source rule in the suite readiness form."
-            ]
-          },
-          {
-            "heading": "What the checker can establish",
-            "paragraphs": [
-              "The suite checks declared counts, recorded references and evidence status. It does not render or inspect the PDF. A human must compare those declarations to the final artifact and current official rules before relying on the report."
-            ]
-          }
-        ],
-        "exercise": {
-          "prompt": "Create one draft with a concrete scenario, a current-versus-build table and a traceable evaluation plan.",
-          "checklist": [
-            "Address every evaluation criterion.",
-            "Render and inspect the final document.",
-            "Record the real artifact hash and measured page count.",
-            "Use the permitted upload structure and mark unverified claims."
-          ]
-        },
-        "check": {
-          "question": "A readiness check accepts the declared page count. What remains?",
-          "choices": [
-            "Nothing; the suite has inspected the PDF.",
-            "A human must inspect the rendered file and confirm the declaration matches its bytes and rules.",
-            "Submit a separate slide deck automatically."
-          ],
-          "answer": 1,
-          "explanation": "The readiness operation evaluates metadata and evidence references. It cannot establish properties of document bytes it never received."
-        },
-        "references": [
-          {
-            "label": "Defense Innovation Unit official site",
-            "url": "https://www.diu.mil/"
-          },
-          {
-            "label": "BuildAndDo Docs",
-            "url": "/docs"
-          }
-        ]
-      }
+    "check": {
+     "question": "An immutable hash matches a test report. What is established?",
+     "choices": [
+      "The product is deployed and mission-ready.",
+      "The reported accuracy is necessarily correct.",
+      "The referenced bytes match; the report's scope and conclusions still need review."
+     ],
+     "answer": 2,
+     "explanation": "Integrity checks protect the relationship to bytes. They do not validate the measurement method, semantics or deployment."
     },
-    {
-      "id": "bdgovlesson0005",
-      "slug": "government-costs-data-and-ip",
-      "title": "Explain costs, data licenses and intellectual property",
-      "summary": "Build a transparent cost model and identify the permissions that govern source data and deliverables.",
-      "category": "Government submissions",
-      "effort_minutes": 15,
-      "prerequisites": "Read the preceding government-submission lessons; use public-safe material.",
-      "order": 105,
-      "lesson": {
-        "schema_version": 1,
-        "outcomes": [
-          "Separate software, deployment, data, integration and support costs.",
-          "Identify source-level rights and unresolved contract questions."
-        ],
-        "why": "A prototype can be technically useful yet uneconomic or impermissible to deliver. Reviewers need to see the cost structure and what the customer may receive.",
-        "preparation": [
-          "Open the preparation mission and its Evidence Ledger.",
-          "Use the current official opportunity; references in these lessons are starting points, not a substitute for its instructions."
-        ],
-        "sections": [
-          {
-            "heading": "Describe the commercial structure",
-            "paragraphs": [
-              "Separate the platform license, deployment tier, optional commercial data, integration work and support/SLA. State the pricing basis, scope, assumptions and validity date. Unquoted amounts remain to be quoted; do not invent an ARR, customer base or commercial price.",
-              "Describe customer-provided data separately from a managed data bundle. Customer-held licenses still need to permit the actual processing. Explain supplier replacement, cost pass-through or bundled charges and scaling limits without promising unlimited use."
-            ]
-          },
-          {
-            "heading": "Preserve rights in the operating chain",
-            "steps": [
-              "Record the source owner, permitted purpose, retention, derivatives, redistribution, export, classification and expiration.",
-              "Configure only public or properly licensed commercial sources for this suite. Record sources sharing an upstream supplier under the same independence group.",
-              "List software and data rights questions for the company representative or qualified advisor using the applicable notice and clauses.",
-              "Exclude protected source content from a public brief unless publication is permitted."
-            ]
-          },
-          {
-            "heading": "Worked rights example",
-            "paragraphs": [
-              "A feed may permit internal analysis but prohibit redistribution of observations. Internal processing permission is not export permission. This suite provides workspace analysis and does not send government handoffs; an integration must separately enforce recipient and disclosure rights."
-            ]
-          }
-        ],
-        "exercise": {
-          "prompt": "Produce a cost-component table and a source-rights inventory for the mission.",
-          "checklist": [
-            "State quoted versus unquoted amounts.",
-            "Record license scope and expiration.",
-            "Separate processing and redistribution permissions.",
-            "Record open IP and deliverable-rights questions for review."
-          ]
-        },
-        "check": {
-          "question": "A customer can view a licensed feed. Can every observation be redistributed?",
-          "choices": [
-            "Yes, possession establishes all rights.",
-            "Only if the applicable rights permit the intended redistribution.",
-            "Yes, after changing the filename."
-          ],
-          "answer": 1,
-          "explanation": "Access, processing, derivative and redistribution rights are distinct. The applicable agreement and recipient purpose control disclosure."
-        },
-        "references": [
-          {
-            "label": "FAR Part 27: Patents, Data, and Copyrights",
-            "url": "https://www.acquisition.gov/far/part-27"
-          },
-          {
-            "label": "Mission suite",
-            "url": "/app/suite"
-          }
-        ]
-      }
+    "references": [
+     {
+      "label": "BuildAndDo Evidence Ledger",
+      "url": "/app/evidence"
+     },
+     {
+      "label": "BuildAndDo mission suite",
+      "url": "/app/suite"
+     }
+    ]
+   }
+  },
+  {
+   "id": "bdgovlesson0004",
+   "slug": "write-the-government-solution-brief",
+   "title": "Write one reviewable solution brief",
+   "summary": "Connect the mission problem, operational scenario, architecture, evaluation and transition plan in the required format.",
+   "category": "Government submissions",
+   "effort_minutes": 20,
+   "prerequisites": "Read the preceding government-submission lessons; use public-safe material.",
+   "order": 104,
+   "lesson": {
+    "schema_version": 1,
+    "outcomes": [
+     "Write a self-contained solution narrative.",
+     "Check the final rendered artifact against the cited format rules."
+    ],
+    "why": "A reviewer should understand the product and its evidence without reading internal planning files or a second attachment that the portal did not request.",
+    "preparation": [
+     "Open the preparation mission and its Evidence Ledger.",
+     "Use the current official opportunity; references in these lessons are starting points, not a substitute for its instructions."
+    ],
+    "sections": [
+     {
+      "heading": "Tell one technical story",
+      "paragraphs": [
+       "A solution brief answers one question: how will the buyer's problem be different, and by what mechanism. Everything else in the document supports that answer or competes with it for attention.",
+       "Structure it in the order the evaluation criteria are listed, using their words. Reviewers score section by section against a rubric, often under time pressure and often across many responses. Making them translate your headings into theirs is a cost you are choosing to impose.",
+       "Lead each section with the answer, then the evidence, then the caveat. Reviewers read the first sentence of each section carefully and the rest variably, so a section that builds to its point may never deliver it.",
+       "Be specific about the mechanism. 'We will improve scheduling efficiency' is a claim about the outcome; 'appointments are confirmed by SMS 24 hours ahead, which removed 6 of 31 monthly no-shows in a comparable deployment' is a claim about the mechanism with a number attached. Only the second tells a buyer whether it would work for them.",
+       "State your limitations in your own words. A buyer who discovers a gap themselves discounts everything else you wrote; a buyer who reads it from you can weigh it. This is not modesty, it is controlling how the weakest part of your response is framed.",
+       "Write for a reader who is not a specialist. The person scoring the technical section may be an administrator, and a response that requires expertise to understand will be scored by someone who does not have it.",
+       "Length is a decision, not a byproduct. Where a page limit exists, the limit is the brief; where none exists, choose one and hold it. A response that runs to forty pages because nobody chose is a response whose weakest material dilutes its strongest, and reviewers reading ten of these will find the parts that matter in whichever one made them easy to find.",
+       "Write the summary last and make it answer the criteria, not describe the document. 'This proposal describes our approach to...' tells a reviewer nothing they cannot see. A summary that states the price, the mechanism, the one strongest piece of evidence and the one honest limitation has already given them most of what they need to score it, and every later section confirms rather than reveals.",
+       "Keep one person responsible for the whole document. Multi-author responses drift in voice, repeat themselves, and contradict each other on detail - and a contradiction between two sections is read as carelessness about facts rather than as an editing lapse.",
+       "Proofread against the criteria one final time, with the solicitation open beside the response. Not for typos - for coverage. The commonest late discovery is a criterion that was discussed at length in a meeting and never made it onto the page, because everybody involved remembers the conversation and mistakes it for the document.",
+       "Check every number appears once and identically. A price that differs between the summary and the pricing section forces a reviewer to decide which you meant, and there is no version of that decision that helps you.",
+       "Leave a day between finishing and submitting, and re-read it cold. Every response contains at least one sentence that made sense to the person who wrote it on the evening they wrote it, and reads as ambiguous to anyone else. A day's distance is the cheapest editor available, and it is the first thing sacrificed when the work starts late - which is the real argument for starting the eligibility and evidence work in week one."
+      ]
+     },
+     {
+      "heading": "Make the document self-contained",
+      "steps": [
+       "Copy the evaluation criteria into your document as headings, in their order and their words.",
+       "Under each, write the answer first in one sentence.",
+       "Add the evidence with its source, then any caveat.",
+       "Replace every outcome claim with a mechanism plus a number where you have one.",
+       "Write your limitations section deliberately. Do not leave it to be discovered.",
+       "Give it to someone outside your field and ask what you are offering. If they cannot say, the specialists will not score it well either."
+      ]
+     },
+     {
+      "heading": "What the checker can establish",
+      "paragraphs": [
+       "The scheduling brief takes shape against the published criteria.",
+       "Criterion: technical approach. First sentence: 'Appointments are booked in a hosted web application; confirmations and reminders are sent by SMS through a named provider; the agency's existing roster is imported by CSV on day one and thereafter synchronised nightly.' That is the mechanism, stated before any argument for it.",
+       "Then the evidence: two completed migrations from the same incumbent product, named, with durations. Then the caveat: nightly synchronisation, not real-time, and what that means in practice for a same-day change.",
+       "Criterion: price. Answered with the total for the stated term including the data migration, not a per-seat figure that leaves the buyer to do arithmetic. Anything a reviewer must calculate is something they may calculate differently from you.",
+       "Criterion: past performance. Three references, each confirmed by asking, each with one sentence on what they can speak to - migration, day-to-day use, support responsiveness.",
+       "Criterion: support. The honest one. Coverage is business hours with a named escalation path and a measured median first-response time of 41 minutes over the last quarter. They do not claim 24-hour support. The measured number partly offsets the narrower coverage, and pretending otherwise would have been discovered at the first out-of-hours incident.",
+       "What was cut: the founder story, the roadmap, and a section on company values. Each was genuinely felt and none mapped to a criterion."
+      ]
+     },
+     {
+      "heading": "When this goes wrong",
+      "paragraphs": [
+       "The failure is a brief organised the way the writer thinks about their product.",
+       "It opens with the company, moves to the platform's architecture, and arrives at the buyer's problem on page four. Everything the evaluator needs is present and none of it is where they are looking, so it scores as incomplete while being complete.",
+       "The second failure is hiding the limitation. It does not go unnoticed - it gets noticed by someone forming a view about how candid the rest of the document is. A weakness you name is a data point; a weakness they find is a character judgement.",
+       "The third is the unsupported superlative. One 'best-in-class' with nothing behind it invites a reviewer to start testing every other claim, and most responses cannot survive that reading.",
+       "This lesson describes general submission practice and does not rest on any one jurisdiction's procurement statute. Where the other lessons in this path quote Texas Government Code, that text was retrieved on 2026-09-21 through the legal-research pipeline and each chapter is linked there. All of it is research rather than legal advice, and a real submission is governed by the instructions in the opportunity itself."
+      ]
+     }
+    ],
+    "exercise": {
+     "prompt": "Create one draft with a concrete scenario, a current-versus-build table and a traceable evaluation plan.",
+     "checklist": [
+      "Address every evaluation criterion.",
+      "Render and inspect the final document.",
+      "Record the real artifact hash and measured page count.",
+      "Use the permitted upload structure and mark unverified claims."
+     ]
     },
-    {
-      "id": "bdgovlesson0006",
-      "slug": "government-security-and-cui-boundaries",
-      "title": "Keep public proposals outside controlled-data boundaries",
-      "summary": "Identify data restrictions and evidence needed before claiming security readiness or handling CUI.",
-      "category": "Government submissions",
-      "effort_minutes": 15,
-      "prerequisites": "Read the preceding government-submission lessons; use public-safe material.",
-      "order": 106,
-      "lesson": {
-        "schema_version": 1,
-        "outcomes": [
-          "Keep public/commercial work separate from government controlled data.",
-          "Identify applicable security requirements without asserting compliance from a checklist."
-        ],
-        "why": "A security plan or encryption library alone does not establish a compliant controlled-data environment. Handling requirements attach to the actual data, agreement and system.",
-        "preparation": [
-          "Open the preparation mission and its Evidence Ledger.",
-          "Use the current official opportunity; references in these lessons are starting points, not a substitute for its instructions."
-        ],
-        "sections": [
-          {
-            "heading": "Establish what applies",
-            "paragraphs": [
-              "Use the solicitation, contract and responsible security authority to determine applicable requirements. NIST SP 800-171, DFARS clauses, CMMC, training, media, sanitization and FIPS requirements may apply in particular circumstances; a generic tutorial cannot determine their applicability.",
-              "Record the required assessment, environment and approved handling procedures as separate acceptance evidence. Do not claim a certification, validated cryptographic configuration or cleared staff without the corresponding records."
-            ]
-          },
-          {
-            "heading": "Use public-safe material",
-            "steps": [
-              "Use public, synthetic or explicitly licensed commercial inputs for this BuildAndDo mission.",
-              "Do not paste government CUI, credentials or protected personal records into the mission, evidence, logs or tutorial exercises.",
-              "If a future phase introduces CUI, stop public ingestion and hand off the boundary design to the responsible security and infrastructure owners.",
-              "Keep restricted evidence, storage, logs, export and sanitization inside that separately authorized environment."
-            ]
-          },
-          {
-            "heading": "Observe the suite boundary",
-            "paragraphs": [
-              "The source-rights contract rejects CUI. That rejection is a product boundary, not proof of CUI compliance. A learning-path completion or readiness report must never be used as a security certification."
-            ]
-          }
-        ],
-        "exercise": {
-          "prompt": "Write a public-data handling plan and a separate list of prerequisites for any controlled-data phase.",
-          "checklist": [
-            "Identify classification and permitted purpose.",
-            "Keep restricted inputs out of public tooling.",
-            "Record requirement applicability and responsible owners.",
-            "Mark compliance and environment acceptance as unverified until evidenced."
-          ]
-        },
-        "check": {
-          "question": "What should happen when a source is tagged CUI for this public mission?",
-          "choices": [
-            "Remove the tag and continue.",
-            "Upload only a small sample.",
-            "Reject it and use the authorized controlled-data handling process."
-          ],
-          "answer": 2,
-          "explanation": "Changing a label does not change handling obligations. This public mission suite intentionally excludes CUI."
-        },
-        "references": [
-          {
-            "label": "National Archives CUI program",
-            "url": "https://www.archives.gov/cui"
-          },
-          {
-            "label": "NIST protection of controlled unclassified information",
-            "url": "https://csrc.nist.gov/projects/protecting-controlled-unclassified-information"
-          }
-        ]
-      }
+    "check": {
+     "question": "A readiness check accepts the declared page count. What remains?",
+     "choices": [
+      "Nothing; the suite has inspected the PDF.",
+      "A human must inspect the rendered file and confirm the declaration matches its bytes and rules.",
+      "Submit a separate slide deck automatically."
+     ],
+     "answer": 1,
+     "explanation": "The readiness operation evaluates metadata and evidence references. It cannot establish properties of document bytes it never received."
     },
-    {
-      "id": "bdgovlesson0007",
-      "slug": "government-demo-and-readiness-evidence",
-      "title": "Evaluate a demo and review submission readiness",
-      "summary": "Freeze measurable acceptance criteria, run negative cases and resolve readiness gaps with mission evidence.",
-      "category": "Government submissions",
-      "effort_minutes": 20,
-      "prerequisites": "Read the preceding government-submission lessons; use public-safe material.",
-      "order": 107,
-      "lesson": {
-        "schema_version": 1,
-        "outcomes": [
-          "Distinguish a fixture demonstration from observed live acceptance.",
-          "Use the suite report as input to human review."
-        ],
-        "why": "A demonstration should answer a measurable question. A chart, checklist or green local test is not a substitute for performance evidence from the intended setting.",
-        "preparation": [
-          "Open the preparation mission and its Evidence Ledger.",
-          "Use the current official opportunity; references in these lessons are starting points, not a substitute for its instructions."
-        ],
-        "sections": [
-          {
-            "heading": "Freeze the evaluation before running",
-            "paragraphs": [
-              "Name the mission question, permitted inputs, geography or scope, version, clock, expected output, reviewers and denominators. Define latency, precision or false-positive measures only when labels and populations make those measures valid. Keep unknown quantities unmeasured.",
-              "If a selected program specifies a roughly 48-hour operating window, verify that in its official instructions. Then plan setup, baseline, detection, governed review and handoff/replay evidence within that window. Do not report a simulated clock as 48 hours of live activity."
-            ]
-          },
-          {
-            "heading": "Exercise the failure paths",
-            "steps": [
-              "Try duplicate and late observations, conflicting positions, expired source rights, a removed workspace member and an interrupted worker.",
-              "Confirm that old data stays in history, contradictions remain visible, uncertain commands recover without duplicates and candidates cannot become admitted cues.",
-              "Replay the same frozen input on the matching source package and compare the complete result. Record any divergence.",
-              "Enter the referenced requirements and final-document metadata into Submission readiness, then review every missing or unverified evidence item."
-            ]
-          },
-          {
-            "heading": "Interpret readiness correctly",
-            "paragraphs": [
-              "READY_FOR_HUMAN_REVIEW means the declared metadata and references passed this bounded checker. It is neither eligibility certification nor permission to submit. A real mission reviewer must check the official notice, artifact bytes, applicable facts and company authority."
-            ]
-          }
-        ],
-        "exercise": {
-          "prompt": "Run a documented normal and negative scenario, then attach a reviewed readiness report to the same mission.",
-          "checklist": [
-            "Fix the target and denominator before the run.",
-            "Distinguish fixtures from real observations.",
-            "Record failures and reproducible replay evidence.",
-            "Review the final artifact and unresolved gaps."
-          ]
-        },
-        "check": {
-          "question": "A replay differs after changing the source package. What should the evidence say?",
-          "choices": [
-            "Divergence is recorded; do not describe it as the original verified run.",
-            "Ignore it because the UI looks the same.",
-            "Promote the candidate to an admitted cue."
-          ],
-          "answer": 0,
-          "explanation": "A changed source identity or output is a different result. Keep the discrepancy visible and investigate it before making a reproducibility claim."
-        },
-        "references": [
-          {
-            "label": "NIST AI Risk Management Framework",
-            "url": "https://www.nist.gov/itl/ai-risk-management-framework"
-          },
-          {
-            "label": "Mission suite",
-            "url": "/app/suite"
-          }
-        ]
-      }
+    "references": [
+     {
+      "label": "Defense Innovation Unit official site",
+      "url": "https://www.diu.mil/"
+     },
+     {
+      "label": "BuildAndDo Docs",
+      "url": "/docs"
+     }
+    ]
+   }
+  },
+  {
+   "id": "bdgovlesson0005",
+   "slug": "government-costs-data-and-ip",
+   "title": "Explain costs, data licenses and intellectual property",
+   "summary": "Build a transparent cost model and identify the permissions that govern source data and deliverables.",
+   "category": "Government submissions",
+   "effort_minutes": 15,
+   "prerequisites": "Read the preceding government-submission lessons; use public-safe material.",
+   "order": 105,
+   "lesson": {
+    "schema_version": 1,
+    "outcomes": [
+     "Separate software, deployment, data, integration and support costs.",
+     "Identify source-level rights and unresolved contract questions."
+    ],
+    "why": "A prototype can be technically useful yet uneconomic or impermissible to deliver. Reviewers need to see the cost structure and what the customer may receive.",
+    "preparation": [
+     "Open the preparation mission and its Evidence Ledger.",
+     "Use the current official opportunity; references in these lessons are starting points, not a substitute for its instructions."
+    ],
+    "sections": [
+     {
+      "heading": "Describe the commercial structure",
+      "paragraphs": [
+       "Costs in a public submission are read as a commitment, not an estimate. Price your response on what you can deliver at, including the parts that are not exciting - migration, training, support, and the work of exiting at the end.",
+       "Read the evaluation definition of cost in the chapter that governs your purchase. For automated information systems, section 2157.003 defines best value as 'the lowest overall cost', and its listed factors include training level and technical support requirements. That means the cheapest licence with the most training burden may lose to a dearer one, and it also means those costs will be considered whether or not you state them.",
+       "Distinguish what the buyer's data is from what your system is. The buyer's records are theirs; your software is yours; anything built specifically for them under the contract is a question to settle in writing before signature rather than at exit.",
+       "Say how data comes back out. A public body has retention and disclosure duties that outlive your contract, so an export path is not a courtesy - it is part of whether they can lawfully use you at all. State the format and the mechanism.",
+       "Be careful with anything you license in. Open-source components carry obligations, and components you resell carry terms that may not permit public-sector use. Knowing your dependencies is part of pricing them.",
+       "Say what happens at renewal and at price change, in the response. A buyer comparing two suppliers is comparing the whole term, and a price that is silent on year two invites the least generous assumption.",
+       "State the assumptions your price depends on - user counts, data volumes, the scope of migration. A price without its assumptions is a number that will be held to whatever the buyer assumed."
+      ]
+     },
+     {
+      "heading": "Preserve rights in the operating chain",
+      "steps": [
+       "Build the cost from the parts, including migration, training, support and exit.",
+       "Check the governing definition of cost and make sure your response speaks to it.",
+       "Write one sentence each on: who owns the buyer's data, who owns your software, who owns anything built for them.",
+       "Document the export path - format, mechanism, and how long it takes.",
+       "List your third-party components and confirm each licence permits this use.",
+       "Price the exit deliberately. If it is free, say so; if it is not, say what it costs."
+      ]
+     },
+     {
+      "heading": "Worked rights example",
+      "paragraphs": [
+       "The scheduling platform prices the three-year term. Watch the non-obvious costs get named.",
+       "Licence: £14,400 over three years. Migration from the incumbent: £2,100, based on the two prior migrations rather than a guess. Training: two sessions, £800. Support: included, business hours.",
+       "Exit: a full CSV export of all records, self-service, at no charge, available at any time and not only at termination. Stating this as free and self-service is itself a competitive point, because the reader has usually met the alternative.",
+       "Ownership: the agency's booking and client records are the agency's. The platform's code is the platform's. One thing is built specifically for them - a report matching their quarterly return - and the proposal states that the agency receives a perpetual licence to the output format while the platform keeps the code. That sentence exists so it is not an argument later.",
+       "Third-party components: one SMS provider, whose terms permit public-sector use, and an open-source charting library under a permissive licence. Both named in an appendix.",
+       "Against 2157.003 the total is not the lowest licence price available, and the response says why in the buyer's own terms: a lower licence with a two-day training requirement and a paid export is not the lowest overall cost, and the response shows that arithmetic rather than asserting it."
+      ]
+     },
+     {
+      "heading": "When this goes wrong",
+      "paragraphs": [
+       "The failure is pricing the licence and omitting the work.",
+       "The number looks competitive and the migration, training and export costs arrive later as change requests. The buyer experiences that as a bait, whatever the intention, and a public body that has been surprised on cost will remember it at the next renewal.",
+       "The second failure is silence on data ownership. Everyone assumes the obvious answer and the two parties assume different obvious answers, which surfaces at exit when goodwill is lowest and the data is needed urgently.",
+       "The third is an unexamined dependency. A component whose licence does not permit this use is a problem you inherit at exactly the moment you have won.",
+       "Sections 2157.003 were retrieved on 2026-09-21 from the Texas Legislature's statute host through the legal-research pipeline, which returns the statute text with its URL and a timestamp and renders no opinion on it. Read the chapter in full at https://tcss.legis.texas.gov/resources/GV/htm/GV.2157.htm. This is research and not legal advice, it is Texas-specific, and the opportunity's own instructions govern over any summary here."
+      ]
+     }
+    ],
+    "exercise": {
+     "prompt": "Produce a cost-component table and a source-rights inventory for the mission.",
+     "checklist": [
+      "State quoted versus unquoted amounts.",
+      "Record license scope and expiration.",
+      "Separate processing and redistribution permissions.",
+      "Record open IP and deliverable-rights questions for review."
+     ]
     },
-    {
-      "id": "bdgovlesson0008",
-      "slug": "government-submission-receipts-and-transition",
-      "title": "Submit with authority and preserve the receipt",
-      "summary": "Use a named human submitter, retain the actual portal acknowledgment and plan follow-up and sustainment.",
-      "category": "Government submissions",
-      "effort_minutes": 15,
-      "prerequisites": "Read the preceding government-submission lessons; use public-safe material.",
-      "order": 108,
-      "lesson": {
-        "schema_version": 1,
-        "outcomes": [
-          "Separate draft readiness, upload, acknowledgment and award.",
-          "Preserve an auditable final-document and submission record."
-        ],
-        "why": "A local result cannot prove that an agency received the proposal. The closing evidence must come from the actual permitted submission channel.",
-        "preparation": [
-          "Open the preparation mission and its Evidence Ledger.",
-          "Use the current official opportunity; references in these lessons are starting points, not a substitute for its instructions."
-        ],
-        "sections": [
-          {
-            "heading": "Make the human release decision",
-            "paragraphs": [
-              "Have the authorized company reviewer inspect the exact final file, current notice and amendments, eligibility, representations, data rights and unresolved risks. The designated submitter uses the instructed portal or channel. The suite does not log into a government portal, accept terms, certify facts or file documents.",
-              "Check the portal's timezone, file-size and replacement rules before the deadline. Avoid last-minute assumptions about extensions or whether an upload finished. Follow the notice's support and correction instructions if delivery is uncertain."
-            ]
-          },
-          {
-            "heading": "Keep the actual receipt",
-            "steps": [
-              "Record the final artifact hash, filename, size, rendered count and human approval.",
-              "After the authorized submission, retain the real acknowledgment, confirmation identifier, destination and timestamp using an approved storage location.",
-              "Attach a public-safe reference to that receipt and record the result honestly. An upload attempt without acknowledgment remains uncertain.",
-              "Assign follow-up, amendment monitoring, demo preparation, support, staffing and transition responsibilities."
-            ]
-          },
-          {
-            "heading": "Close the mission on its actual objective",
-            "paragraphs": [
-              "A portal acknowledgment supports received or submitted according to its stated meaning. It does not establish acceptance, selection, contract award or operational success. Close the preparation mission using its agreed evidence criterion; start a separate mission for later funded work or deployment.",
-              "For a maritime proposal, identify mission-domain validation, government integration expertise and any security or staffing gaps. Describe sustainment and commercial applicability using verified facts rather than treating an award as certain."
-            ]
-          }
-        ],
-        "exercise": {
-          "prompt": "Prepare a human submission checklist. Use a clearly labelled practice receipt for training; never fabricate an official acknowledgment.",
-          "checklist": [
-            "Name the approver and submitter.",
-            "Identify the exact approved file.",
-            "Retain the actual portal receipt when submission occurs.",
-            "Separate receipt, selection and award states.",
-            "Assign follow-up and sustainment owners."
-          ]
-        },
-        "check": {
-          "question": "What does a portal acknowledgment establish?",
-          "choices": [
-            "A government award.",
-            "The receipt state stated by that acknowledgment, for that artifact and channel.",
-            "Approval for any future operational deployment."
-          ],
-          "answer": 1,
-          "explanation": "Receipt, evaluation, award and deployment authority are distinct events with distinct evidence."
-        },
-        "references": [
-          {
-            "label": "SAM.gov",
-            "url": "https://sam.gov/"
-          },
-          {
-            "label": "Grants.gov applicant resources",
-            "url": "https://www.grants.gov/applicants"
-          }
-        ]
-      }
-    }
-  ]
+    "check": {
+     "question": "A customer can view a licensed feed. Can every observation be redistributed?",
+     "choices": [
+      "Yes, possession establishes all rights.",
+      "Only if the applicable rights permit the intended redistribution.",
+      "Yes, after changing the filename."
+     ],
+     "answer": 1,
+     "explanation": "Access, processing, derivative and redistribution rights are distinct. The applicable agreement and recipient purpose control disclosure."
+    },
+    "references": [
+     {
+      "label": "FAR Part 27: Patents, Data, and Copyrights",
+      "url": "https://www.acquisition.gov/far/part-27"
+     },
+     {
+      "label": "Mission suite",
+      "url": "/app/suite"
+     }
+    ]
+   }
+  },
+  {
+   "id": "bdgovlesson0006",
+   "slug": "government-security-and-cui-boundaries",
+   "title": "Keep public proposals outside controlled-data boundaries",
+   "summary": "Identify data restrictions and evidence needed before claiming security readiness or handling CUI.",
+   "category": "Government submissions",
+   "effort_minutes": 15,
+   "prerequisites": "Read the preceding government-submission lessons; use public-safe material.",
+   "order": 106,
+   "lesson": {
+    "schema_version": 1,
+    "outcomes": [
+     "Keep public/commercial work separate from government controlled data.",
+     "Identify applicable security requirements without asserting compliance from a checklist."
+    ],
+    "why": "A security plan or encryption library alone does not establish a compliant controlled-data environment. Handling requirements attach to the actual data, agreement and system.",
+    "preparation": [
+     "Open the preparation mission and its Evidence Ledger.",
+     "Use the current official opportunity; references in these lessons are starting points, not a substitute for its instructions."
+    ],
+    "sections": [
+     {
+      "heading": "Establish what applies",
+      "paragraphs": [
+       "Two different questions get confused here. One is how you protect the buyer's data. The other is what happens to YOUR submission under public-records law. Both belong in a submission and they have different answers.",
+       "A public body's default is disclosure. In Texas, the Public Information Act makes information held by a governmental body public unless an exception applies, so your submission is potentially readable by your competitors. Plan on that being the default rather than hoping.",
+       "Two exceptions matter to a bidder and BOTH require evidence rather than a label. Section 552.104 excepts information where a governmental body 'demonstrates that release of the information would harm its interests by providing an advantage to a competitor or bidder' - note that this protects the agency's interest, not yours. Section 552.110 excepts trade secrets, and excepts commercial or financial information where it is 'demonstrated based on specific factual evidence that disclosure would cause substantial competitive harm'.",
+       "The trade-secret test in 552.110 has two limbs worth reading carefully: the owner must have 'taken reasonable measures under the circumstances to keep the information secret', and the information must derive 'independent economic value... from not being generally known'. Information you publish on your own website fails both.",
+       "So marking a whole document confidential achieves nothing except signalling that you have not read the rule. Mark the specific passages, and for each be ready to say what the secret is, what measures you take to keep it, and what specific harm disclosure would do.",
+       "On protecting the buyer's data, describe controls you actually operate. Access control, encryption in transit and at rest, backup and restore, who can see what, and what you do when something goes wrong. Controls you intend to implement are a roadmap, and should be labelled as one."
+      ]
+     },
+     {
+      "heading": "Use public-safe material",
+      "steps": [
+       "Assume your whole submission may be released, and decide what you would not want released.",
+       "For each such passage, check it against the two limbs: is it secret in fact, and do you take measures to keep it so?",
+       "Mark only those passages, and prepare the specific factual evidence of harm for each.",
+       "Separately, describe your actual controls over the buyer's data, and label intentions as intentions.",
+       "Name what you do in an incident: who is told, how fast, and what the buyer receives.",
+       "Check whether anything you marked confidential is already published by you."
+      ]
+     },
+     {
+      "heading": "Observe the suite boundary",
+      "paragraphs": [
+       "The platform prepares its submission for both questions.",
+       "Public-records exposure: they assume release. Reading the document as a competitor would, three passages matter - the unit economics behind the price, a named architecture detail, and the escalation contacts.",
+       "Unit economics: marked under 552.110's commercial-information limb, with specific factual evidence prepared - not 'this is commercially sensitive', but the named competitor, the specific figure, and what that party could do with it. Whether it succeeds is the agency's and ultimately the Attorney General's determination, but an assertion with evidence has a chance and a bare label does not.",
+       "The architecture detail: checked against the trade-secret limbs and it fails the first. It is on their public documentation site. Nothing is marked, because marking published information invites a reviewer to discount the markings that do matter.",
+       "Escalation contacts: personal contact details, handled under a different route entirely rather than the trade-secret exception. Using the wrong exception is a common and avoidable error.",
+       "Protecting the agency's data: role-based access with two named roles, encryption in transit and at rest, nightly backups with a restore tested in the last quarter - and the restore date is given, because a tested backup and an untested one are different claims. One control is a roadmap item, and it is labelled 'planned, not yet implemented', in those words."
+      ]
+     },
+     {
+      "heading": "When this goes wrong",
+      "paragraphs": [
+       "The failure is stamping the whole submission confidential.",
+       "It is quick, it feels safe, and it does not meet the test in any respect. A blanket marking over publicly available material tells a reviewer that none of your markings were considered, which is exactly the wrong impression to create about the passages that genuinely qualify.",
+       "The second failure is claiming controls you intend to have. In a submission that is a misstatement; after an incident it is the sentence everybody reads. Label the roadmap as roadmap - it costs a little and it survives scrutiny.",
+       "The third is confusing the two questions entirely - answering at length about how you protect the agency's data, and never considering that your own pricing is about to become readable by a competitor who asks for it.",
+       "Sections 552.104, 552.110 were retrieved on 2026-09-21 from the Texas Legislature's statute host through the legal-research pipeline, which returns the statute text with its URL and a timestamp and renders no opinion on it. Read the chapter in full at https://tcss.legis.texas.gov/resources/GV/htm/GV.552.htm. This is research and not legal advice, it is Texas-specific, and the opportunity's own instructions govern over any summary here."
+      ]
+     }
+    ],
+    "exercise": {
+     "prompt": "Write a public-data handling plan and a separate list of prerequisites for any controlled-data phase.",
+     "checklist": [
+      "Identify classification and permitted purpose.",
+      "Keep restricted inputs out of public tooling.",
+      "Record requirement applicability and responsible owners.",
+      "Mark compliance and environment acceptance as unverified until evidenced."
+     ]
+    },
+    "check": {
+     "question": "What should happen when a source is tagged CUI for this public mission?",
+     "choices": [
+      "Remove the tag and continue.",
+      "Upload only a small sample.",
+      "Reject it and use the authorized controlled-data handling process."
+     ],
+     "answer": 2,
+     "explanation": "Changing a label does not change handling obligations. This public mission suite intentionally excludes CUI."
+    },
+    "references": [
+     {
+      "label": "National Archives CUI program",
+      "url": "https://www.archives.gov/cui"
+     },
+     {
+      "label": "NIST protection of controlled unclassified information",
+      "url": "https://csrc.nist.gov/projects/protecting-controlled-unclassified-information"
+     }
+    ]
+   }
+  },
+  {
+   "id": "bdgovlesson0007",
+   "slug": "government-demo-and-readiness-evidence",
+   "title": "Evaluate a demo and review submission readiness",
+   "summary": "Freeze measurable acceptance criteria, run negative cases and resolve readiness gaps with mission evidence.",
+   "category": "Government submissions",
+   "effort_minutes": 20,
+   "prerequisites": "Read the preceding government-submission lessons; use public-safe material.",
+   "order": 107,
+   "lesson": {
+    "schema_version": 1,
+    "outcomes": [
+     "Distinguish a fixture demonstration from observed live acceptance.",
+     "Use the suite report as input to human review."
+    ],
+    "why": "A demonstration should answer a measurable question. A chart, checklist or green local test is not a substitute for performance evidence from the intended setting.",
+    "preparation": [
+     "Open the preparation mission and its Evidence Ledger.",
+     "Use the current official opportunity; references in these lessons are starting points, not a substitute for its instructions."
+    ],
+    "sections": [
+     {
+      "heading": "Freeze the evaluation before running",
+      "paragraphs": [
+       "A demonstration is evidence, and it is evidence about a specific claim. Decide which claim before you build it, because a demo that shows everything shows nothing in particular.",
+       "Demonstrate against the evaluation factors rather than against your product's strengths. If the criteria name data exchange, upgrade capacity, training time and support, the demo should let a reviewer see those - even though the visually impressive parts are usually elsewhere.",
+       "Use realistic data and say what it is. A demo on invented tidy records answers a question nobody asked; a demo on a realistic messy set shows what happens to the duplicate, the missing field, the awkward name. Always say clearly whether data is real, anonymised or synthetic - never imply real data you do not have.",
+       "Rehearse the failure. Something will not work on the day, and a team that has rehearsed only the happy path handles it as an emergency. A team that has seen it break says what happened, what it means, and moves on - which reads as competence rather than an incident.",
+       "Readiness evidence is the claim that you could start. That is mostly boring and checkable: who would be assigned, what the first thirty days contain, what you need from the buyer and by when. A plan naming what YOU need is more credible than one that asks nothing.",
+       "Record what the demo showed. A demonstration nobody documented is a memory, and memories of demos differ sharply between the people who gave and watched them.",
+       "Decide in advance who is in the room and what each of them is there to do. A demonstration run by three people who have not agreed who answers what produces interruptions and contradictions, and the reviewer remembers the friction rather than the product.",
+       "Time it and rehearse to that time. A thirty-minute slot that overruns is not a demonstration of enthusiasm - it is the first evidence a buyer has about whether you respect their constraints, and it usually costs the questions at the end, which are the most valuable part.",
+       "Send the follow-up the same day, while everyone still remembers what was asked. A prompt, accurate summary of what was shown and promised is itself evidence about how you will operate the contract, and it costs twenty minutes.",
+       "Ask what happens after the demonstration before you leave: who else will see it, whether it is scored immediately, and what the next step is. That is information you cannot get later, and it tells you whether the follow-up you send that afternoon will arrive before or after the scoring.",
+       "Finally, treat the questions as the evaluation. The scripted part shows what you prepared; the questions show whether you understand it. A team that answers 'I do not know, I will confirm by tomorrow' once, and then does, has demonstrated something the rehearsed portion cannot.",
+       "Record the demonstration if the buyer permits it, and ask before you do. Not to replay at them, but because the follow-up you write afterwards will otherwise rest on four people's differing memories of what was asked - and the commitments made in a demonstration are as binding, in practice, as the ones in the document."
+      ]
+     },
+     {
+      "heading": "Exercise the failure paths",
+      "steps": [
+       "Write the claim the demo must support, in one sentence.",
+       "Map each evaluation factor to a moment in the demo where a reviewer can see it.",
+       "Prepare realistic data and label its nature honestly.",
+       "Rehearse once with something deliberately broken and agree how you will respond.",
+       "Write the readiness plan, including what you need from the buyer and when.",
+       "Record what was shown and what was asked, the same day."
+      ]
+     },
+     {
+      "heading": "Interpret readiness correctly",
+      "paragraphs": [
+       "The platform prepares a 30-minute demonstration against the published criteria.",
+       "The claim: 'An agency scheduler can import their existing roster and run a full day of bookings on the first morning.' Everything in the demo serves that sentence.",
+       "Data exchange: they import a realistic roster of 140 records, labelled as anonymised from a real deployment - including 3 duplicates and 2 records with a missing phone number, because those are what the reviewer's own data looks like. The import reports them rather than silently dropping them, and that reporting is the point being demonstrated.",
+       "Training time: rather than asserting it is easy, they hand the keyboard to a reviewer and ask them to book an appointment. The measured onboarding figure was a median of 35 minutes to first booking; watching someone unfamiliar do it in four is the strongest version of that evidence.",
+       "The rehearsed failure: the SMS provider's sandbox is down on the day. Because it was rehearsed, the answer is immediate - here is the queued message, here is the provider's status page, here is what happens to it when the provider returns, and here is the delivery receipt from yesterday's rehearsal. The failure demonstrated the retry behaviour better than the happy path would have.",
+       "Readiness: a named implementer, a thirty-day plan, and two things needed from the agency - the roster export and one named contact for decisions - with the dates by which they are needed. The asks make the plan real.",
+       "Afterwards, a one-page record: what was shown, what was asked, what was promised to follow up, and by when. Sent the same day."
+      ]
+     },
+     {
+      "heading": "When this goes wrong",
+      "paragraphs": [
+       "The failure is the demo that avoids the hard parts.",
+       "Clean data, the happy path, the features the team is proud of. Reviewers who have sat through many of these recognise it immediately, and the unasked question - what happens when the import is messy - becomes the thing they assume the answer to.",
+       "The second failure is unrehearsed breakage handled badly. The product is fine and the impression is of a team that panics, which is information a buyer will weigh about the operational relationship.",
+       "The third is the undocumented promise. Somebody says 'yes, we can do that' in the room, nobody writes it down, and it reappears months later as an expectation with no shared record of what was actually said.",
+       "This lesson describes general submission practice and does not rest on any one jurisdiction's procurement statute. Where the other lessons in this path quote Texas Government Code, that text was retrieved on 2026-09-21 through the legal-research pipeline and each chapter is linked there. All of it is research rather than legal advice, and a real submission is governed by the instructions in the opportunity itself."
+      ]
+     }
+    ],
+    "exercise": {
+     "prompt": "Run a documented normal and negative scenario, then attach a reviewed readiness report to the same mission.",
+     "checklist": [
+      "Fix the target and denominator before the run.",
+      "Distinguish fixtures from real observations.",
+      "Record failures and reproducible replay evidence.",
+      "Review the final artifact and unresolved gaps."
+     ]
+    },
+    "check": {
+     "question": "A replay differs after changing the source package. What should the evidence say?",
+     "choices": [
+      "Divergence is recorded; do not describe it as the original verified run.",
+      "Ignore it because the UI looks the same.",
+      "Promote the candidate to an admitted cue."
+     ],
+     "answer": 0,
+     "explanation": "A changed source identity or output is a different result. Keep the discrepancy visible and investigate it before making a reproducibility claim."
+    },
+    "references": [
+     {
+      "label": "NIST AI Risk Management Framework",
+      "url": "https://www.nist.gov/itl/ai-risk-management-framework"
+     },
+     {
+      "label": "Mission suite",
+      "url": "/app/suite"
+     }
+    ]
+   }
+  },
+  {
+   "id": "bdgovlesson0008",
+   "slug": "government-submission-receipts-and-transition",
+   "title": "Submit with authority and preserve the receipt",
+   "summary": "Use a named human submitter, retain the actual portal acknowledgment and plan follow-up and sustainment.",
+   "category": "Government submissions",
+   "effort_minutes": 15,
+   "prerequisites": "Read the preceding government-submission lessons; use public-safe material.",
+   "order": 108,
+   "lesson": {
+    "schema_version": 1,
+    "outcomes": [
+     "Separate draft readiness, upload, acknowledgment and award.",
+     "Preserve an auditable final-document and submission record."
+    ],
+    "why": "A local result cannot prove that an agency received the proposal. The closing evidence must come from the actual permitted submission channel.",
+    "preparation": [
+     "Open the preparation mission and its Evidence Ledger.",
+     "Use the current official opportunity; references in these lessons are starting points, not a substitute for its instructions."
+    ],
+    "sections": [
+     {
+      "heading": "Make the human release decision",
+      "paragraphs": [
+       "A submission is not complete when you send it. It is complete when you hold proof it arrived, in the form the buyer specified, before the deadline.",
+       "Keep the receipt the buyer's system produced, not your own record of sending. A portal confirmation with a reference number is evidence; an email in your sent folder is a record of your intention. If the channel produces no receipt, ask for acknowledgement and keep the reply.",
+       "Keep the exact artifact you submitted. When a question arrives six weeks later about what you committed to, 'the final version' is ambiguous if three final versions exist. Archive the file that was actually sent, with its timestamp.",
+       "Expect the relationship to be measured after award. Texas Government Code section 2155.089 requires an agency to review a vendor's performance after a contract is completed or otherwise terminated, and for contracts over $5 million to review performance at least once each year and at each key milestone. Your performance becomes a record that follows you into the next evaluation - which is the same 'past vendor performance' factor the capability lesson began with.",
+       "Transition is part of the offer, at both ends. How you take over, and how you hand back. A buyer choosing a supplier is also choosing how hard it will be to stop, and saying so plainly is more reassuring than avoiding it.",
+       "Debriefs are worth asking for whether you win or lose. A losing response that produces a clear reason is a cheaper lesson than the next one.",
+       "Keep a short internal record of what you would do differently, written before the outcome is known. After a win it will read as over-caution and after a loss as obvious, and the version written while you still do not know is the only honest one."
+      ]
+     },
+     {
+      "heading": "Keep the actual receipt",
+      "steps": [
+       "Submit early enough that a failed upload is recoverable. The deadline is not the plan.",
+       "Capture the buyer's own receipt - reference number, timestamp, channel.",
+       "Archive the exact file submitted, alongside that receipt.",
+       "Record what you committed to, separately from the document, in a form you can check against later.",
+       "Write the transition plan for both directions: taking over, and handing back.",
+       "Ask for a debrief, and record what you are told."
+      ]
+     },
+     {
+      "heading": "Close the mission on its actual objective",
+      "paragraphs": [
+       "The platform submits, and what it keeps turns out to matter twice.",
+       "Submitted at 14:20 on the day before the deadline, through the portal the solicitation named. The portal issues reference SUB-2026-0914-0077 with a timestamp. That reference, not the sent folder, is the receipt.",
+       "Archived: the exact PDF uploaded, its checksum, the portal receipt, and a one-page summary of the commitments made - pricing, timelines, the business-hours support coverage, the nightly synchronisation caveat.",
+       "Six weeks later a query arrives about the support commitment. The archived file answers it in one minute, and the answer is the same one the buyer is reading. Had three versions of 'final' existed, that exchange would have started with uncertainty on their side.",
+       "They win, and the transition plan is executed as written: roster import in week one, parallel running for two weeks, cutover at a named date. The plan also names the exit - full export, self-service, any time - which the agency's own records duty requires them to have considered.",
+       "Under 2155.089 the agency will review performance at completion. The nightly-synchronisation caveat, stated plainly in the submission, is now the thing that protects the relationship: it was never a surprise, so it cannot become a complaint."
+      ]
+     },
+     {
+      "heading": "When this goes wrong",
+      "paragraphs": [
+       "The failure is submitting at the deadline with no receipt.",
+       "The upload fails at 16:52 for an eight-minute deadline, or it succeeds and nobody captures the confirmation. Later, asked to prove it was submitted on time, the only evidence is your own system reporting its own success - which is exactly the weak form of evidence the platform teaches against elsewhere.",
+       "The second failure is the ambiguous archive. Three files called final, none matching the one uploaded. Every later question about what was committed becomes an argument about which document is real.",
+       "The third is treating award as the end. Performance is reviewed and recorded, and that record is read as past performance in the next evaluation. The submission that oversold its support coverage wins once and then meets itself in the following scoring round.",
+       "Sections 2155.089 were retrieved on 2026-09-21 from the Texas Legislature's statute host through the legal-research pipeline, which returns the statute text with its URL and a timestamp and renders no opinion on it. Read the chapter in full at https://tcss.legis.texas.gov/resources/GV/htm/GV.2155.htm. This is research and not legal advice, it is Texas-specific, and the opportunity's own instructions govern over any summary here."
+      ]
+     }
+    ],
+    "exercise": {
+     "prompt": "Prepare a human submission checklist. Use a clearly labelled practice receipt for training; never fabricate an official acknowledgment.",
+     "checklist": [
+      "Name the approver and submitter.",
+      "Identify the exact approved file.",
+      "Retain the actual portal receipt when submission occurs.",
+      "Separate receipt, selection and award states.",
+      "Assign follow-up and sustainment owners."
+     ]
+    },
+    "check": {
+     "question": "What does a portal acknowledgment establish?",
+     "choices": [
+      "A government award.",
+      "The receipt state stated by that acknowledgment, for that artifact and channel.",
+      "Approval for any future operational deployment."
+     ],
+     "answer": 1,
+     "explanation": "Receipt, evaluation, award and deployment authority are distinct events with distinct evidence."
+    },
+    "references": [
+     {
+      "label": "SAM.gov",
+      "url": "https://sam.gov/"
+     },
+     {
+      "label": "Grants.gov applicant resources",
+      "url": "https://www.grants.gov/applicants"
+     }
+    ]
+   }
+  }
+ ]
 }

@@ -60,9 +60,15 @@ describe('mission research', () => {
         renderWithProviders(<><ResearchPage /><Link to={'/app/research?source=' + second.id}>Open the other source</Link></>, {
             auth: { user: { id: 'editor' }, isAuthed: true }, workspace: { active: { id: 'ws1' } }, route: '/app/research?source=' + first.id,
         });
-        expect(await screen.findByText('The first extracted source.')).toBeVisible();
+        // Opening a source deep link costs three sequential reads (detail, list, detail),
+        // which regularly exceeds findBy's 1s default. Measured: the text is present at
+        // ~1.2s. Bounded, so a source that never renders still fails.
+        const SOURCE_TIMEOUT = 10000;
+        // waitFor re-queries each poll. findBy resolves once and the node it returned is
+        // detached by the next render, so toBeVisible then reports it is not in the document.
+        await waitFor(() => expect(screen.getByText('The first extracted source.')).toBeVisible(), { timeout: SOURCE_TIMEOUT });
         await user.click(screen.getByRole('link', { name: 'Open the other source' }));
-        expect(await screen.findByText('The second extracted source.')).toBeVisible();
+        await waitFor(() => expect(screen.getByText('The second extracted source.')).toBeVisible(), { timeout: SOURCE_TIMEOUT });
         expect(screen.queryByText('The first extracted source.')).not.toBeInTheDocument();
     });
 

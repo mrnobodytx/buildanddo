@@ -61,9 +61,13 @@ describe('organized personal motion settings', () => {
     });
 
     it('explains an OS reduction and never overrides it with an expressive preset', async () => {
+        // A real MediaQueryList still carries the deprecated addListener/removeListener,
+        // and next-themes calls them. A mock without them throws
+        // "o.addListener is not a function" from inside its effect.
         vi.spyOn(window, 'matchMedia').mockImplementation((query) => ({
-            matches: query === '(prefers-reduced-motion: reduce)', media: query,
+            matches: query === '(prefers-reduced-motion: reduce)', media: query, onchange: null,
             addEventListener() {}, removeEventListener() {},
+            addListener() {}, removeListener() {}, dispatchEvent: () => false,
         }));
         const user = setupUser();
         renderMotion();
@@ -165,7 +169,11 @@ describe('isolated motion previews', () => {
             fireEvent.change(input, { target: { files: [new File(['bad'], 'bad.svg', { type: 'image/svg+xml' })] } });
             expect(screen.getByRole('alert')).toHaveTextContent('supported file');
             expect(create).not.toHaveBeenCalled();
-            await user.upload(input, new File(['image'], 'example.png', { type: 'image/png' }));
+            // The unsupported-file case above assigns a plain ARRAY to input.files, so a
+            // following user.upload() calls .item() on it and throws "_input_files.item is
+            // not a function". user.upload is fine on a clean input (SuiteForms and
+            // BlueprintPage use it); it is this input's already-set files that break it.
+            fireEvent.change(input, { target: { files: [new File(['image'], 'example.png', { type: 'image/png' })] } });
             await waitFor(() => expect(create).toHaveBeenCalledTimes(1));
             await user.click(screen.getByRole('button', { name: 'Expand example image' }));
             expect(screen.getByRole('dialog', { name: 'Image detail' })).toBeVisible();

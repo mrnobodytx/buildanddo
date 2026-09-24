@@ -1,0 +1,59 @@
+<!-- @dsCard height=288 -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600;6..72,700;6..72,800&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<title>Broadcast Classroom</title>
+<style>
+  html, body { margin:0; height:100%; }
+  body { background:var(--background); color:var(--foreground); font-family:var(--font-sans); overflow:hidden; padding:0; }
+  .cover { position:relative; height:288px; overflow:hidden; }
+  .art { position:absolute; top:0; left:480px; width:480px; height:288px; overflow:hidden; }
+  .art svg { display:block; width:480px; height:288px; }
+  .stage { fill:var(--stage); }
+  html[data-theme="dark"] .stage { fill:var(--stage-border); }
+  .raised { fill:var(--stage-raised); }
+  html[data-theme="dark"] .raised { fill:var(--stage); }
+  .live { fill:var(--primary); }
+  .tint { fill:var(--secondary); }
+  .speak { fill:var(--success); }
+  .warm { fill:var(--amber); }
+  .ring { fill:none; stroke:var(--stage-speaking); stroke-width:var(--rule-thick); }
+  .hair { stroke:var(--border); stroke-width:var(--rule-thin); }
+  .dbl { stroke:var(--foreground); stroke-opacity:.7; stroke-width:1; }
+  .sq { rx:var(--radius); }
+  .words { position:absolute; left:var(--space-8); bottom:var(--space-8); max-width:440px; }
+  .name { margin:0; font-family:var(--font-display); font-size:88px; line-height:.95; font-weight:600; letter-spacing:-.02em; color:var(--foreground); }
+  .tag { margin:var(--space-3) 0 0 2px; font-size:14px; line-height:20px; color:var(--muted-foreground); }
+</style>
+</head>
+<body>
+<div class="cover">
+<div class="art" aria-hidden="true">
+<svg viewBox="0 0 480 288" width="480" height="288">
+<!--
+  blocks      stage 288×162 (the 16:9 broadcast slab, largest) · primary 144×128 bled off the top (on-air red) · secondary 176×82 bled off the right (the paper lesson beside the stage) · stage-raised 80×60 tile inside the slab · success 64×16 and amber 32×16 once (speaking, measuring) — about a third of 960×288
+  arrangement one wide 16:9 slab with satellites, as the room composes: stage left, on-air above, lesson paper right, status chips beneath
+  pattern     hairline rules, from "rules, not shadows": two border hairlines and one double rule crossing the blocks, plus the rule-thick speaking ring around the tile
+  scales      sides and offsets in space-4 multiples; gutters space-4; ring rule-thick; hairlines rule-thin; every corner radius (0)
+-->
+<line class="hair" x1="0" y1="32" x2="480" y2="32"/>
+<rect class="stage sq" x="16" y="48" width="288" height="162"/>
+<rect class="raised sq" x="208" y="134" width="80" height="60"/>
+<rect class="ring sq" x="209" y="135" width="78" height="58"/>
+<rect class="live sq" x="320" y="-16" width="144" height="128"/>
+<rect class="tint sq" x="320" y="128" width="176" height="82"/>
+<rect class="speak sq" x="16" y="226" width="64" height="16"/>
+<rect class="warm sq" x="96" y="226" width="32" height="16"/>
+<line class="hair" x1="0" y1="258" x2="480" y2="258"/>
+<line class="dbl" x1="0" y1="266" x2="480" y2="266"/>
+<line class="dbl" x1="0" y1="269" x2="480" y2="269"/>
+</svg>
+</div>
+<div class="words">
+<h1 class="name">Broadcast<br>Classroom</h1>
+<p class="tag">Classes, broadcasts and the Sentinel feed, on one measured stage.</p>
+</div>
+</div>
+</body>
+</html>

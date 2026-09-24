@@ -1,11 +1,11 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/src/components/platform/__tests__/MetaFunctionPlatform.test.jsx
 // Stage:       08_TEST
-// SRS:         SRS-BUILDANDDO-PLATFORM-001
+// SRS:         SRS-BUILDANDDO-PLATFORM-001, SRS-BUILDANDDO-COMMUNITY-WEB-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    USO-BUILDANDDO-PLATFORM-001
-// Seat:        BITS-CODEGEN
+// Dispatch:    USO-BUILDANDDO-PLATFORM-001, VCC-BUILDANDDO-COMMUNITY-WEB-001
+// Seat:        BITS-CODEGEN, C-ONE (status link kept on the domain)
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-13
 // Depends:     apps/web/src/pages/PlatformPage.jsx,
@@ -51,7 +51,7 @@ describe('MetaFunction platform visuals', () => {
         expect(screen.getByText('Demonstration data only')).toBeInTheDocument();
         expect(
             screen.getByRole('link', { name: /Powered by Citadel Nexus Inc/ }),
-        ).toHaveAttribute('href', 'https://citadel-nexus.com/status');
+        ).toHaveAttribute('href', '/status');
         expect(await screen.findByTestId('metafunction-orb')).toBeInTheDocument();
     });
 

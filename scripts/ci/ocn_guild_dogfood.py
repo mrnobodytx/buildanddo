@@ -333,6 +333,146 @@ def workload(root, auth, uid, args, out):
     return 0 if all(s["ok"] for s in steps) else 1
 
 
+# The 21-day sprint's remaining work, one item per guild. Every line is something MEASURED this
+# cycle, not a wish list: the evidence field says how it is known, so a guildmaster reading the
+# mission can check the claim before accepting the work.
+#
+# entertainment gets the org chart because the read model already exists (132 agents, 11 guilds)
+# and has no page in the product - the operator asked where it went. Nothing is invented to give a
+# guild something to do; a guild with no measured work is reported as having none.
+SPRINT_WORK = {
+    "builder": {
+        "headline": "a migration preflight that runs against a throwaway copy of live data",
+        "why": "One failed migration aborts PocketBase startup entirely - not the migration, the "
+               "service. Pushing twelve at once took staging down, and it came back quickly only "
+               "because a database copy had been taken by hand first.",
+        "evidence": "staging outage 2026-09-20; the pb_migrations quarantine loop; migrations "
+                    "apply by set-difference on filename, so a lower-numbered file added later "
+                    "still runs, out of order",
+        "done": "A pending migration set is applied to a copy and the deploy refuses on any "
+                "failure, demonstrated with a migration that is MEANT to fail.",
+    },
+    "intelligence": {
+        "headline": "a negative-control gate every verifier must pass before it is believed",
+        "why": "Three findings this week were the instrument, not the system. A broken checker "
+               "does not return an error - it returns a FINDING, in the same shape and the same "
+               "confident tone as a real one.",
+        "evidence": "content assessor: a 4KB truncation found 0 routes; a 0x08 byte inside a "
+                    "regex; prerequisites resolved against a graph that does not exist",
+        "done": "No checker merges without a recorded run where it FAILS on a deliberately "
+                "broken input.",
+    },
+    "research": {
+        "headline": "write Foundations and Signals to depth before anything else is added",
+        "why": "The curriculum is structurally perfect and editorially empty. A reader finds "
+               "nothing broken and learns nothing.",
+        "evidence": "33/33 pass every structural check and 0/33 pass on depth; 9,619 "
+                    "instructional words against 467 declared minutes - 20.6 per claimed minute",
+        "done": "Foundations and Signals clear the depth floor, each lesson carrying a worked "
+                "example and a failure case.",
+    },
+    "writers": {
+        "headline": "a worked example and a failure case in every lesson",
+        "why": "A definition followed by a quiz about that definition tests recall of the "
+               "previous paragraph. Median prose per lesson is 89 words across three headings.",
+        "evidence": "99 sections across 33 lessons, almost exactly three paragraphs each - a "
+                    "uniformity human writing does not have",
+        "done": "Every lesson shows the idea doing work, and shows what going wrong looks like.",
+    },
+    "creator": {
+        "headline": "rebuild the content-production path to depth, shipping the artifact it teaches",
+        "why": "Five lessons claim to teach content production and all five are stubs. A lesson "
+               "on writing a brief that is itself 270 words has demonstrated the opposite of its "
+               "own thesis.",
+        "evidence": "Content production 5/5 STUB, 1,347 words against 73 declared minutes; "
+                    "Practice and improvement 5/5 STUB",
+        "done": "Each lesson ships the real artifact - a brief, the post produced from it, and an "
+                "editorial pass with the changes visible.",
+    },
+    "commerce": {
+        "headline": "one provable end-to-end payment path, or descope the plane in writing",
+        "why": "The commerce plane has never processed anything. Not little - never.",
+        "evidence": "zero commerce events; Stripe unrouted; the dedupe tables a payment path "
+                    "needs are absent from the schema; billing_subscriptions is an unwritable "
+                    "view; there are no external_identities",
+        "done": "One real webhook, one deduplicated event, one row that can actually be written - "
+                "or the twelve contracts are relabelled design intent.",
+    },
+    "finance": {
+        "headline": "relabel the commercial contracts that describe a system which has never run",
+        "why": "A validator with 147 passing tests is testing the DESCRIPTION of a commerce "
+               "system, and will keep passing for exactly as long as that system does not exist.",
+        "evidence": "docs/commercial carries 12 contracts and 147 green tests while the commerce "
+                    "event count is zero",
+        "done": "Each contract is marked implemented or design intent, and the validator reports "
+                "which is which.",
+    },
+    "entertainment": {
+        "headline": "give the workforce org chart a page in the product",
+        "why": "The read model is fresh and has no surface. People cannot collaborate with a "
+               "hierarchy they cannot see, and the operator has asked where it went.",
+        "evidence": "the organizational read model holds 132 agents across 11 guilds at revision "
+                    "131, and no route for it appears in the shipped bundle's 16-route table",
+        "done": "A route renders the hierarchy from the live read model, not from a static copy.",
+    },
+}
+
+
+def sprint(root, auth, uid, args, out):
+    """Issue one sprint mission per guild, carrying work that was measured rather than imagined.
+
+    THE CREATING SEAT IS NOT THE OWNING GUILD, and the record says so. A mission's `owner` is
+    whichever box seat could reach the API; the guild that owns the work is named in the title and
+    in the plan. Pretending otherwise would put a guild's name on a record it never touched - the
+    same mistake as posting under a box name instead of a guildmaster's.
+
+    Missions are left at `proposed` DELIBERATELY. Accepting work on a guild's behalf is exactly the
+    decision a guildmaster exists to make, and a sprint that auto-approves its own missions has a
+    lifecycle for decoration.
+    """
+    wanted = [args.guild] if args.guild else sorted(SPRINT_WORK)
+    made = []
+    for guild in wanted:
+        work = SPRINT_WORK.get(guild)
+        if not work:
+            made.append({"guild": guild, "state": "NO_MEASURED_WORK"})
+            continue
+        plan = plan_for(guild, work["headline"], args.source or "the 21-day sprint")
+        plan["purpose"] = ("%s. %s" % (work["headline"].capitalize(), work["why"]))[:1200]
+        plan["baseline"] = work["evidence"][:1200]
+        plan["target"] = work["done"][:1200]
+        plan["in_scope"] = ("Work owned by the %s guild for the remainder of the 21-day sprint."
+                            % guild)
+        plan["evaluate"] = ("The evidence line in this plan is re-measured. If it no longer holds "
+                            "the mission is withdrawn, not completed.")
+        description = "\n\n".join([
+            "OWNING GUILD: %s" % guild,
+            "WHY NOW: %s" % work["why"],
+            "HOW IT IS KNOWN: %s" % work["evidence"],
+            "DONE MEANS: %s" % work["done"],
+            "Raised by seat %s. The owning guild approves or declines it - this record is "
+            "proposed, not assigned." % args.seat,
+        ])
+        status, body = http(root + "/api/collections/missions/records", data=json.dumps({
+            "title": "Sprint: %s - %s" % (guild, work["headline"][:80]),
+            "workspace": args.workspace, "owner": uid, "status": "proposed",
+            "description": description, "mission_plan": plan,
+        }).encode(), headers=auth)
+        entry = {"guild": guild, "http": status, "headline": work["headline"][:58]}
+        if status in (200, 201):
+            entry["mission"] = body.get("id")
+            entry["state"] = "PROPOSED"
+        else:
+            entry["state"] = "REFUSED"
+            entry["message"] = str(body.get("message") or "")[:120]
+            entry["fields"] = {k: str((v or {}).get("message"))[:80]
+                               for k, v in (body.get("data") or {}).items()}
+        made.append(entry)
+    out["missions"] = made
+    out["proposed"] = [m["mission"] for m in made if m.get("mission")]
+    return 0 if out["proposed"] else 1
+
+
 def resume(root, auth, args, out):
     """Finish a workload whose earlier attempt left real records behind.
 
@@ -441,7 +581,7 @@ def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("seat")
     ap.add_argument("workspace")
-    ap.add_argument("action", choices=["promote", "workload", "verify", "cleanup", "inventory", "resume"])
+    ap.add_argument("action", choices=["promote", "workload", "verify", "cleanup", "inventory", "resume", "sprint"])
     ap.add_argument("--collection", default="")
     ap.add_argument("--ids", default="")
     ap.add_argument("--guild", default="")
@@ -469,7 +609,9 @@ def main() -> int:
     out["uid"] = uid
     auth = {"Authorization": token}
 
-    if args.action == "promote":
+    if args.action == "sprint":
+        code = sprint(root, auth, uid, args, out)
+    elif args.action == "promote":
         code = promote(root, auth, uid, args, out)
     elif args.action == "workload":
         # An exception here would lose the mission id that earlier steps already created, leaving

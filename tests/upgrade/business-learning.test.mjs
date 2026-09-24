@@ -8,17 +8,33 @@
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-15
-// Depends:     apps/pocketbase/pb_hooks/business-policy.js, apps/pocketbase/pb_hooks/tutorial-learning.js, apps/pocketbase/pb_hooks/business.pb.js, apps/pocketbase/pb_migrations/1789700000_expand_business_learning.js, apps/pocketbase/pb_migrations/data/starter-tutorials.json, apps/web/src/lib/businessPlanning.js, apps/web/src/lib/tutorialCurriculum.js
+// Depends:     apps/pocketbase/pb_hooks/business-policy.js, apps/pocketbase/pb_hooks/business.pb.js, apps/pocketbase/pb_migrations/1789700000_expand_business_learning.js, apps/pocketbase/pb_migrations/data/starter-tutorials.json, apps/web/src/lib/businessPlanning.js, apps/web/src/lib/tutorialCurriculum.js
 // EnumType:    Test
-// EnumEdges:   VALIDATES apps/pocketbase/pb_hooks/business-policy.js; CONSUMES apps/pocketbase/pb_hooks/tutorial-learning.js; VALIDATES apps/pocketbase/pb_hooks/business.pb.js; VALIDATES apps/pocketbase/pb_migrations/1789700000_expand_business_learning.js; VALIDATES apps/pocketbase/pb_migrations/data/starter-tutorials.json; VALIDATES apps/web/src/lib/businessPlanning.js; VALIDATES apps/web/src/lib/tutorialCurriculum.js
+// EnumEdges:   VALIDATES apps/pocketbase/pb_hooks/business-policy.js; VALIDATES apps/pocketbase/pb_hooks/business.pb.js; VALIDATES apps/pocketbase/pb_migrations/1789700000_expand_business_learning.js; VALIDATES apps/pocketbase/pb_migrations/data/starter-tutorials.json; VALIDATES apps/web/src/lib/businessPlanning.js; VALIDATES apps/web/src/lib/tutorialCurriculum.js
 // DAG Node:    none
 // Intent:      Exercise authored lesson structure, migration retention and replay, ERP isolation and content approval against the production source contracts.
 // ───────────────────────────────────────────────────────────────
 
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { posix } from 'node:path';
 import test from 'node:test';
+
+// $filepath is POSIX in the PocketBase runtime; these keep fixture paths identical on Windows.
+const posixJoin = (parts) => {
+    const out = [];
+    for (const raw of parts.flatMap((part) => String(part).split('/'))) {
+        if (!raw || raw === '.') continue;
+        if (raw === '..') { out.pop(); continue; }
+        out.push(raw);
+    }
+    return `/${out.join('/')}`;
+};
+const posixDir = (value) => {
+    const parts = String(value).split('/').filter(Boolean);
+    parts.pop();
+    return `/${parts.join('/')}`;
+};
+
 import vm from 'node:vm';
 import { dateInput, localDay, overdue, selectTasks, contentOutline, draftBlocks, publicationUrl, retainedFields } from '../../apps/web/src/lib/businessPlanning.js';
 import { validLesson, lessonLink, mergeTutorials, lessonProgress, selectTutorials } from '../../apps/web/src/lib/tutorialCurriculum.js';
@@ -42,7 +58,13 @@ test('all 25 tutorials have complete renderable instruction, distinct exercises 
         assert.ok(validLesson(tutorial.lesson), tutorial.title);
         assert.ok(tutorial.effort_minutes >= 8 && tutorial.effort_minutes <= 20);
         assert.ok(JSON.stringify(tutorial.lesson).split(/\s+/).length >= 200, tutorial.title);
-        assert.equal(tutorial.lesson.sections.find((section) => section.steps).steps.length, 4);
+        // A FLOOR, not a fixed count. This asserted exactly 4 and was true only of the
+        // shallow curriculum; deepening every lesson to clear the words-per-claimed-minute
+        // floor took the hands-on sections to 5 and 6 steps, and the test failed for the
+        // content getting better. The property worth holding is that the section gives a
+        // reader several concrete steps and does not sprawl into an unreadable list.
+        const steps = tutorial.lesson.sections.find((section) => section.steps).steps;
+        assert.ok(steps.length >= 4 && steps.length <= 8, `${tutorial.title}: ${steps.length} steps`);
         assert.ok(tutorial.lesson.sections.some((section) => section.heading.includes('illustrative')));
         assert.ok(JSON.stringify(tutorial.lesson).length < 65536);
     }
@@ -220,8 +242,21 @@ function fixture({ seedLegacy = false, seedCustom = false } = {}) {
         records.tutorials.push({ id: `legacy${index}`, title: seed.title, summary: seed.legacy_summary, order: seed.order });
     if (seedCustom) records.tutorials.push({ id: 'custom1', title: 'Edited administrator lesson', summary: 'Keep this summary', order: 200 });
     let up, down;
-    vm.runInNewContext(source(migrationPath), { Field, Record, __hooks: '/fixture/pb_hooks', $filepath: { join: posix.join },
-        toString: String, $os: { readFile: (path) => { assert.equal(path, '/fixture/pb_migrations/data/starter-tutorials.json'); return source(dataPath); } },
+    // The migrations resolve their curriculum with $filepath.join(__hooks, '..', <dir>, 'data', f)
+    // and try both 'pb_migrations' (the deployed layout) and 'migrations' (this fixture's). Neither
+    // __hooks nor $filepath was provided here, so every one of them threw on an undefined global
+    // and reported "Starter data not found beside the hooks directory" - a harness gap reported as
+    // missing content. Accept either layout instead of asserting one, so the stub does not depend
+    // on which directory name the loop happens to try first.
+    const dataFile = '/data/starter-tutorials.json';
+    vm.runInNewContext(source(migrationPath), { Field, Record,
+        __hooks: '/hooks', __migrations: '/migrations', toString: String,
+        $filepath: { join: (...parts) => posixJoin(parts), dir: (value) => posixDir(value) },
+        $os: { readFile: (path) => {
+            assert.ok(path === `/pb_migrations${dataFile}` || path === `/migrations${dataFile}`,
+                `unexpected curriculum path: ${path}`);
+            return source(dataPath);
+        } },
         migrate: (a, b) => { up = a; down = b; } }, { filename: new URL(migrationPath, root).href });
     up(app);
     records.workspaces.push({ id: 'ws1', owner: 'owner1' }, { id: 'ws2', owner: 'other' });
@@ -394,45 +429,52 @@ test('legacy planned records cannot forge a review and only drafts can be delete
     f.records.social_content[0].status = 'failed'; assert.equal(f.content({ status: 'draft' }).run(), 'saved');
 });
 
-test('progress remains with its account and lesson, and review cannot downgrade completion', () => {
+test('raw progress creates, updates and deletes are denied even for their owner', () => {
     const f = fixture();
     const progress = { id: 'progress1', owner: 'owner1', tutorial: curriculum.lessons[0].id, status: 'in_progress', progress: 999 };
-    const save = f.request('tutorial_progress', progress, {}, 'owner1', true, 'progress'); save.run(); assert.equal(save.record.getString('progress'), '50');
-    for (const patch of [{ owner: 'other' }, { tutorial: curriculum.lessons[1].id }, { status: 'verified' }])
-        reject(f.request('tutorial_progress', progress, patch, 'owner1', false, 'progress').run, 400);
+    for (const account of ['owner1', 'other', null]) for (const creating of [true, false, undefined]) {
+        const request = f.request('tutorial_progress', progress, { status: 'completed' }, account, creating, 'progress');
+        reject(request.run, 403); assert.equal(request.calls(), 0);
+        assert.equal(request.record.getString('progress'), '999');
+    }
+    assert.equal(f.records.tutorial_progress.length, 0);
+    for (const patch of [{ owner: 'other' }, { tutorial: curriculum.lessons[1].id }, { status: 'verified' }, { status: 'not_started' }, {}])
+        reject(f.request('tutorial_progress', progress, patch, 'owner1', false, 'progress').run, 403);
     f.denied.add(progress.tutorial); reject(f.request('tutorial_progress', progress, {}, 'owner1', false, 'progress').run, 403); f.denied.clear();
-    f.certify('owner1', progress.tutorial);
-    const completed = f.request('tutorial_progress', progress, { status: 'completed' }, 'owner1', false, 'progress'); completed.run(); assert.equal(completed.record.getString('progress'), '100');
-    reject(f.request('tutorial_progress', completed.record.data, { status: 'in_progress' }, 'owner1', false, 'progress').run, 400);
-    assert.equal(f.request('tutorial_progress', completed.record.data, {}, 'owner1', false, 'progress').run(), 'saved');
-    const notStarted = f.request('tutorial_progress', progress, { status: 'not_started' }, 'owner1', true, 'progress'); notStarted.run(); assert.equal(notStarted.record.getString('progress'), '0');
+    const historical = { ...progress, status: 'completed', progress: 100 };
+    f.records.tutorial_progress.push(historical);
+    reject(f.request('tutorial_progress', historical, { status: 'in_progress' }, 'owner1', false, 'progress').run, 403);
+    reject(f.request('tutorial_progress', historical, {}, 'owner1', false, 'progress').run, 403);
+    assert.deepEqual(f.records.tutorial_progress, [historical]);
 });
 
-test('interactive lesson completion needs the learner\'s own server-issued certificate; reading-only lessons are unchanged', () => {
+test('certificates, reading-only lessons and incomplete learning schemas never reopen raw progress writes', () => {
     const f = fixture({ seedCustom: true });
     const progress = { id: 'progress1', owner: 'owner1', tutorial: curriculum.lessons[0].id, status: 'in_progress', progress: 50 };
-    f.request('tutorial_progress', progress, {}, 'owner1', true, 'progress').run();
+    f.records.tutorial_progress.push(plain(progress));
+    const before = plain(f.records.tutorial_progress), saves = f.saves();
     const complete = (account = 'owner1', data = f.records.tutorial_progress[0]) =>
         f.request('tutorial_progress', data, { status: 'completed' }, account, false, 'progress');
-    reject(complete().run, 400);
-    reject(f.request('tutorial_progress', { ...progress, id: 'progress2', status: 'completed' }, {}, 'owner1', true, 'progress').run, 400);
+    reject(complete().run, 403);
+    reject(f.request('tutorial_progress', { ...progress, id: 'progress2', status: 'completed' }, {}, 'owner1', true, 'progress').run, 403);
     f.certify('other', progress.tutorial);
-    reject(complete().run, 400);
+    reject(complete().run, 403);
     f.records.tutorial_learning.push({ id: 'unfinished', owner: 'owner1', tutorial: progress.tutorial, completed_at: '', certificate: null });
-    reject(complete().run, 400);
+    reject(complete().run, 403);
     const learning = f.collections.get('tutorial_learning');
     learning.updateRule = ''; f.certify('owner1', progress.tutorial, 'certified1');
     f.records.tutorial_learning = f.records.tutorial_learning.filter((row) => row.id !== 'unfinished');
-    reject(complete().run, 400);
+    reject(complete().run, 403);
     learning.updateRule = null;
-    assert.equal(complete().run(), 'saved');
-    assert.equal(f.records.tutorial_progress[0].progress, 100);
+    reject(complete().run, 403);
     const reading = { id: 'progress3', owner: 'owner1', tutorial: 'custom1', status: 'completed', progress: 0 };
-    assert.equal(f.request('tutorial_progress', reading, {}, 'owner1', true, 'progress').run(), 'saved');
+    reject(f.request('tutorial_progress', reading, {}, 'owner1', true, 'progress').run, 403);
     f.collections.delete('tutorial_learning');
     const second = { id: 'progress4', owner: 'owner1', tutorial: curriculum.lessons[1].id, status: 'completed', progress: 0 };
-    reject(f.request('tutorial_progress', second, {}, 'owner1', true, 'progress').run, 400);
-    assert.equal(f.request('tutorial_progress', { ...reading, id: 'progress5' }, {}, 'owner1', true, 'progress').run(), 'saved');
+    reject(f.request('tutorial_progress', second, {}, 'owner1', true, 'progress').run, 403);
+    reject(f.request('tutorial_progress', { ...reading, id: 'progress5' }, {}, 'owner1', true, 'progress').run, 403);
+    assert.deepEqual(f.records.tutorial_progress, before);
+    assert.equal(f.saves(), saves);
 });
 
 test('native request registrations resolve their policy inside each isolated callback', () => {
@@ -440,10 +482,11 @@ test('native request registrations resolve their policy inside each isolated cal
     const context = { __hooks: '/hooks', require(path) { assert.equal(path, '/hooks/business-policy.js'); return Object.fromEntries(['erp', 'content', 'removeContent', 'progress'].map((name) => [name, (event, creating) => ({ name, event, creating })])); } };
     for (const kind of ['Create', 'Update', 'Delete']) context[`onRecord${kind}Request`] = (callback, ...collections) => registrations.push({ callback, collections, kind });
     vm.runInNewContext(source('apps/pocketbase/pb_hooks/business.pb.js'), context, { filename: new URL('apps/pocketbase/pb_hooks/business.pb.js', root).href });
-    assert.equal(registrations.length, 7);
+    assert.equal(registrations.length, 8);
+    assert.deepEqual(registrations.filter((row) => row.collections.includes('tutorial_progress')).map((row) => row.kind), ['Create', 'Update', 'Delete']);
     for (const registration of registrations) {
         const result = registration.callback('event'); assert.equal(result.event, 'event');
-        if (registration.kind !== 'Delete') assert.equal(result.creating, registration.kind === 'Create');
+        if (registration.kind !== 'Delete' && result.name !== 'progress') assert.equal(result.creating, registration.kind === 'Create');
     }
     assert.deepEqual(plain(registrations[0].collections), ['erp_objectives', 'erp_tasks', 'erp_contacts']);
 });

@@ -1,4 +1,21 @@
 #!/usr/bin/env python3
+# ─── CGRF Header ───────────────────────────────────────────────
+# File:        scripts/publish/activity_publish.py
+# Stage:       07_BUILD
+# SRS:         SRS-BUILDANDDO-BUDDI-001
+# CAPS:        pending
+# CK:          pending
+# Dispatch:    VCC-BUILDANDDO-BUDDI-001
+# Seat:        C-ONE
+# Owner:       Citadel Nexus Inc.
+# Created:     2026-09-07
+# Depends:     scripts/deploy/ship.py
+# EnumType:    Service
+# EnumEdges:   CONSUMED_BY scripts/deploy/ship.py; VALIDATED_BY tests/upgrade/test_activity_publish.py
+# DAG Node:    none
+# Intent:      Publish one verified release to the wiki, Discord and Reddit with every IP address
+#              and every fleet machine name withheld from the public text.
+# ───────────────────────────────────────────────────────────────
 """
 activity_publish.py - the canonical BuildAndDo publication fabric.
 
@@ -17,13 +34,18 @@ evidence object differently:
 Idempotent: keyed on (repository, commit, environment). Re-running ship.py
 for the same commit does not re-publish; each channel's outcome is tracked
 independently in state/publication/latest.json + history.jsonl.
+
+No public text carries an IP address (IPv4 or IPv6, public or private) or a
+fleet machine name. Both are replaced with a black bar before any adapter
+sees the event; see redact_public_text.
 """
 from __future__ import annotations
 import datetime as dt
 import hashlib
 import json
+import os
 import re
-import subprocess
+import string
 import sys
 import urllib.error
 import urllib.request
@@ -46,10 +68,29 @@ SECRET_PATTERNS = [
     ("provider_sk", re.compile(r"\bsk-[A-Za-z0-9_-]{16,}\b")),
 ]
 PRIVATE_PATTERNS = [
-    ("private_ip", re.compile(r"\b10\.\d{1,3}\.\d{1,3}\.\d{1,3}\b")),
     ("windows_path", re.compile(r"[A-Za-z]:\\\\?(Users|citadel_websites|HOSTINGER_COMP)")),
     ("citadel_internal", re.compile(r"\bcitadel[-_]?nexus\.com\b|\bguilds/CNWB\b", re.IGNORECASE)),
 ]
+
+# Operator rule, 2026-09-22: no public text carries ANY IP address - IPv4 or IPv6, public or
+# private - or any fleet machine name. The pattern this replaces matched only 10.x, so a public
+# address, a loopback URL or an IPv6 literal reached the wiki, Discord and Reddit verbatim.
+# Matches are REDACTED rather than held: a release note that mentions an address is still worth
+# publishing, and the address is the only part of it that must not travel.
+IPV4 = re.compile(r"(?<!\d)(?<!\d\.)(?:(?:25[0-5]|2[0-4]\d|1?\d?\d)\.){3}(?:25[0-5]|2[0-4]\d|1?\d?\d)(?!\d)(?!\.\d)")
+IPV6 = re.compile(
+    r"(?<![\w:])(?:[0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4}(?![\w:])"
+    r"|(?<![\w:])(?:[0-9A-Fa-f]{1,4}:){1,6}:(?:[0-9A-Fa-f]{1,4}(?::[0-9A-Fa-f]{1,4}){0,5})?(?![\w:])"
+    r"|(?<![\w:])::[0-9A-Fa-f]{1,4}(?::[0-9A-Fa-f]{1,4}){0,6}(?![\w:])"
+)
+REDACTED = "**" + chr(0x2588) * 8 + "**"  # the bold black bar (8 x U+2588) every withheld value becomes
+LOOPBACK = "127.0.0.1"                  # the one address that becomes a word instead: localhost
+
+# Machine names are deliberately NOT listed in this file. The repository is public, so a list
+# here would be the very disclosure it exists to prevent. They are read at publish time from the
+# private fleet map that CITADEL_FLEET_MAP points at.
+FLEET_MAP_ENV = "CITADEL_FLEET_MAP"
+FLEET_NAME_FIELDS = ("aka", "datadog_host", "provider_name", "hostname")
 
 
 def _publication_key(repository: str, commit: str, environment: str) -> str:
@@ -86,21 +127,113 @@ def build_release_event(title: str, summary: str, evidence: dict) -> dict:
     }
 
 
-def _scrub_text(text: str) -> tuple[bool, str | None]:
-    """Fail-closed: any hit means the event may NOT reach a public adapter (PHASE 3)."""
+def _counts_as_ipv6(candidate: str) -> bool:
+    """Prose produces IPv6 SHAPES too ('a::b'). Only '::1' or a candidate carrying at least
+    four hex digits is treated as an address."""
+    return candidate == "::1" or sum(ch in string.hexdigits for ch in candidate) >= 4
+
+
+def _address_spans(text: str) -> list[tuple[int, int]]:
+    spans = [m.span() for m in IPV4.finditer(text)]
+    spans += [m.span() for m in IPV6.finditer(text) if _counts_as_ipv6(m.group())]
+    return spans
+
+
+def _fleet_names() -> list[str] | None:
+    """Machine names from the private fleet map, longest first.
+
+    [] when CITADEL_FLEET_MAP is unset: names are then skipped silently. None when it IS set but
+    cannot be read as a fleet map - the operator asked for names to be withheld and that can no
+    longer be guaranteed, so the caller holds the release rather than publish them."""
+    location = os.environ.get(FLEET_MAP_ENV) or _SECRETS.get(FLEET_MAP_ENV)
+    if not location:
+        return []
+    try:
+        boxes = json.loads(Path(location).read_text(encoding="utf-8"))["boxes"]
+        found = []
+        for key, box in boxes.items():
+            found.append(key)
+            fields = box if isinstance(box, dict) else {}
+            for field in FLEET_NAME_FIELDS:
+                value = fields.get(field)
+                found.extend(value if isinstance(value, list) else [value])
+    except (OSError, ValueError, KeyError, TypeError, AttributeError):
+        return None
+    unique = {n.strip().lower(): n.strip() for n in found if isinstance(n, str) and n.strip()}
+    return sorted(unique.values(), key=lambda name: (-len(name), name.lower()))
+
+
+def _name_pattern(names: list[str]) -> re.Pattern | None:
+    """One case-insensitive alternation, longest name first, bounded so a name inside a longer
+    token (a name plus a suffix) is not cut in half."""
+    if not names:
+        return None
+    alternation = "|".join(re.escape(name) for name in names)
+    return re.compile(rf"(?<![A-Za-z0-9_-])(?:{alternation})(?![A-Za-z0-9_-])", re.IGNORECASE)
+
+
+def redact_public_text(text: str, names: re.Pattern | None = None) -> str:
+    """Withhold every IP address and fleet machine name in `text`.
+
+    Spans are collected on the ORIGINAL text and merged before anything is replaced, so an
+    address both patterns claim (an IPv4-mapped IPv6 literal) is withheld whole rather than
+    half. The IPv4 loopback becomes `localhost`; everything else becomes the black bar."""
+    spans = _address_spans(text)
+    if names is not None:
+        spans += [m.span() for m in names.finditer(text)]
+    if not spans:
+        return text
+    merged: list[list[int]] = []
+    for start, end in sorted(spans):
+        if merged and start <= merged[-1][1]:
+            merged[-1][1] = max(merged[-1][1], end)
+        else:
+            merged.append([start, end])
+    parts, cursor = [], 0
+    for start, end in merged:
+        parts += [text[cursor:start], "localhost" if text[start:end] == LOOPBACK else REDACTED]
+        cursor = end
+    parts.append(text[cursor:])
+    return "".join(parts)
+
+
+def _redact_values(value, names: re.Pattern | None):
+    """Redact every string VALUE of a nested event. Keys are left alone on purpose: an address
+    in a key survives to the fail-closed scrub below and holds the release instead."""
+    if isinstance(value, str):
+        return redact_public_text(value, names)
+    if isinstance(value, dict):
+        return {key: _redact_values(item, names) for key, item in value.items()}
+    if isinstance(value, (list, tuple)):
+        return [_redact_values(item, names) for item in value]
+    return value
+
+
+def _scrub_text(text: str, names: re.Pattern | None = None) -> tuple[bool, str | None]:
+    """Fail-closed: any hit means the event may NOT reach a public adapter (PHASE 3). It runs
+    after redaction, so an address or machine name found here is one redaction could not reach."""
     for fid, rx in SECRET_PATTERNS + PRIVATE_PATTERNS:
         if rx.search(text or ""):
             return False, fid
+    if _address_spans(text or ""):
+        return False, "ip_address"
+    if names is not None and names.search(text or ""):
+        return False, "fleet_machine_name"
     return True, None
 
 
-def compile_public_projection(event: dict) -> dict | None:
-    """ReleaseEvent -> PublicActivityEvent. Returns None (HOLD) if the scrub fails -
-    never silently publishes an event that failed the check."""
-    blob = json.dumps(event, default=str)
-    ok, finding = _scrub_text(blob)
+def compile_public_projection(event: dict) -> tuple[dict | None, str | None]:
+    """ReleaseEvent -> PublicActivityEvent with addresses and machine names withheld.
+    Returns (None, finding) - a HOLD - if the scrub fails, and never silently publishes an
+    event that failed the check."""
+    fleet = _fleet_names()
+    if fleet is None:
+        return None, "fleet_map_unreadable"
+    names = _name_pattern(fleet)
+    event = _redact_values(event, names)
+    ok, finding = _scrub_text(json.dumps(event, default=str), names)
     if not ok:
-        return None
+        return None, finding
     return {
         "event_id": event["event_id"],
         "commit": event["git"]["commit"],
@@ -110,7 +243,7 @@ def compile_public_projection(event: dict) -> dict | None:
         "deployment_state": event["deployment"]["state"],
         "evidence": event["evidence"],
         "public_url": PROD_URL,
-    }
+    }, None
 
 
 def _publish_wiki(public_event: dict) -> dict:
@@ -193,7 +326,7 @@ def _publish_reddit(public_event: dict) -> dict:
     missing = [k for k in required if not _SECRETS.get(k)]
     if missing:
         return {"state": "HOLD", "reason": f"missing: {', '.join(missing)}"}
-    return {"state": "HOLD", "reason": "adapter not yet implemented - credentials present but transport unbuilt"}
+    return {"state": "HOLD", "reason": "credentials present but the Reddit transport is not built; nothing is posted"}
 
 
 def publish(title: str, summary: str, evidence: dict) -> dict:
@@ -207,9 +340,10 @@ def publish(title: str, summary: str, evidence: dict) -> dict:
         print(json.dumps(result, indent=2, default=str))
         return result
 
-    public_event = compile_public_projection(event)
+    public_event, finding = compile_public_projection(event)
     if public_event is None:
-        result = {"publication_key": pub_key, "state": "HOLD_SCRUB_FAILED", "event_id": event["event_id"]}
+        result = {"publication_key": pub_key, "state": "HOLD_SCRUB_FAILED", "finding": finding,
+                  "event_id": event["event_id"]}
         _save_ledger(result)
         print(json.dumps(result, indent=2, default=str))
         return result

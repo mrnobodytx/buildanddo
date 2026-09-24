@@ -1,6 +1,9 @@
+// CGRF: SRS=SRS-BUILDANDDO-COMMUNITY-WEB-001, SRS-BUILDANDDO-PURPOSE-001 | CAPS=B | Seat=C-ONE
 import { Helmet } from 'react-helmet';
 import { useLocation } from 'react-router-dom';
 import { PUBLIC_PAGES, SITE_ORIGIN } from '@/lib/publicPages';
+import { SAME_AS } from '@/lib/communityLinks';
+import { PURPOSE } from '@/lib/purpose';
 
 export default function Seo({
     title,
@@ -8,17 +11,23 @@ export default function Seo({
     image,
     url,
     path,
+    route,
     siteName = 'BuildAndDo',
     type = 'website',
     structuredData = [],
 }) {
     const location = useLocation();
     const pathname =
-        (path || (url ? new URL(url, SITE_ORIGIN).pathname : location.pathname)).replace(
+        (path || route?.path || (url ? new URL(url, SITE_ORIGIN).pathname : location.pathname)).replace(
             /\/+$/,
             '',
         ) || '/';
-    const page = PUBLIC_PAGES.find((entry) => entry.path === pathname) || PUBLIC_PAGES[0];
+    // A catalogued route takes its metadata from PUBLIC_PAGES. A route outside the catalogue - a
+    // persona profile - passes its own `route` ({path, label, title, description, type}) so its
+    // canonical URL is its own; without one, the home entry is used as before.
+    const page =
+        PUBLIC_PAGES.find((entry) => entry.path === pathname) ||
+        (route?.path === pathname ? route : PUBLIC_PAGES[0]);
     const canonical = `${SITE_ORIGIN}${page.path}`;
     const pageTitle = title || page.title;
     const pageDescription = description || page.description;
@@ -31,7 +40,8 @@ export default function Seo({
             url: canonical,
             name: pageTitle,
             description: pageDescription,
-            isPartOf: { '@type': 'WebSite', name: siteName, url: SITE_ORIGIN },
+            // The site's official public profiles, from the one list in communityLinks.js.
+            isPartOf: { '@type': 'WebSite', name: siteName, url: SITE_ORIGIN, sameAs: [...SAME_AS] },
             publisher: {
                 '@type': 'Organization',
                 name: 'Citadel Nexus Inc.',
@@ -65,14 +75,14 @@ export default function Seo({
             <meta property="og:title" content={pageTitle} />
             <meta property="og:description" content={pageDescription} />
             <meta property="og:image" content={socialImage} />
-            <meta property="og:image:alt" content="BuildAndDo — learn by doing, together" />
+            <meta property="og:image:alt" content={PURPOSE.shareImageAlt} />
             <meta property="og:image:width" content="1200" />
             <meta property="og:image:height" content="630" />
             <meta name="twitter:card" content="summary_large_image" />
             <meta name="twitter:title" content={pageTitle} />
             <meta name="twitter:description" content={pageDescription} />
             <meta name="twitter:image" content={socialImage} />
-            <meta name="twitter:image:alt" content="BuildAndDo — learn by doing, together" />
+            <meta name="twitter:image:alt" content={PURPOSE.shareImageAlt} />
             <script id="page-schema" type="application/ld+json">
                 {JSON.stringify(schema).replace(/</g, '\\u003c')}
             </script>

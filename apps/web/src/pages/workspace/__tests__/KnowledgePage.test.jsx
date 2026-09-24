@@ -83,7 +83,10 @@ describe('workspace knowledge', () => {
         const user = setupUser(); renderPage(); await screen.findByRole('list', { name: 'Context citations' });
         backend.app.delete(backend.app.findRecordById('workspace_members', 'editormember'));
         await user.click(screen.getByRole('button', { name: 'Refresh knowledge' }));
-        expect(await screen.findByRole('alert')).toHaveTextContent(/no longer available/);
+        // The page now also embeds the assistant, which raises its own alert on the same
+        // permission loss, so an unqualified alert query matches two. Assert the one this
+        // test is about, and that it is still announced as an alert.
+        expect(await screen.findByText(/no longer available/)).toHaveAttribute('role', 'alert');
         expect(screen.queryByRole('list', { name: 'Context citations' })).not.toBeInTheDocument();
         expect(screen.queryByRole('button', { name: 'Download cited context' })).not.toBeInTheDocument();
         backend.seed('workspace_members', { id: 'editormember', workspace: 'ws1', user: 'editor', role: 'viewer' });

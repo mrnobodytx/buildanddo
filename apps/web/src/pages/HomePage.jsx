@@ -1,11 +1,11 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/src/pages/HomePage.jsx
 // Stage:       07_BUILD
-// SRS:         SRS-BUILDANDDO-UPGRADE-001
+// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-BUDDI-003
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
-// Seat:        BITS-CODEGEN
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-BUDDI-003
+// Seat:        BITS-CODEGEN, C-ONE (Talk to Buddi)
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-15
 // Depends:     apps/web/src/hooks/useWorkspaceRecords.js, apps/web/src/components/workspace/TutorialCatalog.jsx, apps/web/src/lib/workspaceSummary.js, apps/web/src/components/editorial/EditorialFrontPage.jsx, apps/web/src/hooks/useMissionResearch.js, apps/web/src/components/site/Faq.jsx, apps/web/src/components/site/Footer.jsx, apps/web/src/components/site/EarlyAccess.jsx
@@ -40,6 +40,7 @@ import EditorialStory from '@/components/motion/EditorialStory';
 import EditorialFrontPage from '@/components/editorial/EditorialFrontPage';
 import ReadingProgress from '@/components/motion/ReadingProgress';
 import TutorialCatalog from '@/components/workspace/TutorialCatalog';
+import TalkToBuddi from '@/components/voice/TalkToBuddi';
 import {
     DemoModeBanner,
     DegradedNotice,
@@ -528,7 +529,7 @@ function DailyEdition({ editions }) {
                     <div className="flex flex-wrap items-center gap-3">
                         <StatePill state={edition.status} />
                         <span className="text-xs text-muted-foreground">
-                            {recordTimestamp(edition.edition_date || edition.created)}
+                            {recordTimestamp(edition.published_at)}
                         </span>
                     </div>
                     <h3 className="font-display text-2xl font-semibold">{edition.title}</h3>
@@ -554,7 +555,7 @@ function SupportRevenue({ support }) {
         <PreviewSection
             id="support-revenue"
             label="Business projects · Support & Revenue"
-            title="Reported amounts, source by source."
+            title="Support requests and historical reports."
             icon={Gauge}
             href="/app/support"
             source={support}
@@ -568,7 +569,7 @@ function SupportRevenue({ support }) {
                                 <h3 className="font-display text-xl font-semibold">
                                     {record.provider}
                                 </h3>
-                                <StatePill state={record.status} />
+                                <StatePill state="reported" />
                             </div>
                             {hasReportedRevenue(record) ? (
                                 <>
@@ -613,8 +614,8 @@ function SupportRevenue({ support }) {
                                 </>
                             ) : (
                                 <p className="text-sm text-muted-foreground">
-                                    No synced amount is available. A connection request is not a
-                                    payment record.
+                                    No provider-confirmed revenue is available. Historical amounts and
+                                    health labels remain self-reported, not metrics. A request is not a payment.
                                 </p>
                             )}
                         </Card>

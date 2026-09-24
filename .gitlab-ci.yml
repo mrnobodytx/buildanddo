@@ -1,3 +1,18 @@
+# --- CGRF Header ------------------------------------------------
+# File:        .gitlab-ci.yml
+# Stage:       11_COMMIT
+# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# CAPS:        pending
+# CK:          pending
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+# Seat:        BITS-CODEGEN
+# Owner:       Citadel Nexus Inc.
+# Created:     2026-09-24
+# Depends:     services/praxis_evidence/run_all_tests.py, .gitlab/ci/day21-submission.yml
+# EnumType:    Workflow
+# EnumEdges:   CONSUMES services/praxis_evidence/run_all_tests.py; CONSUMES .gitlab/ci/day21-submission.yml
+# Intent:      Keep GitLab testing blocking while isolating mutating Praxis suites from shared backends and production credentials.
+# ----------------------------------------------------------------
 # Private CI for the buildanddo GitLab intake mirror (gitlab.citadel-nexus.com/root/buildanddo).
 # GitHub (mrnobodytx/buildanddo) is the public collaboration/submission plane; this project
 # runs the private release pipeline on a dedicated shell runner (tag: buildanddo).
@@ -45,16 +60,17 @@ praxis_evidence_tests:
   stage: test
   tags:
     - buildanddo
-  # PB_SUPERUSER_EMAIL / PB_SUPERUSER_PASSWORD / PB_API_URL are GitLab CI/CD
-  # variables (masked), not the gitignored secrets/deploy.local.env - a fresh
-  # CI checkout never has that file. client.py's _load_secrets() already
-  # merges os.environ, so no code change was needed to pick these up.
-  # No PB_API_URL means no target: fail fast, never fall back to production.
-  # run_all_tests.py also refuses a production host (SRS-BUILDANDDO-TRUST-001).
+  timeout: 30m
+  parallel:
+    matrix:
+      - POCKETBASE_PROFILE: ["package", "compose"]
+  # Each suite owns a fresh loopback database. Shared PB_API_URL, superuser
+  # credentials, proxies and deployment files are never passed to test children.
+  # Provisioning reuses the existing disposable-binary helper, not a deployed host.
   script:
-    - 'if [ -z "${PB_API_URL:-}" ]; then echo "REFUSED: PB_API_URL is not set; praxis_evidence_tests needs a non-production PocketBase." >&2; exit 1; fi'
-    - python3 services/praxis_evidence/run_all_tests.py
+    - python3 services/praxis_evidence/run_all_tests.py --profile $POCKETBASE_PROFILE --provision
   rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "external_pull_request_event"'
     - if: '$CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH =~ /^sprint\//'
 
 # BEGIN CITADEL BUILDANDDO VERIFIED RELEASE v1
@@ -78,6 +94,44 @@ buildanddo_release_candidate:
     paths:
       - .citadel-release/
 # END CITADEL BUILDANDDO VERIFIED RELEASE v1
+
+# BEGIN CITADEL CODE SECURITY v1
+# Datadog Code Analysis (SAST). Rules live in static-analysis.datadog.yml at the repo root.
+#
+# WHY: measured 2026-09-22, this repo ran Datadog RUM, CI Visibility and DORA but NO code
+# scanning at all. The scanners that would catch an injection or a hardcoded credential before
+# it reaches the public mirror were never configured - and the public mirror turned out to be
+# carrying eight fleet IPs and the credential-store path, found by hand rather than by a gate.
+#
+# NON-BLOCKING AND SILENT WITHOUT CREDENTIALS, both on purpose. CLAUDE.md records the
+# established convention: "Datadog steps are deliberately no-ops without DD_API_KEY. A SKIP:
+# line in the log is expected behaviour, not a failure." A scanner that reds the pipeline on a
+# runner with no keys teaches people to ignore red, which is how 43 of 95 monitors ended up in
+# No Data. `allow_failure: true` keeps the finding visible in Datadog without gating a release
+# during the campaign freeze; tighten it once the security rulesets come back clean.
+code_security_sast:
+  stage: verify
+  tags:
+    - buildanddo
+  allow_failure: true
+  variables:
+    # CI Visibility correlates findings to a service and env; without these the results upload
+    # but attach to nothing, which is how a scan becomes data nobody can find again.
+    DD_SERVICE: "buildanddo"
+    DD_ENV: "ci"
+  script:
+    - |
+      if [ -z "$DD_API_KEY" ] || [ -z "$DD_APP_KEY" ]; then
+        echo "SKIP: DD_API_KEY/DD_APP_KEY not set on this runner - no scan attempted."
+        echo "SKIP: set them as masked CI/CD variables to enable Datadog Code Analysis."
+        exit 0
+      fi
+      echo "DD_SITE=${DD_SITE:-datadoghq.com}"
+      npx --yes @datadog/datadog-ci static-analysis run \
+        --service "$DD_SERVICE" --env "$DD_ENV" --no-verbose
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH =~ /^sprint\// || $CI_COMMIT_BRANCH =~ /^bits\//'
+# END CITADEL CODE SECURITY v1
 
 # BEGIN CITADEL DAY21 SUBMISSION CLOSURE v1
 include:

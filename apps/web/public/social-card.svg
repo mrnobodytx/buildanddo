@@ -2,11 +2,11 @@
 ─── CGRF Header ───────────────────────────────────────────────
  File:        apps/web/public/social-card.svg
  Stage:       07_BUILD
- SRS:         SRS-BUILDANDDO-UPGRADE-001
+ SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-PURPOSE-001
  CAPS:        pending
  CK:          pending
- Dispatch:    VCC-BUILDANDDO-UPGRADE-001
- Seat:        BITS-CODEGEN
+ Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-PURPOSE-001
+ Seat:        BITS-CODEGEN, C-ONE (the domain line)
  Owner:       Citadel Nexus Inc.
  Created:     2026-09-14
  Depends:     apps/web/src/lib/publicPages.js
@@ -26,7 +26,7 @@
     <text x="64" y="360" font-family="Georgia,serif" font-size="54">Learn by doing. Together.</text>
     <text x="66" y="421" font-family="Arial,sans-serif" font-size="25" fill="hsl(220,10%,38%)">Notice the change. Scope the work. Verify the outcome.</text>
     <path d="M64 492H1136" stroke="hsl(220,12%,74%)"/>
-    <text x="64" y="553" font-family="monospace" font-size="20">BUILDANDDO.TECH</text>
+    <text x="64" y="553" font-family="monospace" font-size="20">BUILDANDDO.COM</text>
     <text x="1136" y="553" text-anchor="end" font-family="Arial,sans-serif" font-size="18">Citadel Nexus Inc.</text>
   </g>
   <rect x="1058" y="168" width="78" height="78" fill="hsl(0,70%,40%)"/>

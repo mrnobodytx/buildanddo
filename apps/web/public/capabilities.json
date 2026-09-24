@@ -1,26 +1,27 @@
 {
-  "generated_at": "2026-09-20T23:07:53+00:00",
+  "generated_at": "2026-09-22T16:14:42+00:00",
   "state": "MEASURED",
   "deployed": {
-    "production": "",
-    "staging": "3f0bd84",
+    "production": "12d5833",
+    "staging": "12d5833",
     "source": {
+      "production": "_version",
       "staging": "_version"
     },
     "conflicts": {},
-    "reason": "production: no identity published;"
+    "reason": ""
   },
   "readiness_basis": "presence of the source file in the commit each environment reports serving; route probing is vacuous because the SPA returns 200 for any path, including ones that do not exist",
   "provenance_conflicts": {},
   "counts": {
-    "LIVE": 0,
-    "STAGED": 39,
+    "LIVE": 41,
+    "STAGED": 0,
     "BUILT": 0,
     "UNMEASURABLE": 0,
     "DECLARED": 1
   },
-  "total": 40,
-  "with_tests": 30,
+  "total": 42,
+  "with_tests": 31,
   "capabilities": [
     {
       "surface": "public",
@@ -34,9 +35,9 @@
       "test_files": [
         "apps/web/src/pages/__tests__/PublicPages.test.jsx"
       ],
-      "in_production": null,
+      "in_production": true,
       "in_staging": true,
-      "state": "STAGED"
+      "state": "LIVE"
     },
     {
       "surface": "public",
@@ -50,9 +51,9 @@
       "test_files": [
         "apps/web/src/pages/__tests__/PublicPages.test.jsx"
       ],
-      "in_production": null,
+      "in_production": true,
       "in_staging": true,
-      "state": "STAGED"
+      "state": "LIVE"
     },
     {
       "surface": "public",
@@ -66,9 +67,9 @@
       "test_files": [
         "apps/web/src/pages/__tests__/PublicPages.test.jsx"
       ],
-      "in_production": null,
+      "in_production": true,
       "in_staging": true,
-      "state": "STAGED"
+      "state": "LIVE"
     },
     {
       "surface": "public",
@@ -82,9 +83,9 @@
       "test_files": [
         "apps/web/src/pages/__tests__/PublicPages.test.jsx"
       ],
-      "in_production": null,
+      "in_production": true,
       "in_staging": true,
-      "state": "STAGED"
+      "state": "LIVE"
     },
     {
       "surface": "public",
@@ -99,9 +100,9 @@
         "apps/web/src/components/workspace/__tests__/TutorialCatalog.test.jsx",
         "apps/web/src/pages/__tests__/PublicPages.test.jsx"
       ],
-      "in_production": null,
+      "in_production": true,
       "in_staging": true,
-      "state": "STAGED"
+      "state": "LIVE"
     },
     {
       "surface": "public",
@@ -115,9 +116,9 @@
       "test_files": [
         "apps/web/src/components/auth/__tests__/LoginPage.test.jsx"
       ],
-      "in_production": null,
+      "in_production": true,
       "in_staging": true,
-      "state": "STAGED"
+      "state": "LIVE"
     },
     {
       "surface": "public",
@@ -131,9 +132,9 @@
       "test_files": [
         "apps/web/src/pages/__tests__/HomePage.test.jsx"
       ],
-      "in_production": null,
+      "in_production": true,
       "in_staging": true,
-      "state": "STAGED"
+      "state": "LIVE"
     },
     {
       "surface": "public",
@@ -147,9 +148,9 @@
       "test_files": [
         "apps/web/src/__tests__/HostingerChallengePage.test.jsx"
       ],
-      "in_production": null,
+      "in_production": true,
       "in_staging": true,
-      "state": "STAGED"
+      "state": "LIVE"
     },
     {
       "surface": "public",
@@ -163,9 +164,9 @@
       "test_files": [
         "apps/web/src/components/platform/__tests__/MetaFunctionPlatform.test.jsx"
       ],
-      "in_production": null,
+      "in_production": true,
       "in_staging": true,
-      "state": "STAGED"
+      "state": "LIVE"
     },
     {
       "surface": "public",
@@ -177,9 +178,9 @@
       "lines": 100,
       "tests": 0,
       "test_files": [],
-      "in_production": null,
+      "in_production": true,
       "in_staging": true,
-      "state": "STAGED"
+      "state": "LIVE"
     },
     {
       "surface": "public",
@@ -193,9 +194,9 @@
       "test_files": [
         "apps/web/src/pages/__tests__/PublicPages.test.jsx"
       ],
-      "in_production": null,
+      "in_production": true,
       "in_staging": true,
-      "state": "STAGED"
+      "state": "LIVE"
     },
     {
       "surface": "public",
@@ -204,7 +205,7 @@
       "component": "RoadmapPage",
       "import": "./pages/RoadmapPage",
       "file": "apps/web/src/pages/RoadmapPage.jsx",
-      "lines": 967,
+      "lines": 979,
       "tests": 4,
       "test_files": [
         "apps/web/src/pages/__tests__/RoadmapPage.capabilities.test.jsx",
@@ -212,9 +213,9 @@
         "apps/web/src/pages/__tests__/RoadmapPage.replay.test.jsx",
         "apps/web/src/pages/workspace/__tests__/RoadmapPage.test.jsx"
       ],
-      "in_production": null,
+      "in_production": true,
       "in_staging": true,
-      "state": "STAGED"
+      "state": "LIVE"
     },
     {
       "surface": "workspace",
@@ -228,9 +229,9 @@
       "test_files": [
         "apps/web/src/pages/workspace/__tests__/AdministrationFlow.test.jsx"
       ],
-      "in_production": null,
+      "in_production": true,
       "in_staging": true,
-      "state": "STAGED"
+      "state": "LIVE"
     },
     {
       "surface": "workspace",
@@ -240,18 +241,19 @@
       "import": "./pages/workspace/BlueprintPage",
       "file": "apps/web/src/pages/workspace/BlueprintPage.jsx",
       "lines": 177,
-      "tests": 2,
+      "tests": 3,
       "test_files": [
+        "apps/web/src/components/motion/__tests__/MotionSettings.test.jsx",
         "apps/web/src/pages/workspace/__tests__/BlueprintPage.test.jsx",
         "apps/web/src/pages/workspace/__tests__/BlueprintSavedPage.test.jsx"
       ],
-      "in_production": null,
+      "in_production": true,
       "in_staging": true,
-      "state": "STAGED"
+      "state": "LIVE"
     },
     {
       "surface": "workspace",
-      "path": "/app/desks",
+      "path": "/app/passport",
       "label": "Capability Passport",
       "component": "CapabilityPassportPage",
       "import": "./pages/workspace/SpecialistDeskPage",
@@ -259,9 +261,9 @@
       "lines": 320,
       "tests": 0,
       "test_files": [],
-      "in_production": null,
+      "in_production": true,
       "in_staging": true,
-      "state": "STAGED"
+      "state": "LIVE"
     },
     {
       "surface": "workspace",
@@ -276,9 +278,9 @@
         "apps/web/src/components/__tests__/DialogFocus.test.jsx",
         "apps/web/src/pages/workspace/__tests__/MissionsPage.test.jsx"
       ],
-      "in_production": null,
+      "in_production": true,
       "in_staging": true,
-      "state": "STAGED"
+      "state": "LIVE"
     },
     {
       "surface": "workspace",
@@ -292,9 +294,9 @@
       "test_files": [
         "apps/web/src/pages/workspace/__tests__/ClassroomsFlow.test.jsx"
       ],
-      "in_production": null,
+      "in_production": true,
       "in_staging": true,
-      "state": "STAGED"
+      "state": "LIVE"
     },
     {
       "surface": "workspace",
@@ -306,9 +308,9 @@
       "lines": 558,
       "tests": 0,
       "test_files": [],
-      "in_production": null,
+      "in_production": true,
       "in_staging": true,
-      "state": "STAGED"
+      "state": "LIVE"
     },
     {
       "surface": "workspace",
@@ -320,9 +322,9 @@
       "lines": 122,
       "tests": 0,
       "test_files": [],
-      "in_production": null,
+      "in_production": true,
       "in_staging": true,
-      "state": "STAGED"
+      "state": "LIVE"
     },
     {
       "surface": "workspace",
@@ -331,12 +333,14 @@
       "component": "DailyEditionPage",
       "import": "./pages/workspace/DailyEditionPage",
       "file": "apps/web/src/pages/workspace/DailyEditionPage.jsx",
-      "lines": 441,
-      "tests": 0,
-      "test_files": [],
-      "in_production": null,
+      "lines": 400,
+      "tests": 1,
+      "test_files": [
+        "apps/web/src/pages/workspace/__tests__/DailyEditionPage.test.jsx"
+      ],
+      "in_production": true,
       "in_staging": true,
-      "state": "STAGED"
+      "state": "LIVE"
     },
     {
       "surface": "workspace",
@@ -345,14 +349,14 @@
       "component": "ErpPage",
       "import": "./pages/workspace/ErpPage",
       "file": "apps/web/src/pages/workspace/ErpPage.jsx",
-      "lines": 154,
+      "lines": 156,
       "tests": 1,
       "test_files": [
         "apps/web/src/pages/workspace/__tests__/BusinessDesks.test.jsx"
       ],
-      "in_production": null,
+      "in_production": true,
       "in_staging": true,
-      "state": "STAGED"
+      "state": "LIVE"
     },
     {
       "surface": "workspace",
@@ -364,9 +368,23 @@
       "lines": 437,
       "tests": 0,
       "test_files": [],
-      "in_production": null,
+      "in_production": true,
       "in_staging": true,
-      "state": "STAGED"
+      "state": "LIVE"
+    },
+    {
+      "surface": "workspace",
+      "path": "/app/replay",
+      "label": "Execution replay",
+      "component": "ExecutionReplayPage",
+      "import": "./pages/workspace/ExecutionReplayPage",
+      "file": "apps/web/src/pages/workspace/ExecutionReplayPage.jsx",
+      "lines": 64,
+      "tests": 0,
+      "test_files": [],
+      "in_production": true,
+      "in_staging": true,
+      "state": "LIVE"
     },
     {
       "surface": "workspace",
@@ -380,9 +398,9 @@
       "test_files": [
         "apps/web/src/components/workspace/__tests__/TutorialCatalog.test.jsx"
       ],
-      "in_production": null,
+      "in_production": true,
       "in_staging": true,
-      "state": "STAGED"
+      "state": "LIVE"
     },
     {
       "surface": "workspace",
@@ -394,9 +412,9 @@
       "lines": 522,
       "tests": 0,
       "test_files": [],
-      "in_production": null,
+      "in_production": true,
       "in_staging": true,
-      "state": "STAGED"
+      "state": "LIVE"
     },
     {
       "surface": "workspace",
@@ -405,14 +423,14 @@
       "component": "KnowledgePage",
       "import": "./pages/workspace/KnowledgePage",
       "file": "apps/web/src/pages/workspace/KnowledgePage.jsx",
-      "lines": 164,
+      "lines": 166,
       "tests": 1,
       "test_files": [
         "apps/web/src/pages/workspace/__tests__/KnowledgePage.test.jsx"
       ],
-      "in_production": null,
+      "in_production": true,
       "in_staging": true,
-      "state": "STAGED"
+      "state": "LIVE"
     },
     {
       "surface": "workspace",
@@ -426,9 +444,9 @@
       "test_files": [
         "apps/web/src/pages/workspace/__tests__/ResearchFlow.test.jsx"
       ],
-      "in_production": null,
+      "in_production": true,
       "in_staging": true,
-      "state": "STAGED"
+      "state": "LIVE"
     },
     {
       "surface": "workspace",
@@ -442,9 +460,9 @@
       "test_files": [
         "apps/web/src/pages/workspace/__tests__/SuiteFlow.test.jsx"
       ],
-      "in_production": null,
+      "in_production": true,
       "in_staging": true,
-      "state": "STAGED"
+      "state": "LIVE"
     },
     {
       "surface": "workspace",
@@ -458,9 +476,9 @@
       "test_files": [
         "apps/web/src/pages/workspace/__tests__/DossierFlow.test.jsx"
       ],
-      "in_production": null,
+      "in_production": true,
       "in_staging": true,
-      "state": "STAGED"
+      "state": "LIVE"
     },
     {
       "surface": "workspace",
@@ -474,9 +492,9 @@
       "test_files": [
         "apps/web/src/pages/workspace/__tests__/OperationsPage.test.jsx"
       ],
-      "in_production": null,
+      "in_production": true,
       "in_staging": true,
-      "state": "STAGED"
+      "state": "LIVE"
     },
     {
       "surface": "workspace",
@@ -490,9 +508,9 @@
       "test_files": [
         "apps/web/src/pages/workspace/__tests__/OperatorPage.test.jsx"
       ],
-      "in_production": null,
+      "in_production": true,
       "in_staging": true,
-      "state": "STAGED"
+      "state": "LIVE"
     },
     {
       "surface": "workspace",
@@ -504,9 +522,9 @@
       "lines": 501,
       "tests": 0,
       "test_files": [],
-      "in_production": null,
+      "in_production": true,
       "in_staging": true,
-      "state": "STAGED"
+      "state": "LIVE"
     },
     {
       "surface": "workspace",
@@ -520,9 +538,9 @@
       "test_files": [
         "apps/web/src/pages/workspace/__tests__/PolicyPage.test.jsx"
       ],
-      "in_production": null,
+      "in_production": true,
       "in_staging": true,
-      "state": "STAGED"
+      "state": "LIVE"
     },
     {
       "surface": "workspace",
@@ -534,9 +552,9 @@
       "lines": 625,
       "tests": 0,
       "test_files": [],
-      "in_production": null,
+      "in_production": true,
       "in_staging": true,
-      "state": "STAGED"
+      "state": "LIVE"
     },
     {
       "surface": "workspace",
@@ -552,9 +570,9 @@
         "apps/web/src/pages/workspace/__tests__/AdministrationFlow.test.jsx",
         "apps/web/src/pages/workspace/__tests__/SettingsPage.test.jsx"
       ],
-      "in_production": null,
+      "in_production": true,
       "in_staging": true,
-      "state": "STAGED"
+      "state": "LIVE"
     },
     {
       "surface": "workspace",
@@ -563,14 +581,28 @@
       "component": "SignalsPage",
       "import": "./pages/workspace/SignalsPage",
       "file": "apps/web/src/pages/workspace/SignalsPage.jsx",
-      "lines": 483,
+      "lines": 491,
       "tests": 1,
       "test_files": [
         "apps/web/src/pages/workspace/__tests__/SignalsPage.test.jsx"
       ],
-      "in_production": null,
+      "in_production": true,
       "in_staging": true,
-      "state": "STAGED"
+      "state": "LIVE"
+    },
+    {
+      "surface": "workspace",
+      "path": "/app/desks",
+      "label": "Specialist desks",
+      "component": "SpecialistWorkPage",
+      "import": "./pages/workspace/SpecialistWorkPage",
+      "file": "apps/web/src/pages/workspace/SpecialistWorkPage.jsx",
+      "lines": 76,
+      "tests": 0,
+      "test_files": [],
+      "in_production": true,
+      "in_staging": true,
+      "state": "LIVE"
     },
     {
       "surface": "workspace",
@@ -582,9 +614,9 @@
       "lines": 108,
       "tests": 0,
       "test_files": [],
-      "in_production": null,
+      "in_production": true,
       "in_staging": true,
-      "state": "STAGED"
+      "state": "LIVE"
     },
     {
       "surface": "workspace",
@@ -593,15 +625,15 @@
       "component": "WorkflowsPage",
       "import": "./pages/workspace/WorkflowsPage",
       "file": "apps/web/src/pages/workspace/WorkflowsPage.jsx",
-      "lines": 721,
+      "lines": 733,
       "tests": 2,
       "test_files": [
         "apps/web/src/components/workspace/workflows/__tests__/WorkflowRuns.test.jsx",
         "apps/web/src/pages/workspace/__tests__/WorkflowsPage.test.jsx"
       ],
-      "in_production": null,
+      "in_production": true,
       "in_staging": true,
-      "state": "STAGED"
+      "state": "LIVE"
     },
     {
       "surface": "workspace",
@@ -615,9 +647,9 @@
       "test_files": [
         "apps/web/src/pages/workspace/__tests__/CommunityFlow.test.jsx"
       ],
-      "in_production": null,
+      "in_production": true,
       "in_staging": true,
-      "state": "STAGED"
+      "state": "LIVE"
     },
     {
       "surface": "workspace",
@@ -631,9 +663,9 @@
       "test_files": [
         "apps/web/src/pages/workspace/__tests__/CommunityFlow.test.jsx"
       ],
-      "in_production": null,
+      "in_production": true,
       "in_staging": true,
-      "state": "STAGED"
+      "state": "LIVE"
     },
     {
       "surface": "workspace",
@@ -647,7 +679,7 @@
       "test_files": [
         "apps/web/src/pages/workspace/__tests__/AdministrationFlow.test.jsx"
       ],
-      "in_production": null,
+      "in_production": true,
       "in_staging": true,
       "state": "DECLARED"
     }

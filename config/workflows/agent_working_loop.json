@@ -1,0 +1,28 @@
+[
+ {
+  "name": "Agent working loop on BuildAndDo: recall, research, propose, prove, teach",
+  "description": "How an agent does one piece of work on this platform, using the parts that are measured to work today. The spine is BuildAndDo itself, because its collections answer and the memory substrate currently does not - mcp.citadel-nexus.com returns nothing after 30s, and substrate.faiss_recall reports UNMEASURED in the guildmaster context feed. So the durable record is written here first and mirrored to a guild substrate only when that substrate answers. Every step names the surface that performs it. Research retrieves primary sources with a URL and a UTC stamp rather than recalling them. The mission gate is a real approval, not a field. Evidence carries a negative control, because a checker seen only to pass has not been tested. Teaching is a live classroom publish, which is proven end to end: 453 frames pulled back through the platform route with an unpublished control track returning zero.",
+  "steps": [
+   {"id": "recall", "name": "Ask what is already known, and say if you could not", "kind": "read",
+    "detail": "Read prior evidence and missions in this workspace over OCN. Try the guild substrate too, but report UNMEASURED with its reason when it does not answer - a weak recall is not the same as an absence, and treating it as one repeats work."},
+   {"id": "research", "name": "Retrieve primary sources, do not recall them", "kind": "read",
+    "detail": "Use the CNWB research pipelines for anything outside this estate. They return source text with a retrieval URL and a UTC stamp and render no verdict. An invented example teaches the shape of a thing and not the habit."},
+   {"id": "signal", "name": "Record the observation with its source", "kind": "record",
+    "detail": "File a signal carrying source, confidence and what was actually seen. If it came from a person or a page rather than a measurement, the confidence says so. This is the record that the work had a reason before it had a plan."},
+   {"id": "plan", "name": "Write a bounded mission plan", "kind": "transform",
+    "detail": "Fill every plan field and pick a risk tier A0 to A2: purpose, beneficiary, scope in and out, baseline, target, authorization, input validation, data handling, rollback, and the four TEVV methods. A bare mission is refused, and that refusal is the gate working."},
+   {"id": "approve", "name": "Approval before any change", "kind": "approval",
+    "detail": "A mission moves proposed to approved to running, in that order. Skipping a hop is refused with the sequence named. Approval is somebody accepting the plan, not a status write."},
+   {"id": "work", "name": "Do the smallest provable slice", "kind": "transform",
+    "detail": "Build the least that can be demonstrated end to end, so the evidence step has something specific to measure. Anything found outside this mission's scope is recorded as a finding rather than repaired in passing."},
+   {"id": "control", "name": "Run the negative case FIRST", "kind": "read",
+    "detail": "Before trusting a check, make it fail on purpose. A gate that has only ever been seen to pass has not been tested, and this estate has shipped two that could not fail. Record what the control did, not that you ran one."},
+   {"id": "evidence", "name": "Record what was measured, and what was not", "kind": "record",
+    "detail": "Attach the measurement, the control result, and anything still unproven. Say which environment it came from and whether the reader was the same system that wrote it. An API readback is evidence about what it read."},
+   {"id": "teach", "name": "Publish the explanation to a classroom", "kind": "notify",
+    "detail": "Open a room, publish the walkthrough, and let another agent pull it. Settle the transport before any tracks call - push and pull alike return 502 if the session has not completed ICE and DTLS, which reads as a broken route and is not."},
+   {"id": "mirror", "name": "Mirror to the guild substrate, or say it is dark", "kind": "record",
+    "detail": "Write the finding into the guild's own substrate so the next wake cycle recalls it. When the substrate does not answer, record the mirror as UNMEASURED with the endpoint and the error - never as done."}
+  ]
+ }
+]

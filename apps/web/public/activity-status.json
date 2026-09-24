@@ -1,7 +1,8 @@
 {
  "schema": "buildanddo.activity-status/v1",
  "srs": "SRS-BUILDANDDO-ROADMAP-001",
- "generated_at": "2026-09-18T20:19:44Z",
+ "producer": "citadel-activity-projection/1.0.1",
+ "generated_at": "2026-09-23T21:12:41Z",
  "stale_after_seconds": 21600,
  "authority_effect": "NONE",
  "remote_writes": 0,
@@ -17,15 +18,15 @@
   "CLOUDFLARE_ACCOUNT_ID": true
  },
  "window": {
-  "h24_from": "2026-09-17T20:19:44Z",
-  "d7_from": "2026-09-11T20:19:44Z"
+  "h24_from": "2026-09-22T21:12:41Z",
+  "d7_from": "2026-09-16T21:12:41Z"
  },
  "summary": {
-  "entries": 15,
-  "measured": 14,
-  "unmeasured": 1,
+  "entries": 21,
+  "measured": 18,
+  "unmeasured": 3,
   "active_24h": 14,
-  "duration_ms": 13248
+  "duration_ms": 280694
  },
  "entries": [
   {
@@ -33,33 +34,33 @@
    "kind": "sink",
    "provider": "gitlab",
    "state": "MEASURED",
-   "last_activity_at": "2026-09-18T19:51:17Z",
-   "count_24h": 131,
-   "count_7d": 151,
-   "evidence": "https://gitlab.citadel-nexus.com/groups/guilds/-/pipelines",
-   "reason": null
+   "last_activity_at": "2026-09-22T21:24:20Z",
+   "count_24h": 3,
+   "count_7d": 177,
+   "evidence": "private control plane (not published)",
+   "reason": "guilds/CNWB:mrs:TimeoutError"
   },
   {
    "id": "gitlab.merge_requests",
    "kind": "sink",
    "provider": "gitlab",
    "state": "MEASURED",
-   "last_activity_at": "2026-09-18T19:45:37Z",
-   "count_24h": 23,
-   "count_7d": 36,
-   "evidence": "https://gitlab.citadel-nexus.com/groups/guilds/-/merge_requests",
-   "reason": null
+   "last_activity_at": "2026-09-20T14:27:36Z",
+   "count_24h": 0,
+   "count_7d": 19,
+   "evidence": "private control plane (not published)",
+   "reason": "guilds/CNWB:mrs:TimeoutError"
   },
   {
    "id": "guild_auditor.verdicts",
    "kind": "sink",
    "provider": "cloudflare-worker",
    "state": "MEASURED",
-   "last_activity_at": "2026-09-18T19:45:37Z",
-   "count_24h": 29,
-   "count_7d": 29,
-   "evidence": "https://gitlab.citadel-nexus.com/groups/guilds/-/merge_requests",
-   "reason": null,
+   "last_activity_at": "2026-09-18T18:29:22Z",
+   "count_24h": 0,
+   "count_7d": 18,
+   "evidence": "private control plane (not published)",
+   "reason": "guilds/CNWB:mrs:TimeoutError",
    "note": "verdict notes posted by the guildmaster identities on merge requests (last 15 MRs per repo)"
   },
   {
@@ -67,9 +68,9 @@
    "kind": "sink",
    "provider": "datadog",
    "state": "MEASURED",
-   "last_activity_at": "2026-09-18T19:43:25Z",
-   "count_24h": 61,
-   "count_7d": 61,
+   "last_activity_at": "2026-09-22T21:24:10Z",
+   "count_24h": 3,
+   "count_7d": 180,
    "evidence": "https://us5.datadoghq.com/ci/pipeline-executions",
    "reason": null
   },
@@ -78,21 +79,21 @@
    "kind": "sink",
    "provider": "datadog",
    "state": "MEASURED",
-   "last_activity_at": "2026-09-17T22:42:03Z",
+   "last_activity_at": "2026-09-23T02:56:24Z",
    "count_24h": null,
-   "count_7d": 95,
+   "count_7d": 99,
    "evidence": "https://us5.datadoghq.com/monitors/manage",
    "reason": null,
-   "note": "monitors by state: {'OK': 45, 'Alert': 18, 'No Data': 32}"
+   "note": "monitors by state: {'Alert': 17, 'OK': 41, 'No Data': 41}"
   },
   {
    "id": "posthog.events",
    "kind": "sink",
    "provider": "posthog",
    "state": "MEASURED",
-   "last_activity_at": "2026-09-18T20:10:55Z",
-   "count_24h": 406,
-   "count_7d": 1560,
+   "last_activity_at": "2026-09-23T17:38:34Z",
+   "count_24h": 193,
+   "count_7d": 1384,
    "evidence": "https://app.posthog.com/project/597897/activity/explore",
    "reason": null
   },
@@ -101,93 +102,163 @@
    "kind": "sink",
    "provider": "cloudflare",
    "state": "MEASURED",
-   "last_activity_at": "2026-09-18T18:37:05Z",
+   "last_activity_at": "2026-09-22T23:22:13Z",
    "count_24h": 1,
-   "count_7d": 3,
+   "count_7d": 2,
    "evidence": "https://dash.cloudflare.com/?to=/:account/workers",
    "reason": null,
    "note": "23 workers; counts are deploys (modified_on)"
+  },
+  {
+   "id": "guildmaster.alex",
+   "kind": "guildmaster",
+   "provider": "BuildAndDo",
+   "state": "MEASURED",
+   "last_activity_at": "2026-09-23T21:04:14Z",
+   "count_24h": 2,
+   "count_7d": 2,
+   "evidence": null,
+   "reason": null,
+   "note": "Alex, Commerce guild: questioned Buddi from its own guild box (4 questions), then recorded a mission (running) and its evidence under its own account, in its members-only workspace"
+  },
+  {
+   "id": "guildmaster.forge",
+   "kind": "guildmaster",
+   "provider": "BuildAndDo",
+   "state": "MEASURED",
+   "last_activity_at": "2026-09-23T21:03:01Z",
+   "count_24h": 2,
+   "count_7d": 2,
+   "evidence": null,
+   "reason": null,
+   "note": "Forge, Builder guild: questioned Buddi from its own guild box (4 questions), then recorded a mission (running) and its evidence under its own account, in its members-only workspace"
+  },
+  {
+   "id": "guildmaster.muse",
+   "kind": "guildmaster",
+   "provider": "BuildAndDo",
+   "state": "MEASURED",
+   "last_activity_at": "2026-09-23T21:05:14Z",
+   "count_24h": 2,
+   "count_7d": 2,
+   "evidence": null,
+   "reason": null,
+   "note": "Muse, Creator guild: questioned Buddi from its own guild box (4 questions), then recorded a mission (running) and its evidence under its own account, in its members-only workspace"
+  },
+  {
+   "id": "guildmaster.oracle",
+   "kind": "guildmaster",
+   "provider": "BuildAndDo",
+   "state": "MEASURED",
+   "last_activity_at": "2026-09-23T21:03:49Z",
+   "count_24h": 2,
+   "count_7d": 2,
+   "evidence": null,
+   "reason": null,
+   "note": "Oracle, Intelligence guild: questioned Buddi from its own guild box (4 questions), then recorded a mission (running) and its evidence under its own account, in its members-only workspace"
+  },
+  {
+   "id": "guildmaster.scholar",
+   "kind": "guildmaster",
+   "provider": "BuildAndDo",
+   "state": "MEASURED",
+   "last_activity_at": "2026-09-23T21:03:26Z",
+   "count_24h": 2,
+   "count_7d": 2,
+   "evidence": null,
+   "reason": null,
+   "note": "Scholar, Research guild: questioned Buddi from its own guild box (4 questions), then recorded a mission (running) and its evidence under its own account, in its members-only workspace"
+  },
+  {
+   "id": "guildmaster.sterling",
+   "kind": "guildmaster",
+   "provider": "BuildAndDo",
+   "state": "MEASURED",
+   "last_activity_at": "2026-09-23T21:04:50Z",
+   "count_24h": 2,
+   "count_7d": 2,
+   "evidence": null,
+   "reason": null,
+   "note": "Sterling, Finance guild: questioned Buddi from its own guild box (4 questions), then recorded a mission (running) and its evidence under its own account, in its members-only workspace"
   },
   {
    "id": "staging.web",
    "kind": "resource",
    "provider": "buildanddo-web",
    "state": "MEASURED",
-   "last_activity_at": "2026-09-18T19:53:57.860205Z",
+   "last_activity_at": "2026-09-22T16:13:24.912838Z",
    "count_24h": null,
    "count_7d": null,
    "evidence": "https://staging.buildanddo.com/_version",
    "reason": null,
-   "note": "sha 6ac59447dae9 \u00b7 163 ms"
+   "note": "sha 12d58330e9aa \u00b7 203 ms"
   },
   {
    "id": "production.web",
    "kind": "resource",
    "provider": "buildanddo-web",
    "state": "MEASURED",
-   "last_activity_at": "2026-09-18T14:57:48.620305Z",
+   "last_activity_at": "2026-09-22T16:13:24.912838Z",
    "count_24h": null,
    "count_7d": null,
    "evidence": "https://buildanddo.com/_version",
    "reason": null,
-   "note": "sha a5bdcad54973 \u00b7 165 ms"
+   "note": "sha 12d58330e9aa \u00b7 166 ms"
   },
   {
    "id": "staging.backend",
    "kind": "resource",
    "provider": "pocketbase",
    "state": "MEASURED",
-   "last_activity_at": "2026-09-18T20:19:55Z",
+   "last_activity_at": "2026-09-23T21:17:20Z",
    "count_24h": null,
    "count_7d": null,
    "evidence": "https://staging.buildanddo.com/hcgi/platform/api/health",
    "reason": null,
-   "note": "health 200 \u00b7 80 ms"
+   "note": "health 200 \u00b7 92 ms"
   },
   {
    "id": "production.backend",
    "kind": "resource",
    "provider": "pocketbase",
    "state": "MEASURED",
-   "last_activity_at": "2026-09-18T20:19:56Z",
+   "last_activity_at": "2026-09-23T21:17:20Z",
    "count_24h": null,
    "count_7d": null,
    "evidence": "https://buildanddo.com/hcgi/platform/api/health",
    "reason": null,
-   "note": "health 200 \u00b7 82 ms"
+   "note": "health 200 \u00b7 117 ms"
   },
   {
    "id": "staging.rooms",
    "kind": "resource",
    "provider": "living-rooms",
-   "state": "MEASURED",
-   "last_activity_at": "2026-09-18T14:26:30Z",
-   "count_24h": 2,
-   "count_7d": 2,
+   "state": "UNMEASURED",
+   "last_activity_at": null,
+   "count_24h": null,
+   "count_7d": null,
    "evidence": "https://staging.buildanddo.com/room-projections/systems.json",
-   "reason": null,
-   "note": "projections: systems, utilization (counts = files regenerated)"
+   "reason": "no room-projection files answered as JSON"
   },
   {
    "id": "production.rooms",
    "kind": "resource",
    "provider": "living-rooms",
-   "state": "MEASURED",
-   "last_activity_at": "2026-09-18T14:26:30Z",
-   "count_24h": 2,
-   "count_7d": 2,
+   "state": "UNMEASURED",
+   "last_activity_at": null,
+   "count_24h": null,
+   "count_7d": null,
    "evidence": "https://buildanddo.com/room-projections/systems.json",
-   "reason": null,
-   "note": "projections: systems, utilization (counts = files regenerated)"
+   "reason": "no room-projection files answered as JSON"
   },
   {
    "id": "github.buildanddo",
    "kind": "resource",
    "provider": "github",
    "state": "MEASURED",
-   "last_activity_at": "2026-09-18T18:10:16Z",
-   "count_24h": 35,
-   "count_7d": 93,
+   "last_activity_at": "2026-09-23T16:57:19Z",
+   "count_24h": 26,
+   "count_7d": 100,
    "evidence": "https://github.com/mrnobodytx/buildanddo/commits/main",
    "reason": null
   },
@@ -199,7 +270,7 @@
    "last_activity_at": null,
    "count_24h": null,
    "count_7d": null,
-   "evidence": "https://mcp.citadel-nexus.com/mcp",
+   "evidence": "private control plane (not published)",
    "reason": "not probed by this producer (use tools/cbf/_mcp_conn_probe.py)"
   }
  ]

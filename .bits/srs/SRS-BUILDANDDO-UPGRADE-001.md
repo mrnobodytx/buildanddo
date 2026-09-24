@@ -20,6 +20,63 @@
 **Status:** in_progress **Risk:** A2 **Seat:** BITS-CODEGEN
 **Dispatch:** VCC-BUILDANDDO-UPGRADE-001 **Actor:** actor:agent
 
+## PR 103 main integration - 2026-09-24
+
+The owner requests command-line conflict resolution against main. Retain the
+existing claim-authority and isolation repairs together with main's merged Buddi,
+public-lesson, retry-wait and record-trust changes. This is source integration,
+not permission to publish, activate providers or deploy.
+
+Acceptance: preserve both native runtime profiles and all required gates; keep
+guided and public lesson responses keyless while retaining canonical completion
+and private grading snapshots; bind new browser seat reports to the authenticated
+human account without losing uncertain-request identity or visit fences. Retain
+legacy records and original source captures, pinned to their tested revisions.
+Exercise connected source regressions, regenerate reviewed bindings, and report
+missing rendered/native prerequisites without treating them as passing checks.
+
+## Test isolation and claim authority - 2026-09-23
+
+Continue the owner's repair-and-learning request against the newly supplied
+mission, evidence and progression findings under this existing A2 dispatch.
+Prioritize unsafe test destinations and falsifiable progress/claim boundaries;
+do not turn every audit suggestion into a new feature or operational grant.
+
+Acceptance:
+
+1. The Praxis selftests must fail before importing deployment configuration,
+   authenticating or writing unless launched against a fresh disposable backend
+   owned by the local test runner. GitLab invokes that isolated runner instead
+   of inheriting a shared PB_API_URL. Preserve real native testing and report an
+   absent binary as blocked; never run these tests against staging or production.
+2. Guided tutorial responses omit grading keys and pre-answer explanations while
+   the server preserves original lesson snapshots and grades them. The catalogue
+   derives guided completion from the locked learning records, not owner-edited
+   reading history. Close direct progress writes with a guarded forward migration,
+   retain historical rows and certificates, and label public quizzes/practice as
+   open-book/self-reported, not independently verified mastery.
+3. Close raw writes for the named support, correction, editorial and seat-report
+   surfaces using existing native authentication and explicit scoped commands.
+   Protect provider-observation fields, author-owned drafts and administrator
+   publication. No supplied correction status or agent label confers verification.
+   Preserve old bytes as historical reports without fabricated reviewer/provider
+   provenance. Seat reports retain the actual submitting account separately from
+   claimed labels; no new agent identity grant or provider binding is invented.
+4. Add adversarial source and disposable-native regression cases, including
+   hookless raw-write denial, revoked/foreign permissions and false legacy claims.
+   Preserve required GitLab jobs, both PocketBase profiles and all eighteen
+   acceptance checks. Do not disable gates or relabel unavailable checks as pass.
+5. Add these repairs and corrected audit conclusions to the existing site lesson
+   and source-case-study pattern with dated, bounded evidence. Retain earlier
+   captures as history. No seeded learner completion, XP, verified evidence,
+   epoch publication, shared-backend writes, provider calls or deployment.
+
+Deferred decisions remain explicit: mission assignment/follow-ups, worker hosting,
+durable epoch publication, a unified progression model, consent policy and actual
+release configuration. A mission's verified label must not mint new independent
+evidence by itself. Deployment controls and production variables remain with their
+private receiving owners; this source pass neither reads nor changes them.
+
 ## Broadcast integration repairs and lessons - 2026-09-23
 
 The owner requests repairs for the inspected merged broadcast classroom and
@@ -2304,3 +2361,21 @@ Verify: classroom node suites, the classroom and broadcast Vitest cases with
 no new failures against the recorded baseline, build, lint, context, public
 boundary and readiness gates. Hosted audio/video, applied migrations and
 deployed behaviour remain unmeasured until run against a configured backend.
+
+## Live classroom on the staging line — 2026-09-23
+
+Staging is built from the integration branch, and the broadcast classroom continuation above was merged
+to main only (PR #80). On 2026-09-23 the operator directed that the live classroom system be on staging.
+This continuation applies that work and its seat-name follow-up to the integration line. It adds no new
+feature.
+
+Acceptance:
+
+1. The live room, attendance history, class record, assistant usage and agent activity behave on this
+   line as they do on main. Where main relies on something this line does not have, the code is adapted
+   and the difference is named in the commit, never dropped silently.
+2. No commit on this line carries a machine name that the seat-name follow-up removed.
+3. A guildmaster the canon knows still links to its public profile from the live room, as PR #77 did
+   for the retired page, and an id the canon does not know is still named.
+4. The web suite, lint, the classroom node suites and the repository gates pass. Deploying to staging
+   is a separate, staging-only step; nothing here promotes to production.

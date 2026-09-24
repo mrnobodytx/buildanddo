@@ -182,7 +182,7 @@ srs:
     status: in_progress
     risk: A1
     spec: .bits/srs/SRS-BUILDANDDO-ROADMAP-001.md
-    notes: Fixes the missing scripts/ci/sprint_cycle.py import on clean checkouts
+    notes: Fixes the missing scripts/ci/sprint_cycle.py import on clean checkouts. Continuation R7-R8 (2026-09-23, VCC-BUILDANDDO-ROADMAP-001) puts the guildmasters' own missions and evidence into the public activity projection and renders non-address evidence as text
 
   - code: SRS-BUILDANDDO-TEST-001
     title: Web test runner emitting JUnit, with workspace component suites
@@ -310,3 +310,59 @@ srs:
     spec: .bits/srs/SRS-BUILDANDDO-DAY21-CLOSURE-001.md
     owner: C-ONE
     notes: Additive closure lane over existing acceptance/replay receipts; blocks on one canonical origin because buildanddo.tech has no DNS while README and SITE_ORIGIN disagree
+
+  - code: SRS-BUILDANDDO-PUBLIC-REDACTION-001
+    title: No fleet machine name or IP address in the generated JSON or the site bundle
+    status: in_progress
+    risk: A2
+    spec: .bits/srs/SRS-BUILDANDDO-PUBLIC-REDACTION-001.md
+    owner: C-ONE
+    notes: Operator direction 2026-09-23 relayed by the C-ONE dispatch; this entry records that dispatch and does not self-authorize A2. Deployment, pushing, the 33 other tracked files that name a machine, and published history excluded
+
+  - code: SRS-BUILDANDDO-BUDDI-003
+    title: Talk to Buddi on the home page - an in-page voice session with the official ElevenLabs SDK
+    status: in_progress
+    risk: A2
+    spec: .bits/srs/SRS-BUILDANDDO-BUDDI-003.md
+    owner: C-ONE
+    notes: Operator direction 2026-09-23 (the embedded session, not a link); the operator approved adding @elevenlabs/react. Deployment, the production and edge headers, and any change to the live ElevenLabs agent are operator steps; this entry does not self-authorize A2
+
+  - code: SRS-BUILDANDDO-PURPOSE-001
+    title: Every public page says BuildAndDo is an educational, collaborative platform
+    status: in_progress
+    risk: A1
+    spec: .bits/srs/SRS-BUILDANDDO-PURPOSE-001.md
+    owner: C-ONE
+    notes: Operator decision 2026-09-11 (educational platform, not small-business software) and direction 2026-09-23 ("fix the page, we're an educational platform"), after a live audio check found Buddi repeating the FAQ's retired pitch. Continuation R6, on the operator's choice to reframe it too, reframes the Hostinger challenge entry and its judge-bundle defaults. The workspace model, the Buddi agent and deployment are excluded
+
+  - code: SRS-BUILDANDDO-HEADERS-001
+    title: Every location in the staging web container sends the server's security headers, built assets included
+    status: in_progress
+    risk: A1
+    spec: .bits/srs/SRS-BUILDANDDO-HEADERS-001.md
+    owner: C-ONE
+    notes: Measured 2026-09-23 while building SRS-BUILDANDDO-BUDDI-003 - location /assets/ declares its own add_header, so nginx sent every built script and stylesheet without the server-level nosniff, Referrer-Policy and Permissions-Policy. Covers the repository's container config and its contract test; the live hosts' nginx and any deployment are operator steps
+
+  - code: SRS-BUILDANDDO-PRESENCE-001
+    title: Classroom presence states one verification contract in its route, its shared library and its test
+    status: in_progress
+    risk: A1
+    spec: .bits/srs/SRS-BUILDANDDO-PRESENCE-001.md
+    owner: C-ONE
+    notes: Found 2026-09-23 - since d91a5f9 the presence route answers NOT_YET_ECHOED on write and asks the SFU on read, while its test still expected the older NOT_ECHOED_BY_SFU and failed on the integration branch. The route file names SRS-CN-PERSONA-RUNTIME-001, which is not registered in this repository. No change to the route's behaviour; deployment excluded
+
+  - code: SRS-BUILDANDDO-DEPLOY-SWAP-001
+    title: A deploy copies the build beside the live site and swaps it in, so the live site is never emptied first
+    status: in_progress
+    risk: A2
+    spec: .bits/srs/SRS-BUILDANDDO-DEPLOY-SWAP-001.md
+    owner: C-ONE
+    notes: Operator choice 2026-09-23, the deploy-safety item of the trust stage in the loop plan. scripts/deploy/ship.py emptied each webroot and then copied into it, so for the whole copy, and for good after a failed copy, the site served an empty or partial directory. Source change and tests only; this entry does not self-authorize A2 and no deploy is performed
+
+  - code: SRS-BUILDANDDO-CLASSROOM-GLOBAL-001
+    title: A class is a global object; the workspace holds a person's access to classes and renders it as their gallery
+    status: in_progress
+    risk: A2
+    spec: .bits/srs/SRS-BUILDANDDO-CLASSROOM-GLOBAL-001.md
+    owner: C-ONE
+    notes: Operator decision 2026-09-24 - classes live outside workspaces, the workspace tracks a user's access and shows it as a gallery, so a student who never studies chemistry never sees a chemistry class there. Today classroom_rooms.workspace is REQUIRED and every classroom index is workspace-first, so a class cannot exist without a workspace; a5bc2b0 fanned out client-side across readable workspaces, which finds existing classes but does not make one global. Additive migration - existing rooms stay scope=workspace and keep their behaviour. Guildmaster audit and score land on the class, using the frozen trust vocabulary where VERIFIED needs a resolvable evidence reference. No deployment

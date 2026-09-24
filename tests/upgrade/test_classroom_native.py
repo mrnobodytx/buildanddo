@@ -37,7 +37,7 @@ import unittest
 ROOT = Path(__file__).resolve().parents[2]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
-from tests.upgrade.test_dossier_native import NativeServer  # noqa: E402
+from tests.upgrade.test_dossier_native import NO_WINDOW, NativeServer  # noqa: E402
 
 BINARY = os.environ.get("BUILDANDDO_TEST_POCKETBASE", "")
 WORKSPACE = "workspacealpha1"
@@ -48,6 +48,7 @@ MIGRATIONS = (
     "1791300000_classroom_attendance.js",
     "1791400000_classroom_media_sessions.js",
     "1791400001_broadcast_classroom_lessons.js",
+    "1791500002_authority_repair_lessons.js",
 )
 HOOKS = (
     "classrooms.pb.js",
@@ -298,6 +299,14 @@ class ClassroomServer(DiagnosticNativeServer):
         self.log = tempfile.TemporaryFile(mode="w+b")
         self.environment = {
             "PATH": os.environ.get("PATH", ""),
+            # Windows initializes Winsock from SystemRoot. Without it the child
+            # exits before health with "socket: The requested service provider
+            # could not be loaded or initialized"; the env stays otherwise restricted.
+            **(
+                {"SystemRoot": os.environ["SystemRoot"]}
+                if os.name == "nt" and "SystemRoot" in os.environ
+                else {}
+            ),
             "BUILDANDDO_CLASSROOM_PUBLISHERS": "alice@fixture.invalid,bravo@fixture.invalid,viewer@fixture.invalid,guest@fixture.invalid",
         }
         try:
@@ -326,7 +335,7 @@ class ClassroomServer(DiagnosticNativeServer):
                 )
             data_dir = self.root / "pb_migrations/data"
             data_dir.mkdir(parents=True)
-            for name in ("starter-tutorials.json", "broadcast-classroom-lessons.json"):
+            for name in ("starter-tutorials.json", "broadcast-classroom-lessons.json", "authority-repairs-lessons.json"):
                 shutil.copyfile(
                     ROOT / "apps/pocketbase/pb_migrations/data" / name, data_dir / name
                 )
@@ -622,7 +631,7 @@ class NativeClassroomTests(unittest.TestCase):
         self.server.start()
         self.assertEqual(self.detail(room)[0], 503)
         self.server.stop()
-        self.server.migrate("up")
+        self.server.restore()
         self.server.start()
         status, view = self.detail(room)
         self.assertEqual(status, 200)
@@ -686,7 +695,8 @@ class NativeClassroomTests(unittest.TestCase):
                 self.assertIsNone(schema[rule])
         status, listing = self.server.request("GET", self.path, token=self.owner)
         self.assertEqual(status, 200)
-        self.assertEqual(len(listing["lessons"]["items"]), 26)
+        self.assertEqual(len(listing["lessons"]["items"]), 27)
+        self.assertIn("bdoauthority001", {row["id"] for row in listing["lessons"]["items"]})
         self.assertIn(
             "bdobroadcast001", {row["id"] for row in listing["lessons"]["items"]}
         )
