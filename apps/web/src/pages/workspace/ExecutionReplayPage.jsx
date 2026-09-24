@@ -47,8 +47,9 @@ function Replay({ api, demo }) {
             setDetail({ id: selected, job: null, error: 'The selected receipt could not be read. Refresh to try again.', discarded: false });
         }); return () => { alive = false; }; }, [api, selected, reload, demo]);
     useEffect(() => { let alive = true; setData(null); setError(''); setDiscarded(false);
-        // A stale answer is final: keep the discarded state visible instead of
-        // waiting forever or measuring the obsolete read as a backend outage.
+        // A stale answer is one the scope guard threw away because the signed-in account or selected
+        // workspace no longer matches the read; nothing further will arrive, so leaving the loading
+        // line up would make the page wait forever on a request that is already over.
         const pathname = globalThis.window?.location?.pathname, section = publicActionSection(pathname);
         if (!demo) api.list({ page }).then((result) => {
             if (!alive) return;

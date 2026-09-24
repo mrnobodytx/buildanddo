@@ -28,6 +28,7 @@ from apps.research.contracts import ResearchError
 from scripts.discordbot import service as service_module
 from scripts.discordbot.contracts import Caller, DataFault, DataUnavailable, Option, Page, Quiz, Reply, Settings
 from scripts.discordbot.dossier import DOSSIER_COMMANDS
+from scripts.discordbot.grading import PRACTICE, Grader
 from scripts.discordbot.public_data import PublicClient
 from scripts.discordbot.research import RESEARCH_COMMANDS
 from scripts.discordbot.service import (
@@ -127,7 +128,7 @@ class DiscordTelemetryTests(unittest.IsolatedAsyncioTestCase):
         def grade_response(_route: str, *, body: dict[str, object]) -> dict[str, object]:
             return {"correct": True, "explanation": "PRIVATE_EXPLANATION"} if body["choice"] == 1 else {"correct": False}
         self.grading = SimpleNamespace(json=AsyncMock(side_effect=grade_response), close=AsyncMock())
-        self.service.grader = ADAPTER.Grader(self.grading)
+        self.service.grader = Grader(self.grading)
         self.caller = Caller(USER, GUILD, CHANNEL)
         self.items = []
 
@@ -151,6 +152,8 @@ class DiscordTelemetryTests(unittest.IsolatedAsyncioTestCase):
         if control == "lesson_select":
             reply = Reply(reply.pages, options=(Option("PRIVATE_LESSON", "PRIVATE_SLUG"),))
         elif control == "quiz_answer":
+            # The quiz carries no answer since #104; the server grades it. The real Grader runs against a
+            # fake route that answers the way the community-quiz hook does: choice 1 is right.
             reply = Reply((Page("PRIVATE_QUESTION", "PRIVATE_PROMPT"),), quiz=Quiz("PRIVATE_SLUG", ("PRIVATE_CHOICE_A", "PRIVATE_CHOICE_B")))
         view = ADAPTER.ReplyView(self.service, self.caller, reply)
         view.session.expires_at = self.now + 600
@@ -422,24 +425,28 @@ class DiscordTelemetryTests(unittest.IsolatedAsyncioTestCase):
                 await view.answer(first, choice)
                 await view.answer(retry, choice)
                 await view.answer(changed, 1 - choice)
+            # Control dispatch only; a graded answer also emits its own discord.quiz.graded event.
             self.assertEqual([row["outcome"] for row in events(captured, "discord.control.completed")], ["accepted", "accepted", "rejected"])
             self.assertEqual([row["outcome"] for row in events(captured, "discord.quiz.graded")], ["graded"])
             self.grading.json.assert_awaited_once()
             rendered = first.edit_original_response.await_args.kwargs["embed"].to_dict()
             self.assertEqual(rendered, retry.edit_original_response.await_args.kwargs["embed"].to_dict())
-            expected = ("Correct.\n\nPRIVATE_EXPLANATION" if choice == 1 else "Not the expected answer. Review the lesson, then run the quiz again.") + "\n\nPractice only. Progress is saved through your signed-in BuildAndDo workspace."
+            expected = ("Correct.\n\nPRIVATE_EXPLANATION" if choice == 1 else
+                        "Not the expected answer. Review the lesson, then run the quiz again.") + PRACTICE
             self.assertEqual(rendered["description"], ADAPTER.escaped(expected))
             self.assertNotIn("PRIVATE_CHOICE", rendered["description"])
+            if choice == 0:
+                self.assertNotIn("PRIVATE_CHOICE_B", rendered["description"], "a wrong answer never reveals the right one")
             self.assertNotIn("verified", json.dumps(events(captured)))
             self.assert_private_free(captured)
 
-    async def test_unavailable_server_grade_is_not_accepted_or_cached_and_retry_remains_open(self) -> None:
+    async def test_unavailable_server_grade_is_reported_without_caching_and_retry_remains_open(self) -> None:
         view, item = self.reader_view("quiz_answer"), self.request()
         self.grading.json.side_effect = ResearchError("unavailable", 503)
         with self.assertLogs("buildanddo.discord", level="INFO") as captured:
             await view.answer(item, 1)
         self.assertEqual([row["outcome"] for row in events(captured, "discord.quiz.graded")], ["unavailable"])
-        self.assertEqual([row["outcome"] for row in events(captured, "discord.control.completed")], ["rejected"])
+        self.assertEqual([row["outcome"] for row in events(captured, "discord.control.completed")], ["accepted"])
         self.assertFalse(view.session.answered)
         self.assertFalse(any(child.disabled for child in view.children if isinstance(child, ADAPTER.QuizSelect)))
         self.assert_private_free(captured)

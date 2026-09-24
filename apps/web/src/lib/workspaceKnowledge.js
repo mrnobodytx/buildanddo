@@ -97,6 +97,7 @@ export function createKnowledgeClient({ client, accountId, workspaceId, demo = f
                 // A 404 is nothing matching, not an entitlement decision: the hook answers it for a mission
                 // it cannot resolve and the router answers it when a deployment never installed the knowledge
                 // route. Reported as lapsed access it sends the reader to an administrator who finds nothing.
+                // Telemetry has no 'missing' reason, so a 404 is reported as unavailable with its status.
                 const forbidden = [401, 403].includes(error?.status); const missing = error?.status === 404;
                 const cancelled = signal?.aborted || error?.isAbort || error?.name === 'AbortError' || error?.originalError?.name === 'AbortError';
                 const malformed = received || error?.name === 'SyntaxError' || error?.originalError?.name === 'SyntaxError';

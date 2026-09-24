@@ -54,9 +54,9 @@ export default function RoomsPage() {
                 // A single-page app answers 200 with index.html for any path it has no file for,
                 // so an UNPUBLISHED projection never arrives as a 404 - it arrives as a web page.
                 // `response.ok` was therefore always true and JSON.parse put its own SyntaxError,
-                // verbatim, in front of the reader. Absence now reads as absence.
+                // verbatim, in front of the reader. Absence now reads as absence, and is reported as such.
                 const head = raw.trimStart();
-                if (!head.startsWith('{') && !head.startsWith('[')) throw new Error('No estate projection is published for this room.');
+                if (!head.startsWith('{') && !head.startsWith('[')) { reason = 'unavailable'; throw new Error('No estate projection is published for this room.'); }
                 let parsed; // Parsed on its own so a fault inside publishedRoom is not relabelled as bad JSON.
                 try { parsed = JSON.parse(raw); } catch { throw new Error('The published projection for this room is not readable JSON.'); }
                 return publishedRoom(parsed, active.id); })

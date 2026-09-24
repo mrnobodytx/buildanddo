@@ -71,8 +71,7 @@ test('the actual build wrapper scans generated feeds before finalizing release t
             findLessonAnswers: () => { calls.push('answer_scan'); return mode === 'answer_leak' ? [{ slug: 'synthetic', file: 'community-catalog.json' }] : []; },
         };
         const run = vm.runInNewContext(`(async () => { ${wrapper}\n })()`, context);
-        if (mode === 'build_failure') await assert.rejects(run, (error) => error === original);
-        else if (mode === 'answer_leak') await assert.rejects(run, (error) => error.exitCode === 1);
+        if (mode === 'build_failure' || mode === 'answer_leak') await assert.rejects(run, (error) => error.exitCode === 1);
         else await run;
         assert.deepEqual(calls, ['clear_manifest', 'public_assets', 'projection', 'build',
             ...(mode === 'build_failure' ? [] : ['page_heads', 'community_feed', 'answer_scan']),

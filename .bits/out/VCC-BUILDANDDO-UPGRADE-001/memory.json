@@ -541,7 +541,7 @@
       "dependencies": [
         ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md"
       ],
-      "lines": 64177,
+      "lines": 64202,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Describe the public memory payload that carries this dispatch into the post-merge ingest flow.",
@@ -678,7 +678,7 @@
       "dependencies": [
         ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md"
       ],
-      "lines": 1789,
+      "lines": 1792,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Track the authorized eight-area implementation and its verification gates.",
@@ -10812,7 +10812,7 @@
       "dependencies": [
         "apps/web/tools/release-telemetry.mjs"
       ],
-      "lines": 86,
+      "lines": 94,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Keep offline builds usable while binding designated release telemetry to the actual build.",
@@ -16405,7 +16405,7 @@
         "scripts/discordbot/dossier.py",
         "scripts/discordbot/grading.py"
       ],
-      "lines": 716,
+      "lines": 722,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Serve useful public Discord interactions with explicit scope, private replies and no import-time activation.",
@@ -17291,7 +17291,7 @@
         "apps/web/tools/generate-seo.mjs",
         "apps/web/tools/release-telemetry.mjs"
       ],
-      "lines": 437,
+      "lines": 436,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Verify release identity and real generated crawler artifacts without network dependencies.",
@@ -19731,14 +19731,13 @@
       ],
       "enum_type": "Widget",
       "functions": [
-        "readPacket",
         "KnowledgeContextResults"
       ],
       "dependencies": [
         "apps/web/src/hooks/useWorkspaceKnowledge.js",
         "apps/web/src/hooks/useFailureTelemetry.js"
       ],
-      "lines": 110,
+      "lines": 107,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Surface automatically assembled mission context with readable citations, explicit omissions and an intentional export.",
@@ -19847,7 +19846,7 @@
       "dependencies": [
         "apps/pocketbase/pb_hooks/knowledge.pb.js"
       ],
-      "lines": 132,
+      "lines": 133,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Deliver current scoped graph responses and cited context without retaining private data across accounts.",
@@ -40649,7 +40648,7 @@
         "apps/web/src/lib/businessExecution.js",
         "apps/web/src/components/workspace/MissionReplayCapture.jsx"
       ],
-      "lines": 116,
+      "lines": 117,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Replay and export actual bounded-action receipts without treating recorded results as independent verification.",
@@ -60536,7 +60535,7 @@
         "apps/web/src/lib/observability/runtime.js",
         "apps/web/src/lib/navigationIntent.js"
       ],
-      "lines": 594,
+      "lines": 597,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Say which of the operating company's connected platforms are actually being used, to the operator who owns them, keeping \"unknown\" separate from \"unused\" so an unreadable entitlement is never counted as a deliberate gap.",
@@ -61086,7 +61085,7 @@
         "apps/web/src/pages/workspace/OperatorPage.jsx",
         "apps/web/src/pages/workspace/RoomsPage.jsx"
       ],
-      "lines": 1005,
+      "lines": 1008,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Connect actual public action handlers to both offline SDK doubles and assert privacy, truthful outcomes and unchanged retry lifetimes.",
@@ -61132,7 +61131,7 @@
         "apps/web/src/components/site/StatusPanels.jsx",
         "apps/web/src/pages"
       ],
-      "lines": 621,
+      "lines": 619,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Exercise real read clients and hook closures with local transport, hook, clock and telemetry sink doubles, without vendor or API access.",
@@ -61281,7 +61280,7 @@
         "tests/upgrade/test_discordbot_adapter.py",
         "tests/upgrade/discord_sdk_double.py"
       ],
-      "lines": 626,
+      "lines": 633,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Verify personless command and control outcomes with synthetic permissions, clocks and transports without SDK login or hosting claims.",
@@ -63896,7 +63895,7 @@
         "tests/upgrade/build.test.mjs",
         "tests/upgrade/test_discordbot_telemetry.py"
       ],
-      "lines": 118,
+      "lines": 156,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Retain PR 112's semantic merge decisions and measured integration limits without substituting source checks for runtime acceptance.",
@@ -64160,12 +64159,38 @@
       "timestamp": "2026-09-24T22:00:30.656955+00:00",
       "commit_sha": null,
       "smoke_result": "1444/1445 Node; 1336/1351 Python; 43 governance-tool regressions; native/rendered unavailable"
+    },
+    {
+      "type": "C",
+      "event_type": "smoke_run",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/pr112-merge-report.md",
+      "description": "The PR 112 remote head advanced during validation to 4c61592bf9a53f98ac956034f44620265b96a073. The follow-up merge retains that history and its inline context parsing, unpublished-projection classification and Vite failure handling, along with local lifecycle regressions and post-answer-scan telemetry finalization. After reconciliation, the affected Node selection has 180 passes and one missing-bundler skip, and the Discord selection has 86 passes and one missing native-SDK skip. No new remote publication or runtime acceptance is asserted.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-24T22:21:39.771991+00:00",
+      "commit_sha": null,
+      "smoke_result": "180/181 affected Node checks; 86/87 Discord checks; one dependency skip per selection"
+    },
+    {
+      "type": "C",
+      "event_type": "smoke_run",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/pr112-merge-report.md",
+      "description": "Both broad source suites were repeated after the PR 112 concurrent update was reconciled. The retained source_node-package-1790288940062578019 receipt and TAP log record 1444 passes, zero failures and one missing-Vite skip. An earlier retry failed to load the diagnostic ESLint from the Node 22 global prefix; its failure was retained and the existing global ESLint was selected without package or test changes. The source_python-package-1790288560501148929 receipt records 1336 passes, the same seven readiness/submission failures and eight dependency skips. Dependency lock, reviewed governance bindings and public boundary pass; rendered, native, hosted and deployment acceptance remain unestablished.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-24T22:32:18.571940+00:00",
+      "commit_sha": null,
+      "smoke_result": "1444/1445 Node, zero failures; 1336/1351 Python, seven failures and eight skips"
     }
   ],
   "summary": {
     "type_a_count": 983,
     "type_b_count": 2552,
-    "type_c_count": 243,
+    "type_c_count": 245,
     "ioo_compliance": true,
     "dkg_orphans": 0,
     "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",

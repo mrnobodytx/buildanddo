@@ -929,25 +929,28 @@ for (const state of ['MEASURED', 'OBSERVED', 'PARTIAL', 'UNMEASURED', privateTex
     assert.doesNotMatch(JSON.stringify([f.actions, f.events]), /synthetic-private/); h.unmount();
 });
 
-for (const mode of ['http', 'network', 'json', 'malformed_json', 'foreign', 'oversize', 'abort']) test(`published Rooms ${mode} failure preserves observed status and current UI`, async () => {
+// 'json' is a body that looks like JSON and does not parse. 'html' is the SPA fallback the server
+// answers for a projection that was never published: #109 reads that as absence, so it is reported
+// as unavailable, not as a malformed response.
+for (const mode of ['http', 'network', 'json', 'html', 'foreign', 'oversize', 'abort']) test(`published Rooms ${mode} failure preserves observed status and current UI`, async () => {
     const f = fixture('/app/rooms/organization'), h = rooms(f);
     f.fetch = async () => {
         if (mode === 'network' || mode === 'abort') throw Object.assign(new Error(privateText), { name: mode === 'abort' ? 'AbortError' : 'TypeError' });
         if (mode === 'http') return roomResponse({}, 503);
-        if (mode === 'malformed_json') return { ok: true, status: 200, text: async () => '{' + privateText };
-        if (mode === 'json' || mode === 'oversize') return { ok: true, status: 200, text: async () => mode === 'json' ? '<html>' : 'x'.repeat(1000001) };
+        if (mode === 'json' || mode === 'html' || mode === 'oversize')
+            return { ok: true, status: 200, text: async () => mode === 'json' ? '{' + privateText : mode === 'html' ? '<html>' : 'x'.repeat(1000001) };
         return roomResponse(roomData('MEASURED', 'foreign'));
     };
     h.read().changeSource('published'); h.read(); await tick();
     assert.ok(h.read().published.error); assert.equal(h.read().published.value, null);
-    if (mode === 'json') assert.equal(h.read().published.error, 'No estate projection is published for this room.');
-    if (mode === 'malformed_json') assert.equal(h.read().published.error, 'The published projection for this room is not readable JSON.');
+    if (mode === 'html') assert.equal(h.read().published.error, 'No estate projection is published for this room.');
+    if (mode === 'json') assert.equal(h.read().published.error, 'The published projection for this room is not readable JSON.');
     const failures = f.actions.filter(([name]) => name === 'section.failure');
     if (mode === 'abort') assert.equal(failures.length, 0);
     else {
         assert.equal(failures.length, 1); const context = failures[0][1];
         assert.equal(context.source, 'room_projection');
-        assert.equal(context.reason, mode === 'network' ? 'unavailable' : mode === 'http' ? 'server_error' : 'invalid_response');
+        assert.equal(context.reason, mode === 'network' || mode === 'html' ? 'unavailable' : mode === 'http' ? 'server_error' : 'invalid_response');
         assert.equal(context.status_class, mode === 'network' ? 'unknown' : mode === 'http' ? '5xx' : '2xx');
     }
     assert.doesNotMatch(JSON.stringify([f.actions, f.events]), /synthetic-private/); h.unmount();

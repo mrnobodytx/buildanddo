@@ -372,6 +372,7 @@ test('rendered-state helper deduplicates messages and rerenders, resets after re
 function page(f, name) {
     const configs = {
         FleetPage: ['pages/workspace/FleetPage.jsx', '\n    const hosts =', ['failed', 'report', 'loading', 'setAttempt'], { REPORT_ROUTE: '/api/buildanddo/estate/fleet-status' }],
+        // Served to a master seat through the estate route since #109, as FleetPage is; the public file is gone.
         PlatformHealthPage: ['pages/workspace/PlatformHealthPage.jsx', '\n    const platforms =', ['failed', 'report', 'loading', 'setAttempt'], { REPORT_ROUTE: '/api/buildanddo/estate/platform-health' }],
         PracticePage: ['pages/PracticePage.jsx', '\n    return (', ['error', 'methods'], {}],
         RoadmapPage: ['pages/RoadmapPage.jsx', '\n    const activityStale =', ['liveError', 'activityError', 'live', 'activity', 'capabilities'],
@@ -545,24 +546,21 @@ test('assistant feedback and knowledge notices use distinct state sources withou
 });
 
 function knowledgeResults(f) {
-    const text = source('components/workspace/KnowledgeContext.jsx');
-    const helper = text.slice(text.indexOf('function readPacket('), text.indexOf('/** Display'));
-    const readPacket = vm.runInNewContext(`${helper}\nreadPacket;`);
     return f.component('components/workspace/KnowledgeContext.jsx', 'KnowledgeContextResults',
-        "\n    if (read.state === 'absent')", ['read'], { readPacket });
+        '\n    const download =', ['state', 'packet']);
 }
 
 test('context absence remains normal and unreadable packets emit once before safe early returns', async () => {
     const f = fixture('/app/knowledge');
     f.mount(knowledgeResults(f), [{ context: undefined }]); await f.flush();
-    assert.equal(f.value.read.state, 'absent'); assert.equal(f.actions.length, 0);
+    assert.equal(f.value.state, 'absent'); assert.equal(f.actions.length, 0);
     f.render([{ context: { text: '{' + privateText } }]); await f.flush();
-    assert.equal(f.value.read.state, 'unreadable');
+    assert.equal(f.value.state, 'unreadable');
     assert.equal(f.actions.length, 1); assert.equal(f.actions[0][1].reason, 'invalid_response');
     assert.equal(f.actions[0][1].status_class, 'unknown');
     f.render(); f.replayEffects(); await f.flush(); assert.equal(f.actions.length, 1);
     f.render([{ context: knowledge().context }]); await f.flush();
-    assert.equal(f.value.read.state, 'ok'); assert.equal(f.actions.length, 1);
+    assert.equal(f.value.state, 'ok'); assert.equal(f.actions.length, 1);
     f.render([{ context: { text: '{' + privateText } }]); await f.flush(); assert.equal(f.actions.length, 2);
     f.private(); f.unmount();
 });

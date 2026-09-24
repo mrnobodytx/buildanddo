@@ -29,6 +29,15 @@ The merge combines its head `4e812b93cedd4c644d53fa049fa3905e6dcfd388` with
 telemetry repairs. Existing convergence, server grading, README/changelog/growth
 automation and hygiene removals remain. Nine paths conflicted, as reported.
 
+During validation the remote PR advanced to
+`4c61592bf9a53f98ac956034f44620265b96a073`, independently merging main and fixing
+the quiz/build overlap. That update was fetched and integrated as well, retaining
+its history. The second merge reconciled 14 overlapping paths, including the
+growth lock. It keeps the upstream inline context parsing, friendly unpublished
+projection classification and Vite failure handling, plus the tested lifetime
+guards and post-answer-scan telemetry finalization. Control dispatch acceptance
+remains separate from whether the server graded a quiz answer.
+
 ## Section 2: Task results
 
 - Retain absent versus malformed context handling and emit bounded failure
@@ -64,7 +73,8 @@ automation and hygiene removals remain. Nine paths conflicted, as reported.
 | Discord adapter, command, grading, public and telemetry selection | 87 cases: 86 passed, one missing native-SDK serialization prerequisite |
 | Discord grading/telemetry selection, Python 3.11.15 | 32 passed, zero failures/skips; explicit SDK/transport doubles |
 | Build wrapper, artifact guards, public lesson/catalogue and community quiz selection | 33 cases: 32 passed, one missing real-Vite prerequisite |
-| Changed-web diagnostic | 81 modules; zero new static errors; six inherited HomePage test duplicate-key diagnostics retained |
+| Concurrent-update read/public-action/build selection | 181 cases: 180 passed, one missing real-Vite prerequisite; Discord selection rerun with the same 86 passes and one native-SDK skip |
+| Changed-web diagnostic | Initial integration: 81 modules, zero new static errors and six inherited HomePage test duplicate-key diagnostics; concurrent increment: six modules and zero static errors |
 | Scoped Ruff and strict service typing | PASS for the changed Discord source and telemetry test; not a whole-repository typing claim |
 | README/changelog/growth/dependency checks | PASS; 190 README links, 21 system paths, 49 READMEs and 22 measured growth systems |
 
@@ -82,17 +92,45 @@ submission discrepancies. No assertion, required gate or skip was disabled.
 Working-tree receipts and logs are in `/tmp/opencode/pr112-integration-checks`.
 They are local integration diagnostics, not clean-release acceptance records.
 
+Both broad suites were repeated on the combined tree. The final Node receipt is
+`source_node-package-1790288940062578019.json`; its TAP log records the 1,444
+passes above. The Python receipt is `source_python-package-1790288560501148929.json`.
+An earlier post-merge Node attempt could not load the source checker's ESLint from
+the Node 22 global prefix. Its failed receipt remains retained; the retry pointed
+`NPM_CONFIG_PREFIX` at the already installed global ESLint while retaining Node
+22.17.0. No package or test was changed to suppress that failure.
+
 Rendered React tests, lint and build were attempted but cannot start usefully:
 Vitest, eslint-plugin-import and concurrently are absent. The native workspace
 profile is BLOCKED on the absent declared PocketBase binary. No full native,
 installed-SDK, browser, hosted CI or deployed result is inferred from source tests.
 
+Reproduce the checks with the declared Node version on `PATH`; the source runner
+retains fresh diagnostic receipts, including failures and skips:
+
+```bash
+python scripts/ci/hostinger_readiness.py --run source_node --evidence-dir /tmp/opencode/pr112-integration-checks
+python scripts/ci/hostinger_readiness.py --run source_python --evidence-dir /tmp/opencode/pr112-integration-checks
+node --test tests/upgrade/read-failure-telemetry.test.mjs tests/upgrade/public-action-telemetry.test.mjs tests/upgrade/build.test.mjs
+PYTHONPATH=tests/upgrade python -m unittest tests.upgrade.test_discordbot_adapter tests.upgrade.test_discordbot_commands tests.upgrade.test_discordbot_grading tests.upgrade.test_discordbot_public tests.upgrade.test_discordbot_telemetry
+ruff check --no-cache scripts/discordbot/bot.py scripts/discordbot/service.py tests/upgrade/test_discordbot_telemetry.py
+mypy --strict --follow-imports=silent --explicit-package-bases -m scripts.discordbot.service
+python scripts/ci/readme_check.py
+python scripts/ci/changelog_gen.py --ref origin/main --no-summary --check
+python scripts/ci/system_growth.py --check
+python scripts/ci/hostinger_readiness.py --check
+python scripts/ci/submission_readiness.py --check
+python scripts/ci/agent_context.py --check
+python scripts/ci/verify_public_boundary.py --root .
+```
+
 ## Section 4: Memory
 
-Preserve all 242 prior Type C events. Current file metadata drops only the 13
+All 242 pre-integration Type C events are preserved. Current file metadata drops only the 13
 entries for files already removed by PR 112's reviewed hygiene change; history
-remains in Git and the event records. Refresh remaining line counts and declared
-edges, then append this integration observation. Check with
+remains in Git and the event records. Current line counts and declared edges are
+refreshed, with separate observations for both integrations and the final broad
+recheck. Check with
 `python .bits/out/VCC-BUILDANDDO-UPGRADE-001/verify.py`.
 
 ## Section 5: Filing

@@ -14,7 +14,8 @@
 //              apps/web/src/components/site/ui.jsx, apps/web/src/lib/observability/runtime.js, apps/web/src/lib/navigationIntent.js
 // EnumType:    Widget
 // EnumEdges:   CONSUMES GET /api/buildanddo/estate/platform-health;
-//              DEPENDS_ON apps/pocketbase/pb_hooks/estate.pb.js; CONSUMES apps/web/src/lib/observability/runtime.js; CONSUMES apps/web/src/lib/navigationIntent.js
+//              DEPENDS_ON apps/pocketbase/pb_hooks/estate.pb.js; CONSUMES apps/web/src/lib/observability/runtime.js;
+//              CONSUMES apps/web/src/lib/navigationIntent.js
 // Intent:      Say which of the operating company's connected platforms are
 //              actually being used, to the operator who owns them, keeping
 //              "unknown" separate from "unused" so an unreadable entitlement is
@@ -272,6 +273,9 @@ export default function PlatformHealthPage() {
         const section = telemetrySection(pathname);
         setLoading(true);
         setFailed(false);
+        // The report is served only to a master seat through the estate route (#109); the public
+        // file it replaced published the operating company's posture to anyone. Failures are
+        // classified exactly as FleetPage classifies the sibling estate route.
         pocketbaseClient
             .send(REPORT_ROUTE, { method: 'GET', requestKey: null })
             .then((data) => {
@@ -293,8 +297,7 @@ export default function PlatformHealthPage() {
                 const aborted = error?.isAbort || error?.name === 'AbortError' || error?.originalError?.name === 'AbortError';
                 const malformed = received || error?.name === 'SyntaxError' || error?.originalError?.name === 'SyntaxError';
                 if (!aborted && accountId === pocketbaseClient.authStore.record?.id && pathname === globalThis.window?.location?.pathname)
-                    readFailed(section, 'estate', malformed ? 'invalid_response' : 'unavailable',
-                        received ? 200 : malformed && error?.status === 0 ? undefined : error?.status);
+                    readFailed(section, 'estate', malformed ? 'invalid_response' : 'unavailable', received ? 200 : malformed && error?.status === 0 ? undefined : error?.status);
                 setFailed(true);
                 setLoading(false);
             });

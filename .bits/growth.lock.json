@@ -449,12 +449,12 @@
         "css": 1101,
         "data": 1449,
         "html": 22,
-        "javascript": 72812,
+        "javascript": 72822,
         "markdown": 129
       },
       "readme": true,
       "source_files": 461,
-      "source_lines": 73935,
+      "source_lines": 73945,
       "srs_codes": [
         "SRS-BUILDANDDO-BUDDI-001",
         "SRS-BUILDANDDO-BUDDI-003",
@@ -630,11 +630,11 @@
       "cgrf_files": 9,
       "files": 10,
       "lines": {
-        "python": 2484
+        "python": 2490
       },
       "readme": false,
       "source_files": 9,
-      "source_lines": 2484,
+      "source_lines": 2490,
       "srs_codes": [
         "SRS-BUILDANDDO-QUIZ-001",
         "SRS-BUILDANDDO-UPGRADE-001"
@@ -692,7 +692,7 @@
   "totals": {
     "cgrf_coverage": 0.832,
     "files": 1072,
-    "source_lines": 169796,
+    "source_lines": 169812,
     "systems": 22,
     "systems_with_readme": 4,
     "systems_with_tests": 21,

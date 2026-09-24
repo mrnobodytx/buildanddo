@@ -23,8 +23,6 @@ import { useWorkspaceKnowledge } from '@/hooks/useWorkspaceKnowledge';
 import { useFailureTelemetry } from '@/hooks/useFailureTelemetry';
 
 /**
- * Read the packet, or say why it cannot be read. Never throw.
- *
  * THIS COMPONENT IS FED BY TWO DIFFERENT PAYLOADS AND ONLY ONE CARRIES A CONTEXT.
  * `workspace-knowledge.js` adds `context: assembleContext(...)` to what it returns; the
  * assistant's `workspace-assistant.js` returns the same graph WITHOUT that key. Both reach
@@ -35,35 +33,34 @@ import { useFailureTelemetry } from '@/hooks/useFailureTelemetry';
  * A missing context is a real state, not a fault: it means nothing was assembled. It renders as
  * absence. A context whose text will not parse IS a fault, and says so rather than showing
  * nothing, because a silent blank is the failure this page already had.
+ *
+ * Displays the exact cited packet offered for export.
  */
-function readPacket(context) {
-    if (!context || typeof context.text !== 'string') return { state: 'absent' };
-    try {
-        const parsed = JSON.parse(context.text);
-        if (!parsed || !Array.isArray(parsed.sources)) return { state: 'unreadable' };
-        return { state: 'ok', packet: parsed };
-    } catch {
-        return { state: 'unreadable' };
-    }
-}
-
-/** Display the exact cited packet offered for export. */
 export function KnowledgeContextResults({ context, onSelect }) {
-    const read = readPacket(context);
-    const degraded = read.state === 'ok' && Array.isArray(read.packet.source_coverage) &&
-        read.packet.source_coverage.some((entry) => entry?.state === 'unavailable');
-    useFailureTelemetry(read.state === 'unreadable' || degraded, 'control_state',
-        read.state === 'unreadable' ? 'invalid_response' : 'degraded');
-    if (read.state === 'absent')
-        return <p role="status" className="text-sm text-muted-foreground">No context has been assembled for this view.</p>;
-    if (read.state === 'unreadable')
-        return <p role="alert" className="text-sm">The assembled context could not be read. Refresh to assemble it again; if it persists the packet is malformed and an operator should look at it.</p>;
-    const packet = read.packet;
+    // Read the packet, or say why it cannot be read; never throw. Parsed here rather than in a
+    // module helper so everything before the first JSX is the component's whole state.
+    let state = 'absent', packet = null;
+    if (context && typeof context.text === 'string') {
+        try {
+            const parsed = JSON.parse(context.text);
+            if (parsed && Array.isArray(parsed.sources)) { state = 'ok'; packet = parsed; } else state = 'unreadable';
+        } catch { state = 'unreadable'; }
+    }
+    // Hooks run before any return. A packet that will not parse is reported as an invalid
+    // response; a readable one with an unavailable source is reported as degraded.
+    const degraded = state === 'ok' && Array.isArray(packet.source_coverage) &&
+        packet.source_coverage.some((entry) => entry?.state === 'unavailable');
+    useFailureTelemetry(state === 'unreadable' || degraded, 'control_state',
+        state === 'unreadable' ? 'invalid_response' : 'degraded');
     const download = () => {
         const url = URL.createObjectURL(new Blob([context.text], { type: 'application/json' }));
         const link = document.createElement('a'); link.href = url; link.download = 'buildanddo-context.json';
         document.body.appendChild(link); link.click(); link.remove(); setTimeout(() => URL.revokeObjectURL(url), 0);
     };
+    if (state === 'absent')
+        return <p role="status" className="text-sm text-muted-foreground">No context has been assembled for this view.</p>;
+    if (state === 'unreadable')
+        return <p role="alert" className="text-sm">The assembled context could not be read. Refresh to assemble it again; if it persists the packet is malformed and an operator should look at it.</p>;
     return <div className="min-w-0 space-y-3">
         {/* A packet can parse and still omit its budget counters; a number that is not there is
             reported as unknown rather than crashing the page it is one line of. */}

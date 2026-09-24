@@ -53,6 +53,9 @@ LOG_EVENTS = OUTCOME_EVENTS | {
     "discord.transport.failed", "discord.error_notice.unavailable", "discord.reader.expiry_notice_unavailable",
     "discord.commands.synchronized", "discord.gateway.ready", "discord.prefix.delivery_failed",
     "discord.startup.blocked", "discord.startup.failed",
+    # Server grading (#104) logs its own outcome. Without this entry the formatter (#113) turned
+    # every graded answer into discord.event.unknown/error, a false failure on each correct use.
+    "discord.quiz.graded",
 }
 
 
@@ -292,6 +295,8 @@ class ReplyView(discord.ui.View):
 
     async def answer(self, interaction: discord.Interaction, choice: int) -> None:
         """Have the server grade one answer and retain its result under serialized callbacks."""
+        # The control telemetry every sibling control carries (#113), on the server-graded answer
+        # path (#104). The main-line merge of the two kept this method's body and dropped its span.
         started, outcome = time.monotonic(), "error"
         try:
             await interaction.response.defer()
@@ -311,7 +316,8 @@ class ReplyView(discord.ui.View):
                     self.message = await interaction.edit_original_response(
                         embed=render(page), view=self, allowed_mentions=discord.AllowedMentions.none(),
                     )
-                    outcome = "accepted" if self.session.answered else "rejected"
+                    # Acceptance describes control dispatch, not answer correctness or learning.
+                    outcome = "accepted"
                 except InteractionDenied as error:
                     denied = self.denied_outcome(interaction)
                     await notify_private(interaction, str(error))
