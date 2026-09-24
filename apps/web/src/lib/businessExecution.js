@@ -30,7 +30,14 @@ export function createBusinessClient({ client, workspaceId, accountId, isCurrent
             if (value?.workspace !== workspaceId || method === 'GET' && (!Array.isArray(value.items) || value.items.some((job) => job.workspace !== workspaceId)))
                 return { ok: false, error: 'The action receipt has a different workspace scope.' };
             return { ok: true, data: value };
-        } catch (error) { return current() ? { ok: false, error: error?.response?.message || 'Could not confirm this action. Reload its receipts before retrying.' } : { ok: false, stale: true }; }
+        } catch (error) {
+            if (!current()) return { ok: false, stale: true };
+            // A read performed no action, so the command sentence would name one the person never
+            // took and send them looking for a receipt that was never going to exist.
+            const fallback = method === 'GET' ? 'Could not load these action receipts. Reload the page to try again.'
+                : 'Could not confirm this action. Reload its receipts before retrying.';
+            return { ok: false, error: error?.response?.message || fallback };
+        }
     };
     return { list: (query = {}) => request('GET', undefined, query), command: (input) => request('POST', input) };
 }
