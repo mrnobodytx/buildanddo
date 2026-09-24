@@ -34,7 +34,7 @@ vi.mock('@/contexts/WorkspaceAccessContext', () => ({
     useWorkspaceAccess: () => permissions,
 }));
 vi.mock('@/components/workspace/WorkspaceAssistant', () => ({ default: () => null }));
-vi.mock('@/lib/observability/runtime', () => ({ trackAuthIdentity: vi.fn() }));
+vi.mock('@/lib/observability/runtime', () => ({ trackAuthIdentity: vi.fn(), readFailed: vi.fn() }));
 vi.mock('@/lib/pocketbaseClient', () => {
     const listeners = new Set();
     const authStore = { record: null, token: '', isValid: false,

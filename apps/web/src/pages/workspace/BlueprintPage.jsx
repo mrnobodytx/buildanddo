@@ -25,6 +25,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useWorkspace } from '@/contexts/WorkspaceContext';
 import { useDemoMode } from '@/hooks/useDemoMode';
 import pb from '@/lib/pocketbaseClient';
+import { observeMutation } from '@/lib/observability/mutations';
 import { createBlueprintClient, exportMissionPlan } from '@/lib/blueprints';
 import { STATUS_PATH } from '@/lib/communityLinks';
 
@@ -134,7 +135,7 @@ function BlueprintDesk({ accountId, workspaceId, demo }) {
     const [file, setFile] = useState(null);
     const [state, setState] = useState({ busy: false, data: null, error: '' });
     useEffect(() => { live.current = true; return () => { live.current = false; }; }, []);
-    const client = useMemo(() => createBlueprintClient({ client: pb, accountId, workspaceId, demo, isCurrent: () => live.current }),
+    const client = useMemo(() => createBlueprintClient({ client: pb, accountId, workspaceId, demo, isCurrent: () => live.current, observe: observeMutation }),
         [accountId, workspaceId, demo]);
     const analyze = async (includePrompts = false) => {
         if (pending.current) return;

@@ -22,7 +22,9 @@ import AuthContext from '@/contexts/AuthContext';
 import { usePrivateDossier } from '@/hooks/usePrivateDossier';
 import { setDemoMode } from '@/lib/demoWorkspace';
 import pb from '@/lib/pocketbaseClient';
+import { observeMutation } from '@/lib/observability/mutations';
 vi.mock('@/lib/pocketbaseClient', () => ({ default: { authStore: { record: { id: 'editor' } }, send: vi.fn() } }));
+vi.mock('@/lib/observability/mutations', () => ({ observeMutation: vi.fn((_name, _verb, operation) => operation()) }));
 let account;
 const response = (owner = account, page = 1) => ({ owner, encrypted_storage: true, dossier: { owner, id: '', revision: 0, about: '' },
     entity_count: 0, total: 0, items: [], page, has_more: false });
@@ -68,6 +70,8 @@ it('keeps uncertain writes retryable and refreshes the current result page', asy
     await act(async () => view.result.current.retry());
     expect(view.result.current.uncertain).toBe(false); expect(view.result.current.data.page).toBe(2);
     expect(pb.send.mock.calls.filter(([path]) => !path.endsWith('/read')).at(-1)[1].body.request_key).toBe(key);
+    expect(observeMutation).toHaveBeenCalledTimes(2);
+    expect(observeMutation).toHaveBeenCalledWith('private_dossiers', 'dossier.update', expect.any(Function));
 });
 
 it('hides late save receipts and discards pending content on account changes and unmount', async () => {

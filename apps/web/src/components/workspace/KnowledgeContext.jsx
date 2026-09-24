@@ -8,9 +8,9 @@
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-18
-// Depends:     apps/web/src/hooks/useWorkspaceKnowledge.js
+// Depends:     apps/web/src/hooks/useWorkspaceKnowledge.js, apps/web/src/hooks/useFailureTelemetry.js
 // EnumType:    Widget
-// EnumEdges:   CONSUMES apps/web/src/hooks/useWorkspaceKnowledge.js
+// EnumEdges:   CONSUMES apps/web/src/hooks/useWorkspaceKnowledge.js; CONSUMES apps/web/src/hooks/useFailureTelemetry.js
 // DAG Node:    none
 // Intent:      Surface automatically assembled mission context with readable citations, explicit omissions and an intentional export.
 // ───────────────────────────────────────────────────────────────
@@ -20,6 +20,7 @@ import { Link } from 'react-router-dom';
 import { Button, Card } from '@/components/site/ui';
 import { dateLabel } from '@/components/workspace/ControlPrimitives';
 import { useWorkspaceKnowledge } from '@/hooks/useWorkspaceKnowledge';
+import { useFailureTelemetry } from '@/hooks/useFailureTelemetry';
 
 /**
  * Read the packet, or say why it cannot be read. Never throw.
@@ -49,6 +50,10 @@ function readPacket(context) {
 /** Display the exact cited packet offered for export. */
 export function KnowledgeContextResults({ context, onSelect }) {
     const read = readPacket(context);
+    const degraded = read.state === 'ok' && Array.isArray(read.packet.source_coverage) &&
+        read.packet.source_coverage.some((entry) => entry?.state === 'unavailable');
+    useFailureTelemetry(read.state === 'unreadable' || degraded, 'control_state',
+        read.state === 'unreadable' ? 'invalid_response' : 'degraded');
     if (read.state === 'absent')
         return <p role="status" className="text-sm text-muted-foreground">No context has been assembled for this view.</p>;
     if (read.state === 'unreadable')
@@ -89,6 +94,9 @@ export function KnowledgeContextResults({ context, onSelect }) {
 /** Assemble the selected mission's current context when its detail view opens. */
 export default function MissionKnowledgeContext({ missionId }) {
     const control = useWorkspaceKnowledge({ mission: missionId, max_chars: 8000, max_sources: 8 });
+    // Rendered context state is not another knowledge read attempt.
+    useFailureTelemetry(!control.loading && !control.demo && Boolean(control.error && control.readFailure),
+        'control_state', control.readFailure?.reason, control.readFailure?.status);
     return <Card className="space-y-3 p-4 ph-no-capture" data-dd-privacy="mask">
         <h3 className="font-display text-lg">Assembled mission context</h3>
         <p className="text-sm text-muted-foreground">Current mission, research and evidence, with relevant shared signals and published wiki pages.</p>

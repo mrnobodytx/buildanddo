@@ -4,6 +4,7 @@
 // SRS:         SRS-BUILDANDDO-UPGRADE-001
 // CAPS:        pending
 // CK:          pending
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
 // Seat:        C-ONE
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-23
@@ -15,9 +16,13 @@
 // ───────────────────────────────────────────────────────────────
 
 import { render, screen } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { KnowledgeContextResults } from '@/components/workspace/KnowledgeContext';
+import { readFailed } from '@/lib/observability/runtime';
+
+vi.mock('@/lib/observability/runtime', () => ({ readFailed: vi.fn(), reportAction: vi.fn(), reportMetric: vi.fn() }));
+beforeEach(() => vi.clearAllMocks());
 
 const packet = (sources) => JSON.stringify({ sources });
 const source = {
@@ -62,5 +67,22 @@ describe('KnowledgeContextResults', () => {
     it('reports an unknown budget instead of crashing on absent counters', () => {
         expect(() => render(<KnowledgeContextResults context={{ text: packet([]) }} />)).not.toThrow();
         expect(screen.getByText(/character budget unknown/)).toBeInTheDocument();
+    });
+
+    it('keeps hook order and bounded telemetry through absent, malformed and recovered context', () => {
+        const view = render(<KnowledgeContextResults context={undefined} />);
+        expect(readFailed).not.toHaveBeenCalled();
+        view.rerender(<KnowledgeContextResults context={{ text: '{private document text' }} />);
+        expect(screen.getByRole('alert')).toHaveTextContent('could not be read');
+        expect(readFailed).toHaveBeenCalledTimes(1);
+        expect(readFailed).toHaveBeenLastCalledWith(expect.any(String), 'control_state', 'invalid_response', undefined);
+        view.rerender(<KnowledgeContextResults context={{ text: '{private document text' }} />);
+        expect(readFailed).toHaveBeenCalledTimes(1);
+        view.rerender(<KnowledgeContextResults context={{ text: packet([]) }} />);
+        expect(screen.getByText(/0 cited sources/)).toBeInTheDocument();
+        view.rerender(<KnowledgeContextResults context={{ text: JSON.stringify({ sources: [], source_coverage: [{ state: 'unavailable' }] }) }} />);
+        expect(readFailed).toHaveBeenCalledTimes(2);
+        expect(readFailed).toHaveBeenLastCalledWith(expect.any(String), 'control_state', 'degraded', undefined);
+        expect(JSON.stringify(readFailed.mock.calls)).not.toContain('private document text');
     });
 });

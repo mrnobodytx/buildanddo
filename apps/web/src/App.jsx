@@ -8,19 +8,19 @@
 // Seat:        BITS-CODEGEN, C-ONE
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-21
-// Depends:     apps/web/src/contexts/AuthContext.jsx, apps/web/src/components/ProtectedRoute.jsx, apps/web/src/pages/workspace/GovernmentPage.jsx, apps/web/src/pages/workspace/CareerPage.jsx
+// Depends:     apps/web/src/contexts/AuthContext.jsx, apps/web/src/components/ProtectedRoute.jsx, apps/web/src/pages/workspace/GovernmentPage.jsx, apps/web/src/pages/workspace/CareerPage.jsx, apps/web/src/hooks/useFailureTelemetry.js, apps/web/src/components/workspace/PageBoundary.jsx
 // EnumType:    Widget
-// EnumEdges:   CONSUMES apps/web/src/contexts/AuthContext.jsx; CONSUMES apps/web/src/components/ProtectedRoute.jsx; CONSUMES apps/web/src/pages/workspace/GovernmentPage.jsx; CONSUMES apps/web/src/pages/workspace/CareerPage.jsx
+// EnumEdges:   CONSUMES apps/web/src/contexts/AuthContext.jsx; CONSUMES apps/web/src/components/ProtectedRoute.jsx; CONSUMES apps/web/src/pages/workspace/GovernmentPage.jsx; CONSUMES apps/web/src/pages/workspace/CareerPage.jsx; CONSUMES apps/web/src/hooks/useFailureTelemetry.js; CONSUMES apps/web/src/components/workspace/PageBoundary.jsx
 // Intent:      Route public and workspace views only after native session validation.
 // ───────────────────────────────────────────────────────────────
 
-import React, { lazy, Suspense } from 'react';
+import React, { lazy, Suspense, useEffect, useRef } from 'react';
 import { MotionProvider } from '@/contexts/MotionContext';
 import { MotionEntrance } from '@/components/motion/MotionPrimitives';
 import { ThemeProvider } from 'next-themes';
 import RouteLoading from '@/components/RouteLoading';
 import SkipNavigation from '@/components/SkipNavigation';
-import { Route, Routes, BrowserRouter as Router, Navigate, useLocation } from 'react-router-dom';
+import { Route, Routes, BrowserRouter as Router, Navigate, Outlet, useLocation } from 'react-router-dom';
 import ScrollToTop from './components/ScrollToTop';
 import RouteTelemetry from './components/observability/RouteTelemetry';
 import TelemetryBoundary from './components/observability/TelemetryBoundary';
@@ -31,6 +31,8 @@ import ProtectedRoute from '@/components/ProtectedRoute';
 import PageBoundary from '@/components/workspace/PageBoundary';
 import { workspaceDestination } from '@/lib/navigationIntent';
 import { isMasterSeat } from '@/lib/estateAccess';
+import { trackUnknownRoute } from '@/lib/observability/runtime';
+import { useFailureTelemetry } from '@/hooks/useFailureTelemetry';
 
 const HomePage = lazy(() => import('./pages/HomePage'));
 const HostingerChallengePage = lazy(() => import('./pages/HostingerChallengePage'));
@@ -161,6 +163,7 @@ function RedirectIfAuthed({ children }) {
 function WorkspaceGate({ children }) {
     const { loading, hasWorkspaces, error, refresh } = useWorkspace();
     const location = useLocation();
+    useFailureTelemetry(!loading && Boolean(error), 'workspace_gate', 'unavailable', undefined, location.pathname);
     if (loading) {
         return <RouteLoading fullPage />;
     }
@@ -179,10 +182,24 @@ function WorkspaceGate({ children }) {
     return children;
 }
 
+function PublicPageBoundary() {
+    const { pathname } = useLocation();
+    return <PageBoundary key={pathname} name="Page" section={pathname}><Outlet /></PageBoundary>;
+}
+
+function UnknownRoute() {
+    const reported = useRef(false);
+    useEffect(() => {
+        if (!reported.current) { reported.current = true; trackUnknownRoute(); }
+    }, []);
+    return <Navigate to="/" replace />;
+}
+
 export function AppRoutes() {
     return (
         <Suspense fallback={<RouteLoading fullPage />}>
             <Routes>
+                <Route element={<PublicPageBoundary />}>
                 {/* Public marketing site */}
                 <Route path="/" element={<HomePage />} />
                 <Route path="/hostinger-challenge" element={<HostingerChallengePage />} />
@@ -228,16 +245,19 @@ export function AppRoutes() {
                         </ProtectedRoute>
                     }
                 />
+                </Route>
 
                 {/* Authenticated workspace */}
                 <Route
                     path="/app"
                     element={
+                        <PageBoundary name="Workspace shell" section="/app">
                         <ProtectedRoute>
                             <WorkspaceGate>
                                 <WorkspaceLayout />
                             </WorkspaceGate>
                         </ProtectedRoute>
+                        </PageBoundary>
                     }
                 >
                     {WORKSPACE_ROUTES.map(({ path, index, label, element: Element, estate }) => (
@@ -246,7 +266,7 @@ export function AppRoutes() {
                             index={index}
                             path={path}
                             element={
-                                <PageBoundary key={path || 'index'} name={label}>
+                                <PageBoundary key={path || 'index'} name={label} section={path ? `/app/${path}` : '/app'}>
                                     <Suspense fallback={<RouteLoading />}>
                                         <EstateOnly enabled={estate}>
                                             <MotionEntrance><Element /></MotionEntrance>
@@ -258,7 +278,7 @@ export function AppRoutes() {
                     ))}
                 </Route>
 
-                <Route path="*" element={<Navigate to="/" replace />} />
+                <Route path="*" element={<UnknownRoute />} />
             </Routes>
         </Suspense>
     );

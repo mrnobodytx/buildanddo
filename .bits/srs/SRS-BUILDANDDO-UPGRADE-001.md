@@ -20,6 +20,46 @@
 **Status:** in_progress **Risk:** A2 **Seat:** BITS-CODEGEN
 **Dispatch:** VCC-BUILDANDDO-UPGRADE-001 **Actor:** actor:agent
 
+## PR 112 conflict resolution - 2026-09-24
+
+The owner requests resolving PR 112 against current main on its existing branch.
+Continue this A2 integration dispatch. Preserve the PR's convergence, server-graded
+quiz, README/changelog/growth tooling and reviewed removals together with main's
+telemetry and authority repairs. Reconcile shared code semantically: absent and
+unreadable context remain distinct, discarded reads stop loading without outage
+signals, and Platform Health keeps its authenticated estate route and failure
+measurement. Regenerate source-bound locks from the resolved tree and retain
+measured local results and unavailable runtime checks. No new feature, external
+write, provider configuration or deployment is part of this continuation.
+
+## Telemetry coverage repair - 2026-09-24
+
+The owner requests correcting the supplied telemetry coverage audit. Continue
+this pre-existing A2 source dispatch against current public main, retaining the
+earlier evidence, claim and isolation repairs. Vendor observations in the audit
+remain attributed historical evidence, not measurements made by this session.
+
+Acceptance:
+
+1. Remove personal content and dynamic identifiers before adding signals. Use
+   ID-only authenticated identity, private action names, bounded section names
+   and sanitized URLs. Separate synthetic and agent traffic.
+2. Record SPA views and section failures in both existing browser sinks. Preserve
+   read/degraded and write outcome distinctions; receipt validation and lifetime
+   checks precede success measurement. Telemetry must not alter app outcomes.
+3. Stop timing vendor intake or repeatedly flushing hidden tabs. Classify unusable
+   JSON responses without consuming or changing application responses.
+4. Add bounded backend request/cause diagnostics through existing hooks, retaining
+   authentication, errors and retry/transaction semantics. Log no bodies, queries,
+   credentials, IPs or personal content.
+5. Reject telemetry-incomplete production artifacts with local checks rather than
+   minifier-dependent strings or fabricated vendor receipts. Unit tests use SDK,
+   transport, filesystem and clock doubles with no outbound telemetry.
+6. Retain receiving work for shipping, settings, monitors, synthetics and exact
+   release vendor readback with positive/negative controls. No secret access,
+   production visits/configuration, vendor writes, event deletion, private worker
+   changes or deployment is authorized by this source continuation.
+
 ## PR 103 main integration - 2026-09-24
 
 The owner requests command-line conflict resolution against main. Retain the

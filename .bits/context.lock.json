@@ -564,7 +564,8 @@
       ],
       "path": "scripts/ci/integrity_regression_check.py",
       "referenced_by": [
-        "scripts/deploy/ship.py"
+        "scripts/deploy/ship.py",
+        "tests/deploy/test_ship_telemetry.py"
       ],
       "wired_into_ci": true
     },
@@ -850,7 +851,7 @@
       "wired_into_ci": true
     }
   ],
-  "generated_at": "2026-09-24T21:09:22.153729+00:00",
+  "generated_at": "2026-09-24T22:02:40.516498+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -1533,6 +1534,7 @@
       "apps/web/tools/generate-seo.mjs",
       "apps/web/tools/lint.mjs",
       "apps/web/tools/observability-smoke.mjs",
+      "apps/web/tools/release-telemetry.mjs",
       "apps/web/vite.config.js",
       "scripts/deploy/apply_production_runtime_config.py",
       "scripts/deploy/roadmap_status.py",
@@ -1540,12 +1542,12 @@
       "scripts/deploy/staging-readback.sh"
     ],
     "migrations": 75,
-    "python_files": 448,
+    "python_files": 451,
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 1768,
-    "web_source_files": 377
+    "tracked_files": 1790,
+    "web_source_files": 381
   },
   "schema_version": 1,
   "sprint_readiness": {
@@ -1624,7 +1626,7 @@
         "why": "Competition readiness requires an evidence-backed learning-through-work journey, a reproducible replay and actual submission criteria."
       }
     ],
-    "source_sha256": "d2aa5aa3de99579520fbb414ae72285ea6c287c3434c84bc3797a8d197e3d57b",
+    "source_sha256": "285a23fef9be7bd37a5543631d7be28b354814c7af47395ff464ce8aa1cb6fd9",
     "state": "PASS"
   },
   "summary": {
@@ -1639,7 +1641,7 @@
     "js_runners": [
       "vitest"
     ],
-    "js_test_files": 102,
+    "js_test_files": 103,
     "js_test_script": true,
     "junit_configured": true,
     "python_suite_entrypoints": [

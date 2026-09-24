@@ -18,7 +18,8 @@
 """Connect public Discord commands to the site's actual published source."""
 from __future__ import annotations
 
-from collections.abc import Callable
+import asyncio
+from collections.abc import Callable, Collection
 from datetime import datetime, timezone
 import logging
 import math
@@ -66,6 +67,46 @@ WORKSPACE_AREAS = {
     "admin": ("Administration", "/app/admin"),
     "settings": ("Settings", "/app/settings"),
 }
+
+OUTCOME_EVENTS = frozenset({
+    "discord.command.completed", "discord.command.dispatched", "discord.control.completed",
+    "discord.research.command", "discord.dossier.command", "discord.quiz.graded",
+})
+COMMAND_OUTCOMES = frozenset({
+    "success", "denied", "rate_limited", "invalid", "unavailable", "unmeasured", "stale", "error", "cancelled",
+    "delivered", "forbidden", "unsupported", "too_large", "unsafe_source", "conflict", "invalid_data",
+    "confirmation", "timeout", "redirect", "http_error", "closed", "configuration",
+})
+CONTROL_ACTIONS = frozenset({"previous", "next", "close", "lesson_select", "quiz_answer"})
+CONTROL_OUTCOMES = frozenset({"accepted", "rejected", "denied", "expired", "error", "cancelled"})
+QUIZ_OUTCOMES = frozenset({"graded", "unavailable", "error", "cancelled"})
+
+
+def log_outcome(
+    event: str, operation: str, outcome: str, started: float, *,
+    commands: Collection[str] = COMMANDS, clock: Callable[[], float] = time.monotonic,
+) -> None:
+    """Emit one bounded local outcome without letting the stderr sink alter application results."""
+    if event not in OUTCOME_EVENTS:
+        return
+    control = event == "discord.control.completed"
+    names = CONTROL_ACTIONS if control else commands
+    outcomes = CONTROL_OUTCOMES if control else QUIZ_OUTCOMES if event == "discord.quiz.graded" else COMMAND_OUTCOMES
+    fields: dict[str, object] = {
+        "srs_code": SRS, "seat": "BITS-CODEGEN", "dispatch_id": DISPATCH,
+        "control" if control else "command": operation if isinstance(operation, str) and operation in names else "unknown",
+        "outcome": outcome if isinstance(outcome, str) and outcome in outcomes else "error",
+    }
+    try:
+        elapsed = (clock() - started) * 1000
+        if math.isfinite(elapsed):
+            fields["duration_ms"] = min(2**53 - 1, max(0, round(elapsed)))
+    except Exception:
+        pass  # A failed timing observation must not suppress the outcome.
+    try:
+        logger.info(event, extra=fields)
+    except Exception:
+        pass  # Logging must not replace a reply, denial, cancellation or original exception.
 
 
 def _time(value: datetime) -> str:
@@ -145,12 +186,11 @@ class CommandService:
                 + "\nTry again shortly or open the site. No current result is inferred.",
                 SITE_ORIGIN + ("/roadmap" if name == "roadmap" else "/docs"),
             ),), outcome=outcome)
+        except asyncio.CancelledError:
+            outcome = "cancelled"
+            raise
         finally:
-            logger.info("discord.command.completed", extra={
-                "srs_code": SRS, "seat": "BITS-CODEGEN", "dispatch_id": DISPATCH,
-                "command": name, "outcome": outcome,
-                "duration_ms": max(0, round((self.clock() - start) * 1000)),
-            })
+            log_outcome("discord.command.completed", name, outcome, start, clock=self.clock)
 
     async def grade(self, quiz: Quiz, choice: int, caller: Caller) -> tuple[Page, bool]:
         """Have the server grade one answer; log only the outcome, never the choice or the answer."""
@@ -160,12 +200,11 @@ class CommandService:
             page, graded = await self.grader.grade(quiz, choice, caller)
             outcome = "graded" if graded else "unavailable"
             return page, graded
+        except asyncio.CancelledError:
+            outcome = "cancelled"
+            raise
         finally:
-            logger.info("discord.quiz.graded", extra={
-                "srs_code": SRS, "seat": "BITS-CODEGEN", "dispatch_id": DISPATCH,
-                "command": "quiz", "outcome": outcome,
-                "duration_ms": max(0, round((self.clock() - start) * 1000)),
-            })
+            log_outcome("discord.quiz.graded", "quiz", outcome, start, clock=self.clock)
 
     async def _command(self, name: str, query: str, caller: Caller) -> Reply:
         if name == "help":

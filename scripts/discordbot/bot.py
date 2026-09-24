@@ -40,12 +40,20 @@ from scripts.discordbot.contracts import (
 )
 from scripts.discordbot.grading import Grader, configured_grader
 from scripts.discordbot.public_data import PublicClient
-from scripts.discordbot.service import COMMANDS, CommandService, WORKSPACE_AREAS
+from scripts.discordbot.service import (
+    COMMANDS, COMMAND_OUTCOMES, CONTROL_ACTIONS, CONTROL_OUTCOMES, OUTCOME_EVENTS, QUIZ_OUTCOMES,
+    CommandService, WORKSPACE_AREAS, log_outcome,
+)
 from scripts.discordbot.research import Attachment, RESEARCH_COMMANDS, ResearchBridge, configured_bridge
 from scripts.discordbot.dossier import DOSSIER_COMMANDS, KINDS as ENTITY_KINDS, DossierBridge
 from apps.research.contracts import ResearchError
 
 logger = logging.getLogger("buildanddo.discord")
+LOG_EVENTS = OUTCOME_EVENTS | {
+    "discord.transport.failed", "discord.error_notice.unavailable", "discord.reader.expiry_notice_unavailable",
+    "discord.commands.synchronized", "discord.gateway.ready", "discord.prefix.delivery_failed",
+    "discord.startup.blocked", "discord.startup.failed",
+}
 
 
 def caller_from(interaction: discord.Interaction) -> Caller:
@@ -104,8 +112,16 @@ class LessonSelect(discord.ui.Select["ReplyView"]):
 
     async def callback(self, interaction: discord.Interaction) -> None:
         """Load the selected lesson through the same scoped command service."""
-        if self.view is not None:
-            await self.view.select_lesson(interaction, self.values[0])
+        started = time.monotonic()
+        if self.view is None:
+            log_outcome("discord.control.completed", "lesson_select", "denied", started, clock=time.monotonic)
+            return
+        try:
+            slug = self.values[0]
+        except (IndexError, TypeError):
+            log_outcome("discord.control.completed", "lesson_select", "rejected", started, clock=time.monotonic)
+            raise
+        await self.view.select_lesson(interaction, slug)
 
 
 class QuizSelect(discord.ui.Select["ReplyView"]):
@@ -123,8 +139,16 @@ class QuizSelect(discord.ui.Select["ReplyView"]):
 
     async def callback(self, interaction: discord.Interaction) -> None:
         """Submit one explicit answer to the guarded personal session."""
-        if self.view is not None:
-            await self.view.answer(interaction, int(self.values[0]))
+        started = time.monotonic()
+        if self.view is None:
+            log_outcome("discord.control.completed", "quiz_answer", "denied", started, clock=time.monotonic)
+            return
+        try:
+            choice = int(self.values[0])
+        except (IndexError, TypeError, ValueError):
+            log_outcome("discord.control.completed", "quiz_answer", "rejected", started, clock=time.monotonic)
+            raise
+        await self.view.answer(interaction, choice)
 
 
 class ReplyView(discord.ui.View):
@@ -136,6 +160,7 @@ class ReplyView(discord.ui.View):
         self.session = PersonalSession(caller.user_id, reply)
         self.lock = asyncio.Lock()
         self.retired = False
+        self._timed_out = False
         self.message: discord.Message | discord.InteractionMessage | None = None
         self.open_site = discord.ui.Button(label="Open in BuildAndDo", url=reply.pages[0].url, row=2)
         self.add_item(self.open_site)
@@ -160,70 +185,142 @@ class ReplyView(discord.ui.View):
             raise InteractionDenied("These controls are no longer available. Run the command again.")
         self.session.check(interaction.user.id, time.monotonic())
 
+    def control_name(self, interaction: discord.Interaction) -> str:
+        """Resolve only this view's component IDs to fixed labels, never log their values."""
+        data = getattr(interaction, "data", None)
+        identifier = data.get("custom_id") if isinstance(data, dict) else None
+        if not isinstance(identifier, str):
+            return "unknown"
+        for name, item in (("previous", self.previous), ("next", self.next_page), ("close", self.close_reader)):
+            if identifier == getattr(item, "custom_id", None):
+                return name
+        for item in self.children:
+            if identifier == getattr(item, "custom_id", None):
+                if isinstance(item, LessonSelect):
+                    return "lesson_select"
+                if isinstance(item, QuizSelect):
+                    return "quiz_answer"
+        return "unknown"
+
+    def denied_outcome(self, interaction: discord.Interaction) -> str:
+        """Classify an existing denial from guarded state without reading exception prose."""
+        if self.retired:
+            return "expired" if self._timed_out else "denied"
+        if not self.service.permitted(caller_from(interaction)) or interaction.user.id != self.session.owner:
+            return "denied"
+        return "expired" if time.monotonic() >= self.session.expires_at else "rejected"
+
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         """Deny another user's or expired controls before dispatching callbacks."""
+        started = time.monotonic()
+        outcome = None
         try:
-            self.require_owner(interaction)
-            return True
-        except InteractionDenied as error:
-            await notify_private(interaction, str(error))
-            return False
+            try:
+                self.require_owner(interaction)
+                return True
+            except InteractionDenied as error:
+                denied = self.denied_outcome(interaction)
+                await notify_private(interaction, str(error))
+                outcome = denied
+                return False
+        except asyncio.CancelledError:
+            outcome = "cancelled"
+            raise
+        except Exception:
+            outcome = "error"
+            raise
+        finally:
+            # Passing the precheck is not acceptance; the callback still has to finish.
+            if outcome is not None:
+                log_outcome("discord.control.completed", self.control_name(interaction), outcome, started, clock=time.monotonic)
 
     async def move(self, interaction: discord.Interaction, step: int) -> None:
         """Acknowledge immediately and serialize changes to a complete lesson."""
-        await interaction.response.defer()
-        async with self.lock:
-            try:
-                self.require_owner(interaction)
-                page = self.session.move(interaction.user.id, step, time.monotonic())
-                self.refresh()
-                self.message = await interaction.edit_original_response(
-                    embed=render(page, self.session.index, len(self.session.reply.pages)),
-                    view=self, allowed_mentions=discord.AllowedMentions.none(),
-                )
-            except InteractionDenied as error:
-                await notify_private(interaction, str(error))
+        started, outcome = time.monotonic(), "error"
+        control = "previous" if step == -1 else "next" if step == 1 else "unknown"
+        try:
+            await interaction.response.defer()
+            async with self.lock:
+                try:
+                    self.require_owner(interaction)
+                    page = self.session.move(interaction.user.id, step, time.monotonic())
+                    self.refresh()
+                    self.message = await interaction.edit_original_response(
+                        embed=render(page, self.session.index, len(self.session.reply.pages)),
+                        view=self, allowed_mentions=discord.AllowedMentions.none(),
+                    )
+                    outcome = "accepted"
+                except InteractionDenied as error:
+                    denied = self.denied_outcome(interaction)
+                    await notify_private(interaction, str(error))
+                    outcome = denied
+        except asyncio.CancelledError:
+            outcome = "cancelled"
+            raise
+        finally:
+            log_outcome("discord.control.completed", control, outcome, started, clock=time.monotonic)
 
     async def select_lesson(self, interaction: discord.Interaction, slug: str) -> None:
         """Replace a search result only after its selected command has returned."""
-        await interaction.response.defer()
-        async with self.lock:
-            try:
-                self.require_owner(interaction)
-                if slug not in {option.value for option in self.session.reply.options}:
-                    raise InteractionDenied("Choose a lesson from this result.")
-                reply = await self.service.execute(self.session.reply.selection, slug, caller_from(interaction))
-                self.require_owner(interaction)
-                replacement = ReplyView(self.service, self.caller, reply)
-                replacement.message = await interaction.edit_original_response(
-                    embed=render(reply.pages[0], count=len(reply.pages)), view=replacement,
-                    allowed_mentions=discord.AllowedMentions.none(),
-                )
-                self.retired = True
-                self.stop()
-            except InteractionDenied as error:
-                await notify_private(interaction, str(error))
+        started, outcome = time.monotonic(), "error"
+        try:
+            await interaction.response.defer()
+            async with self.lock:
+                try:
+                    self.require_owner(interaction)
+                    if slug not in {option.value for option in self.session.reply.options}:
+                        raise InteractionDenied("Choose a lesson from this result.")
+                    reply = await self.service.execute(self.session.reply.selection, slug, caller_from(interaction))
+                    self.require_owner(interaction)
+                    replacement = ReplyView(self.service, self.caller, reply)
+                    replacement.message = await interaction.edit_original_response(
+                        embed=render(reply.pages[0], count=len(reply.pages)), view=replacement,
+                        allowed_mentions=discord.AllowedMentions.none(),
+                    )
+                    self.retired = True
+                    self.stop()
+                    outcome = "accepted" if reply.outcome == "success" else "rejected"
+                except InteractionDenied as error:
+                    denied = self.denied_outcome(interaction)
+                    await notify_private(interaction, str(error))
+                    outcome = denied
+        except asyncio.CancelledError:
+            outcome = "cancelled"
+            raise
+        finally:
+            log_outcome("discord.control.completed", "lesson_select", outcome, started, clock=time.monotonic)
 
     async def answer(self, interaction: discord.Interaction, choice: int) -> None:
         """Have the server grade one answer and retain its result under serialized callbacks."""
-        await interaction.response.defer()
-        async with self.lock:
-            try:
-                self.require_owner(interaction)
-                caller = caller_from(interaction)
-                page = await self.session.answer(
-                    interaction.user.id, choice, time.monotonic(),
-                    lambda quiz, picked: self.service.grade(quiz, picked, caller),
-                )
-                # Ungraded attempts keep the answer menu open for a later retry.
-                for item in self.children:
-                    if isinstance(item, discord.ui.Select) and self.session.answered:
-                        item.disabled = True
-                self.message = await interaction.edit_original_response(
-                    embed=render(page), view=self, allowed_mentions=discord.AllowedMentions.none(),
-                )
-            except InteractionDenied as error:
-                await notify_private(interaction, str(error))
+        started, outcome = time.monotonic(), "error"
+        try:
+            await interaction.response.defer()
+            async with self.lock:
+                try:
+                    self.require_owner(interaction)
+                    caller = caller_from(interaction)
+                    page = await self.session.answer(
+                        interaction.user.id, choice, time.monotonic(),
+                        lambda quiz, picked: self.service.grade(quiz, picked, caller),
+                    )
+                    self.require_owner(interaction)
+                    # Ungraded attempts keep the answer menu open for a later retry.
+                    for item in self.children:
+                        if isinstance(item, discord.ui.Select) and self.session.answered:
+                            item.disabled = True
+                    self.message = await interaction.edit_original_response(
+                        embed=render(page), view=self, allowed_mentions=discord.AllowedMentions.none(),
+                    )
+                    outcome = "accepted" if self.session.answered else "rejected"
+                except InteractionDenied as error:
+                    denied = self.denied_outcome(interaction)
+                    await notify_private(interaction, str(error))
+                    outcome = denied
+        except asyncio.CancelledError:
+            outcome = "cancelled"
+            raise
+        finally:
+            log_outcome("discord.control.completed", "quiz_answer", outcome, started, clock=time.monotonic)
 
     @discord.ui.button(label="Previous", style=discord.ButtonStyle.secondary, row=0)
     async def previous(self, interaction: discord.Interaction, button: discord.ui.Button["ReplyView"]) -> None:
@@ -238,22 +335,33 @@ class ReplyView(discord.ui.View):
     @discord.ui.button(label="Close", style=discord.ButtonStyle.secondary, row=0)
     async def close_reader(self, interaction: discord.Interaction, button: discord.ui.Button["ReplyView"]) -> None:
         """Close this person's reader and remove its interactive state."""
-        await interaction.response.defer()
-        async with self.lock:
-            try:
-                self.require_owner(interaction)
-                await interaction.edit_original_response(
-                    embed=render(Page("Reader closed", "Run /buildanddo help whenever you need it.")),
-                    view=None, allowed_mentions=discord.AllowedMentions.none(),
-                )
-                self.retired = True
-                self.stop()
-            except InteractionDenied as error:
-                await notify_private(interaction, str(error))
+        started, outcome = time.monotonic(), "error"
+        try:
+            await interaction.response.defer()
+            async with self.lock:
+                try:
+                    self.require_owner(interaction)
+                    await interaction.edit_original_response(
+                        embed=render(Page("Reader closed", "Run /buildanddo help whenever you need it.")),
+                        view=None, allowed_mentions=discord.AllowedMentions.none(),
+                    )
+                    self.retired = True
+                    self.stop()
+                    outcome = "accepted"
+                except InteractionDenied as error:
+                    denied = self.denied_outcome(interaction)
+                    await notify_private(interaction, str(error))
+                    outcome = denied
+        except asyncio.CancelledError:
+            outcome = "cancelled"
+            raise
+        finally:
+            log_outcome("discord.control.completed", "close", outcome, started, clock=time.monotonic)
 
     async def on_timeout(self) -> None:
         """Disable expired controls while keeping ordinary public links usable."""
         self.retired = True
+        self._timed_out = True
         async with self.lock:
             for item in self.children:
                 if isinstance(item, discord.ui.Select) or (isinstance(item, discord.ui.Button) and item.url is None):
@@ -366,11 +474,11 @@ class BuildAndDoBot(discord.Client):
     async def respond_research(self, interaction: discord.Interaction, name: str, arguments: dict[str, object],
                                file: discord.Attachment | None = None) -> None:
         """Acknowledge privately and reauthorize every request without retained private readers."""
-        await interaction.response.defer(ephemeral=True, thinking=True)
-        caller = caller_from(interaction)
         started = time.monotonic()
-        outcome = 'unavailable'
+        outcome = 'error'
         try:
+            await interaction.response.defer(ephemeral=True, thinking=True)
+            caller = caller_from(interaction)
             if not self.research or not self.service.permitted(caller):
                 raise ResearchError('forbidden', 403)
             attachment = Attachment(file.id, file.filename, file.size, file.url) if file else None
@@ -388,12 +496,18 @@ class BuildAndDoBot(discord.Client):
                 'conflict': 'The saved request changed. Open BuildAndDo research to review its current state.',
             }
             message = messages.get(error.reason, 'Could not confirm the request. Use /buildanddo recover, or inspect /buildanddo submissions before starting another submission.')
-            await interaction.edit_original_response(embed=render(Page('Research request', message, 'https://buildanddo.com/app/research')),
-                                                     view=None, allowed_mentions=discord.AllowedMentions.none())
-            outcome = error.reason
+            try:
+                await interaction.edit_original_response(embed=render(Page('Research request', message, 'https://buildanddo.com/app/research')),
+                                                         view=None, allowed_mentions=discord.AllowedMentions.none())
+            except asyncio.CancelledError:
+                outcome = 'cancelled'
+                raise
+            outcome = error.reason if error.reason in COMMAND_OUTCOMES - {"success", "delivered"} else "error"
+        except asyncio.CancelledError:
+            outcome = 'cancelled'
+            raise
         finally:
-            logger.info('discord.research.command', extra={'command': name if name in RESEARCH_COMMANDS else 'unknown', 'outcome': outcome,
-                                                         'duration_ms': round((time.monotonic() - started) * 1000)})
+            log_outcome('discord.research.command', name, outcome, started, commands=RESEARCH_COMMANDS, clock=time.monotonic)
 
     def register_dossier(self) -> None:
         """Register five private entity commands within Discord's 25-command group limit."""
@@ -420,11 +534,11 @@ class BuildAndDoBot(discord.Client):
 
     async def respond_dossier(self, interaction: discord.Interaction, name: str, arguments: dict[str, object]) -> None:
         """Keep entity content in private replies and retain uncertain delivery for recovery."""
-        await interaction.response.defer(ephemeral=True, thinking=True)
         started = time.monotonic()
-        outcome = 'unavailable'
-        caller = caller_from(interaction)
+        outcome = 'error'
         try:
+            await interaction.response.defer(ephemeral=True, thinking=True)
+            caller = caller_from(interaction)
             if not self.dossier or not self.service.permitted(caller):
                 raise ResearchError('forbidden', 403)
             reply = await self.dossier.execute(name, arguments, caller, interaction.id)
@@ -440,12 +554,18 @@ class BuildAndDoBot(discord.Client):
                 'rate_limited': 'Too many requests are active. Wait briefly before retrying.',
             }
             message = messages.get(error.reason, 'Private storage could not confirm this request. Use /buildanddo dossier recover:true or check your website dossier before saving again.')
-            await interaction.edit_original_response(embed=render(Page('Private dossier', message, 'https://buildanddo.com/app/dossier')),
-                                                     view=None, allowed_mentions=discord.AllowedMentions.none())
-            outcome = error.reason
+            try:
+                await interaction.edit_original_response(embed=render(Page('Private dossier', message, 'https://buildanddo.com/app/dossier')),
+                                                         view=None, allowed_mentions=discord.AllowedMentions.none())
+            except asyncio.CancelledError:
+                outcome = 'cancelled'
+                raise
+            outcome = error.reason if error.reason in COMMAND_OUTCOMES - {"success", "delivered"} else "error"
+        except asyncio.CancelledError:
+            outcome = 'cancelled'
+            raise
         finally:
-            logger.info('discord.dossier.command', extra={'command': name if name in DOSSIER_COMMANDS else 'unknown', 'outcome': outcome,
-                                                        'duration_ms': round((time.monotonic() - started) * 1000)})
+            log_outcome('discord.dossier.command', name, outcome, started, commands=DOSSIER_COMMANDS, clock=time.monotonic)
 
     async def setup_hook(self) -> None:
         """Synchronize once only when the receiving operator configured that action."""
@@ -467,14 +587,22 @@ class BuildAndDoBot(discord.Client):
 
     async def respond(self, interaction: discord.Interaction, name: str, query: str) -> None:
         """Acknowledge before I/O and deliver a private, mention-suppressed command result."""
-        await interaction.response.defer(ephemeral=True, thinking=True)
-        caller = caller_from(interaction)
-        reply = await self.service.execute(name, query, caller)
-        view = ReplyView(self.service, caller, reply)
-        view.message = await interaction.edit_original_response(
-            embed=render(reply.pages[0], count=len(reply.pages)),
-            view=view, allowed_mentions=discord.AllowedMentions.none(),
-        )
+        started, outcome = time.monotonic(), "error"
+        try:
+            await interaction.response.defer(ephemeral=True, thinking=True)
+            caller = caller_from(interaction)
+            reply = await self.service.execute(name, query, caller)
+            view = ReplyView(self.service, caller, reply)
+            view.message = await interaction.edit_original_response(
+                embed=render(reply.pages[0], count=len(reply.pages)),
+                view=view, allowed_mentions=discord.AllowedMentions.none(),
+            )
+            outcome = reply.outcome
+        except asyncio.CancelledError:
+            outcome = "cancelled"
+            raise
+        finally:
+            log_outcome("discord.command.dispatched", name, outcome, started, clock=time.monotonic)
 
     async def on_message(self, message: discord.Message) -> None:
         """Retain explicit legacy prefix compatibility without listening by default."""
@@ -486,22 +614,33 @@ class BuildAndDoBot(discord.Client):
         parts = content[1:].split(maxsplit=1)
         if not parts or parts[0].lower() not in COMMANDS:
             return
-        caller = Caller(
-            message.author.id, message.guild.id if message.guild else None, message.channel.id,
-            message.author.bot, bool(getattr(getattr(message.author, "guild_permissions", None), "manage_guild", False)),
-        )
-        if not self.service.permitted(caller):
-            return
-        reply = await self.service.execute(parts[0].lower(), parts[1] if len(parts) > 1 else "", caller)
-        view = ReplyView(self.service, caller, reply)
+        started, outcome = time.monotonic(), "error"
+        name = parts[0].lower()
         try:
-            view.message = await message.channel.send(
-                embed=render(reply.pages[0], count=len(reply.pages)), view=view,
-                allowed_mentions=discord.AllowedMentions.none(),
+            caller = Caller(
+                message.author.id, message.guild.id if message.guild else None, message.channel.id,
+                message.author.bot, bool(getattr(getattr(message.author, "guild_permissions", None), "manage_guild", False)),
             )
-        except discord.HTTPException:
-            view.stop()
-            logger.warning("discord.prefix.delivery_failed", extra={"outcome": "unavailable"})
+            if not self.service.permitted(caller):
+                outcome = "denied"
+                return
+            reply = await self.service.execute(name, parts[1] if len(parts) > 1 else "", caller)
+            view = ReplyView(self.service, caller, reply)
+            try:
+                view.message = await message.channel.send(
+                    embed=render(reply.pages[0], count=len(reply.pages)), view=view,
+                    allowed_mentions=discord.AllowedMentions.none(),
+                )
+                outcome = reply.outcome
+            except discord.HTTPException:
+                view.stop()
+                logger.warning("discord.prefix.delivery_failed", extra={"outcome": "unavailable"})
+                outcome = "unavailable"
+        except asyncio.CancelledError:
+            outcome = "cancelled"
+            raise
+        finally:
+            log_outcome("discord.command.dispatched", name, outcome, started, clock=time.monotonic)
 
     async def close(self) -> None:
         """Drain bounded public HTTP work before closing the gateway client."""
@@ -519,13 +658,32 @@ class EventFormatter(logging.Formatter):
 
     def format(self, record: logging.LogRecord) -> str:
         """Serialize only the explicitly allowed observability fields."""
+        name = record.msg if isinstance(record.msg, str) and record.msg in LOG_EVENTS and not record.args else "discord.event.unknown"
+        level = record.levelname.lower()
+        outcomes = COMMAND_OUTCOMES | {"connected"}
+        if name == "discord.event.unknown":
+            outcomes = frozenset()
+        elif name == "discord.control.completed":
+            outcomes = CONTROL_OUTCOMES
+        elif name == "discord.quiz.graded":
+            outcomes = QUIZ_OUTCOMES
         event: dict[str, object] = {
-            "event": record.getMessage(), "level": record.levelname.lower(),
+            "event": name, "level": level if level in {"debug", "info", "warning", "error", "critical"} else "info",
             "srs_code": SRS, "seat": "BITS-CODEGEN", "dispatch_id": DISPATCH,
         }
-        for name in ("command", "outcome", "duration_ms", "guild_count", "reason"):
-            if hasattr(record, name):
-                event[name] = getattr(record, name)
+        for key, allowed, fallback in (
+            ("command", COMMANDS.keys() | RESEARCH_COMMANDS.keys() | DOSSIER_COMMANDS.keys(), "unknown"),
+            ("control", CONTROL_ACTIONS, "unknown"),
+            ("outcome", outcomes, "error"),
+            ("reason", {"configuration", "discord_connection"}, "unknown"),
+        ):
+            if hasattr(record, key):
+                value = getattr(record, key)
+                event[key] = value if isinstance(value, str) and value in allowed else fallback
+        for key in ("duration_ms", "guild_count"):
+            value = getattr(record, key, None)
+            if type(value) is int and 0 <= value <= 2**53 - 1:
+                event[key] = value
         return json.dumps(event, ensure_ascii=True)
 
 

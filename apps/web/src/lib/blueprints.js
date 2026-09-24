@@ -62,9 +62,10 @@ export function createBlueprintClient({ client, accountId, workspaceId, demo = f
     observe = (_name, _verb, operation) => operation() }) {
     const current = () => !demo && id(accountId) && id(workspaceId) && isCurrent() && client.authStore.record?.id === accountId;
     const prefix = `/api/buildanddo/workspaces/${encodeURIComponent(workspaceId)}/blueprints`;
-    const analysis = createBlueprintAnalysisClient({ client, accountId, workspaceId, demo, isCurrent });
+    const analysis = createBlueprintAnalysisClient({ client, accountId, workspaceId, demo, isCurrent, observe });
     const research = createResearchClient({ client, accountId, workspaceId, demo, isCurrent, observe });
     let pending = null; let busy = false;
+    const decline = (action, result) => observe('blueprints', action, () => result);
     const failure = (error, writing = false) => ({ ok: false,
         reason: writing && (!error?.status || error.status >= 500) ? 'uncertain' : 'unavailable',
         error: error?.status === 403 ? 'Your current workspace access does not permit this operation.' : writing ?
@@ -80,20 +81,30 @@ export function createBlueprintClient({ client, accountId, workspaceId, demo = f
         } catch (error) { return current() ? failure(error) : stale(); }
     };
     const send = async () => {
-        if (!current()) return stale();
-        if (busy) return invalid('A blueprint request is already running.');
+        const action = pending?.kind === 'upload' ? 'upload' : pending?.body?.action;
+        if (!current()) return decline(action, stale());
+        if (busy) return decline(action, invalid('A blueprint request is already running.'));
         if (!pending) return invalid('There is no unresolved request.');
         busy = true;
         try {
             const request = pending;
-            const data = await observe('research_submissions', request.kind === 'upload' ? 'create' : 'update', () =>
-                client.send(prefix + request.suffix, { method: 'POST', body: request.body, requestKey: null, cache: 'no-store' }));
+            const response = await observe('blueprints', action, async () => {
+                try {
+                    const data = await client.send(prefix + request.suffix, { method: 'POST', body: request.body, requestKey: null, cache: 'no-store' });
+                    if (!current()) return stale();
+                    if (data?.workspace !== workspaceId || !recordShape(data.record, workspaceId, true) ||
+                        (request.kind === 'upload' ? data.record.input_sha256 !== request.digest || typeof data.replayed !== 'boolean' : data.record.id !== request.id))
+                        throw Object.assign(new Error('Incomplete blueprint receipt'), { reason: 'invalid_receipt' });
+                    return { ok: true, data, kind: request.kind };
+                } catch (error) {
+                    if (!current()) return stale();
+                    throw error;
+                }
+            });
             if (!current()) return stale();
-            if (data?.workspace !== workspaceId || !recordShape(data.record, workspaceId, true) ||
-                (request.kind === 'upload' ? data.record.input_sha256 !== request.digest || typeof data.replayed !== 'boolean' : data.record.id !== request.id))
-                throw new Error('Incomplete blueprint receipt');
+            if (!response.ok) return response;
             pending = null;
-            return { ok: true, data, kind: request.kind };
+            return response;
         } catch (error) {
             if (!current()) return stale();
             const result = failure(error, true);
@@ -114,30 +125,30 @@ export function createBlueprintClient({ client, accountId, workspaceId, demo = f
             recordShape(data.record, workspaceId, true)) : Promise.resolve(invalid('Choose a saved blueprint.')),
         original: research.original,
         async upload(file) {
-            if (!current()) return stale();
+            if (!current()) return decline('upload', stale());
             if (!file?.name?.toLowerCase().endsWith('.pdf') || !file.size || file.size > 20971520 || file.name.length > 180 || /[\u0000-\u001f/\\"]/.test(file.name))
-                return invalid('Choose a PDF of at most 20 MiB.');
-            if (busy || pending) return invalid('Recover the previous request before uploading another blueprint.');
+                return decline('upload', invalid('Choose a PDF of at most 20 MiB.'));
+            if (busy || pending) return decline('upload', invalid('Recover the previous request before uploading another blueprint.'));
             busy = true;
             try {
                 const bytes = await file.arrayBuffer();
                 const digest = Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', bytes)), (byte) => byte.toString(16).padStart(2, '0')).join('');
-                if (!current()) return stale();
+                if (!current()) return decline('upload', stale());
                 const body = new FormData();
                 body.append('asset', file); body.append('request_key', requestKey()); body.append('input_sha256', digest);
                 pending = { kind: 'upload', body, suffix: '', digest };
             } catch {
-                return current() ? invalid('The PDF could not be prepared. Use a browser with secure file hashing and try again.') : stale();
+                return decline('upload', current() ? invalid('The PDF could not be prepared. Use a browser with secure file hashing and try again.') : stale());
             } finally { busy = false; }
             return send();
         },
         async command(recordId, action, revision) {
-            if (!current()) return stale();
+            if (!current()) return decline(action, stale());
             if (!id(recordId) || !['retry', 'cancel'].includes(action) || !Number.isSafeInteger(revision) || revision < 1)
-                return invalid('Reload the blueprint before continuing.');
-            if (busy || pending) return invalid('Recover the previous request first.');
+                return decline(action, invalid('Reload the blueprint before continuing.'));
+            if (busy || pending) return decline(action, invalid('Recover the previous request first.'));
             try { pending = { kind: 'command', id: recordId, suffix: `/${recordId}/commands`, body: { action, revision, request_key: requestKey() } }; }
-            catch { return invalid('A secure request identifier is unavailable.'); }
+            catch { return decline(action, invalid('A secure request identifier is unavailable.')); }
             return send();
         },
         retry: send,

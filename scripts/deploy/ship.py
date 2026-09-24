@@ -1,4 +1,19 @@
 #!/usr/bin/env python3
+# --- CGRF Header ------------------------------------------------
+# File:        scripts/deploy/ship.py
+# Stage:       07_BUILD
+# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# CAPS:        pending
+# CK:          pending
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+# Seat:        BITS-CODEGEN
+# Owner:       Citadel Nexus Inc.
+# Created:     2026-09-24
+# Depends:     apps/web/tools/release-telemetry.mjs
+# EnumType:    Adapter
+# EnumEdges:   CONSUMES apps/web/tools/release-telemetry.mjs
+# Intent:      Refuse telemetry-incomplete or stale artifacts before copying while retaining the existing staged swap and best-effort collectors.
+# ----------------------------------------------------------------
 """
 ship.py - the staging -> production deploy line for buildanddo.com.
 
@@ -7,14 +22,14 @@ pass all the gates its automatically pushed to production" - one command,
 no hand SSH, no manual promote step.
 
 Flow, every run:
-  1. BUILD      apps/web locally (clean dist - see the measured Vite stale-
-                bundle bug in integrity_regression_check.py; same fix here).
+  1. BUILD      apps/web locally with explicit public telemetry configuration,
+                a fresh build ID and clean dist. Ordinary npm builds remain keyless.
   2. GATE       run integrity_regression_check.py (build+lint, real subprocess,
                 never assumed). FAIL stops the line before anything touches a
                 server - staging gets nothing broken deployed to it either.
   3. STAGING    copy the fresh dist beside /var/www/buildanddo-staging on the VM,
                 verify it, swap it into place (see _rsync), then
-                probe https://staging.buildanddo.com for a real 200.
+                compare served HTML, JavaScript and manifest bytes with the artifact.
   4. PROMOTE    only if staging gate + staging probe both pass: rsync the SAME
                 build (not a rebuild - promote what was actually gated) to
                 /var/www/buildanddo (production) the same way, probe https://buildanddo.com.
@@ -29,20 +44,23 @@ Flow, every run:
                 that backs it.
 
 Any stage failing halts the line at that stage; later stages never run on a
-failed gate. This is the whole gate: build+lint clean AND both live domains
-answer 200 after their respective syncs. No feature flags and no automatic
+failed gate. Artifact admission and served-byte readback do not prove vendor
+ingestion. Existing lint and best-effort collector policies are unchanged. No automatic
 rollback: each sync keeps the replaced release at `<dir>.previous` so an
 operator can move it back by hand.
 """
 from __future__ import annotations
 import datetime as dt
+import hashlib
 import json
+import re
 import shlex
 import shutil
 import subprocess
 import sys
 import time
 import urllib.request
+import uuid
 from pathlib import Path
 
 import os
@@ -94,23 +112,8 @@ WORKSPACE_ENV_CANDIDATES = _workspace_env_candidates()
 # whole estate; pulling all of them into a deploy script's environment would hand every subprocess
 # it spawns the keys to everything. A deploy needs two secrets, so it reads two.
 #
-# The frontend identifiers below are NOT a third and fourth secret, and adding them does not widen
-# that blast radius by one credential: every one of them is published inside the browser bundle on
-# purpose. _write_web_env already says so - the PostHog `phc_` value is "a public, client-safe
-# PostHog project key, never a secret", and the Datadog RUM pair is "intake-scoped, no read access".
-# A name that anyone can read off the wire is not what the narrow list exists to protect.
-#
-# WHY THEY ARE HERE AT ALL. Measured 2026-09-22: buildanddo.com has never recorded a single real
-# user. posthog-js ships in the bundle (762 KB) with NO `phc_` key in it, and the only events in
-# PostHog project 597897 come from our own OCN probes (library `bnd-ocn-seat`). The cause is this
-# tuple. BUILDANDDO_PH was in workspace.env the whole time, but workspace.env is only consulted for
-# names listed HERE, so _SECRETS never held it, _write_web_env omits any name it lacks, and
-# telemetry.js returns early when its key is undefined. Three correct-looking behaviours compose
-# into silence: nothing errors, nothing warns, and the dashboard just looks like a quiet product.
-#
-# The same omission disabled Datadog RUM, which is why the generated apps/web/.env contained only
-# VITE_DD_VERSION. Those four names are not in workspace.env yet; listing them now means they bind
-# on the next ship rather than needing this file edited again.
+# Browser inputs are public/intake-scoped identifiers, not vendor management credentials.
+# They are passed to the release build in memory; reports retain only a configuration digest.
 SHARED_KEYS = (
     "BUILDANDDO_VM_HOST",
     "BUILDANDDO_SSH_KEY",
@@ -203,9 +206,10 @@ STATE_DIR = ROOT / "state" / "deploy"
 DIST_DIR = ROOT / "dist" / "apps" / "web"
 
 
-def _run(cmd: list[str], cwd: Path | None = None, timeout: int = 600) -> dict:
+def _run(cmd: list[str], cwd: Path | None = None, timeout: int = 600,
+         env: dict[str, str] | None = None) -> dict:
     try:
-        p = subprocess.run(cmd, cwd=str(cwd) if cwd else None, capture_output=True, text=True, timeout=timeout)
+        p = subprocess.run(cmd, cwd=str(cwd) if cwd else None, capture_output=True, text=True, timeout=timeout, env=env)
         return {"ok": p.returncode == 0, "returncode": p.returncode,
                 "stdout_tail": p.stdout[-2000:], "stderr_tail": p.stderr[-2000:]}
     except subprocess.TimeoutExpired:
@@ -220,21 +224,28 @@ def _run(cmd: list[str], cwd: Path | None = None, timeout: int = 600) -> dict:
 # real body, same URL, same second. The readback gate therefore FAILED ON EVERY RUN no matter how
 # healthy the deploy was, and because the gate is fail-closed the rail could never promote - which
 # is why production sat 33 commits behind staging. A blocked probe is not a failed deploy.
-_PROBE_HEADERS = {"User-Agent": "Mozilla/5.0 (compatible; buildanddo-ship/1.0)"}
+_PROBE_HEADERS = {"User-Agent": "Mozilla/5.0 (compatible; buildanddo-ship/1.0)", "Accept-Encoding": "identity"}
 
 
-def _probe(url: str, retries: int = 5, delay: float = 2.0) -> dict:
-    """Real HTTP GET, not a ping - a 200 with body is the only acceptable proof of 'serving'."""
+def _probe(url: str, *, artifacts: dict[str, dict], retries: int = 5, delay: float = 2.0) -> dict:
+    """Compare served HTML, JavaScript and manifest bytes; a 200 alone is not readback."""
     last_err = None
     for attempt in range(1, retries + 1):
         try:
-            request = urllib.request.Request(url, headers=_PROBE_HEADERS)
-            with urllib.request.urlopen(request, timeout=10) as resp:  # noqa: S310 - fixed https URL, not user input
-                body = resp.read(200)
-                return {"ok": resp.status == 200, "status": resp.status, "attempt": attempt,
-                        "body_prefix": body.decode("utf-8", errors="replace")[:120]}
+            if not artifacts or "index.html" not in artifacts or TELEMETRY_MANIFEST not in artifacts:
+                return {"ok": False, "reason": "artifact readback contract missing"}
+            for name, expected in artifacts.items():
+                target = url.rstrip("/") + "/" + ("" if name == "index.html" else name)
+                request = urllib.request.Request(target, headers={**_PROBE_HEADERS, "Cache-Control": "no-cache"})
+                with urllib.request.urlopen(request, timeout=10) as resp:  # noqa: S310 - fixed release origin
+                    body = resp.read(expected["size"] + 1)
+                    if (resp.status != 200 or resp.geturl() != target or len(body) != expected["size"] or
+                            hashlib.sha256(body).hexdigest() != expected["sha256"]):
+                        raise TelemetryArtifactError("served artifact mismatch")
+            return {"ok": True, "status": 200, "attempt": attempt, "verified_files": len(artifacts)}
         except Exception as exc:  # noqa: BLE001
-            last_err = f"{type(exc).__name__}: {exc}"
+            # Do not retain response bodies, URLs from redirects, or public intake values.
+            last_err = str(exc) if isinstance(exc, TelemetryArtifactError) else type(exc).__name__
             time.sleep(delay)
     return {"ok": False, "status": None, "attempts": retries, "error": last_err}
 
@@ -256,17 +267,24 @@ def _file_count(local_dir: Path) -> int:
     return sum(len(files) for _root, _dirs, files in os.walk(local_dir))
 
 
-def _swap_script(incoming: str, live: str, previous: str, expected_files: int) -> str:
+def _swap_script(incoming: str, live: str, previous: str, expected_files: int,
+                 digests: dict[str, str] | None = None) -> str:
     """One remote shell: verify the staged copy, keep the live tree as `previous`, rename
     the staged copy into place. Exit 3 = verify failed (live untouched); exit 4 = swap
     failed (previous release moved back when possible)."""
     inc, cur, prev = shlex.quote(incoming), shlex.quote(live), shlex.quote(previous)
+    checksums = ""
+    if digests:
+        lines = " ".join(shlex.quote(f"{value}  {name}") for name, value in sorted(digests.items()))
+        checksums = (f"printf '%s\\n' {lines} | (cd {inc} && sha256sum --check --status) || "
+                     "{ echo 'VERIFY_FAILED: artifact digest mismatch' >&2; exit 3; }; ")
     return (
         f"set -u; "
         f"test -f {inc}/index.html || {{ echo 'VERIFY_FAILED: index.html missing' >&2; exit 3; }}; "
         f"n=$(find {inc} -type f | wc -l); "
         f"[ \"$n\" -eq {int(expected_files)} ] || "
         f"{{ echo \"VERIFY_FAILED: expected {int(expected_files)} files, found $n\" >&2; exit 3; }}; "
+        + checksums +
         # The staged copy takes the live directory's owner and mode where the server allows it, so the
         # web server reads the new release as it read the old one (SRS-BUILDANDDO-DEPLOY-SWAP-001).
         f"if [ -e {cur} ]; then chown --reference={cur} {inc} 2>/dev/null || true; "
@@ -277,7 +295,7 @@ def _swap_script(incoming: str, live: str, previous: str, expected_files: int) -
     )
 
 
-def _rsync(local_dir: Path, remote_dir: str) -> dict:
+def _rsync(local_dir: Path, remote_dir: str, *, expected_telemetry: dict) -> dict:
     """Copy the dist tree to a sibling staging dir, verify it, then swap it into place.
 
     The live directory is never emptied before a complete copy exists. The old flow ran
@@ -288,6 +306,22 @@ def _rsync(local_dir: Path, remote_dir: str) -> dict:
 
     A fresh directory also keeps the dotfile lesson: `rm -rf dir/*` never matched
     `.well-known/`, so a stale citadel-release.json outlived three deploys (2026-09-20)."""
+    environment = {STAGING_REMOTE_DIR: "staging", PROD_REMOTE_DIR: "production"}.get(remote_dir)
+    if environment is None:
+        return {"ok": False, "stage": "config", "reason": "unknown release environment"}
+    telemetry = _verify_telemetry_artifact(local_dir, expected_telemetry, environment=environment)
+    if not telemetry["ok"]:
+        return telemetry
+    # Freeze the checksums before any remote operation, including the manifest itself.
+    try:
+        manifest_bytes = (local_dir / TELEMETRY_MANIFEST).read_bytes()
+    except OSError:
+        return {"ok": False, "stage": "telemetry_artifact", "reason": "telemetry manifest unavailable before copy"}
+    if hashlib.sha256(manifest_bytes).hexdigest() != telemetry["manifest_sha256"]:
+        return {"ok": False, "stage": "telemetry_artifact", "reason": "telemetry manifest changed before copy"}
+    manifest = json.loads(manifest_bytes)
+    digests = {name: info["sha256"] for name, info in manifest["files"].items()}
+    digests[TELEMETRY_MANIFEST] = telemetry["manifest_sha256"]
     if not VM_HOST:
         return {"ok": False, "stage": "config", "reason": "BUILDANDDO_VM_HOST not set (see secrets/deploy.local.env)"}
     expected = _file_count(local_dir)
@@ -306,28 +340,25 @@ def _rsync(local_dir: Path, remote_dir: str) -> dict:
     if not copy["ok"]:
         _run([*ssh, f"rm -rf {shlex.quote(incoming)}"], timeout=60)  # best effort; live untouched
         return {"ok": False, "stage": "scp", **copy}
-    swap = _run([*ssh, _swap_script(incoming, remote_dir, previous, expected)], timeout=120)
+    swap = _run([*ssh, _swap_script(incoming, remote_dir, previous, expected, digests)], timeout=120)
     if not swap["ok"]:
         stage = "verify_remote" if swap.get("returncode") == 3 else "swap"
         if stage == "verify_remote":
             _run([*ssh, f"rm -rf {shlex.quote(incoming)}"], timeout=60)
         return {"ok": False, "stage": stage, **swap}
-    return {"ok": True, "files": expected, "previous": previous}
+    return {"ok": True, "files": expected, "previous": previous, "telemetry": telemetry}
 
 
-def _write_web_env() -> None:
-    """Client-safe frontend identifiers only - the PostHog project key
-    (BUILDANDDO_PH, public phc_ key) and the Datadog RUM application id and
-    client token (intake-scoped, no read access) - never a secret. Sourced from
-    secrets/deploy.local.env or the OS environment (see _load_local_secrets);
-    .env* is gitignored at the repo root and regenerated every run, never
-    committed. Missing values are simply omitted, which disables that
-    integration at runtime rather than failing the ship.
+TELEMETRY_MANIFEST = "telemetry-manifest.json"
+TELEMETRY_SCHEMA = "buildanddo.release-telemetry/v2"
 
-    VITE_DD_VERSION is derived from the commit being shipped, not configured:
-    it is what makes a Datadog release comparison (and the browser-side delta
-    baselines, which reset per release) line up with an actual deploy."""
-    web_dir = ROOT / "apps" / "web"
+
+class TelemetryArtifactError(ValueError):
+    """An artifact cannot satisfy its local release contract."""
+
+
+def _release_build_context() -> tuple[dict, dict[str, str]]:
+    """Create fresh expected identity and explicit public build inputs, without an env file."""
     names = {
         "BUILDANDDO_PH": "VITE_BUILDANDDO_PH",
         "BUILDANDDO_DD_APPLICATION_ID": "VITE_DD_APPLICATION_ID",
@@ -336,14 +367,41 @@ def _write_web_env() -> None:
         "BUILDANDDO_DD_REPLAY_SAMPLE_RATE": "VITE_DD_REPLAY_SAMPLE_RATE",
         "BUILDANDDO_DD_TRACE_SAMPLE_RATE": "VITE_DD_TRACE_SAMPLE_RATE",
     }
-    lines = [f"{var}={_SECRETS[key]}\n" for key, var in names.items() if _SECRETS.get(key)]
+    public = {var: _SECRETS.get(key) or _SECRETS.get(var, "") for key, var in names.items()}
+    for name in ("VITE_BUILDANDDO_PH", "VITE_DD_APPLICATION_ID", "VITE_DD_CLIENT_TOKEN"):
+        if not re.fullmatch(r"[\x21-\x7e]+", public[name]):
+            raise TelemetryArtifactError("missing or invalid " + name)
+    public["VITE_DD_ENV"] = _SECRETS.get("VITE_DD_ENV", "")
+    git = _run(["git", "rev-parse", "HEAD"], cwd=ROOT, timeout=15)
+    sha = git.get("stdout_tail", "").strip()
+    if not git["ok"] or not re.fullmatch(r"(?:[a-f0-9]{40}|[a-f0-9]{64})", sha):
+        raise TelemetryArtifactError("exact release identity missing")
+    environment = {**os.environ, **public, "BUILD_SHA": sha,
+                   "BUILDANDDO_RELEASE_TARGET": "staging-production",
+                   "BUILDANDDO_TELEMETRY_BUILD_ID": str(uuid.uuid4())}
+    prepared = _run(["node", str(ROOT / "apps/web/tools/release-telemetry.mjs"), "contract", str(ROOT), sha],
+                    cwd=ROOT, env=environment, timeout=30)
+    try:
+        expected = json.loads(prepared.get("stdout_tail", "")) if prepared["ok"] else None
+    except ValueError:
+        expected = None
+    if not isinstance(expected, dict) or expected.get("schema") != TELEMETRY_SCHEMA:
+        raise TelemetryArtifactError("public release configuration invalid or validator unavailable")
+    return expected, environment
 
-    sha = _run(["git", "rev-parse", "--short", "HEAD"], cwd=ROOT, timeout=15).get("stdout_tail", "").strip()
-    if sha:
-        lines.append(f"VITE_DD_VERSION={sha}\n")
 
-    if lines:
-        (web_dir / ".env").write_text("".join(lines), encoding="utf-8")
+def _verify_telemetry_artifact(directory: Path, expected: dict, *, environment: str) -> dict:
+    """Recheck the build receipt and bytes before any copy; never infer vendor ingestion."""
+    checked = _run(["node", str(ROOT / "apps/web/tools/release-telemetry.mjs"), "verify", str(directory),
+                    json.dumps(expected, separators=(",", ":")), environment], cwd=ROOT, timeout=60)
+    try:
+        result = json.loads(checked.get("stdout_tail", "")) if checked["ok"] else None
+    except ValueError:
+        result = None
+    if (isinstance(result, dict) and result.get("ok") is True and result.get("build_id") == expected.get("build_id") and
+            result.get("environment") == environment and re.fullmatch(r"[a-f0-9]{64}", str(result.get("manifest_sha256") or ""))):
+        return result
+    return {"ok": False, "stage": "telemetry_artifact", "reason": "telemetry artifact admission failed"}
 
 
 def _refresh_capability_inventory() -> dict:
@@ -381,7 +439,7 @@ def _refresh_capability_inventory() -> dict:
     return {"ok": True}
 
 
-def _write_deployed_version() -> None:
+def _write_deployed_version(commit_sha: str) -> None:
     """Write dist/_version: what this build actually is, for external readback.
 
     The schema matches what the release controller has always published
@@ -397,7 +455,8 @@ def _write_deployed_version() -> None:
         except (OSError, subprocess.SubprocessError):
             return ""
 
-    sha = _git("rev-parse", "HEAD")
+    # Use the admitted build's identity, not a HEAD that may have moved during its gates.
+    sha = commit_sha
     payload = {
         "built_at": dt.datetime.now(dt.timezone.utc).isoformat().replace("+00:00", "Z"),
         "campaign_id": "citadel-21-day-2026-09",
@@ -567,10 +626,9 @@ def _evidence_epoch() -> dict:
     return result
 
 
-def _build() -> dict:
+def _build(build_environment: dict[str, str]) -> dict:
     web_dir = ROOT / "apps" / "web"
     shutil.rmtree(DIST_DIR, ignore_errors=True)  # see integrity_regression_check.py - measured stale-cache bug
-    _write_web_env()
     # public/roadmap-status.json - vite copies public/ verbatim into dist.
     roadmap = _write_roadmap_status()
     if not roadmap["ok"]:
@@ -584,17 +642,32 @@ def _build() -> dict:
     if not caps["ok"]:
         print(f"WARN capability inventory failed (rc={caps.get('returncode')}); "
               "the roadmap will omit the 'what you can use' section rather than guess")
-    return _run([NPM, "run", "build"], cwd=web_dir, timeout=600)
+    return _run([NPM, "run", "build"], cwd=web_dir, timeout=600, env=build_environment)
 
 
-def _gate() -> dict:
-    r = _run([sys.executable, str(ROOT / "scripts" / "ci" / "integrity_regression_check.py")], cwd=ROOT, timeout=900)
+def _gate(build_environment: dict[str, str]) -> dict:
     report_path = ROOT / "state" / "integrity" / "latest.json"
     try:
-        report = json.loads(report_path.read_text(encoding="utf-8"))
-    except (OSError, ValueError):
+        previous = report_path.read_bytes()
+    except FileNotFoundError:
+        previous = None
+    except OSError:
+        return {"ok": False, "state": "UNKNOWN", "fresh_report": False, "reason": "integrity baseline unreadable"}
+    started = dt.datetime.now(dt.timezone.utc)
+    r = _run([sys.executable, str(ROOT / "scripts" / "ci" / "integrity_regression_check.py")],
+             cwd=ROOT, timeout=900, env=build_environment)
+    finished = dt.datetime.now(dt.timezone.utc)
+    fresh = False
+    try:
+        current = report_path.read_bytes()
+        report = json.loads(current)
+        generated = dt.datetime.fromisoformat(report["generated_at"].replace("Z", "+00:00"))
+        fresh = current != previous and started <= generated <= finished
+    except (OSError, ValueError, TypeError, KeyError, AttributeError):
         report = {"state": "UNKNOWN"}
-    return {"ok": report.get("state") == "PASS", "state": report.get("state"),
+    # The checker needs the previous manifest to calculate its diff. Keep it, but
+    # never accept an unchanged/old PASS or a failed invocation as this run's result.
+    return {"ok": r["ok"] and fresh and report.get("state") == "PASS", "state": report.get("state"), "fresh_report": fresh,
             "build_ok": report.get("build", {}).get("ok"), "lint_ok": report.get("lint", {}).get("ok")}
 
 
@@ -602,25 +675,47 @@ def main() -> int:
     STATE_DIR.mkdir(parents=True, exist_ok=True)
     record: dict = {"started_at": dt.datetime.now(dt.timezone.utc).isoformat(), "stages": {}}
 
-    build = _build()
+    try:
+        expected_telemetry, build_environment = _release_build_context()
+    except (OSError, ValueError) as exc:
+        reason = str(exc) if isinstance(exc, TelemetryArtifactError) else "release context unavailable"
+        record["stages"]["telemetry_config"] = {"ok": False, "reason": reason}
+        record["stopped_at"] = "telemetry_config"
+        _finish(record)
+        return 1
+
+    build = _build(build_environment)
     record["stages"]["build"] = {"ok": build["ok"]}
     if not build["ok"]:
         record["stopped_at"] = "build"
         _finish(record)
         return 1
 
-    gate = _gate()
+    gate = _gate(build_environment)
     record["stages"]["gate"] = gate
     if not gate["ok"]:
         record["stopped_at"] = "gate"
         _finish(record)
         return 1
 
+    telemetry = _verify_telemetry_artifact(DIST_DIR, expected_telemetry, environment="staging")
+    record["stages"]["telemetry_artifact"] = telemetry
+    if not telemetry["ok"]:
+        record["stopped_at"] = "telemetry_artifact"
+        _finish(record)
+        return 1
+    expected_telemetry["manifest_sha256"] = telemetry["manifest_sha256"]
+    manifest_bytes = (DIST_DIR / TELEMETRY_MANIFEST).read_bytes()
+    served_artifacts = json.loads(manifest_bytes)["files"]
+    served_artifacts[TELEMETRY_MANIFEST] = {
+        "size": len(manifest_bytes), "sha256": telemetry["manifest_sha256"],
+    }
+
     # LAST thing before the files move, and deliberately not earlier: _gate() runs
     # integrity_regression_check.py, which runs its own `npm run build` and cleans dist - so a
     # _version written during _build is deleted before it can ship. Measured 2026-09-20: the
     # promote landed with no _version at all and /_version fell through to the SPA's 200 HTML.
-    _write_deployed_version()
+    _write_deployed_version(expected_telemetry["commit_sha"])
 
     if not DIST_DIR.is_dir():
         record["stages"]["staging_sync"] = {"ok": False, "reason": "dist dir missing after a passing build"}
@@ -628,14 +723,14 @@ def main() -> int:
         _finish(record)
         return 1
 
-    staging_sync = _rsync(DIST_DIR, STAGING_REMOTE_DIR)
+    staging_sync = _rsync(DIST_DIR, STAGING_REMOTE_DIR, expected_telemetry=expected_telemetry)
     record["stages"]["staging_sync"] = staging_sync
     if not staging_sync["ok"]:
         record["stopped_at"] = "staging_sync"
         _finish(record)
         return 1
 
-    staging_probe = _probe(STAGING_URL)
+    staging_probe = _probe(STAGING_URL, artifacts=served_artifacts)
     record["stages"]["staging_probe"] = staging_probe
     if not staging_probe["ok"]:
         record["stopped_at"] = "staging_probe"
@@ -643,14 +738,14 @@ def main() -> int:
         return 1
 
     # Gate + live staging probe both pass -> promote the SAME build to production.
-    prod_sync = _rsync(DIST_DIR, PROD_REMOTE_DIR)
+    prod_sync = _rsync(DIST_DIR, PROD_REMOTE_DIR, expected_telemetry=expected_telemetry)
     record["stages"]["prod_sync"] = prod_sync
     if not prod_sync["ok"]:
         record["stopped_at"] = "prod_sync"
         _finish(record)
         return 1
 
-    prod_probe = _probe(PROD_URL)
+    prod_probe = _probe(PROD_URL, artifacts=served_artifacts)
     record["stages"]["prod_probe"] = prod_probe
 
     # Both environments are now serving the new build, so the inventory can finally measure what

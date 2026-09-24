@@ -47,6 +47,7 @@ vi.mock('@/lib/observability/runtime', () => ({
     reportAction: vi.fn(),
     reportMetric: vi.fn(),
     trackAuthIdentity: vi.fn(),
+    readFailed: vi.fn(),
 }));
 vi.mock('@/lib/telemetry', () => ({ trackEvent: vi.fn() }));
 

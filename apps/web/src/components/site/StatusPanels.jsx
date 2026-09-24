@@ -1,17 +1,19 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/src/components/site/StatusPanels.jsx
 // Stage:       07_BUILD
-// SRS:         SRS-BUILDANDDO-COMMUNITY-WEB-001
-// CAPS:        B
+// SRS:         SRS-BUILDANDDO-COMMUNITY-WEB-001, SRS-BUILDANDDO-UPGRADE-001
+// CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-COMMUNITY-WEB-001
-// Seat:        C-ONE
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+// Seat:        C-ONE, BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-22
-// Depends:     apps/web/src/lib/communityStatus.js, apps/web/src/components/site/ui.jsx
+// Depends:     apps/web/src/lib/communityStatus.js, apps/web/src/components/site/ui.jsx,
+//              apps/web/src/lib/observability/runtime.js, apps/web/src/lib/navigationIntent.js
 // EnumType:    Widget
 // EnumEdges:   CONSUMES apps/web/public/community-status.json; CONSUMES apps/web/public/platform-health.json;
-//              CONSUMED_BY apps/web/src/pages/StatusPage.jsx; CONSUMED_BY apps/web/src/pages/RoadmapPage.jsx
+//              CONSUMED_BY apps/web/src/pages/StatusPage.jsx; CONSUMED_BY apps/web/src/pages/RoadmapPage.jsx;
+//              CONSUMES apps/web/src/lib/observability/runtime.js; CONSUMES apps/web/src/lib/navigationIntent.js
 // Intent:      Draw community and platform health with the time each was measured, and say UNMEASURED
 //              instead of green whenever there is no fresh reading.
 // ───────────────────────────────────────────────────────────────
@@ -26,6 +28,8 @@ import {
     readCommunityStatus,
     readPlatformHealth,
 } from '@/lib/communityStatus';
+import { readFailed } from '@/lib/observability/runtime';
+import { telemetrySection } from '@/lib/navigationIntent';
 
 const SURFACE_TONE = { UP: 'green', DEGRADED: 'amber', DOWN: 'red', UNMEASURED: 'neutral' };
 const PLATFORM_TONE = { connected: 'green', hold: 'amber', disconnected: 'red' };
@@ -35,18 +39,39 @@ const PLATFORM_TONE = { connected: 'green', hold: 'amber', disconnected: 'red' }
  * the readers in communityStatus.js turn into UNMEASURED rows rather than an empty panel.
  *
  * @param {string} url Same-origin path of the file.
+ * @param {Function} reader Existing document interpretation, without changing its UI.
  * @returns {{doc: unknown, settled: boolean}} The parsed document and whether the read finished.
  */
-function usePublishedJson(url) {
+function usePublishedJson(url, reader) {
     const [state, setState] = useState({ doc: null, settled: false });
     useEffect(() => {
         let cancelled = false;
+        let status = 0, reason = 'unavailable';
+        const pathname = globalThis.window?.location?.pathname;
+        const section = telemetrySection(pathname);
         fetch(url, { cache: 'no-store' })
-            .then((response) => (response.ok ? response.json() : null))
-            .catch(() => null)
-            .then((doc) => { if (!cancelled) setState({ doc, settled: true }); });
+            .then((response) => {
+                status = response.status;
+                if (!response.ok) throw new Error('Published status is unavailable');
+                reason = 'invalid_response'; return response.json();
+            })
+            .then((doc) => {
+                if (cancelled) return;
+                const reading = reader(doc);
+                const rows = reader === readCommunityStatus ? doc?.surfaces : doc?.platforms;
+                const malformed = ['ABSENT', 'INVALID'].includes(reading.state) || !Array.isArray(rows) || rows.some((row) => !row || typeof row !== 'object');
+                const unavailable = doc?.state === 'UNMEASURED' ? 'unmeasured' : malformed ? 'invalid_response' : reading.state !== 'MEASURED' ? 'unmeasured' :
+                    rows.some((row) => row.state === 'UNMEASURED' || row.state === 'unavailable') ? 'degraded' : '';
+                if (unavailable && pathname === globalThis.window?.location?.pathname) readFailed(section, 'status_feed', unavailable, status);
+                setState({ doc, settled: true });
+            })
+            .catch((error) => {
+                if (cancelled) return;
+                if (error?.name !== 'AbortError' && pathname === globalThis.window?.location?.pathname) readFailed(section, 'status_feed', reason, status);
+                setState({ doc: null, settled: true });
+            });
         return () => { cancelled = true; };
-    }, [url]);
+    }, [url, reader]);
     return state;
 }
 
@@ -98,7 +123,7 @@ export function CommunityStatusRows({ reading, now = Date.now() }) {
 
 /** Community surfaces, read from community-status.json. */
 export function CommunityStatusPanel() {
-    const { doc, settled } = usePublishedJson(COMMUNITY_STATUS_URL);
+    const { doc, settled } = usePublishedJson(COMMUNITY_STATUS_URL, readCommunityStatus);
     const reading = useMemo(() => readCommunityStatus(doc), [doc]);
     if (!settled) {
         return <p role="status" className="text-sm text-muted-foreground">Reading community status…</p>;
@@ -151,7 +176,7 @@ export function PlatformHealthRows({ reading }) {
 
 /** Platform health, read from platform-health.json. */
 export function PlatformHealthPanel() {
-    const { doc, settled } = usePublishedJson(PLATFORM_HEALTH_URL);
+    const { doc, settled } = usePublishedJson(PLATFORM_HEALTH_URL, readPlatformHealth);
     const reading = useMemo(() => readPlatformHealth(doc), [doc]);
     if (!settled) {
         return <p role="status" className="text-sm text-muted-foreground">Reading platform health…</p>;

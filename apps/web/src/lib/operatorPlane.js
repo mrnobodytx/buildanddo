@@ -255,7 +255,7 @@ export async function importOperatorBlueprint(raw, crypto = globalThis.crypto) {
     } catch { return invalid('Use an unchanged operator-blueprint.json compiler export. Imported plans cannot supply approvals, runtime health or verified evidence.'); }
 }
 
-/** Read scoped state and submit only an explicit review request through the existing command boundary. */
+/** Read scoped state with bounded readFailure metadata, and submit explicit review requests through the unchanged command boundary. */
 export function createOperatorClient({ client, accountId, workspaceId, demo = false, isCurrent, crypto = globalThis.crypto,
     observe = (_name, _verb, operation) => operation() }) {
     const current = () => !demo && id(accountId) && id(workspaceId) && isCurrent() && client.authStore.record?.id === accountId;
@@ -287,13 +287,25 @@ export function createOperatorClient({ client, accountId, workspaceId, demo = fa
             if (!current()) return stale();
             if (!Number.isSafeInteger(page) || page < 1 || page > 9999) return invalid('Choose a listed page.');
             const request = ++generation; readable = null;
+            let received = false;
             try {
                 const value = await client.send(`/api/buildanddo/workspaces/${encodeURIComponent(workspaceId)}/operator`,
                     { method: 'GET', query: { page }, requestKey: null, cache: 'no-store' });
                 if (!current() || request !== generation) return stale();
-                if (!snapshotShape(value, workspaceId) || SOURCES.some((key) => value.sources[key].page !== (key === 'integrations' ? 1 : page))) return failure(null);
-                readable = freeze(value); return { ok: true, data: readable };
-            } catch (error) { return current() && request === generation ? failure(error) : stale(); }
+                received = true;
+                if (!snapshotShape(value, workspaceId) || SOURCES.some((key) => value.sources[key].page !== (key === 'integrations' ? 1 : page)))
+                    return { ...failure(null), readFailure: { reason: 'invalid_response', status: 200 } };
+                readable = freeze(value);
+                return { ok: true, data: readable, ...(SOURCES.some((key) => value.sources[key].state === 'unavailable') ?
+                    { readFailure: { reason: 'degraded', status: 200 } } : {}) };
+            } catch (error) {
+                if (!current() || request !== generation) return stale();
+                const cancelled = error?.isAbort || error?.name === 'AbortError' || error?.originalError?.name === 'AbortError';
+                const malformed = received || error?.name === 'SyntaxError' || error?.originalError?.name === 'SyntaxError';
+                const status = received ? 200 : Number.isInteger(error?.status) && (error.status === 0 || error.status >= 100 && error.status < 600) &&
+                    !(malformed && error.status === 0) ? error.status : undefined;
+                return { ...failure(error), readFailure: { reason: cancelled ? 'cancelled' : malformed ? 'invalid_response' : 'unavailable', status } };
+            }
         },
         async propose(plan) {
             if (!current()) return stale();

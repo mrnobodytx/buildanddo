@@ -8,9 +8,11 @@
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-15
-// Depends:     apps/web/src/lib/workspaceControl.js, apps/web/src/contexts/WorkspaceContext.jsx
+// Depends:     apps/web/src/lib/workspaceControl.js, apps/web/src/contexts/WorkspaceContext.jsx,
+//              apps/web/src/lib/observability/runtime.js, apps/web/src/lib/navigationIntent.js
 // EnumType:    Adapter
-// EnumEdges:   CONSUMES apps/web/src/lib/workspaceControl.js; CONSUMES apps/web/src/contexts/WorkspaceContext.jsx
+// EnumEdges:   CONSUMES apps/web/src/lib/workspaceControl.js; CONSUMES apps/web/src/contexts/WorkspaceContext.jsx;
+//              CONSUMES apps/web/src/lib/observability/runtime.js; CONSUMES apps/web/src/lib/navigationIntent.js
 // DAG Node:    none
 // Intent:      Discard stale control responses and preserve failed form state while coordinating versioned saves and refreshed views.
 // ───────────────────────────────────────────────────────────────
@@ -21,6 +23,8 @@ import { useWorkspace } from '@/contexts/WorkspaceContext';
 import { useDemoMode } from '@/hooks/useDemoMode';
 import pb from '@/lib/pocketbaseClient';
 import { observeMutation } from '@/lib/observability/mutations';
+import { readFailed } from '@/lib/observability/runtime';
+import { telemetrySection } from '@/lib/navigationIntent';
 import { createWorkspaceAccessLoader, createWorkspaceControlClient, workspaceLifecycleKey } from '@/lib/workspaceControl';
 
 // Sentences a surface shows beside a control it has switched off. They live
@@ -56,10 +60,14 @@ export function useWorkspaceControl(section, query = {}) {
         }
         setSnapshot((before) => ({ key, loading: true, data: section === 'access' && before.key === key ? before.data : null,
             error: '', accessEpoch: before.accessEpoch || 0 }));
+        const pathname = globalThis.window?.location?.pathname;
+        const route = telemetrySection(pathname);
         const result = await api.read(section, JSON.parse(queryKey));
         if (!live.current.mounted || live.current.key !== key || attempt !== request.current) return false;
+        if (result.readFailure && pathname === globalThis.window?.location?.pathname)
+            readFailed(route, 'controls', result.readFailure.reason, result.readFailure.status);
         setSnapshot((before) => {
-            const next = { key, loading: false, data: result.ok ? result.data : null, error: result.error || '' };
+            const next = { key, loading: false, data: result.ok ? result.data : null, error: result.error || '', readFailure: result.readFailure };
             // Count observed grant boundaries, not reads. A revoke/regrant pair
             // must still fence old work when React batches both responses.
             const changed = section === 'access' && workspaceLifecycleKey({ access: { data: before.data, error: before.error } }) !== workspaceLifecycleKey({ access: next });
@@ -79,7 +87,7 @@ export function useWorkspaceControl(section, query = {}) {
         const result = await operation();
         if (!live.current.mounted || live.current.scope !== scope) return { ok: false };
         if (result.reason === 'busy') return result;
-        setWrite({ scope, saving: false, error: result.error || '', uncertain: result.reason === 'uncertain', saved: result.ok ? result.result : null });
+        setWrite({ scope, saving: false, error: result.error || '', reason: result.reason, uncertain: result.reason === 'uncertain', saved: result.ok ? result.result : null });
         if (result.ok) await reload.current();
         return result;
     }, [scope, key]);
@@ -97,8 +105,9 @@ export function useWorkspaceControl(section, query = {}) {
     // grant boundaries so lifecycle keys can fence work across them.
     const unavailableReason = loading || data ? '' : error || 'The request did not return an answer.';
     return { data, loading, error, unavailableReason,
+        readFailure: current && !snapshot.loading ? snapshot.readFailure : undefined,
         accessEpoch: current ? snapshot.accessEpoch || 0 : 0,
-        demo, scope, refresh: load, saving: writing.saving, writeError: writing.error, uncertain: writing.uncertain, saved: writing.saved,
+        demo, scope, refresh: load, saving: writing.saving, writeError: writing.error, writeReason: writing.reason, uncertain: writing.uncertain, saved: writing.saved,
         mutate: (action, payload, revision) => perform(() => api.command(action, payload, revision)),
         retry: () => perform(() => api.retry()) };
 }

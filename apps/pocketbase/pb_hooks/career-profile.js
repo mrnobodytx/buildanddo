@@ -1,16 +1,16 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/pocketbase/pb_hooks/career-profile.js
 // Stage:       07_BUILD
-// SRS:         SRS-BUILDANDDO-CAREER-001
+// SRS:         SRS-BUILDANDDO-CAREER-001, SRS-BUILDANDDO-UPGRADE-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-CAREER-001
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-23
-// Depends:     apps/career/profile.py
+// Depends:     apps/career/profile.py, apps/pocketbase/pb_hooks/telemetry.js
 // EnumType:    Service
-// EnumEdges:   CONSUMES apps/career/profile.py; CONSUMES Citadel Nexus career profile endpoint; PRODUCES apps/pocketbase/pb_hooks/career-profile.pb.js
+// EnumEdges:   CONSUMES apps/career/profile.py; CONSUMES Citadel Nexus career profile endpoint; PRODUCES apps/pocketbase/pb_hooks/career-profile.pb.js; CONSUMES apps/pocketbase/pb_hooks/telemetry.js
 // DAG Node:    none
 // Intent:      Fetch the signed-in user's career profile from Citadel Nexus server-to-server and return only an allow-listed, account-bound projection, storing nothing.
 // ───────────────────────────────────────────────────────────────
@@ -88,9 +88,12 @@ function load(e) {
     const subject = auth.id;
     const url = endpoint($os.getenv('BUILDANDDO_CAREER_PROFILE_URL'));
     const token = $os.getenv('BUILDANDDO_CAREER_PROFILE_TOKEN');
-    const log = (reason, status) => $app.logger().warn('career-profile: unavailable', 'reason', reason, 'status', status || 0);
-    if (url === null) return { status: 200, body: { state: 'not_configured', subject_id: subject } };
-    if (url === false || !token) { log('misconfigured'); return { status: 503, body: { state: 'unavailable', subject_id: subject } }; }
+    const log = (category, status) => {
+        try { require(`${__hooks}/telemetry.js`).diagnostic('career.profile', category, status); }
+        catch (_) { /* Logging cannot change the account-bound response. */ }
+    };
+    if (url === null) { log('config'); return { status: 200, body: { state: 'not_configured', subject_id: subject } }; }
+    if (url === false || !token) { log('config'); return { status: 503, body: { state: 'unavailable', subject_id: subject } }; }
     let res;
     try {
         res = $http.send({
@@ -98,15 +101,20 @@ function load(e) {
             headers: { 'Content-Type': 'application/json', Accept: 'application/json', Authorization: 'Bearer ' + token },
             body: JSON.stringify({ subject_id: subject, email: auth.getBool('verified') ? auth.getString('email') : '' }),
         });
-    } catch (_) { log('unreachable'); return { status: 503, body: { state: 'unavailable', subject_id: subject } }; }
-    if (res.statusCode === 404) return { status: 200, body: { state: 'no_profile', subject_id: subject } };
-    if (res.statusCode !== 200) { log('upstream_status', res.statusCode); return { status: 503, body: { state: 'unavailable', subject_id: subject } }; }
-    let profile = null;
+    } catch (_) { log('transport'); return { status: 503, body: { state: 'unavailable', subject_id: subject } }; }
+    let status;
+    try { status = res.statusCode; }
+    catch (error) { log('schema'); throw error; }
+    if (status === 404) return { status: 200, body: { state: 'no_profile', subject_id: subject } };
+    if (status !== 200) { log('upstream_status', status); return { status: 503, body: { state: 'unavailable', subject_id: subject } }; }
+    let profile = null, envelope, category = 'parse';
     try {
-        if (JSON.stringify(res.json).length <= MAX_BYTES) profile = project(res.json, subject);
+        envelope = res.json;
+        if (plain(envelope)) category = 'schema';
+        if (JSON.stringify(envelope).length <= MAX_BYTES) profile = project(envelope, subject);
     } catch (_) { profile = null; }
-    if (!profile) { log('invalid_profile', 200); return { status: 503, body: { state: 'unavailable', subject_id: subject } }; }
-    return { status: 200, body: { state: 'ready', subject_id: subject, issued_at: res.json.issued_at, profile } };
+    if (!profile) { log(category, 200); return { status: 503, body: { state: 'unavailable', subject_id: subject } }; }
+    return { status: 200, body: { state: 'ready', subject_id: subject, issued_at: envelope.issued_at, profile } };
 }
 
 module.exports = { PROFILE, PASSPORT, endpoint, project, load };

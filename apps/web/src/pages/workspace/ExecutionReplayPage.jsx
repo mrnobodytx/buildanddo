@@ -22,6 +22,8 @@ import { PageHeader } from '@/components/workspace/workspaceHelpers';
 import { useBusinessExecution } from '@/hooks/useBusinessExecution';
 import { businessReplay } from '@/lib/businessExecution';
 import MissionReplayCapture from '@/components/workspace/MissionReplayCapture';
+import { readFailed } from '@/lib/observability/runtime';
+import { PUBLIC_ACTIONS, publicActionSection, trackPublicAction } from '@/lib/publicActions';
 
 function Replay({ api, demo }) {
     const [data, setData] = useState(null), [page, setPage] = useState(1), [reload, setReload] = useState(0), [error, setError] = useState(''), [discarded, setDiscarded] = useState(false);
@@ -31,17 +33,46 @@ function Replay({ api, demo }) {
     useEffect(() => { let alive = true; setDetail({ id: selected, job: null, error: '', discarded: false });
         // The single-receipt read goes through the same scope guard as the list below, so a stale
         // answer is just as final here: record it, or a deep-linked ?action= would say it is loading forever.
+        const pathname = globalThis.window?.location?.pathname, section = publicActionSection(pathname);
         if (selected && !demo) api.read(selected).then((result) => {
             if (!alive) return;
-            setDetail(result.stale ? { id: selected, job: null, error: '', discarded: true }
-                : { id: selected, job: result.ok ? result.data : null, error: result.error || '', discarded: false });
+            if (result.stale) { setDetail({ id: selected, job: null, error: '', discarded: true }); return; }
+            if (!result.ok && !['scope_changed', 'cancelled'].includes(result.reason) && pathname === globalThis.window?.location?.pathname)
+                readFailed(section, 'records', result.readFailure?.reason || 'unavailable', result.readFailure?.status);
+            setDetail({ id: selected, job: result.ok ? result.data : null, error: result.error || '', discarded: false });
+        }).catch((failure) => {
+            if (!alive) return;
+            if (!failure?.isAbort && failure?.name !== 'AbortError' && pathname === globalThis.window?.location?.pathname)
+                readFailed(section, 'records', 'unavailable', failure?.status);
+            setDetail({ id: selected, job: null, error: 'The selected receipt could not be read. Refresh to try again.', discarded: false });
         }); return () => { alive = false; }; }, [api, selected, reload, demo]);
     useEffect(() => { let alive = true; setData(null); setError(''); setDiscarded(false);
-        // A stale answer is one the scope guard threw away because the signed-in account or selected
-        // workspace no longer matches the read; nothing further will arrive, so leaving the loading
-        // line up would make the page wait forever on a request that is already over.
-        if (!demo) api.list({ page }).then((result) => { if (!alive) return; if (result.stale) { setDiscarded(true); return; }
-            if (result.ok) setData(result.data); else setError(result.error); });
+        // A stale answer is final: keep the discarded state visible instead of
+        // waiting forever or measuring the obsolete read as a backend outage.
+        const pathname = globalThis.window?.location?.pathname, section = publicActionSection(pathname);
+        if (!demo) api.list({ page }).then((result) => {
+            if (!alive) return;
+            if (result.stale) { setDiscarded(true); return; }
+            if (result.ok) {
+                setData(result.data);
+                if (pathname === globalThis.window?.location?.pathname) {
+                    try {
+                        if (!Array.isArray(result.data?.items)) throw new TypeError('Unavailable snapshot counts');
+                        const { completed, uncertain, failed } = businessReplay(result.data.items);
+                        trackPublicAction(PUBLIC_ACTIONS.REPLAY_SNAPSHOT, 'observed', 'recorded_snapshot', { completed, uncertain, failed }, { section });
+                    } catch { readFailed(section, 'records', 'invalid_response'); }
+                }
+            } else {
+                if (!['scope_changed', 'cancelled'].includes(result.reason) && pathname === globalThis.window?.location?.pathname)
+                    readFailed(section, 'records', result.readFailure?.reason || 'unavailable', result.readFailure?.status);
+                setError(result.error);
+            }
+        }).catch((failure) => {
+            if (!alive) return;
+            if (!failure?.isAbort && failure?.name !== 'AbortError' && pathname === globalThis.window?.location?.pathname)
+                readFailed(section, 'records', 'unavailable', failure?.status);
+            setError('Execution receipts could not be read. Refresh to try again.');
+        });
         return () => { alive = false; }; }, [api, page, reload, demo]);
     const replay = useMemo(() => businessReplay(data?.items || []), [data]);
     const job = detail.id === selected ? detail.job : null;

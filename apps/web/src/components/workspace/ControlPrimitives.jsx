@@ -8,9 +8,9 @@
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-15
-// Depends:     apps/web/src/hooks/useWorkspaceControl.js, apps/web/src/components/site/ui.jsx
+// Depends:     apps/web/src/hooks/useWorkspaceControl.js, apps/web/src/components/site/ui.jsx, apps/web/src/hooks/useFailureTelemetry.js
 // EnumType:    Widget
-// EnumEdges:   CONSUMES apps/web/src/hooks/useWorkspaceControl.js; CONSUMES apps/web/src/components/site/ui.jsx
+// EnumEdges:   CONSUMES apps/web/src/hooks/useWorkspaceControl.js; CONSUMES apps/web/src/components/site/ui.jsx; CONSUMES apps/web/src/hooks/useFailureTelemetry.js
 // DAG Node:    none
 // Intent:      Make control loading, denied access, pending saves and paginated text readable with keyboard and mobile layouts.
 // ───────────────────────────────────────────────────────────────
@@ -19,6 +19,7 @@ import { MotionEntrance } from '@/components/motion/MotionPrimitives';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button, Card } from '@/components/site/ui';
+import { useFailureTelemetry } from '@/hooks/useFailureTelemetry';
 
 export const controlInput = 'min-h-11 w-full min-w-0 rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground';
 export const dateLabel = (value) => value && Number.isFinite(Date.parse(value)) ? new Date(value).toLocaleString() : 'Not recorded';
@@ -30,6 +31,8 @@ export function focusPendingRetry(event) {
 }
 
 export function ControlState({ control, children }) {
+    useFailureTelemetry(!control.loading && !control.demo && Boolean(control.error || !control.data),
+        'control_state', control.readFailure?.reason, control.readFailure?.status);
     if (control.loading) return <p role="status" className="p-4 text-sm text-muted-foreground">Loading workspace controls…</p>;
     if (control.error || !control.data) return <Card className="space-y-3 p-5">
         <p role="alert" className="text-sm">{control.error || 'Workspace controls are unavailable.'}</p>
@@ -39,6 +42,7 @@ export function ControlState({ control, children }) {
 }
 
 export function ControlFeedback({ control }) {
+    useFailureTelemetry(!control.demo && Boolean(control.writeError || control.uncertain), 'control_feedback', control.uncertain ? 'uncertain' : control.writeReason);
     return <div aria-live="polite" className="space-y-2">
         {control.writeError && <p role="alert" className="text-sm text-destructive">{control.writeError}</p>}
         {control.uncertain && <Button type="button" data-workspace-retry="true" variant="secondary" size="sm" disabled={control.saving} onClick={control.retry}>Retry previous save</Button>}

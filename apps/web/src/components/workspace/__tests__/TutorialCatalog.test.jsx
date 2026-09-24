@@ -33,6 +33,8 @@ import DocsPage from '@/pages/DocsPage';
 import AuthContext from '@/contexts/AuthContext';
 import pb from '@/lib/pocketbaseClient';
 import { setDemoMode } from '@/lib/demoWorkspace';
+import { reportAction } from '@/lib/observability/runtime';
+import { trackEvent } from '@/lib/telemetry';
 import { createAuthValue, renderWithProviders, screen, setupUser, waitFor } from '@/test/utils';
 
 vi.mock('@/lib/pocketbaseClient', async () => {
@@ -40,7 +42,7 @@ vi.mock('@/lib/pocketbaseClient', async () => {
     const client = createMockPocketBase();
     return { default: client, pocketbaseClient: client };
 });
-vi.mock('@/lib/observability/runtime', () => ({ reportAction: vi.fn(), reportMetric: vi.fn(), trackAuthIdentity: vi.fn() }));
+vi.mock('@/lib/observability/runtime', () => ({ reportAction: vi.fn(), reportMetric: vi.fn(), trackAuthIdentity: vi.fn(), readFailed: vi.fn() }));
 vi.mock('@/lib/telemetry', () => ({ trackEvent: vi.fn() }));
 const lesson = curriculum.lessons[0];
 const broadcastLesson = broadcastCurriculum.lessons[0];
@@ -88,6 +90,16 @@ const read = async (prefix = 'Read') => {
     await user.click(opener);
     return { user, opener, reader: within(screen.getByRole('dialog')) };
 };
+
+it('observes a reader activation in both sinks without the lesson identity or text', async () => {
+    renderWithProviders(<TutorialCatalog />);
+    await read();
+    const actions = reportAction.mock.calls.filter(([name]) => name === 'public.lesson.open');
+    expect(actions).toEqual([['public.lesson.open', expect.objectContaining({ outcome: 'opened', reason: 'user_requested', mode: 'reader' })]]);
+    expect(trackEvent.mock.calls.filter(([name]) => name === 'public.lesson.open')).toEqual(actions);
+    expect(JSON.stringify(actions)).not.toContain(lesson.id);
+    expect(JSON.stringify(actions)).not.toContain(lesson.title);
+});
 
 describe('complete Field Manual lessons', () => {
     it('bundles the curriculum the catalogue imports without any knowledge-check answer or explanation', () => {

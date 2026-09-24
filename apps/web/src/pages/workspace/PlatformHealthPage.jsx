@@ -1,19 +1,20 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/src/pages/workspace/PlatformHealthPage.jsx
 // Stage:       07_BUILD
-// SRS:         SRS-BUILDANDDO-WORKSPACE-001
+// SRS:         SRS-BUILDANDDO-WORKSPACE-001, SRS-BUILDANDDO-UPGRADE-001
 // CAPS:        pending
 // CK:          pending
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-11
 // Depends:     apps/pocketbase/pb_hooks/estate.pb.js,
 //              apps/web/src/lib/pocketbaseClient.js,
 //              apps/web/src/components/workspace/workspaceHelpers.jsx,
-//              apps/web/src/components/site/ui.jsx
+//              apps/web/src/components/site/ui.jsx, apps/web/src/lib/observability/runtime.js, apps/web/src/lib/navigationIntent.js
 // EnumType:    Widget
 // EnumEdges:   CONSUMES GET /api/buildanddo/estate/platform-health;
-//              DEPENDS_ON apps/pocketbase/pb_hooks/estate.pb.js
+//              DEPENDS_ON apps/pocketbase/pb_hooks/estate.pb.js; CONSUMES apps/web/src/lib/observability/runtime.js; CONSUMES apps/web/src/lib/navigationIntent.js
 // Intent:      Say which of the operating company's connected platforms are
 //              actually being used, to the operator who owns them, keeping
 //              "unknown" separate from "unused" so an unreadable entitlement is
@@ -44,6 +45,8 @@ import { DegradedNotice, ListSkeleton } from '@/components/workspace/WorkspaceNo
 import { formatDate } from '@/lib/format';
 import pocketbaseClient from '@/lib/pocketbaseClient';
 import { cn } from '@/lib/utils';
+import { readFailed } from '@/lib/observability/runtime';
+import { telemetrySection } from '@/lib/navigationIntent';
 
 // The full assessment is no longer a published file: the backend answers this route to a master
 // seat and to nobody else (estate.pb.js). The narrowed public file that remains carries only the
@@ -263,17 +266,35 @@ export default function PlatformHealthPage() {
 
     useEffect(() => {
         let cancelled = false;
+        let received = false;
+        const accountId = pocketbaseClient.authStore.record?.id;
+        const pathname = globalThis.window?.location?.pathname;
+        const section = telemetrySection(pathname);
         setLoading(true);
         setFailed(false);
         pocketbaseClient
             .send(REPORT_ROUTE, { method: 'GET', requestKey: null })
             .then((data) => {
                 if (cancelled) return;
+                received = true;
+                if (!data || typeof data !== 'object' || Array.isArray(data) || data.state !== 'UNMEASURED' &&
+                    (!Array.isArray(data.platforms) || !data.totals || data.platforms.some((platform) => !platform ||
+                        typeof platform.label !== 'string' || !Array.isArray(platform.features) || !platform.utilization?.counts ||
+                        platform.features.some((feature) => !feature || typeof feature.name !== 'string')) ||
+                        ['integration_timeline', 'recommendations'].some((key) => data[key] !== undefined && !Array.isArray(data[key]))))
+                    throw new Error('Unexpected platform health response');
+                if (data.state === 'UNMEASURED' && accountId === pocketbaseClient.authStore.record?.id && pathname === globalThis.window?.location?.pathname)
+                    readFailed(section, 'estate', 'unmeasured', 200);
                 setReport(data);
                 setLoading(false);
             })
-            .catch(() => {
+            .catch((error) => {
                 if (cancelled) return;
+                const aborted = error?.isAbort || error?.name === 'AbortError' || error?.originalError?.name === 'AbortError';
+                const malformed = received || error?.name === 'SyntaxError' || error?.originalError?.name === 'SyntaxError';
+                if (!aborted && accountId === pocketbaseClient.authStore.record?.id && pathname === globalThis.window?.location?.pathname)
+                    readFailed(section, 'estate', malformed ? 'invalid_response' : 'unavailable',
+                        received ? 200 : malformed && error?.status === 0 ? undefined : error?.status);
                 setFailed(true);
                 setLoading(false);
             });
