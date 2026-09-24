@@ -1,10 +1,10 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        tests/upgrade/public-lessons.test.mjs
 // Stage:       08_TEST
-// SRS:         SRS-BUILDANDDO-TRUST-001
+// SRS:         SRS-BUILDANDDO-TRUST-001, SRS-BUILDANDDO-QUIZ-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-TRUST-001
+// Dispatch:    VCC-BUILDANDDO-TRUST-001, VCC-BUILDANDDO-QUIZ-001
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-23
@@ -23,6 +23,7 @@ import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 import publicLessonsPlugin, { loadPublicLessons } from '../../apps/web/plugins/vite-plugin-public-lessons.js';
 import { explanationFingerprints, findLessonAnswers } from '../../apps/web/tools/check-public-lessons.mjs';
+import { buildCommunityCatalogue } from '../../apps/web/tools/generate-community.mjs';
 import { validLesson } from '../../apps/web/src/lib/tutorialCurriculum.js';
 
 const root = fileURLToPath(new URL('../../', import.meta.url));
@@ -76,12 +77,42 @@ test('the post-build scan finds a shipped explanation however the minifier quote
     const directory = mkdtempSync(join(tmpdir(), 'buildanddo-public-lessons-'));
     try {
         mkdirSync(join(directory, 'assets', 'nested'), { recursive: true });
-        const [first, second] = explanationFingerprints();
+        const [, second] = explanationFingerprints();
         writeFileSync(join(directory, 'assets', 'clean.js'), 'export const lesson={check:{question:"Q",choices:["A","B"]}};');
-        writeFileSync(join(directory, 'community-catalog.json'), JSON.stringify({ explanation: first.fingerprint }));
-        assert.deepEqual(findLessonAnswers(directory), [], 'only browser script assets are scanned');
+        writeFileSync(join(directory, 'community-catalog.json'), JSON.stringify({ lessons: [{ slug: 's', lesson: { check: { question: 'Q', choices: ['A', 'B'] } } }] }));
+        writeFileSync(join(directory, 'index.html'), '<!doctype html><title>Answer key</title>');
+        assert.deepEqual(findLessonAnswers(directory), []);
         writeFileSync(join(directory, 'assets', 'nested', 'leak.js'), `var a={answer:1,explanation:\`${second.fingerprint}\\u2014more\`};`);
-        assert.deepEqual(findLessonAnswers(directory), [{ file: join('nested', 'leak.js'), slug: second.slug }]);
+        assert.deepEqual(findLessonAnswers(directory), [{ file: join('assets', 'nested', 'leak.js'), slug: second.slug }]);
     } finally { rmSync(directory, { recursive: true, force: true }); }
     assert.ok(explanationFingerprints().every(({ fingerprint }) => fingerprint.length >= 24));
+});
+
+test('the scan covers every output file, so a planted answer or explanation in community-catalog.json fails the build', () => {
+    const directory = mkdtempSync(join(tmpdir(), 'buildanddo-public-catalogue-'));
+    const [first] = explanationFingerprints();
+    const release = { version: '38+abc1234', commit_sha: 'abc1234' + '0'.repeat(33) };
+    const write = (value) => writeFileSync(join(directory, 'community-catalog.json'), JSON.stringify(value));
+    try {
+        const catalogue = buildCommunityCatalogue(release);
+        write(catalogue);
+        assert.deepEqual(findLessonAnswers(directory), [], 'the real catalogue is clean');
+        const answered = structuredClone(catalogue);
+        answered.lessons[3].lesson.check.answer = 0;
+        write(answered);
+        assert.deepEqual(findLessonAnswers(directory), [{ file: 'community-catalog.json', slug: catalogue.lessons[3].slug }]);
+        const explained = structuredClone(catalogue);
+        explained.lessons[0].lesson.check.explanation = 'Short.';
+        write(explained);
+        assert.deepEqual(findLessonAnswers(directory), [{ file: 'community-catalog.json', slug: catalogue.lessons[0].slug }]);
+        write({ note: `Background: ${first.fingerprint}` });
+        assert.deepEqual(findLessonAnswers(directory), [{ file: 'community-catalog.json', slug: first.slug }], 'authored text anywhere in the file');
+        writeFileSync(join(directory, 'community-catalog.json'), `{"broken": "${first.fingerprint}`);
+        assert.deepEqual(findLessonAnswers(directory), [{ file: 'community-catalog.json', slug: first.slug }], 'unparseable JSON is still scanned');
+        rmSync(join(directory, 'community-catalog.json'));
+        mkdirSync(join(directory, 'feeds'));
+        writeFileSync(join(directory, 'feeds', 'lessons.txt'), first.fingerprint);
+        assert.deepEqual(findLessonAnswers(directory), [{ file: join('feeds', 'lessons.txt'), slug: first.slug }]);
+    } finally { rmSync(directory, { recursive: true, force: true }); }
+    assert.match(source('apps/web/tools/build.mjs'), /generateCommunityCatalogue\(output, release\);\n[\s\S]*findLessonAnswers\(output\)/, 'the scan runs after the catalogue is written');
 });

@@ -1,10 +1,10 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/tools/generate-community.mjs
 // Stage:       11_COMMIT
-// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-TRUST-001
+// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-TRUST-001, SRS-BUILDANDDO-QUIZ-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-TRUST-001
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-TRUST-001, VCC-BUILDANDDO-QUIZ-001
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-15
@@ -59,12 +59,12 @@ export function buildCommunityCatalogue(release, { pages = PUBLIC_PAGES, curricu
             slugs.has(record.slug) || !text(record.title, 150) || !text(record.summary, 600) ||
             !text(record.category, 60) || !Number.isInteger(record.effort_minutes) ||
             record.effort_minutes < 1 || record.effort_minutes > 180 || !validLesson(lesson) ||
-            !text(lesson.check.question, 500) || !Number.isInteger(lesson.check.answer) || !text(lesson.check.explanation, 1000) ||
-            !lesson.check.choices.every((choice) => text(choice, 200))) {
+            !text(lesson.check.question, 500) || !lesson.check.choices.every((choice) => text(choice, 200))) {
             throw new Error('Community catalogue rejects malformed, duplicated or oversized lessons.');
         }
         slugs.add(record.slug);
         // Select nested fields too: later seed/migration metadata cannot leak into this public feed.
+        // The check carries no answer or explanation; the bot grades through the server (SRS-BUILDANDDO-QUIZ-001).
         return {
             slug: record.slug,
             title: record.title,
@@ -82,16 +82,13 @@ export function buildCommunityCatalogue(release, { pages = PUBLIC_PAGES, curricu
                     ...(section.steps ? { steps: [...section.steps] } : {}),
                 })),
                 exercise: { prompt: lesson.exercise.prompt, checklist: [...lesson.exercise.checklist] },
-                check: {
-                    question: lesson.check.question, choices: [...lesson.check.choices],
-                    answer: lesson.check.answer, explanation: lesson.check.explanation,
-                },
+                check: { question: lesson.check.question, choices: [...lesson.check.choices] },
                 references: lesson.references.map(({ label, url }) => ({ label, url })),
             },
         };
     });
     const catalogue = {
-        schema_version: 1,
+        schema_version: 2,
         site_origin: SITE_ORIGIN,
         curriculum_version: curriculum.version,
         release: { version: release.version, commit_sha: release.commit_sha },

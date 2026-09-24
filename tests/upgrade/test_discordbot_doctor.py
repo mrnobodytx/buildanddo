@@ -1,10 +1,10 @@
 # ─── CGRF Header ───────────────────────────────────────────────
 # File:        tests/upgrade/test_discordbot_doctor.py
 # Stage:       08_TEST
-# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-QUIZ-001
 # CAPS:        pending
 # CK:          pending
-# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-QUIZ-001
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-15
@@ -49,6 +49,20 @@ class DoctorTests(unittest.TestCase):
         for value in ['synthetic-test-binding-never-output', 'private-workspace', '12345678901234567', 'backend.invalid', 'synthetic-native-binding-never-output']:
             self.assertNotIn(value, output)
         self.assertIn('UNVERIFIED', output)
+
+    def test_quiz_grading_is_optional_but_a_configured_token_must_be_usable(self) -> None:
+        base = {'BAD_DISCORD': 'fixture-only'}
+        report = doctor.inspect_startup('bot', base, available=lambda _: True)
+        self.assertEqual(report['local_prerequisites'], 'PASS')
+        self.assertEqual(next(row for row in report['checks'] if row['check'] == 'quiz_grading')['state'], 'DISABLED')
+        token = 'synthetic-community-token-never-output-0000'
+        for values, state in [({'BUILDANDDO_COMMUNITY_BOT_TOKEN': token}, 'FAIL'),
+                              ({'BUILDANDDO_COMMUNITY_BOT_TOKEN': 'short-token', 'BUILDANDDO_POCKETBASE_URL': 'http://127.0.0.1:8090'}, 'FAIL'),
+                              ({'BUILDANDDO_COMMUNITY_BOT_TOKEN': token, 'BUILDANDDO_POCKETBASE_URL': 'http://127.0.0.1:8090'}, 'PASS')]:
+            report = doctor.inspect_startup('bot', {**base, **values}, available=lambda _: True)
+            self.assertEqual(report['local_prerequisites'], state, values.keys())
+            self.assertNotIn(token, json.dumps(report))
+            self.assertNotIn('short-token', json.dumps(report))
 
     def test_malformed_scope_sync_and_missing_bridge_binding_are_reported_safely(self) -> None:
         for values in [{'BUILDANDDO_DISCORD_SYNC': 'unexpected'}, {'BUILDANDDO_DISCORD_SYNC': 'guild'},

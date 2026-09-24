@@ -643,7 +643,7 @@
       "wired_into_ci": true
     }
   ],
-  "generated_at": "2026-09-24T09:17:12.318607+00:00",
+  "generated_at": "2026-09-24T11:45:58.909872+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -894,6 +894,13 @@
         "spec": ".bits/srs/SRS-BUILDANDDO-PURPOSE-001.md",
         "status": "in_progress",
         "title": "Every public page says BuildAndDo is an educational, collaborative platform"
+      },
+      {
+        "code": "SRS-BUILDANDDO-QUIZ-001",
+        "risk": "A2",
+        "spec": ".bits/srs/SRS-BUILDANDDO-QUIZ-001.md",
+        "status": "in_progress",
+        "title": "Server-graded community quiz; no answers in the public catalogue"
       },
       {
         "code": "SRS-BUILDANDDO-RECONCILE-001",
@@ -1250,11 +1257,11 @@
       "scripts/deploy/staging-readback.sh"
     ],
     "migrations": 75,
-    "python_files": 437,
+    "python_files": 439,
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 1783,
+    "tracked_files": 1790,
     "web_source_files": 416
   },
   "schema_version": 1,
@@ -1334,15 +1341,15 @@
         "why": "Competition readiness requires an evidence-backed learning-through-work journey, a reproducible replay and actual submission criteria."
       }
     ],
-    "source_sha256": "a3369a8b652d9f27271bf6565332d8024fba096d0254824f9f777d876011113c",
+    "source_sha256": "1deddd9c74adc199c410ea44dd618d919db40d0b23c67243ee54f1bd030e6b03",
     "state": "PASS"
   },
   "summary": {
     "findings": 35,
     "findings_high": 35,
     "pipelines": 10,
-    "srs_open": 44,
-    "srs_total": 48,
+    "srs_open": 45,
+    "srs_total": 49,
     "unwired_gates": 32
   },
   "tests": {
