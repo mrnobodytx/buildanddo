@@ -106,7 +106,11 @@ path intact.
   `stage=ssh` with no HTTP status: the orchestration hop from the release workstation to that
   box failed on its second consecutive call, not the platform (the box's join seconds earlier
   answered 200 and the joiner readback counts it present). Run 1 also saw two transient 409
-  "This class changed" refusals that did not recur.
+  "This class changed" refusals that did not recur. A timed probe put the public-address hop at
+  1.9 s then 8.0 s for two consecutive calls, against 2.5 to 3.5 s over the mesh, so the script
+  now hops over the mesh when the fleet map names a mesh address (falling back to public) and a
+  dead hop carries ssh's own error text. **Run 4, over the mesh: PASS, 20 of 20**, readback
+  `status=live, messages=3`, four distinct egress addresses.
 - **Box-side media proof** (`scripts/ci/classroom_video_proof.py` on the Scholar box against
   staging): login 200, session 200, transport connected, ICE completed, two tracks pushed,
   presence health six publishers, verification `ECHO_ON_READ`. Receipt on the box at
