@@ -27,10 +27,503 @@ the entry.
 
 <!-- changelog:generated:begin -->
 
+## 2026-09-24
+
+### Added
+
+- evidence: record the broadcast source run on the final converged revision (R12) (`4e54c32`, SRS-BUILDANDDO-RECONCILE-001)
+- evidence: re-run the broadcast source regression on the converged line (R12) (`54e3538`, SRS-BUILDANDDO-RECONCILE-001)
+
+### Changed
+
+- bits: rebind the context lock to the merged tree (`7f69baf`, SRS-BUILDANDDO-QUIZ-001)
+- reconcile: record the convergence (R14) and regenerate the locks (`c4720dc`, SRS-BUILDANDDO-RECONCILE-001)
+- reconcile: register R14 - converge the two reconciliations on #106 (`e9ff8f4`, SRS-BUILDANDDO-RECONCILE-001)
+- bits: refresh the context lock after rebasing onto main (`e50ce77`, SRS-BUILDANDDO-QUIZ-001)
+- governance: register SRS-BUILDANDDO-QUIZ-001 and its dispatch (`f7d4226`, SRS-BUILDANDDO-QUIZ-001)
+- pocketbase: default to 0.39.8 everywhere the repository declares a version (`f29fb22`, SRS-BUILDANDDO-LEARNING-NATIVE-001)
+
+### Fixed
+
+- test: complete the motion mock in two workspace page tests (`7301df8`, SRS-BUILDANDDO-RECONCILE-001)
+- web: agent activity names seats by persona again and withholds machine names (`7ee648c`, SRS-BUILDANDDO-RECONCILE-001)
+- test: the claim rollback test stays rolled back across a restart (`8f12607`, SRS-BUILDANDDO-RECONCILE-001)
+- test: the media rollback test reaches the media migration again (`7c1cb4c`, SRS-BUILDANDDO-RECONCILE-001)
+- migration: the answer-wait check accepts a boxed native field type (`d2e5d50`, SRS-BUILDANDDO-RECONCILE-001)
+- test: main's learning tests run again (`ded0279`, SRS-BUILDANDDO-RECONCILE-001)
+- merge: keep main's new machine names and address out of the staging line (R13) (`4dafc85`, SRS-BUILDANDDO-RECONCILE-001)
+- test: import repoPath where main's lesson test uses it (`7c67347`, SRS-BUILDANDDO-RECONCILE-001)
+- learning: grade the community quiz on the server; no answers in the public catalogue (`bed0387`, SRS-BUILDANDDO-QUIZ-001)
+- evidence: isolate tests and protect claims (`be85710`, SRS-BUILDANDDO-UPGRADE-001)
+- learning: count summaries with dbx expressions and repair migration replay checks (`dfb318d`, SRS-BUILDANDDO-LEARNING-NATIVE-001)
+
+## 2026-09-23
+
+### Added
+
+- evidence: re-observe the classroom source regression after the converge (`48d3872`)
+- broadcast: carry the trunk's seat-name and profile-link coverage onto main's components (`2ccb145`)
+- classroom: a class can exist without a workspace, and the workspace holds your access (`801102c`)
+- web: fixtures carry the workspace main's record client now requires (`74196af`, SRS-BUILDANDDO-RECONCILE-001)
+- brand: the mark and the wordmark, so the logo stops being a stock icon (`e5c204e`)
+- brand: put Buddi in the product, where the mascot sheet says it belongs (`2286e07`)
+- web: main's added web tests use the merged names and the recorded run (`1fa7da8`, SRS-BUILDANDDO-RECONCILE-001)
+- run both lines' suites on the merged line, native ones on Windows too (`dbedb0d`, SRS-BUILDANDDO-RECONCILE-001)
+- design: commit the brand and the classroom design system as source (`c9c7869`)
+- classrooms: show the classes a person can join across every workspace they can read (`a5bc2b0`, SRS-BUILDANDDO-CLASSROOM-001)
+- classroom: the presence test states the route's verification contract (`df5d116`, SRS-BUILDANDDO-PRESENCE-001)
+- web: add the block mark and Buddi, with server-confirmed achievements (`711f673`, SRS-BUILDANDDO-BUDDI-001)
+- tools: campaign evidence tools - verify claimed evidence, compile Day 19, prove the submission is fresh (`13ed854`, SRS-BUILDANDDO-DAY19-EVIDENCE-001, SRS-BUILDANDDO-EVIDENCE-VERIFY-001, SRS-BUILDANDDO-SUBMISSION-FRESHNESS-001)
+- pocketbase: show a fleet seat as its guildmaster, with the mapping supplied by the host (`9e0361b`, SRS-BUILDANDDO-LIVE-UTILIZATION-001)
+- broadcast: link a known guildmaster in the live room to its public profile (`82a947a`, SRS-BUILDANDDO-UPGRADE-001)
+- web: bring the live classroom from main onto the staging line (`069ca74`, SRS-BUILDANDDO-UPGRADE-001)
+- roadmap: the public activity shows the guildmasters' own missions and evidence (`3a2cbdc`, SRS-BUILDANDDO-ROADMAP-001)
+- web: the Hostinger challenge entry pitches the educational platform, and so does its judge bundle (`9ca8f7d`, SRS-BUILDANDDO-PURPOSE-001)
+- web: every public page says BuildAndDo is an educational platform (`3a4d542`, SRS-BUILDANDDO-PURPOSE-001)
+- web: talk to Buddi on the home page with the official ElevenLabs SDK (`93aca83`, SRS-BUILDANDDO-BUDDI-003)
+- web: align two tests with the merged product (`11a91f8`, SRS-BUILDANDDO-UPGRADE-001)
+- web: broadcast live classes, keep an attendance record and show agent work (`62b8859`, SRS-BUILDANDDO-UPGRADE-001)
+- web,pocketbase: call the workspace assistant Buddi (`0050ced`, SRS-BUILDANDDO-BUDDI-001)
+- web: one source for community links, public guildmaster profiles, an honest status page (`1e7be24`, SRS-BUILDANDDO-COMMUNITY-WEB-001)
+- evidence: connect world event replay (`3558862`, SRS-BUILDANDDO-UPGRADE-001)
+- evidence: add personal world twin projection (`809b412`, SRS-BUILDANDDO-WORLD-TWIN-001)
+- evidence: add epistemic integrity fabric slice 1 (`d3aa2f6`, SRS-BUILDANDDO-INTEGRITY-001)
+- evidence: add auditable Knowledge Unit contract (`5a796c6`, SRS-BUILDANDDO-KNOWLEDGE-UNIT-001)
+- web: group workspace into Build and Do with a guided journey (`d6ea77f`, SRS-BUILDANDDO-JOURNEY-001)
+- evidence: load the Citadel career profile on login (`a4dc316`, SRS-BUILDANDDO-CAREER-001)
+- evidence: import external claims and verify by assessment (`17de4eb`, SRS-BUILDANDDO-CAREER-001)
+
+### Changed
+
+- handoff: keep workstation paths out of the public archive kit (`9481315`)
+- reconcile: record the CLASSROOM-GLOBAL-001 merge and the runs after it (`ad3e6bb`, SRS-BUILDANDDO-RECONCILE-001)
+- handoff: record the 2026-09-23 branch sweep and the operator step that closes merged names (`8ce9701`)
+- bits: rebind the locks after the global-classroom follow-up, on LF bytes (`0ccfa46`)
+- bits: rebind the agent context lock to the converged tree, on LF bytes (`de62ac8`)
+- bits: rebind the context and readiness locks to the converged tree, on LF bytes (`3a00b09`)
+- reconcile: record the #102 merge and the scan of every added line (`f1d96af`, SRS-BUILDANDDO-RECONCILE-001)
+- bits: rebind the locks over the global-classroom SRS and migration (`6524913`, SRS-BUILDANDDO-COMMUNITY-WEB-001, SRS-BUILDANDDO-WITNESS-001)
+- bits: record the merged line's evidence and regenerate the locks (`2ba5d4e`, SRS-BUILDANDDO-RECONCILE-001)
+- bits: record what merging main uncovered (`201010b`, SRS-BUILDANDDO-RECONCILE-001)
+- handoff: persona alignment applied on staging; resident attendant unit staged for the operator (`3c93274`)
+- handoff: finding a class, and the guildmasters in the room (`e46a035`)
+- bits: register the merge of main into the staging line (`7266506`, SRS-BUILDANDDO-RECONCILE-001)
+- handoff: staging acceptance recorded; seat display names are already durable on staging (`047a8fc`)
+- web: empty the output first; record TRUST-001 dispatch results (`68631a9`, SRS-BUILDANDDO-TRUST-001)
+- bits: regenerate the context lock on the integration head (`ff070d3`, SRS-BUILDANDDO-DEPLOY-SWAP-001)
+- handoff: staging is current with the trunk; the six gated steps production still needs (`d928cfd`)
+- bits: register SRS-BUILDANDDO-TRUST-001 and its dispatch (`a281977`, SRS-BUILDANDDO-TRUST-001)
+- bits: rebind the readiness and context locks on the integration head (`7c5d86e`, SRS-BUILDANDDO-PRESENCE-001)
+- release: record the 09-21/22 production epochs and the capabilities snapshot (`94f5c49`, SRS-BUILDANDDO-UPGRADE-001)
+- Datadog Code Analysis on the GitLab pipeline, non-blocking and silent without keys (`7fa9412`)
+- bits: record the live classroom on the staging line and bind the locks to it, on LF bytes (`79dae5b`, SRS-BUILDANDDO-UPGRADE-001)
+- bits: bind the readiness and context locks to the guildmaster activity, on LF bytes (`95c0276`, SRS-BUILDANDDO-ROADMAP-001)
+- governance: continue SRS-BUILDANDDO-ROADMAP-001 with the guildmasters' own activity (R7-R8) (`690733f`, SRS-BUILDANDDO-ROADMAP-001)
+- bits: bind the readiness and context locks to the challenge-entry continuation, on LF bytes (`410c4ca`, SRS-BUILDANDDO-PURPOSE-001)
+- governance: continue SRS-BUILDANDDO-PURPOSE-001 with the Hostinger challenge entry (R6) (`ad67e31`, SRS-BUILDANDDO-PURPOSE-001)
+- bits: bind the readiness and context locks to the purpose copy, on LF bytes (`8676242`, SRS-BUILDANDDO-PURPOSE-001)
+- governance: register SRS-BUILDANDDO-PURPOSE-001, every public page says BuildAndDo is an educational platform (`bd44f4e`, SRS-BUILDANDDO-PURPOSE-001)
+- bits: bind the readiness and context locks to the voice section, on LF bytes (`c50f5af`, SRS-BUILDANDDO-BUDDI-003)
+- governance: register SRS-BUILDANDDO-BUDDI-003, Talk to Buddi on the home page (`edb06dd`, SRS-BUILDANDDO-BUDDI-003)
+- handoff: release candidate for the broadcast classroom, and the steps this seat could not run (`d139a66`, SRS-BUILDANDDO-UPGRADE-001)
+- bits: rebind the locks after merging the community links (`265aa73`, SRS-BUILDANDDO-PUBLIC-REDACTION-001)
+- bits: rebind the readiness lock to the bytes CI checks out (`a4621bb`, SRS-BUILDANDDO-PUBLIC-REDACTION-001)
+- bits: rebind context and readiness locks after merging main (`386feeb`, SRS-BUILDANDDO-UPGRADE-001)
+- governance: register SRS-BUILDANDDO-PUBLIC-REDACTION-001 and its dispatch (`3b0eb5e`, SRS-BUILDANDDO-PUBLIC-REDACTION-001)
+- governance: register SRS-BUILDANDDO-BUDDI-001 and its dispatch (`d0483bd`, SRS-BUILDANDDO-BUDDI-001)
+- governance: register SRS-BUILDANDDO-COMMUNITY-WEB-001 and its dispatch (`a4af3bd`, SRS-BUILDANDDO-COMMUNITY-WEB-001)
+- governance: refresh context lock (`439e116`, SRS-BUILDANDDO-JOURNEY-001)
+
+### Fixed
+
+- merge: keep main's production address and a machine name out of the staging line (`b5ed896`, SRS-BUILDANDDO-RECONCILE-001)
+- web: the public-lessons plugin accepts lesson files on Windows (`5987608`, SRS-BUILDANDDO-RECONCILE-001)
+- brand: size the lockups so the ruler actually renders (`48d8468`)
+- evidence: re-run main's recorded broadcast source regression on the merged line (`37e8b9e`, SRS-BUILDANDDO-RECONCILE-001)
+- migrations: four migrations re-apply after a rollback on native PocketBase (`8ec0353`, SRS-BUILDANDDO-RECONCILE-001)
+- preflight: spawn the rehearsal backend without a console window (`3e872fd`)
+- tests: stop the fixtures throwing PocketBase setup pages at whoever is using the machine (`2ae80a8`)
+- classroom: pin the realtime lane to LF, so its own LF test stops depending on the machine (`db69998`, SRS-BUILDANDDO-PRESENCE-001)
+- ci: the fleet class hops to each box over the mesh, and a dead hop says why (`4261b14`)
+- classroom: presence can be verified at last; the SFU echo is tested against a stand-in (`d836a03`, SRS-BUILDANDDO-PRESENCE-001)
+- learning: keep lesson answers out of the bundle, catalogue and feeds (`596b087`, SRS-BUILDANDDO-TRUST-001)
+- deploy: ship.py copies the build beside the live site and swaps it in (`3a4786d`, SRS-BUILDANDDO-DEPLOY-SWAP-001)
+- tests: four test files name a made-up seat or a role, not a real machine (`72eabee`, SRS-BUILDANDDO-PUBLIC-REDACTION-001)
+- release: package the web artifact from its own root, and refuse one without index.html (`343061e`)
+- praxis: also refuse the production VM address as a test target (`ee4478f`, SRS-BUILDANDDO-TRUST-001)
+- deploy: fail closed on Praxis targets, stage deploy swaps, finish password reset (`23f9267`, SRS-BUILDANDDO-TRUST-001)
+- learning: withhold tutorial answers, bound retries, certify completion (`69150f1`, SRS-BUILDANDDO-TRUST-001)
+- pocketbase: enforce review, revenue and seat identity on shared records (`b9d9fac`, SRS-BUILDANDDO-TRUST-001)
+- release: the P0 legacy gate no longer fires on the product's own retired-phrase guard list (`979edad`, SRS-BUILDANDDO-PURPOSE-001)
+- release: the controller no longer crashes when no release env is named (`1924fa2`)
+- ci: the scan reads React and TypeScript sources, and never passes having read nothing (`cf49337`, SRS-BUILDANDDO-PUBLIC-REDACTION-001)
+- ci: a scan lets the unspecified address through, as it does loopback (`64a9732`, SRS-BUILDANDDO-PUBLIC-REDACTION-001)
+- tools: day-21 closure judges each criterion on its own terms (`f1e3232`, SRS-BUILDANDDO-DECLARED-VALUES-001)
+- ci: a handled 404 is RECORD_MISSING, not a missing route; the sweep can persist its receipt (`e944173`, SRS-BUILDANDDO-LIVE-UTILIZATION-001)
+- public: name no machine, address or workstation path in the CI drivers, deploy tools and docs (`055bb8f`, SRS-BUILDANDDO-PUBLIC-REDACTION-001)
+- web: keep the security headers on built assets in the staging container (`7bdcc18`, SRS-BUILDANDDO-HEADERS-001)
+- test: give jsdom URL.revokeObjectURL so a loaded run cannot fail on the blueprint download timer (`56ed003`, SRS-BUILDANDDO-PURPOSE-001)
+- web: secure classrooms and retain lessons (`2778730`, SRS-BUILDANDDO-UPGRADE-001)
+- web: tell visitors a Buddi conversation may be recorded, and say where the live header comes from (`aa2a526`, SRS-BUILDANDDO-BUDDI-003)
+- ci: a machine name joined into a slug is still that machine (`dfc12ea`, SRS-BUILDANDDO-PUBLIC-REDACTION-001)
+- evidence: bind claims and review handoffs (`d8b569f`, SRS-BUILDANDDO-UPGRADE-001)
+- web,ci: publish no fleet machine name or address from the generators or the bundle (`eaaa80f`, SRS-BUILDANDDO-PUBLIC-REDACTION-001)
+- deploy: withhold every IP address and fleet machine name from release notes (`f44ac29`, SRS-BUILDANDDO-BUDDI-001)
+- web: serve the brand mark as the site icon, with an install manifest (`f6cc0d0`, SRS-BUILDANDDO-BUDDI-001)
+- ci: the seat session learns its guildmaster on its own box, and names no machine (`2f20ad1`, SRS-BUILDANDDO-COMMUNITY-WEB-001)
+- web: connect learning-loop acceptance (`174df88`, SRS-BUILDANDDO-UPGRADE-001)
+
+## 2026-09-22
+
+### Added
+
+- evidence: add discovery, missions, outcomes and fill plans (`72ad135`, SRS-BUILDANDDO-CAREER-001)
+- web: add governed career passport (`37e6d6f`, SRS-BUILDANDDO-UPGRADE-001)
+- evidence: add local career evidence engine slice (`c46a96f`, SRS-BUILDANDDO-CAREER-001)
+- web: gate government research and assurance (`6a829f3`, SRS-BUILDANDDO-UPGRADE-001)
+- evidence: track progression and value (`52ff911`, SRS-BUILDANDDO-UPGRADE-001)
+- submission: generate the governed manifest, with all six materials bound by exact bytes (`c5eb92c`)
+- roadmap: give the two pieces of work claiming day 13 a day each (`3cf4a9c`)
+- receipts: a check now says what its result MEANS, not just what it printed (`244224a`)
+- suite: let one pinned binding name a pool of workers, because the lease always could (`a37ae67`, SRS-BUILDANDDO-LIVE-UTILIZATION-001)
+- ocn: exercise the claim lease on staging, and control it by role (`c2bb9bf`, SRS-BUILDANDDO-LIVE-UTILIZATION-001)
+- ocn: prove two machines cannot take the same task, and fix the control that proved nothing (`d59a04c`, SRS-BUILDANDDO-LIVE-UTILIZATION-001)
+- workflow: the agent working loop, live on the platform and proven to run (`56dee60`)
+- classroom: prove media ARRIVES, not merely that the SFU accepted a track (`149272a`)
+- classroom: an agent publishes live audio and video through the platform, no browser (`4d44e57`)
+- classroom: the classroom plane had no API rules, so no agent could ever use it (`0f8ef72`)
+- web: offer a scoped paid pilot (`53cff4c`, SRS-BUILDANDDO-UPGRADE-001)
+- web: start onboarding from a saved objective (`aa4b426`, SRS-BUILDANDDO-UPGRADE-001)
+- web: complete the sprint user journey (`2d5f784`, SRS-BUILDANDDO-UPGRADE-001)
+
+### Changed
+
+- evidence: retain career validation (`88ee324`, SRS-BUILDANDDO-UPGRADE-001)
+- evidence: retain research assurance results (`d30b9ac`, SRS-BUILDANDDO-UPGRADE-001)
+- readme: lead with the tour, and say why the repo is public (`4ea9037`)
+- readme: lead with the tour, and say why the repo is public (`da1b57f`)
+- web: retain product framing validation (`2f90b2e`, SRS-BUILDANDDO-UPGRADE-001)
+- web: center learning through real work (`6703a37`, SRS-BUILDANDDO-UPGRADE-001)
+- evidence: retain Twin value validation (`9d85aaf`, SRS-BUILDANDDO-UPGRADE-001)
+- submission: write the six required materials, and correct four gaps that were stale (`22a3b65`)
+- test: remove userEvent's per-action scheduler hop instead of raising the timeout (`d2a7306`, SRS-BUILDANDDO-LIVE-UTILIZATION-001)
+- tests: record the measurement behind NO_WINDOW, and the class that hid it (`e0d4420`)
+- tests: spawn the native PocketBase fixtures without a console window (`491746d`, SRS-BUILDANDDO-LIVE-UTILIZATION-001)
+- web: retain paid-pilot validation (`d88b43e`, SRS-BUILDANDDO-UPGRADE-001)
+- web: retain objective onboarding evidence (`913fd48`, SRS-BUILDANDDO-UPGRADE-001)
+- web: retain sprint journey evidence (`615000a`, SRS-BUILDANDDO-UPGRADE-001)
+
+### Fixed
+
+- evidence: stop crediting agent work as sole authorship (`7321bc2`, SRS-BUILDANDDO-CAREER-001)
+- classrooms,workspace: put the working state in git, and stop printing the machine (`07eb6f4`)
+- submission: stop publishing fleet addresses in the evidence line (`2ac42c4`)
+- sprint: move the Living Rooms evidence to the day it actually describes (`12d5833`)
+- test: wait for the dialog to close instead of asserting it already has (`fc179b7`, SRS-BUILDANDDO-LIVE-UTILIZATION-001)
+- public: stop publishing the private control plane as evidence (`0384cfd`)
+- overview: the activity feed showed a different eight on each render (`b953a32`, SRS-BUILDANDDO-LIVE-UTILIZATION-001)
+- submission: stop naming five fleet hosts in the submission evidence (`cfd0a48`, SRS-BUILDANDDO-LIVE-UTILIZATION-001)
+- sprint: stop gating the submission policy on a velocity plan (`caa5ee4`, SRS-BUILDANDDO-LIVE-UTILIZATION-001)
+- blueprint: a detached cleanup timer must not throw into whatever is running (`11cc358`)
+- ocn: the mission lane was writing to a field that does not exist (`a826853`)
+
+## 2026-09-21
+
+### Added
+
+- ci: walk the product as a signed-in person and write up every leg (`489149a`)
+- fixtures: the learning double reproduced the defect it should have caught (`9e003e6`)
+- evidence: connect development feedback (`a3d1798`, SRS-BUILDANDDO-DEVELOPMENT-LOOP-001)
+- tutorial: raise the budget for the test that walks a whole lesson (`b48a6ba`)
+- curriculum: carry the restored format limit into the live records (`78026f5`)
+- rooms: a workspace can hold chatrooms as well as classrooms (`8e66a24`)
+- gate: probe the links a learner can see, not just the ones in a field (`7626250`)
+- curriculum: ground the government lessons in statute text instead of plausible procurement (`3377df4`)
+- classroom: verify presence against the SFU instead of declaring it unverifiable (`d91a5f9`)
+- curriculum: Content production and Practice now teach - 25 of 33 SUBSTANTIVE (`7cba9fb`)
+- curriculum: Operations and Missions-and-workflows now teach - 15 of 33 SUBSTANTIVE (`27422a6`)
+- classroom: hold the class across four machines, not four identities on one (`f785630`)
+- curriculum: the five first-path lessons now teach, measured live (`630aa74`)
+- classroom: hold a live guildmaster class on staging, four seats (`b69cb69`)
+- sprint: perform two missions, record them as evidence and corrections, leave the method behind (`f9c56f3`)
+- classroom: make the classroom drivable and testable by an agent (`aacb6de`)
+- web: implement the OCN seat sign-in affordance, and stop lazy routes flaking (`2faaf13`)
+- sprint: issue one mission per guild, carrying work that was measured (`20eec58`)
+- evidence: add capability token protocol (`89657d0`, SRS-BUILDANDDO-CAPABILITY-TOKEN-001)
+- evidence: add verified evolution fabric (`0d3800d`, SRS-BUILDANDDO-EVOLUTION-001)
+- web: add governed execution and assistant (`ae97c0f`, SRS-BUILDANDDO-UPGRADE-001)
+
+### Changed
+
+- ci: retain governance repair evidence (`f1d823c`, SRS-BUILDANDDO-UPGRADE-001)
+- ci: retain GitLab acceptance results (`d67724d`, SRS-BUILDANDDO-UPGRADE-001)
+- ci: retain acceptance repair results (`01af4bb`, SRS-BUILDANDDO-UPGRADE-001)
+- evidence: retain closure validation (`6d4bbc1`, SRS-BUILDANDDO-UPGRADE-001)
+- epoch: record EPOCH-20260921-04 and the post-deploy inventory (`ba57118`)
+- epoch: record EPOCH-20260921-03 and the post-deploy capability inventory (`b14d374`)
+- readiness: the review said the blocker was GitHub billing; it is the GitLab instance (`a0df2a5`)
+- epoch: record EPOCH-20260921-01 and -02 from today's two deploys (`3324cdd`)
+
+### Removed
+
+- web: drop the ResearchPage key change - it fixed nothing (`cf9e46b`)
+
+### Fixed
+
+- ci: route required governance through GitLab (`25083e5`, SRS-BUILDANDDO-UPGRADE-001)
+- ci: align acceptance with GitLab execution (`c177bf5`, SRS-BUILDANDDO-UPGRADE-001)
+- seo: the served page had no body text and no links before JavaScript (`67c556e`)
+- ci: retain incomplete acceptance results (`42f5a37`, SRS-BUILDANDDO-UPGRADE-001)
+- evidence: bind candidate closure evidence (`210aa1d`, SRS-BUILDANDDO-UPGRADE-001)
+- learning: the tutorial catalogue was dead on both environments (`189cced`)
+- curriculum: restore a format limit the rewrite dropped, and derive a pinned progress number (`d8fee27`)
+- gate: the web checks were never able to start on Windows, and it read as failing (`6b7db0b`)
+- build: production was shipping 7.3KB of builder scaffolding in every page (`75d70b5`)
+- header: the wordmark was being clipped to "BuildAndD" (`b51bdd3`)
+- curriculum: restore the "illustrative data" label, and two ways a migration reports nothing (`49ed8b5`)
+- tests: 45 of the 46 node failures were the harness, and one was a label I removed (`31bd748`)
+- curriculum: the statute citation sent readers to a 404 (`a04fe48`)
+- gate: the migration preflight was passing its own negative control (`04c911a`)
+- mission-work: evidence.content caps at 2000, not 20000 (`40f48d8`)
+- web: web_build_test is green - 536 of 536 (`d77bba9`)
+- web: ResearchFlow waits on a re-queried node, not a detached one (`04c8946`)
+- web: two real defects - a dead research deep link and a swallowed assistant error (`38996f8`)
+- web: count guides from the page's own list instead of a literal (`575a3e7`)
+- web: two permission-boundary tests assert against the UI as it now renders (`fdef402`)
+- web: SignalsPage assertions match the dialog the page actually renders (`562c54a`)
+- web: repair two more clusters behind web_build_test (`cfd3f94`)
+- tests: give the spawned Python an explicit PYTHONPATH (`a254b93`)
+- web: three real defects behind the GitLab web_build_test gate (`62395a4`)
+
+## 2026-09-20
+
+### Added
+
+- native: stop serve from silently re-applying a reverted migration (`8e121ee`)
+- ocn: guildmasters publish from their own boxes, and what they propose becomes work (`1c960cd`)
+- ocn: grade the curriculum on two axes, after the check was wrong three times (`ea698ab`)
+- day21: install the submission closure lane, and stop pointing the site at a host that does not exist (`357c959`, SRS-BUILDANDDO-DAY21-CLOSURE-001)
+- rooms: test the classroom as several guildmasters on several machines (`cc4eea8`)
+- ocn: turn a seat's observation into a chain someone else can check (`58dc01c`)
+- signals: let a signal name the mission it became, and test the lifecycle that exists (`4cbf796`)
+- missions: prove a mission can reach verified, not just that missions exist (`39aa6cb`)
+- subsystems: probe the mission, suite, decision, knowledge, research and presence surfaces (`4b6f1cd`)
+- ocn: seats use the platform and leave the same trail a person leaves (`b063995`)
+- rbac: a prober that measures authorization instead of reading the rules (`ebbac0e`)
+- ocn: a verifier that uses the platform from a box instead of describing it (`249ef32`)
+- ocn: seat the fleet boxes, so the platform can be used from machines that are not ████████ (`2b3eb93`)
+- hostinger: the submission candidate and a validation that can be re-run (`b077279`)
+- security: scan what the site actually serves, not just what git tracks (`d21f219`)
+- ocn: restore seat login onto the shipped line and seat the guildmasters (`0dd12b6`)
+- progression: one anchor an agent can read to know where BuildAndDo is and what is left (`5f45370`)
+- roadmap: show what is built, what is tested, and what you can actually open (`48a50d5`)
+- governance: enforce sprint readiness (`c3d47c5`, SRS-BUILDANDDO-UPGRADE-001)
+- roadmap: record day 21 - the sprint replayed against its own evidence (`0a59c35`)
+- ci: run the sprint replay in the pipeline, and hold the public panel to it (`de536f3`)
+- roadmap: replay the sprint against its own evidence, and publish what the day count is derived from (`b929a5d`, SRS-BUILDANDDO-ROADMAP-001)
+
+### Changed
+
+- governance: refresh the context lock after the native harness fixes (`dc10fed`)
+- governance: refresh the context lock for the tests package markers (`6d6f355`)
+- repo: snapshot the in-flight working tree so the deployed build has a commit (`c3445e0`)
+- rbac: the real-account acceptance matrix D03-3 and D05-2 ask for (`0af77ba`)
+
+### Fixed
+
+- pocketbase: re-applying a migration no longer aborts startup (`2edc506`)
+- tests: sort the native fixture migration first in the remaining four harnesses (`9949968`)
+- ci: make the acceptance gate actually execute, and fix what that exposed (`42685aa`)
+- metrics: register request telemetry through routerUse, because 0.39.8 binds no onServe (`816b415`)
+- curriculum: repoint the one reference in 33 lessons that answers 404 (`89bafdb`)
+- domain: buildanddo.com only - sweep a domain the estate does not own (`3f0bd84`)
+- ocn: name the guildmasters, and let a signal cite its evidence as a relation (`be38e4c`)
+- blueprints: a field's type is a method in the JSVM, so this guard refused every schema (`9968d51`)
+- deploy: emit the release manifest the roadmap already claims as evidence (`afc96e3`)
+- rbac: the preflight could not read the rules it was guarding, so a security fix never applied (`059e0b7`)
+- progression: regenerate the anchor, which was reporting the wrong day of the sprint (`482a38f`)
+- pocketbase: derive the migration data path instead of using a global that does not exist (`c10d35a`)
+- security: the scanner must not trip its own BLOCK rules (`07ac9af`)
+- roadmap: take the sprint dates from the blueprint, and show the criteria progression (`75e77f7`)
+- deploy: the webroot has to describe itself, and the clear has to reach dotfiles (`4b9145f`)
+- release: resolve deploy credentials exactly as ship.py does, and honour --skip-install (`4ee15ad`)
+- deploy: the readback gate was banned at the edge, so the rail could never promote (`4727203`)
+- release: the verified deploy path never regenerated the truth payload (`b89a129`)
+- release: the verified-release build could never run on Windows (`3a99332`)
+- lint: a bare `state/` ignore rule hid 5 visual-editor modules from git (`3c976ab`)
+- roadmap: correct the sprint window and withdraw six verifications that were recorded, not measured (`9011bbd`)
+- release: the controller reads the estate store too, so one placement serves both tools (`8b0bb20`)
+- deploy: ship.py reads its credentials from the estate store, not a per-repo secrets file (`6ed9342`)
+- release: public config is not a secret, and the doc about the gate was breaking the gate (`1e270ce`)
+
+### Other
+
+- @ feat(ci): run the sprint replay in the pipeline, and hold the public panel to it (`573c63e`)
+
+## 2026-09-19
+
+### Added
+
+- web: add persistent tutorial certificates (`cc49403`, SRS-BUILDANDDO-UPGRADE-001)
+- evidence: complete local Phase 1 twin (`11ed359`, SRS-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001)
+- evidence: complete semantic twin contracts (`7544f67`, SRS-BUILDANDDO-SEMANTIC-TWIN-001)
+- evidence: ingest BuildAndDo release semantics (`3486901`, SRS-BUILDANDDO-SEMANTIC-TWIN-INGESTION-001)
+- evidence: freeze semantic twin contracts (`9c6d14b`, SRS-BUILDANDDO-SEMANTIC-TWIN-001)
+
+### Changed
+
+- governance: refresh Phase 1 context (`ffa6774`, SRS-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001)
+
+### Fixed
+
+- evidence: align Phase 1 with v2 contracts (`5c54af0`, SRS-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001)
+- evidence: integrate semantic twin v2 (`ff6870c`, SRS-BUILDANDDO-SEMANTIC-TWIN-001)
+- evidence: validate composite twin state (`86a9758`, SRS-BUILDANDDO-SEMANTIC-TWIN-001)
+
+## 2026-09-18
+
+### Added
+
+- seo: llms.txt lists the r/buildanddo community and the Gumroad store (`efe42bf`, SRS-BUILDANDDO-WORKSPACE-001)
+- web: footer and llms.txt link the r/buildanddo community and the Gumroad store (`c01f954`)
+- workspace: Fleet exists only for master-level CNWB seats, fail-closed on both sides (`4272845`, SRS-BUILDANDDO-WORKSPACE-001)
+- roadmap: D13 and D19 describe what landed; D21 records the second evidence replay (`0c1c907`)
+- roadmap: tracked verification ledger, estate progression beside it, and activity in the sinks and connected resources (`b7c94de`, SRS-BUILDANDDO-ROADMAP-001)
+- roadmap: replay sprint days 1, 3 and 5 against evidence; reframe the plan to learning by doing (`9e5c9f3`)
+- web: llms.txt generator describes the daily learning edition (`d9b55ff`)
+- web: social card eyebrow names the audience as people who build together (`75d55a2`)
+- web: social card eyebrow reads the daily learning edition (`ff5e48b`)
+- web: social card eyebrow and label follow the learning-platform framing (`2caf981`)
+- web: static shell, page titles, llms.txt and social card carry the learning-platform framing (`6f0174c`)
+- web: early-access audience is learners and teams, not only operators (`db7011d`)
+- web: front page speaks as the learning platform it is (`609303a`, SRS-BUILDANDDO-UPGRADE-001)
+- pocketbase: require native operator acceptance (`e796937`, SRS-BUILDANDDO-UPGRADE-001)
+- web: animate newspaper picture interiors (`ce83c7c`, SRS-BUILDANDDO-UPGRADE-001)
+- web: add the newspaper front page (`d74dcf4`, SRS-BUILDANDDO-UPGRADE-001)
+- web: redesign account access (`4e1c41f`, SRS-BUILDANDDO-UPGRADE-001)
+- web: assemble workspace knowledge (`9bbcbc2`, SRS-BUILDANDDO-UPGRADE-001)
+- site: Mr. Nobody on About, grouped header, Living Rooms live (`abc10c9`)
+- release: pin DORA timestamp conversion and wire body (`5688a09`)
+- sprint: converge BuildAndDo P0 and wire verified release [citadel-21-day-2026-09] (`d52dceb`)
+- web: add read-first operator cockpit (`26f73df`, SRS-BUILDANDDO-UPGRADE-001)
+- web: add policy intelligence review (`9a68356`, SRS-BUILDANDDO-UPGRADE-001)
+
+### Changed
+
+- governance: refresh merged context lock (`a8398e2`, SRS-BUILDANDDO-UPGRADE-001)
+- governance: record merge acceptance (`448411c`, SRS-BUILDANDDO-UPGRADE-001)
+- governance: record operator acceptance gates (`758d237`, SRS-BUILDANDDO-UPGRADE-001)
+- governance: specify capability repair gates (`731d745`, SRS-BUILDANDDO-UPGRADE-001)
+- release: invoke the release controller with python3 on the GitLab runner (`db7728a`)
+- intake: run integrity_gate + praxis tests on sprint candidate branches (`acf763a`)
+- governance: record operator acceptance (`bf7fe34`, SRS-BUILDANDDO-UPGRADE-001)
+- governance: record policy acceptance (`cff6f1b`, SRS-BUILDANDDO-UPGRADE-001)
+
+### Fixed
+
+- classroom: the renegotiation leg a pull requires (PUT /api/classroom/renegotiate) (`0154587`, SRS-BUILDANDDO-LIVE-UTILIZATION-001)
+- pocketbase: handlers require their helpers; file-scope functions are invisible per-request on 0.23+ (`a542cd1`, SRS-BUILDANDDO-LIVE-UTILIZATION-001, SRS-BUILDANDDO-WORKSPACE-001)
+- estate: the fleet route answers 404 to anonymous and non-master callers alike (`c3e2502`)
+- workspace: single useAuth import in App.jsx (`6ac5944`)
+- web: match newspaper reference artwork (`097dba4`, SRS-BUILDANDDO-UPGRADE-001)
+- release: DORA window in nanoseconds with finished_at > started_at (`d0ed18d`)
+- deploy: send DORA timestamps in Unix seconds (`328fa8c`, SRS-BUILDANDDO-UPGRADE-001)
+- release: send DORA timestamps as Unix nanoseconds, keep the API error body (`7bd8f95`)
+- release: make ssh_webroot deploys work from the ████████ controller (`6086a63`, SRS-BUILDANDDO-LIVE-UTILIZATION-001)
+- release: make the artifact tree hash OS-independent (`4b376f0`)
+- praxis: send a product User-Agent so the PocketBase client passes Cloudflare's browser integrity check (`a02625f`)
+
+### Other
+
+- Update AGENTS.md (`e97c512`)
+
+## 2026-09-17
+
+### Added
+
+- evidence: compile estate intelligence (`3985c88`, SRS-BUILDANDDO-ESTATE-001)
+- web: wire blueprint mission pipeline (`5e50837`, SRS-BUILDANDDO-UPGRADE-001)
+- web: add structured blueprint review (`c1d8d9d`, SRS-BUILDANDDO-UPGRADE-001)
+- pocketbase: add typed decision runtime (`2a7cc2f`, SRS-BUILDANDDO-DECISION-001)
+- ci: add public Firecrawl crawl check (`8c34688`, SRS-BUILDANDDO-CRAWL-001)
+
+### Changed
+
+- governance: normalize estate artifacts (`ae621b3`, SRS-BUILDANDDO-ESTATE-001)
+- governance: record blueprint acceptance (`ae58166`, SRS-BUILDANDDO-UPGRADE-001)
+
+## 2026-09-16
+
+### Added
+
+- web: surface shared classroom sessions (`a7d4822`, SRS-BUILDANDDO-UPGRADE-001)
+- ci: add governed Citadel telemetry (`e705e85`, SRS-BUILDANDDO-UPGRADE-001)
+- deploy: add production staging contract (`bdc9052`, SRS-BUILDANDDO-UPGRADE-001)
+- evidence: execute federal foundry research lanes (`7920518`, SRS-BUILDANDDO-UPGRADE-001)
+- evidence: add federal research portfolio (`f22bbc7`, SRS-BUILDANDDO-FEDERAL-INFLUENCE-001, SRS-BUILDANDDO-FEDERAL-LOW-SWAP-001, SRS-BUILDANDDO-FEDERAL-MARITIME-001, SRS-BUILDANDDO-FEDERAL-NAVAIR-001, SRS-BUILDANDDO-FEDERAL-SEMANTIC-ISR-001, SRS-BUILDANDDO-UPGRADE-001)
+- evidence: build federal R&D foundry (`0f19fbc`, SRS-BUILDANDDO-UPGRADE-001)
+- evidence: add portable mission suite (`c2bb9dd`, SRS-BUILDANDDO-UPGRADE-001)
+- evidence: add private account dossiers (`aab43b3`, SRS-BUILDANDDO-UPGRADE-001)
+
+### Changed
+
+- governance: hand off field interviewer (`21900f2`, SRS-BUILDANDDO-UPGRADE-001)
+- evidence: define maritime execution contract (`60b952b`, SRS-BUILDANDDO-UPGRADE-001)
+- evidence: freeze maritime product baseline (`b1e81ac`, SRS-BUILDANDDO-UPGRADE-001)
+
+### Other
+
+- Code changes from agent run (`0cd687a`)
+
+## 2026-09-15
+
+### Added
+
+- evidence: connect mission research (`a155e24`, SRS-BUILDANDDO-UPGRADE-001)
+- web: expand Discord community commands (`58772de`, SRS-BUILDANDDO-UPGRADE-001)
+- web: add configurable motion (`295725a`, SRS-BUILDANDDO-UPGRADE-001)
+- web: add workspace administration (`b609039`, SRS-BUILDANDDO-UPGRADE-001)
+- web: expand business planning and learning (`203a08c`, SRS-BUILDANDDO-UPGRADE-001)
+- pocketbase: record governed workflow runs (`af63ab4`, SRS-BUILDANDDO-UPGRADE-001)
+- web: guide evidence-based missions (`9b69cb7`, SRS-BUILDANDDO-UPGRADE-001)
+- web: reuse authenticated workspace flows (`c84008b`, SRS-BUILDANDDO-UPGRADE-001)
+
+### Changed
+
+- governance: hand off Rig 1 execution (`e820f8f`)
+
+### Fixed
+
+- web: restore shared workspace history (`858ccf5`, SRS-BUILDANDDO-UPGRADE-001)
+
+## 2026-09-14
+
+### Added
+
+- web: upgrade public and workspace flows (`8a1c407`, SRS-BUILDANDDO-UPGRADE-001)
+
+## 2026-09-13
+
+### Added
+
+- web: visualize MetaFunction fabric (`5129c2f`, SRS-BUILDANDDO-PLATFORM-001)
+
+## 2026-09-11
+
+### Added
+
+- web: add fleet topology and platform health workspace pages (`6384935`, SRS-BUILDANDDO-WORKSPACE-001)
+
 ## 2026-09-10
 
 ### Added
 
+- ci: generate the changelog from the commits that landed (`90623d7`, SRS-BUILDANDDO-CHANGELOG-001)
+- web: make the workspace roadmap answer how far along it is (`658d397`, SRS-BUILDANDDO-WORKSPACE-001)
+- ci: chain evidence epochs into CI and Datadog (`76d1b66`, SRS-BUILDANDDO-EPOCH-001)
+- web: add community contributor infrastructure (`d05a314`, SRS-BUILDANDDO-COMMUNITY-001)
+- web: Capability Passport UI and evidence witness architecture (`dab412f`, SRS-BUILDANDDO-WITNESS-001)
+- web: add vitest harness and workspace page suites (`cebaf44`, SRS-BUILDANDDO-TEST-001)
 - ci: add local docker development environment (`06a5ecb`, SRS-BUILDANDDO-DEVENV-001)
 - web: make the workspace pages functional (`3170e84`, SRS-BUILDANDDO-WORKSPACE-001)
 - governance: add measured agent context layer (`dc0e685`, SRS-BUILDANDDO-AGENTCTX-001)
@@ -42,6 +535,10 @@ the entry.
 - governance: propose observability SRS specs and metrics-sink handoff (`691e58d`, SRS-BUILDANDDO-PB-METRICS-001, SRS-BUILDANDDO-RUM-ACTIONS-001)
 - ci: measure every run and diff it against main (`bee3d37`, SRS-BUILDANDDO-CI-001)
 - ci: report pipelines and DORA to Datadog (`b622617`, SRS-BUILDANDDO-CI-001)
+
+### Fixed
+
+- ci: restore the sprint plan the roadmap projection imports (`a64a1d8`, SRS-BUILDANDDO-ROADMAP-001, SRS-BUILDANDDO-WORKSPACE-001)
 
 ## 2026-09-09
 
@@ -68,6 +565,9 @@ the entry.
 
 ### Changed
 
+- wire the Praxis Evidence Fabric test layer into the pipeline (`e6ab7d2`)
+- fix npm ci invocation for the workspace lockfile location (`fe2a0c9`)
+- private GitLab pipeline for the buildanddo intake mirror (`b471156`)
 - real detail for every roadmap milestone (`839f16b`)
 - README + CONTRIBUTING, linked from the site footer (`36a66bf`)
 - clarify the ACTUAL-vs-PLANNED marker on the roadmap chart (`a67b385`)

@@ -121,6 +121,11 @@ jobs:
       - name: Verify agent context lock is current
         run: python scripts/ci/agent_context.py --check
 
+      # Blocking: a new app, service or workflow must be named in the README,
+      # its links must resolve, and its roadmap block must match sprint_cycle.py.
+      - name: Verify README still describes the repository
+        run: python scripts/ci/readme_check.py --check
+
       # Verify-only while the changelog is new: a stale changelog is worth
       # reporting, not worth failing a build over until every contributor has
       # the regeneration step in muscle memory.

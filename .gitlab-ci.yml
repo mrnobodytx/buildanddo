@@ -30,6 +30,7 @@ integrity_gate:
     - npm ci
     - python3 scripts/ci/integrity_regression_check.py
     - python3 scripts/ci/verify_public_boundary.py --root .
+    - python3 scripts/ci/readme_check.py --check
   rules:
     - if: '$CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH =~ /^sprint\//'
 

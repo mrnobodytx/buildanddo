@@ -643,7 +643,7 @@
       "wired_into_ci": true
     }
   ],
-  "generated_at": "2026-09-24T11:45:58.909872+00:00",
+  "generated_at": "2026-09-24T19:43:13.310826+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -701,7 +701,7 @@
       },
       {
         "code": "SRS-BUILDANDDO-CHANGELOG-001",
-        "risk": "A0",
+        "risk": "A2",
         "spec": ".bits/srs/SRS-BUILDANDDO-CHANGELOG-001.md",
         "status": "in_progress",
         "title": "Public record - generated changelog, release summary, README roadmap mirror"
@@ -1029,6 +1029,22 @@
       ]
     },
     {
+      "file": ".github/workflows/changelog.yml",
+      "kind": "workflow",
+      "local_actions": [],
+      "name": "BuildAndDo Changelog",
+      "npm_scripts": [],
+      "provider": "github",
+      "scripts": [
+        "scripts/ci/changelog_gen.py",
+        "scripts/ci/readme_check.py"
+      ],
+      "triggers": [
+        "push",
+        "workflow_dispatch"
+      ]
+    },
+    {
       "file": ".github/workflows/citadel-stack-telemetry.yml",
       "kind": "workflow",
       "local_actions": [],
@@ -1089,6 +1105,7 @@
         "scripts/ci/agent_context.py",
         "scripts/ci/changelog_gen.py",
         "scripts/ci/hostinger_readiness.py",
+        "scripts/ci/readme_check.py",
         "scripts/ci/submission_readiness.py",
         "scripts/ci/supply_chain.py",
         "scripts/ci/verify_public_boundary.py"
@@ -1146,6 +1163,7 @@
       "provider": "gitlab",
       "required_scripts": [
         "scripts/ci/integrity_regression_check.py",
+        "scripts/ci/readme_check.py",
         "scripts/ci/selftest_sprint_replay.py",
         "scripts/ci/sprint_replay.py",
         "scripts/ci/verify_public_boundary.py",
@@ -1154,6 +1172,7 @@
       ],
       "scripts": [
         "scripts/ci/integrity_regression_check.py",
+        "scripts/ci/readme_check.py",
         "scripts/ci/selftest_sprint_replay.py",
         "scripts/ci/sprint_replay.py",
         "scripts/ci/verify_public_boundary.py",
@@ -1341,13 +1360,13 @@
         "why": "Competition readiness requires an evidence-backed learning-through-work journey, a reproducible replay and actual submission criteria."
       }
     ],
-    "source_sha256": "1deddd9c74adc199c410ea44dd618d919db40d0b23c67243ee54f1bd030e6b03",
+    "source_sha256": "0b0d3b7581ff61bb967a85e1d5e1cd6b56c48464623bfd1ed1161b29673d47c0",
     "state": "PASS"
   },
   "summary": {
     "findings": 35,
     "findings_high": 35,
-    "pipelines": 10,
+    "pipelines": 11,
     "srs_open": 45,
     "srs_total": 49,
     "unwired_gates": 32
