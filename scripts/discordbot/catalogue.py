@@ -1,10 +1,10 @@
 # ─── CGRF Header ───────────────────────────────────────────────
 # File:        scripts/discordbot/catalogue.py
 # Stage:       07_BUILD
-# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-QUIZ-001
 # CAPS:        pending
 # CK:          pending
-# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-QUIZ-001
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-15
@@ -173,11 +173,10 @@ def _lesson(value: object) -> Lesson:
     check = mapping(body.get("check"))
     question = text(check.get("question"), 500)
     choices = strings(check.get("choices"), 6, 200)
-    answer = check.get("answer")
-    if len(choices) < 2 or type(answer) is not int or not 0 <= answer < len(choices):
+    # The published feed asks; the server grades. A feed carrying answers is not the published contract.
+    if len(choices) < 2 or set(check) != {"question", "choices"}:
         raise DataUnavailable(DataFault.INVALID)
-    quiz = Quiz(choices, answer, text(check.get("explanation"), 1000))
-    return Lesson(slug, title, summary, category, minutes, tuple(parts), question, quiz)
+    return Lesson(slug, title, summary, category, minutes, tuple(parts), question, Quiz(slug, choices))
 
 
 @dataclass(frozen=True)
@@ -194,7 +193,7 @@ class Catalogue:
         """Reject malformed or private-origin feed content before rendering it."""
         source = mapping(value)
         if (
-            type(source.get("schema_version")) is not int or source["schema_version"] != 1
+            type(source.get("schema_version")) is not int or source["schema_version"] != 2
             or source.get("site_origin") != SITE_ORIGIN
         ):
             raise DataUnavailable(DataFault.INVALID)

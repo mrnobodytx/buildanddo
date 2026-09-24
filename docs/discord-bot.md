@@ -1,16 +1,16 @@
 # ─── CGRF Header ───────────────────────────────────────────────
 # File:        docs/discord-bot.md
 # Stage:       06_PLAN
-# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-QUIZ-001
 # CAPS:        pending
 # CK:          pending
-# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-QUIZ-001
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-15
-# Depends:     scripts/discordbot/bot.py, scripts/discordbot/service.py, apps/web/tools/generate-community.mjs, tests/upgrade/check_discordbot.py, .github/workflows/pr-governance.yml, docs/mission-research.md, scripts/discordbot/research.py, docs/private-dossiers.md, docs/discord-activation.md
+# Depends:     scripts/discordbot/bot.py, scripts/discordbot/service.py, scripts/discordbot/grading.py, apps/pocketbase/pb_hooks/community-quiz.pb.js, apps/web/tools/generate-community.mjs, tests/upgrade/check_discordbot.py, .github/workflows/pr-governance.yml, docs/mission-research.md, scripts/discordbot/research.py, docs/private-dossiers.md, docs/discord-activation.md
 # EnumType:    Doc
-# EnumEdges:   CONSUMES scripts/discordbot/bot.py; CONSUMES scripts/discordbot/service.py; CONSUMES apps/web/tools/generate-community.mjs; VERIFIED_BY tests/upgrade/check_discordbot.py; CONSUMES .github/workflows/pr-governance.yml; CONSUMES docs/mission-research.md; CONSUMES scripts/discordbot/research.py; CONSUMES docs/private-dossiers.md; CONSUMES docs/discord-activation.md
+# EnumEdges:   CONSUMES scripts/discordbot/bot.py; CONSUMES scripts/discordbot/service.py; CONSUMES scripts/discordbot/grading.py; CONSUMES apps/pocketbase/pb_hooks/community-quiz.pb.js; CONSUMES apps/web/tools/generate-community.mjs; VERIFIED_BY tests/upgrade/check_discordbot.py; CONSUMES .github/workflows/pr-governance.yml; CONSUMES docs/mission-research.md; CONSUMES scripts/discordbot/research.py; CONSUMES docs/private-dossiers.md; CONSUMES docs/discord-activation.md
 # DAG Node:    none
 # Intent:      Explain the implemented Discord experience, its real public data sources and the remaining private activation requirements.
 # ───────────────────────────────────────────────────────────────
@@ -20,7 +20,8 @@
 The public command bot helps community members learn BuildAndDo, open the
 appropriate workspace desk and inspect dated public evidence. It uses the same
 authored lessons and canonical site origin as the web application. These thirteen
-public commands do not authenticate to PocketBase or retrieve workspace records.
+public commands do not retrieve workspace records. Only `quiz` contacts PocketBase,
+to have one answer graded with the community bot token (see below).
 An explicitly configured bridge adds seven mission/research commands and five
 personal dossier commands through native PocketBase authentication. See
 `docs/mission-research.md` and `docs/private-dossiers.md` for the connected flows.
@@ -43,7 +44,7 @@ Commands with a topic accept the optional `query` argument.
 | `docs query:pricing` | Search public page descriptions and open a result. |
 | `learn query:missions` | Search lesson titles, summaries, categories and slugs; select a lesson. |
 | `lesson query:welcome-to-buildanddo` | Read the complete authored lesson using Previous and Next. |
-| `quiz query:welcome-to-buildanddo` | Answer one knowledge check and read its explanation. |
+| `quiz query:welcome-to-buildanddo` | Answer one knowledge check; the site grades it and explains a right answer. |
 | `workspace query:integrations` | Open a known workspace desk through the existing website login. |
 | `support` | Open Contact and see what to include in a reproducible bug report. |
 | `diagnostics` | Let a member with Manage Server permission inspect bot scope and local read counters. |
@@ -55,10 +56,40 @@ bounded pages. Autocomplete uses content already loaded by a learning command;
 typing into a command field makes no HTTP request.
 
 Controls belong to the initiating person and expire after ten minutes. A quiz
-accepts one answer; retrying the same answer after a failed delivery returns the
-same explanation. A different answer requires a new quiz. Practice does not
+accepts one graded answer; retrying the same answer after a failed delivery
+returns the same reply. A different answer requires a new quiz. Practice does not
 write tutorial progress, award authority, approve a mission or issue credentials.
 Saved progress remains in the signed-in website.
+
+### Server grading (SRS-BUILDANDDO-QUIZ-001)
+
+The public catalogue carries each lesson's question and choices, never its
+answer or explanation. The bot sends the chosen answer to
+`POST /api/buildanddo/community/quiz/check` on `BUILDANDDO_POCKETBASE_URL` with
+`Authorization: Bearer` and the value of `BUILDANDDO_COMMUNITY_BOT_TOKEN`, plus
+the lesson slug and the caller's Discord user ID. The route compares the token in
+constant time and reads the lesson from the `tutorials` collection:
+
+- A right answer returns `{correct: true, explanation}`; a wrong one returns only
+  `{correct: false}`, so it never points at the right choice.
+- Government lessons are members-only on the website. The bot shows their
+  question without an answer menu, and the route refuses them with 403.
+- An unset token, or one shorter than 32 characters, makes the route answer 503.
+  A wrong or missing token gets 401.
+- Each Discord user gets three attempts per lesson and thirty in total per
+  ten-minute window, counted from the first attempt. At most 2,000 keys are
+  tracked; a full table refuses newcomers with 429 rather than dropping anyone's
+  window. The counters live in PocketBase's in-process store, so they reset on a
+  restart and are per server process.
+- Neither side logs the token, the choice or the answer. The bot logs only
+  `graded` or `unavailable`.
+
+When grading is not configured, unreachable or refused, the bot says the answer
+was not graded, keeps the answer menu open and never invents a result. The
+catalogue's `schema_version` is 2; an earlier bot rejects it and an updated bot
+rejects an older catalogue, so ship the site build and the bot together.
+The authored curriculum files under `apps/pocketbase/pb_migrations/data/` still
+contain answers; whether they move is an open owner decision.
 
 With the research bridge configured, `/buildanddo missions`, `mission`,
 `evidence`, `submit`, `submissions`, `submission` and `recover` connect to the
@@ -89,7 +120,7 @@ The public command service reads exactly four resources:
 | `/` | HTTP reachability; the response body is not downloaded. | 10 seconds |
 | `/version.json` | Served version and source revision. | 30 seconds |
 | `/roadmap-status.json` | Measured progress, generation time and reported last gate. | 30 seconds |
-| `/community-catalog.json` | Public pages and complete authored starter lessons. | 5 minutes |
+| `/community-catalog.json` | Public pages and authored lessons without answers or explanations. | 5 minutes |
 
 The normal web build writes `community-catalog.json` beside `version.json` after
 Vite succeeds. It projects explicitly selected fields from PUBLIC_PAGES and the
@@ -137,6 +168,8 @@ treating the Python entry point as the existing installation's activation path.
 | `BUILDANDDO_DISCORD_CHANNEL_IDS` | Optional allowed channel snowflakes; requires an explicit server allowlist. Threads need their own allowed ID. |
 | `BUILDANDDO_DISCORD_LEGACY_PREFIX` | `0` by default. Set `1` only when intentionally retaining prefix commands and the privileged Message Content intent. |
 | `BUILDANDDO_DISCORD_SYNC` | `none` by default; `guild` synchronizes the explicit allowlist, and `global` deliberately registers global commands. |
+| `BUILDANDDO_POCKETBASE_URL` | Existing PocketBase origin, also used for quiz grading. |
+| `BUILDANDDO_COMMUNITY_BOT_TOKEN` | Quiz grading bearer token, at least 32 characters; PocketBase reads the same name. Unset means grading is reported as unavailable. Never included in logs or diagnostics. |
 
 Slash command registration is a deployment action. A new installation with
 `SYNC=none` and prefix mode off has no usable commands until the operator

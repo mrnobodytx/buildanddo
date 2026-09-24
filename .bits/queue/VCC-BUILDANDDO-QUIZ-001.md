@@ -1,6 +1,6 @@
 # ─── CGRF Header ──────────────────────────────
 # File:        .bits/queue/VCC-BUILDANDDO-QUIZ-001.md
-# Stage:       04_HYPOTHESIZE
+# Stage:       11_COMMIT
 # SRS:         SRS-BUILDANDDO-QUIZ-001
 # CAPS:        pending
 # CK:          pending
@@ -28,11 +28,11 @@ is graded by the server without revealing the right choice on a wrong answer.
 
 | # | Task | Gate command | Status |
 |---|------|--------------|--------|
-| 1 | Catalogue without answers; build gate scans every output file | `node --test tests/upgrade/public-lessons.test.mjs tests/upgrade/discord-catalogue.test.mjs && echo PASS` | pending |
-| 2 | Server grading route, bot token, members-only refusal, rate limit | `node --test tests/upgrade/community-quiz.test.mjs && node --test tests/upgrade/*.test.mjs && echo PASS` | pending |
-| 3 | Bot grades through the route and reports unavailability | `python3 tests/upgrade/check_discordbot.py && echo PASS` | pending |
-| 4 | Lint, build, boundary | `cd apps/web && npm run lint && npm run build && cd ../.. && python scripts/ci/verify_public_boundary.py && echo PASS` | pending |
-| 5 | Context and readiness | `python scripts/ci/agent_context.py --check && python scripts/ci/hostinger_readiness.py --check && python scripts/ci/submission_readiness.py --check && echo PASS` | pending |
+| 1 | Catalogue without answers; build gate scans every output file | `node --test tests/upgrade/public-lessons.test.mjs tests/upgrade/discord-catalogue.test.mjs && echo PASS` | done |
+| 2 | Server grading route, bot token, members-only refusal, rate limit | `node --test tests/upgrade/community-quiz.test.mjs && node --test tests/upgrade/*.test.mjs && echo PASS` | done |
+| 3 | Bot grades through the route and reports unavailability | `python3 tests/upgrade/check_discordbot.py && echo PASS` | done |
+| 4 | Lint, build, boundary | `cd apps/web && npm run lint && npm run build && cd ../.. && python scripts/ci/verify_public_boundary.py && echo PASS` | done |
+| 5 | Context and readiness | `python scripts/ci/agent_context.py --check && python scripts/ci/hostinger_readiness.py --check && python scripts/ci/submission_readiness.py --check && echo PASS` | done |
 
 ## Constraints
 

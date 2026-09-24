@@ -2,16 +2,16 @@
 # ─── CGRF Header ───────────────────────────────────────────────
 # File:        scripts/discordbot/bot.py
 # Stage:       07_BUILD
-# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-QUIZ-001
 # CAPS:        pending
 # CK:          pending
-# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-QUIZ-001
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-15
-# Depends:     scripts/discordbot/service.py, scripts/discordbot/contracts.py, scripts/discordbot/research.py, scripts/discordbot/dossier.py
+# Depends:     scripts/discordbot/service.py, scripts/discordbot/contracts.py, scripts/discordbot/research.py, scripts/discordbot/dossier.py, scripts/discordbot/grading.py
 # EnumType:    Service
-# EnumEdges:   DEPENDS_ON scripts/discordbot/service.py; DEPENDS_ON scripts/discordbot/contracts.py; CONSUMES scripts/discordbot/research.py; CONSUMES scripts/discordbot/dossier.py
+# EnumEdges:   DEPENDS_ON scripts/discordbot/service.py; DEPENDS_ON scripts/discordbot/contracts.py; CONSUMES scripts/discordbot/research.py; CONSUMES scripts/discordbot/dossier.py; CONSUMES scripts/discordbot/grading.py
 # DAG Node:    none
 # Intent:      Serve useful public Discord interactions with explicit scope, private replies and no import-time activation.
 # ───────────────────────────────────────────────────────────────
@@ -38,6 +38,7 @@ from scripts.discordbot.contracts import (
     Caller, ConfigurationError, DISPATCH, InteractionDenied, Page,
     PersonalSession, Reply, SESSION_SECONDS, Settings, SRS,
 )
+from scripts.discordbot.grading import Grader, configured_grader
 from scripts.discordbot.public_data import PublicClient
 from scripts.discordbot.service import COMMANDS, CommandService, WORKSPACE_AREAS
 from scripts.discordbot.research import Attachment, RESEARCH_COMMANDS, ResearchBridge, configured_bridge
@@ -204,14 +205,19 @@ class ReplyView(discord.ui.View):
                 await notify_private(interaction, str(error))
 
     async def answer(self, interaction: discord.Interaction, choice: int) -> None:
-        """Accept one answer and retain its explanation under serialized callbacks."""
+        """Have the server grade one answer and retain its result under serialized callbacks."""
         await interaction.response.defer()
         async with self.lock:
             try:
                 self.require_owner(interaction)
-                page = self.session.answer(interaction.user.id, choice, time.monotonic())
+                caller = caller_from(interaction)
+                page = await self.session.answer(
+                    interaction.user.id, choice, time.monotonic(),
+                    lambda quiz, picked: self.service.grade(quiz, picked, caller),
+                )
+                # Ungraded attempts keep the answer menu open for a later retry.
                 for item in self.children:
-                    if isinstance(item, discord.ui.Select):
+                    if isinstance(item, discord.ui.Select) and self.session.answered:
                         item.disabled = True
                 self.message = await interaction.edit_original_response(
                     embed=render(page), view=self, allowed_mentions=discord.AllowedMentions.none(),
@@ -277,13 +283,14 @@ class PublicCommandTree(app_commands.CommandTree[discord.Client]):
 class BuildAndDoBot(discord.Client):
     """Expose public commands with opt-in prefix intent and deliberate synchronization."""
 
-    def __init__(self, settings: Settings, public_client: PublicClient | None = None, research: ResearchBridge | None = None) -> None:
+    def __init__(self, settings: Settings, public_client: PublicClient | None = None, research: ResearchBridge | None = None,
+                 grader: Grader | None = None) -> None:
         intents = discord.Intents.default()
         intents.message_content = settings.legacy_prefix
         super().__init__(intents=intents, allowed_mentions=discord.AllowedMentions.none())
         self.settings = settings
         self.public_client = public_client or PublicClient()
-        self.service = CommandService(settings, self.public_client)
+        self.service = CommandService(settings, self.public_client, grader=grader)
         self.research = research
         self.dossier = DossierBridge(research) if research else None
         self.tree = PublicCommandTree(self)
@@ -499,6 +506,7 @@ class BuildAndDoBot(discord.Client):
     async def close(self) -> None:
         """Drain bounded public HTTP work before closing the gateway client."""
         await self.public_client.close()
+        await self.service.grader.close()
         if self.dossier:
             self.dossier.close()
         if self.research:
@@ -537,7 +545,7 @@ def main() -> int:
     except (ConfigurationError, ResearchError):
         logger.error("discord.startup.blocked", extra={"reason": "configuration"})
         return 1
-    client = BuildAndDoBot(settings, research=research)
+    client = BuildAndDoBot(settings, research=research, grader=configured_grader(os.environ))
     try:
         client.run(token, log_handler=None)
     except (discord.LoginFailure, discord.PrivilegedIntentsRequired, discord.HTTPException):

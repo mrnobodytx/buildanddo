@@ -1,10 +1,10 @@
 # ─── CGRF Header ───────────────────────────────────────────────
 # File:        tests/upgrade/test_discordbot_public.py
 # Stage:       08_TEST
-# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-QUIZ-001
 # CAPS:        pending
 # CK:          pending
-# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-QUIZ-001
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-15
@@ -275,24 +275,37 @@ class InteractionTests(unittest.TestCase):
     def test_sessions_reject_foreign_expired_and_repeated_answers(self) -> None:
         reply = Reply(
             (Page("Question", "Choose an answer."), Page("Next", "More.")),
-            quiz=Quiz(("A", "B"), 1, "B is correct because evidence is required."),
+            quiz=Quiz("evidence-lesson", ("A", "B")),
         )
+        sent: list[tuple[str, int]] = []
+
+        async def grade(quiz: Quiz, choice: int) -> tuple[Page, bool]:
+            sent.append((quiz.slug, choice))
+            return Page("Knowledge check", "Correct." if choice == 1 else "Not the expected answer."), True
+
+        async def unavailable(quiz: Quiz, choice: int) -> tuple[Page, bool]:
+            return Page("Grading unavailable", "Not graded."), False
+
         session = PersonalSession(10, reply, now=0)
         self.assertEqual(session.move(10, 10, 1).title, "Next")
         self.assertEqual(session.move(10, -10, 1).title, "Question")
         with self.assertRaises(InteractionDenied):
             session.move(11, 1, 1)
         with self.assertRaises(InteractionDenied):
-            session.answer(10, -1, 1)
-        result = session.answer(10, 0, 1)
-        self.assertIn("Review", result.body)
-        self.assertIn("Practice only", result.body)
+            asyncio.run(session.answer(10, -1, 1, grade))
+        self.assertEqual(asyncio.run(session.answer(10, 0, 1, unavailable)).title, "Grading unavailable")
+        self.assertFalse(session.answered, "an ungraded attempt leaves the check open")
+        result = asyncio.run(session.answer(10, 0, 1, grade))
+        self.assertIn("Not the expected", result.body)
         with self.assertRaises(InteractionDenied):
-            session.answer(10, 1, 1)
+            asyncio.run(session.answer(10, 1, 1, grade))
         with self.assertRaises(InteractionDenied):
-            PersonalSession(10, reply, now=0).answer(10, 1, 600)
-        self.assertIn("Correct", PersonalSession(10, reply, now=0).answer(10, 1, 1).body)
-        self.assertEqual(session.answer(10, 0, 2), result)
+            asyncio.run(PersonalSession(10, reply, now=0).answer(10, 1, 600, grade))
+        self.assertIn("Correct", asyncio.run(PersonalSession(10, reply, now=0).answer(10, 1, 1, grade)).body)
+        self.assertEqual(asyncio.run(session.answer(10, 0, 2, grade)), result)
+        self.assertEqual(sent, [("evidence-lesson", 0), ("evidence-lesson", 1)], "a repeated answer is not sent again")
+        with self.assertRaises(InteractionDenied):
+            asyncio.run(PersonalSession(10, Reply((Page("Question", "No check."),)), now=0).answer(10, 0, 1, grade))
 
     def test_user_and_global_limits_expire_without_unbounded_identity_storage(self) -> None:
         limit = Limiter(per_user=2, total=3, window=10)
