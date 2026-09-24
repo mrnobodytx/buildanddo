@@ -63,7 +63,7 @@ migrate((app) => {
     for (const field of definition.fields) {
         const actual = existing.fields.getByName(field.name);
         if (!actual && field.name === 'protocol_version') continue;
-        if (!actual || Object.keys(field).some((key) => JSON.stringify(typeof actual[key] === 'function' ? actual[key]() : actual[key]) !== JSON.stringify(field[key])))
+        if (!actual || Object.keys(field).some((key) => norm(actual, key) !== norm(field, key)))
             throw new Error('Review custom workspace_decisions fields.');
     }
     if (!definition.indexes.every((index) => existing.indexes.includes(index)))

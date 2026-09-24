@@ -320,14 +320,18 @@ class AcceptanceRunnerTests(unittest.TestCase):
             patch.dict(os.environ, {"BUILDANDDO_TEST_POCKETBASE": sys.executable}),
         ):
             self.assertEqual(runner.main([*self.args, "--native-only"]), 1)
-        self.assertEqual(run.call_count, 10)
+        # Once per native check and runtime profile; counted from the runner, not a fixed number.
+        self.assertEqual(run.call_count, 2 * len(runner.NATIVE_CHECKS))
         summary = json.loads(self.target.read_text())
         self.assertEqual(summary["state"], "HOLD")
         native = {
             key: state for key, state in summary["profiles"].items() if ":" in key
         }
         self.assertEqual(set(native.values()), {"BLOCKED"})
-        self.assertEqual(len(list(self.receipts.glob("*.json"))), 28)
+        # One receipt per source check; per native check and profile, the old pass is kept as history
+        # beside the new BLOCKED one.
+        self.assertEqual(len(list(self.receipts.glob("*.json"))),
+                         len(runner.SOURCE_CHECKS) + 4 * len(runner.NATIVE_CHECKS))
 
     def test_offline_uses_explicit_binaries_for_each_profile_without_provisioning(
         self,
@@ -369,7 +373,7 @@ class AcceptanceRunnerTests(unittest.TestCase):
                 "compose": str(self.root / "runtimes/compose"),
             },
         )
-        self.assertEqual(execute.call_count, 10)
+        self.assertEqual(execute.call_count, 2 * len(runner.NATIVE_CHECKS))
         self.assertEqual(command.call_count, 1)
         provision.assert_not_called()
 

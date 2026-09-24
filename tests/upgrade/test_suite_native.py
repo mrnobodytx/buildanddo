@@ -19,6 +19,7 @@
 
 from __future__ import annotations
 
+from contextlib import closing
 import hashlib
 import json
 import os
@@ -41,7 +42,6 @@ if str(ROOT) not in sys.path:
 from apps.mission_suite.bundle import source_fingerprint  # noqa: E402
 from apps.mission_suite.engine import decode, replay, run_suite  # noqa: E402
 from tests.upgrade.test_dossier_native import NO_WINDOW, NativeServer  # noqa: E402
-from tests.upgrade.test_dossier_native import NativeServer  # noqa: E402
 from tests.upgrade.government_fixture import install_suite_membership  # noqa: E402
 
 BINARY = os.environ.get("BUILDANDDO_TEST_POCKETBASE", "")
@@ -141,6 +141,9 @@ class SuiteServer(NativeServer):
                 "business-action-policy.js",
                 "business-actions.js",
                 "workspace-value.js",
+                # workspace-value.js -> business-actions.js requires it; without it the operator
+                # route answered 400 "Invalid module" on the native binary.
+                "workflow-runs.js",
                 "workspace-administration.js",
                 "mission-policy.js",
             ):
@@ -300,9 +303,9 @@ class NativeSuiteTests(unittest.TestCase):
             "suite_runs",
             "suite_receipts",
         )
-        with sqlite3.connect(
+        with closing(sqlite3.connect(
             (self.server.root / "data/data.db").as_uri() + "?mode=ro", uri=True
-        ) as database:
+        )) as database:
             rows = {
                 table: database.execute(
                     f'select * from "{table}" order by id'

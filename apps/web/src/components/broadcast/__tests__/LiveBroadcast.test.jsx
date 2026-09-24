@@ -5,7 +5,7 @@
 // CAPS:        pending
 // CK:          pending
 // Dispatch:    VCC-BUILDANDDO-UPGRADE-001
-// Seat:        BITS-CODEGEN
+// Seat:        BITS-CODEGEN, C-ONE (broadcaster names and profile links)
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-23
 // Depends:     apps/web/src/components/broadcast/LiveBroadcast.jsx, apps/web/src/hooks/useClassroomMedia.js
@@ -103,6 +103,43 @@ describe('live broadcast in the classroom', () => {
         expect(await screen.findByText('Listening. The host broadcasts.')).toBeVisible();
     });
 
+    it('names a broadcasting guildmaster by persona and never shows a login or a machine name', async () => {
+        // Names that follow a machine family but that no machine carries, as in tests/upgrade/test_public_redaction.py.
+        realtime.joinClassroom.mockResolvedValue(handle());
+        const user = userEvent.setup();
+        render(<LiveBroadcast room={live} membership={member} media={{ available: true }} />);
+        await user.click(screen.getByRole('button', { name: 'Join broadcast' }));
+        await waitFor(() => expect(tracker.start).toHaveBeenCalledWith(5000));
+        act(() => onChange({ live: [
+            { id: 'p1', session_id: 'sess-a', persona_id: 'gm:forge', state: 'LIVE', tracks: [] },
+            { id: 'p2', session_id: 'sess-b', persona_id: 'ray-xyz0-0', state: 'LIVE', tracks: [] },
+            { id: 'p3', session_id: 'sess-c', display_name: 'OCN seat: rig0', state: 'LIVE', tracks: [] },
+        ], pulled: [], unreadable: [] }));
+        expect(screen.getByText('Forge')).toBeVisible();
+        expect(screen.getByText('Guildmaster')).toBeVisible();
+        expect(screen.getByText(`OCN seat: ${WITHHELD}`)).toBeVisible();
+        expect(document.body.textContent).not.toMatch(/gm:forge|ray-xyz0-0|rig0/);
+    });
+
+    it('links a known guildmaster to its profile in a new tab and still names one the canon does not know', async () => {
+        realtime.joinClassroom.mockResolvedValue(handle());
+        const user = userEvent.setup();
+        render(<LiveBroadcast room={live} membership={member} media={{ available: true }} />);
+        await user.click(screen.getByRole('button', { name: 'Join broadcast' }));
+        await waitFor(() => expect(tracker.start).toHaveBeenCalledWith(5000));
+        act(() => onChange({ live: [
+            { id: 'p1', session_id: 'sess-a', persona_id: 'gm-forge', state: 'LIVE', tracks: [] },
+            { id: 'p2', session_id: 'sess-b', persona_id: 'gm-zeta', state: 'LIVE', tracks: [] },
+        ], pulled: [], unreadable: [] }));
+        const forge = screen.getByRole('link', { name: 'Forge (opens in a new tab)' });
+        expect(forge).toHaveAttribute('href', '/guild/forge');
+        expect(forge).toHaveAttribute('target', '_blank');
+        expect(forge).toHaveAttribute('rel', 'noopener noreferrer');
+        expect(screen.getByText('Zeta')).toBeVisible();
+        expect(screen.getAllByRole('link')).toHaveLength(1);
+        expect(document.body.textContent).not.toMatch(/gm-forge|gm-zeta/);
+    });
+
     it('shows receiving only after packets are measured', async () => {
         realtime.joinClassroom.mockResolvedValue(handle());
         realtime.inboundAudioStats.mockResolvedValue({ supported: true, packets: 0, bytes: 0, streams: 1 });
@@ -175,43 +212,5 @@ describe('live broadcast in the classroom', () => {
         expect(late.close).toHaveBeenCalledTimes(1);
         expect(realtime.createPresenceTracker).not.toHaveBeenCalled();
         expect(screen.queryByText('Receiving')).toBeNull();
-    });
-
-    // Carried from the trunk (SRS-BUILDANDDO-PUBLIC-REDACTION-001): broadcasters are named by persona, never by login or machine.
-    it('names a broadcasting guildmaster by persona and never shows a login or a machine name', async () => {
-        // Names that follow a machine family but that no machine carries, as in tests/upgrade/test_public_redaction.py.
-        realtime.joinClassroom.mockResolvedValue(handle());
-        const user = userEvent.setup();
-        render(<LiveBroadcast room={live} membership={member} media={{ available: true }} />);
-        await user.click(screen.getByRole('button', { name: 'Join broadcast' }));
-        await waitFor(() => expect(tracker.start).toHaveBeenCalledWith(5000));
-        act(() => onChange({ live: [
-            { id: 'p1', session_id: 'sess-a', persona_id: 'gm:forge', state: 'LIVE', tracks: [] },
-            { id: 'p2', session_id: 'sess-b', persona_id: 'ray-xyz0-0', state: 'LIVE', tracks: [] },
-            { id: 'p3', session_id: 'sess-c', display_name: 'OCN seat: rig0', state: 'LIVE', tracks: [] },
-        ], pulled: [], unreadable: [] }));
-        expect(screen.getByText('Forge')).toBeVisible();
-        expect(screen.getByText('Guildmaster')).toBeVisible();
-        expect(screen.getByText(`OCN seat: ${WITHHELD}`)).toBeVisible();
-        expect(document.body.textContent).not.toMatch(/gm:forge|ray-xyz0-0|rig0/);
-    });
-
-    it('links a known guildmaster to its profile in a new tab and still names one the canon does not know', async () => {
-        realtime.joinClassroom.mockResolvedValue(handle());
-        const user = userEvent.setup();
-        render(<LiveBroadcast room={live} membership={member} media={{ available: true }} />);
-        await user.click(screen.getByRole('button', { name: 'Join broadcast' }));
-        await waitFor(() => expect(tracker.start).toHaveBeenCalledWith(5000));
-        act(() => onChange({ live: [
-            { id: 'p1', session_id: 'sess-a', persona_id: 'gm-forge', state: 'LIVE', tracks: [] },
-            { id: 'p2', session_id: 'sess-b', persona_id: 'gm-zeta', state: 'LIVE', tracks: [] },
-        ], pulled: [], unreadable: [] }));
-        const forge = screen.getByRole('link', { name: 'Forge (opens in a new tab)' });
-        expect(forge).toHaveAttribute('href', '/guild/forge');
-        expect(forge).toHaveAttribute('target', '_blank');
-        expect(forge).toHaveAttribute('rel', 'noopener noreferrer');
-        expect(screen.getByText('Zeta')).toBeVisible();
-        expect(screen.getAllByRole('link')).toHaveLength(1);
-        expect(document.body.textContent).not.toMatch(/gm-forge|gm-zeta/);
     });
 });

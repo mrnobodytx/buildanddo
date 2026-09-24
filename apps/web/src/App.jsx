@@ -1,11 +1,11 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/src/App.jsx
 // Stage:       07_BUILD
-// SRS:         SRS-BUILDANDDO-UPGRADE-001
+// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-COMMUNITY-WEB-001
 // CAPS:        pending
 // CK:          pending
 // Dispatch:    VCC-BUILDANDDO-UPGRADE-001
-// Seat:        BITS-CODEGEN
+// Seat:        BITS-CODEGEN, C-ONE
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-21
 // Depends:     apps/web/src/contexts/AuthContext.jsx, apps/web/src/components/ProtectedRoute.jsx, apps/web/src/pages/workspace/GovernmentPage.jsx, apps/web/src/pages/workspace/CareerPage.jsx

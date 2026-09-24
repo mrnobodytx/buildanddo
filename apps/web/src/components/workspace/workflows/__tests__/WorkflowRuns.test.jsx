@@ -126,7 +126,7 @@ describe('workflow run history and start', () => {
         const record = savedRun({ snapshot: { ...savedRun().snapshot, mission_id: 'mission1', mission_title: 'Measured mission' } });
         pb.__setRecords('missions', [{ id: 'mission1', title: 'Measured mission', status: 'running',
             mission_approved_at: '2026-09-15', mission_approved_by: 'user_test', workspace: 'ws_test' },
-        { id: 'draft1', title: 'Unapproved proposal', status: 'proposed' }]);
+        { id: 'draft1', title: 'Unapproved proposal', status: 'proposed', workspace: 'ws_test' }]);
         pb.send.mockResolvedValue({ record });
         pb.__collection('workflow_runs').getOne.mockResolvedValue(record);
         renderWithProviders(panel({ onRecordsChanged }));

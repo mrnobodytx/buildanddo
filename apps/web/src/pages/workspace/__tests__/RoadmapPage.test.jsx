@@ -70,8 +70,8 @@ describe('workspace roadmap', () => {
 
     it('does not count an unsubstantiated verified status as completion', async () => {
         pb.__setRecords('roadmap_items', [
-            { id: 'one', title: 'Unsubstantiated', status: 'verified', evidence_ref: '' },
-            { id: 'two', title: 'Withdrawn', status: 'archived', evidence_ref: 'receipt' },
+            { id: 'one', workspace: 'ws_test', title: 'Unsubstantiated', status: 'verified', evidence_ref: '' },
+            { id: 'two', workspace: 'ws_test', title: 'Withdrawn', status: 'archived', evidence_ref: 'receipt' },
         ]);
         renderWithProviders(<RoadmapPage />);
         expect(await screen.findByRole('progressbar')).toHaveAttribute('aria-valuenow', '0');

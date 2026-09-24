@@ -5,21 +5,21 @@
 // CAPS:        pending
 // CK:          pending
 // Dispatch:    VCC-BUILDANDDO-UPGRADE-001
-// Seat:        BITS-CODEGEN
+// Seat:        BITS-CODEGEN, C-ONE (seats named without logins or machine names)
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-23
-// Depends:     apps/web/src/hooks/useSeatFeed.js
+// Depends:     apps/web/src/hooks/useSeatFeed.js, apps/web/src/lib/seatDisplay.js
 // EnumType:    Widget
-// EnumEdges:   CONSUMES apps/web/src/hooks/useSeatFeed.js; CONSUMES seat_events
+// EnumEdges:   CONSUMES apps/web/src/hooks/useSeatFeed.js; CONSUMES apps/web/src/lib/seatDisplay.js; CONSUMES seat_events
 // DAG Node:    none
 // Intent:      Show account-attributed reports of agent activity without treating claimed seat labels as authenticated agents or verified work.
 // ───────────────────────────────────────────────────────────────
 
-import { seatName, withoutMachineNames } from '@/lib/seatDisplay';
 import React from 'react';
 import { Bot, Eye } from 'lucide-react';
 import { Card, StatePill } from '@/components/site/ui';
 import { useSeatFeed } from '@/hooks/useSeatFeed';
+import { seatName, withoutMachineNames } from '@/lib/seatDisplay';
 
 const EVENT = {
     'seat.joined': 'Joined',
@@ -88,13 +88,13 @@ export default function AgentActivity({ unattended = false, limit = 12 }) {
                 <div className="flex flex-wrap items-center gap-2">
                     <StatePill state="reported" />
                     <span className="text-xs text-muted-foreground">{label}</span>
-                    <span className="inline-flex items-center gap-1 font-evidence text-xs text-muted-foreground"><Bot className="h-3.5 w-3.5" aria-hidden="true" />{item.seat}</span>
-                    {item.handoffTo && <span className="text-xs text-muted-foreground">to {item.handoffTo}</span>}
+                    <span className="inline-flex items-center gap-1 font-evidence text-xs text-muted-foreground"><Bot className="h-3.5 w-3.5" aria-hidden="true" />{seatName(item.seat)}</span>
+                    {item.handoffTo && <span className="text-xs text-muted-foreground">to {seatName(item.handoffTo, 'another seat')}</span>}
                     <time className="ml-auto font-evidence text-[11px] text-muted-foreground" dateTime={item.createdAt}>{when(item.createdAt)}</time>
                 </div>
-                <p className="break-words text-sm font-semibold leading-6">{item.summary}</p>
+                <p className="break-words text-sm font-semibold leading-6">{withoutMachineNames(item.summary)}</p>
                 <p className="text-xs text-muted-foreground">Submitting account: {item.owner || 'Not recorded (legacy report)'}. Claimed actor: {item.actorType}.</p>
-                {detail && <p className="whitespace-pre-wrap break-words text-sm leading-6 text-muted-foreground">{detail}</p>}
+                {detail && <p className="whitespace-pre-wrap break-words text-sm leading-6 text-muted-foreground">{withoutMachineNames(detail)}</p>}
                 {(item.subject || item.prUrl) && <p className="flex flex-wrap gap-3 font-evidence text-[11px] text-muted-foreground">
                     {item.subject && <span>{item.subjectType ? `${item.subjectType}: ` : ''}{withoutMachineNames(item.subject)}</span>}
                     {/^https:\/\//.test(item.prUrl || '') && <a href={item.prUrl} target="_blank" rel="noreferrer" className="underline underline-offset-4">Evidence link</a>}

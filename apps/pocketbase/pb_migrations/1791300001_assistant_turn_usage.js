@@ -19,11 +19,22 @@
 // absent, and a failed turn keeps null: nothing here estimates usage or cost.
 
 migrate((app) => {
+    // A Go-bound field exposes `type` as a method, so JSON.stringify(saved.type) is undefined and a raw
+    // comparison refused every re-apply on native PocketBase ("Review custom ..."). Read values the
+    // way the classroom_rooms and classroom_presence migrations do.
+    const norm = (holder, key) => {
+        const raw = holder[key];
+        const value = typeof raw === 'function' ? raw() : raw;
+        const json = JSON.stringify(value);
+        if (json === undefined) return String(value);
+        if (json === '{}' && value !== null && typeof value === 'object') return String(value);
+        return json;
+    };
     const collection = app.findCollectionByNameOrId('assistant_turns');
     const field = { name: 'usage', type: 'json', maxSize: 2000 };
     const saved = collection.fields.getByName('usage');
     if (saved) {
-        if (Object.keys(field).some((key) => JSON.stringify(typeof saved[key] === 'function' ? saved[key]() : saved[key]) !== JSON.stringify(field[key])))
+        if (Object.keys(field).some((key) => norm(saved, key) !== norm(field, key)))
             throw new Error('Review custom assistant_turns.usage.');
         return;
     }

@@ -47,6 +47,10 @@ function runtime(env = { BUILDANDDO_TELEMETRY_TRANSPORT: 'stdout', NODE_ENV: 'pr
         'onRecordAfterCreateError',
         'onRecordAfterUpdateError',
         'onRecordAfterDeleteError',
+        // 0.39.8 binds no onServe - global middleware registers through routerUse, which receives
+        // the request directly rather than handing back a router to bind. Stubbing the old name
+        // left routerUse undefined, so metrics.pb.js threw at load and every test in this file
+        // failed on "routerUse is not defined" rather than on anything it asserts.
         'routerUse',
     ]) {
         hookScope[hook] = (callback) => {
@@ -216,8 +220,12 @@ test('auth, system collections, arbitrary paths, query values and invalid trace 
     assert.equal(records[0].data.tags.endpoint, '/api/collections/missions/records');
 });
 
-test('routerUse registers request timing without an onServe compatibility fake', () => {
-    const { hooks, records } = runtime();
+test('routerUse registers request timing exactly once, without an onServe compatibility fake', () => {
+    const { hooks, registrations, records } = runtime();
+    // Under routerUse there is no router to bind and nothing to delegate at registration time:
+    // the callback IS the middleware and receives each request. What is still worth asserting is
+    // that the hook registers one and only one of them, and that the one it registers observes.
+    assert.equal(registrations.routerUse, 1);
     assert.equal(typeof hooks.routerUse, 'function');
     assert.equal(Object.hasOwn(hooks, 'onServe'), false);
     let calls = 0;
@@ -260,6 +268,8 @@ test('missing helpers cannot stop record hooks or middleware', () => {
         callback(event);
         assert.equal(event.calls, 1);
     }
+    // With the helper unavailable the middleware must still pass the request through rather than
+    // failing the request to protect a metric.
     let calls = 0;
     assert.equal(hooks.routerUse(requestEvent(undefined, undefined, () => { calls++; return 'saved'; })), 'saved');
     assert.equal(calls, 1);

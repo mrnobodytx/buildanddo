@@ -77,7 +77,7 @@ export function generatePublicAssets(directory) {
 # Intent:      Publish the same public route catalogue for text-based discovery.
 # ───────────────────────────────────────────────────────────────
 -->
-# BuildAndDo\n\nAn educational collaboration platform where people and AI learn by doing real work together, preserve evidence and share what they learned.\n\n## Community and store\n\n${communityLines()}\n\n## Public pages\n\n${PUBLIC_PAGES.map((page) => `- [${page.title}](${SITE_ORIGIN}${page.path}): ${page.description}`).join('\n')}\n\n## Guildmaster agents\n\nEach guildmaster is an automated agent, not a person.\n\n${PERSONA_PAGES.map((page) => `- [${page.label}](${SITE_ORIGIN}${page.path}): ${page.description}`).join('\n')}\n`,
+# BuildAndDo\n\nA daily learning edition built around sources, scoped missions and evidence.\n\n## Community and store\n\n${communityLines()}\n\n## Public pages\n\n${PUBLIC_PAGES.map((page) => `- [${page.title}](${SITE_ORIGIN}${page.path}): ${page.description}`).join('\n')}\n\n## Guildmaster agents\n\nEach guildmaster is an automated agent, not a person.\n\n${PERSONA_PAGES.map((page) => `- [${page.label}](${SITE_ORIGIN}${page.path}): ${page.description}`).join('\n')}\n`,
     );
 }
 

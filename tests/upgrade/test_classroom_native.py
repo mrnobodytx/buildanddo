@@ -20,6 +20,7 @@
 from __future__ import annotations
 
 from concurrent.futures import ThreadPoolExecutor
+from contextlib import closing
 from datetime import datetime, timedelta, timezone
 import json
 import os
@@ -42,9 +43,13 @@ from tests.upgrade.test_dossier_native import NO_WINDOW, NativeServer  # noqa: E
 BINARY = os.environ.get("BUILDANDDO_TEST_POCKETBASE", "")
 WORKSPACE = "workspacealpha1"
 MIGRATION = "1790400000_classroom_rooms.js"
+# Every migration the classroom surface depends on, in filename order. The room-kind migration
+# is not optional: classrooms.js requires `kind` in its schema guard, so a fixture without it
+# answers 503 "the classroom backend needs an operator review" - which is the guard working.
 MIGRATIONS = (
     MIGRATION,
     "1790600000_classroom_presence.js",
+    "1791100000_room_kind.js",
     "1791300000_classroom_attendance.js",
     "1791400000_classroom_media_sessions.js",
     "1791400001_broadcast_classroom_lessons.js",
@@ -162,9 +167,20 @@ class DiagnosticNativeServer(NativeServer):
     def diagnostics(self) -> str:
         """Read a bounded log tail without moving the running child's file offset."""
         self.log.flush()
-        length = os.fstat(self.log.fileno()).st_size
+        descriptor = self.log.fileno()
+        length = os.fstat(descriptor).st_size
         offset = max(0, length - 64000)
-        raw = os.pread(self.log.fileno(), 64000, offset)
+        if hasattr(os, "pread"):
+            raw = os.pread(descriptor, 64000, offset)
+        else:
+            # Windows has no pread. Every caller reads after the child it started has exited or
+            # been stopped, so moving the shared offset and putting it back misplaces no write.
+            position = os.lseek(descriptor, 0, os.SEEK_CUR)
+            try:
+                os.lseek(descriptor, offset, os.SEEK_SET)
+                raw = os.read(descriptor, 64000)
+            finally:
+                os.lseek(descriptor, position, os.SEEK_SET)
         if offset:
             raw = raw.partition(b"\n")[2]
         return sanitize_diagnostics(raw.decode("utf-8", errors="replace"))
@@ -188,6 +204,7 @@ class DiagnosticNativeServer(NativeServer):
                 stderr=subprocess.STDOUT,
                 timeout=45,
                 check=False,
+                **NO_WINDOW,
             )
         except (OSError, subprocess.TimeoutExpired) as error:
             raise AssertionError(
@@ -229,9 +246,9 @@ class DiagnosticNativeServer(NativeServer):
 
     def collection(self, name: str) -> dict[str, Any]:
         """Inspect the actual installed schema using a read-only local connection."""
-        with sqlite3.connect(
+        with closing(sqlite3.connect(
             (self.root / "data/data.db").as_uri() + "?mode=ro", uri=True
-        ) as database:
+        )) as database:
             database.row_factory = sqlite3.Row
             row = database.execute(
                 "select * from _collections where name = ?", (name,)
@@ -263,9 +280,9 @@ class DiagnosticNativeServer(NativeServer):
         }
         if name not in allowed:
             raise ValueError("Choose a public synthetic fixture table.")
-        with sqlite3.connect(
+        with closing(sqlite3.connect(
             (self.root / "data/data.db").as_uri() + "?mode=ro", uri=True
-        ) as database:
+        )) as database:
             database.row_factory = sqlite3.Row
             return [
                 dict(row)
@@ -299,6 +316,7 @@ class ClassroomServer(DiagnosticNativeServer):
         self.log = tempfile.TemporaryFile(mode="w+b")
         self.environment = {
             "PATH": os.environ.get("PATH", ""),
+            "BUILDANDDO_CLASSROOM_PUBLISHERS": "alice@fixture.invalid,bravo@fixture.invalid,viewer@fixture.invalid,guest@fixture.invalid",
             # Windows initializes Winsock from SystemRoot. Without it the child
             # exits before health with "socket: The requested service provider
             # could not be loaded or initialized"; the env stays otherwise restricted.
@@ -307,7 +325,6 @@ class ClassroomServer(DiagnosticNativeServer):
                 if os.name == "nt" and "SystemRoot" in os.environ
                 else {}
             ),
-            "BUILDANDDO_CLASSROOM_PUBLISHERS": "alice@fixture.invalid,bravo@fixture.invalid,viewer@fixture.invalid,guest@fixture.invalid",
         }
         try:
             hooks = self.root / "hooks"
@@ -627,7 +644,7 @@ class NativeClassroomTests(unittest.TestCase):
             200,
         )
         self.server.stop()
-        self.server.migrate("down", str(len(MIGRATIONS)))
+        self.server.revert(str(len(MIGRATIONS)))
         self.server.start()
         self.assertEqual(self.detail(room)[0], 503)
         self.server.stop()
@@ -1107,8 +1124,11 @@ class NativeClassroomTests(unittest.TestCase):
         session = self.media_session(room)
         before = self.server.stored("classroom_media_sessions")[0]
         self.server.stop()
-        # The additive lesson is last; the media migration is immediately before it.
-        self.server.migrate("down", "2")
+        # Roll back through the media migration: every migration listed after it goes first. Counted from
+        # the list, because main added the authority lesson after the broadcast one and a fixed "2" then
+        # stopped short of media. revert() moves them aside too, because serve re-applies a pending
+        # migration on 0.39.8.
+        self.server.revert(str(len(MIGRATIONS) - MIGRATIONS.index("1791400000_classroom_media_sessions.js")))
         self.assertNotIn(
             "protocol_version",
             {
@@ -1127,7 +1147,7 @@ class NativeClassroomTests(unittest.TestCase):
             (503,),
         )
         self.server.stop()
-        self.server.migrate("up")
+        self.server.restore()
         self.server.start()
         retained = self.server.stored("classroom_media_sessions")
         self.assertEqual(len(retained), 1)

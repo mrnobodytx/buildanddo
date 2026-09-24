@@ -41,7 +41,7 @@ export const GUIDES = [
     {
         id: 'get-started',
         title: 'Create your first workspace',
-        text: 'Create an account, then follow onboarding to name a workspace and, if it has a website, select its domain. Selecting a domain records your choice; it does not verify ownership.',
+        text: 'Create an account, choose an intent and objective, then name your workspace. Your starting path links to a lesson and your saved objective. Business and domain context are optional; saving a domain does not verify ownership.',
         link: '/signup',
         action: 'Create an account',
     },

@@ -1,11 +1,11 @@
 // --- CGRF Header ------------------------------------------------
 // File:        tests/upgrade/classroom-media-fixture.mjs
 // Stage:       08_TEST
-// SRS:         SRS-BUILDANDDO-UPGRADE-001
+// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-PRESENCE-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
-// Seat:        BITS-CODEGEN
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-PRESENCE-001
+// Seat:        BITS-CODEGEN, C-ONE (the session read the presence echo makes)
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-23
 // Depends:     tests/upgrade/classroom-fixture.mjs, apps/pocketbase/pb_hooks/classroom-realtime.pb.js
@@ -24,9 +24,22 @@ export function mediaFixture({ migrated = true, publishers = 'owner,admin,editor
     const env = { BUILDANDDO_CLASSROOM_PUBLISHERS: publishers, CLOUDFLARE_REALTIME_APP_ID: 'fixture-app',
         CLOUDFLARE_REALTIME_APP_SECRET: 'fixture-only-not-a-credential' };
     let sequence = 0;
+    // The stand-in SFU's view of each session, for the presence echo (GET .../sessions/<id>):
+    // every local track a successful push named, marked active. A test may change what a session
+    // holds, or make its read answer an HTTP status instead, through `sfu`.
+    const sfu = { held: new Map(), status: new Map() };
     const provider = { send(options) {
         requests.push(plain(options));
+        const path = new URL(options.url).pathname.split('/').map(decodeURIComponent);
+        if (options.method === 'GET' && path.at(-2) === 'sessions') {
+            const id = path.at(-1);
+            if (sfu.status.has(id)) return { statusCode: sfu.status.get(id), json: {} };
+            return { statusCode: 200, json: { tracks: sfu.held.get(id) || [] } };
+        }
         const body = JSON.parse(options.body);
+        if (path.at(-1) === 'new' && path.at(-2) === 'tracks' && Array.isArray(body.tracks))
+            sfu.held.set(path.at(-3), [...(sfu.held.get(path.at(-3)) || []), ...body.tracks
+                .filter((track) => track.location === 'local').map((track) => ({ trackName: track.trackName, status: 'active' }))]);
         if (options.url.endsWith('/sessions/new')) return { statusCode: 201, json: {
             sessionId: `session-${++sequence}`, sessionDescription: { type: 'answer', sdp: 'fixture-answer' } } };
         return { statusCode: 200, json: { tracks: body.tracks || [],
@@ -66,5 +79,5 @@ export function mediaFixture({ migrated = true, publishers = 'owner,admin,editor
     const publish = (room, sessionId, actor = 'owner', trackName = 'seat:owner/mic') => request('POST', '/api/classroom/tracks', { actor,
         body: { room, sessionId, action: 'push', tracks: [{ location: 'local', mid: '0', trackName, kind: 'audio' }],
             sessionDescription: { type: 'offer', sdp: 'fixture-offer' } } });
-    return { ...f, get data() { return f.data; }, env, requests, provider, request, routes, logs, start, session, publish };
+    return { ...f, get data() { return f.data; }, env, requests, provider, sfu, request, routes, logs, start, session, publish };
 }

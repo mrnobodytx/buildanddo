@@ -8,9 +8,9 @@
 // Seat:        BITS-CODEGEN, C-ONE (community links from the one source)
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-14
-// Depends:     apps/web/src/components/site/PublicPage.jsx, apps/web/src/lib/commercialEnquiry.js
+// Depends:     apps/web/src/components/site/PublicPage.jsx, apps/web/src/lib/commercialEnquiry.js, apps/web/src/lib/communityLinks.js
 // EnumType:    Widget
-// EnumEdges:   DEPENDS_ON apps/web/src/components/site/PublicPage.jsx; CONSUMES apps/web/src/lib/commercialEnquiry.js
+// EnumEdges:   DEPENDS_ON apps/web/src/components/site/PublicPage.jsx; CONSUMES apps/web/src/lib/commercialEnquiry.js; CONSUMES apps/web/src/lib/communityLinks.js
 // DAG Node:    none
 // Intent:      Route real enquiries through existing public channels and an explicit user-sent email draft.
 // ───────────────────────────────────────────────────────────────
@@ -21,8 +21,8 @@ import PublicPage from '@/components/site/PublicPage';
 import { Button, Card } from '@/components/site/ui';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { COMMERCIAL_CONTACT, ENQUIRY_LIMITS, commercialInterest, prepareCommercialEnquiry } from '@/lib/commercialEnquiry';
 import { communityLink } from '@/lib/communityLinks';
+import { COMMERCIAL_CONTACT, ENQUIRY_LIMITS, commercialInterest, prepareCommercialEnquiry } from '@/lib/commercialEnquiry';
 
 // Both links come from communityLinks.js: this page used to carry its own copy of the Discord
 // invite, and only one invite may ever be published.

@@ -8,9 +8,9 @@
 // Seat:        BITS-CODEGEN, C-ONE (Talk to Buddi)
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-15
-// Depends:     apps/web/src/hooks/useWorkspaceRecords.js, apps/web/src/components/workspace/TutorialCatalog.jsx, apps/web/src/lib/workspaceSummary.js, apps/web/src/components/editorial/EditorialFrontPage.jsx, apps/web/src/hooks/useMissionResearch.js, apps/web/src/components/site/Faq.jsx, apps/web/src/components/site/Footer.jsx, apps/web/src/components/site/EarlyAccess.jsx
+// Depends:     apps/web/src/hooks/useWorkspaceRecords.js, apps/web/src/components/workspace/TutorialCatalog.jsx, apps/web/src/lib/workspaceSummary.js, apps/web/src/components/editorial/EditorialFrontPage.jsx, apps/web/src/hooks/useMissionResearch.js, apps/web/src/components/voice/TalkToBuddi.jsx, apps/web/src/components/site/Faq.jsx, apps/web/src/components/site/Footer.jsx, apps/web/src/components/site/EarlyAccess.jsx
 // EnumType:    Widget
-// EnumEdges:   CONSUMES apps/web/src/hooks/useWorkspaceRecords.js; CONSUMES apps/web/src/components/workspace/TutorialCatalog.jsx; CONSUMES apps/web/src/lib/workspaceSummary.js; CONSUMES apps/web/src/components/editorial/EditorialFrontPage.jsx; CONSUMES apps/web/src/hooks/useMissionResearch.js; CONSUMES apps/web/src/components/site/Faq.jsx; CONSUMES apps/web/src/components/site/Footer.jsx; CONSUMES apps/web/src/components/site/EarlyAccess.jsx
+// EnumEdges:   CONSUMES apps/web/src/hooks/useWorkspaceRecords.js; CONSUMES apps/web/src/components/workspace/TutorialCatalog.jsx; CONSUMES apps/web/src/lib/workspaceSummary.js; CONSUMES apps/web/src/components/editorial/EditorialFrontPage.jsx; CONSUMES apps/web/src/hooks/useMissionResearch.js; CONSUMES apps/web/src/components/voice/TalkToBuddi.jsx; CONSUMES apps/web/src/components/site/Faq.jsx; CONSUMES apps/web/src/components/site/Footer.jsx; CONSUMES apps/web/src/components/site/EarlyAccess.jsx
 // DAG Node:    none
 // Intent:      Project authenticated workspace records onto the front page with provenance, recoverable intake and no anonymous private reads.
 // ───────────────────────────────────────────────────────────────
@@ -651,6 +651,7 @@ function EditionContent({ sources = {}, workspaceControls, workspaceId = '' }) {
     return (
         <>
             <EditorialFrontPage sources={sources} workspaceControls={workspaceControls} workspaceId={workspaceId} />
+            <TalkToBuddi />
             <FieldManual />
             <WorkspaceAtAGlance sources={sources} />
             <ChallengeDesk challenges={sources.challenges} />

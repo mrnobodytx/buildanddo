@@ -98,7 +98,7 @@ it.each(['regrant', 'denial'])('withholds delayed chat content during polling be
         backend.app.delete(backend.app.findRecordById('workspace_members', 'editormember'));
         scope.access = { data: null, loading: false, error: 'Membership revoked', accessEpoch: 1 };
         view.rerender(<Page />);
-        expect(screen.queryByRole('region', { name: 'BuildAndDo assistant' })).not.toBeInTheDocument();
+        expect(screen.queryByRole('region', { name: 'Buddi' })).not.toBeInTheDocument();
         expect(pb.send.mock.calls.filter(([path]) => path.endsWith('/chat'))).toHaveLength(1);
     } else {
         scope.access = { ...scope.access, loading: false }; view.rerender(<Page />);

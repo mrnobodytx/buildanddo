@@ -79,7 +79,7 @@
             "heading": "Source, native, rendered and live evidence",
             "paragraphs": [
               "source regression evidence; hosted media/native/rendered status require recorded results",
-              "The recorded local run passed 121 source tests on Node 22.17.0, with no failures or skips. Its exact source scope and fingerprint are shown at /app/evidence. Rendered checks could not start without Vitest, and both declared native PocketBase runtimes were unavailable. Hosted media remains unmeasured. The external links below show the inspected pre-repair revision; they do not claim that revision contains these fixes.",
+              "The recorded local run passed 127 source tests on Node 24.20.0, with no failures or skips. Its exact source scope and fingerprint are shown at /app/evidence. Rendered checks could not start without Vitest, and both declared native PocketBase runtimes were unavailable. Hosted media remains unmeasured. The external links below show the inspected pre-repair revision; they do not claim that revision contains these fixes.",
               "Run native_classroom and native_learning through scripts/ci/hostinger_readiness.py --run with both --runtime package and --runtime compose on the receiving runner. Confirm that its disposable fixture actually installs the broadcast lesson migration and the full media/attendance contracts; a starter-only fixture cannot validate this addition.",
               "Hosted acceptance additionally needs an approved two-browser session on the exact release, current membership denial controls, real track cleanup and measured inbound media. A successful signalling response is not measured audio. Missing browser dependencies, binaries, provider authorization or release readback stay explicit gaps.",
               "The Source case studies panel at /app/evidence is public learning material, separate from workspace record totals and verification badges. Opening it or this lesson creates no evidence, attendance, learning progress, certificate or XP. Only an explicit learning action uses the existing personal-progress flow; that still cannot verify a mission outcome."
@@ -140,15 +140,15 @@
     }
   ],
   "source_evidence": {
-    "source_revision": "27787309877afbc3e64346e2f3b537c79497cd47",
+    "source_revision": "7301df8cd79a4e9b36a148512dce9fb687323a63",
     "boundary": "source regression evidence; hosted media/native/rendered status require recorded results",
     "validation": [
       {
         "label": "Source regression",
         "status": "recorded source pass",
-        "description": "121 source tests passed on Node 22.17.0 with zero failures or skips in the dated run below. Production code was exercised using explicit local storage, provider and WebRTC doubles. This is not rendered, native PocketBase or hosted media acceptance.",
+        "description": "127 source tests passed on Node 24.20.0 with zero failures or skips in the dated run below. Production code was exercised using explicit local storage, provider and WebRTC doubles. This is not rendered, native PocketBase or hosted media acceptance.",
         "commands": [
-          "node --test tests/upgrade/broadcast-lessons.test.mjs tests/upgrade/classroom-*.test.mjs"
+          "node --test --test-reporter=tap tests/upgrade/broadcast-lessons.test.mjs tests/upgrade/classroom-*.test.mjs"
         ]
       },
       {
@@ -179,22 +179,17 @@
     ],
     "artifact": {
       "url": "/broadcast-repairs-source.txt",
-      "sha256": "3dd31a5f032e8d48b017ac1ba460f640c39913bdaf2b312a945dc46b9e324d56"
+      "sha256": "7a41bb347f829454043818970afafadde0a22fe26300ad606d108d3445b75a1a"
     },
     "observation": {
       "kind": "local_source_regression",
-      "observed_at": "2026-09-24T03:00:11.288754+00:00",
-      "runtime": "v22.17.0",
-      "command": "node --test tests/upgrade/broadcast-lessons.test.mjs tests/upgrade/classroom-*.test.mjs",
+      "observed_at": "2026-09-24T09:04:25.281750+00:00",
+      "runtime": "v24.20.0",
+      "command": "node --test --test-reporter=tap tests/upgrade/broadcast-lessons.test.mjs tests/upgrade/classroom-*.test.mjs",
       "exit_code": 0,
-      "counts": {
-        "tests": 121,
-        "pass": 121,
-        "fail": 0,
-        "skipped": 0
-      },
-      "output_sha256": "1c07b1d3c50fe1cf4337ed0a47177398cee25d2437330850c28f34bedc55cdef",
-      "source_sha256": "0178ff955bcfc2a48eb99b602a54df16e117f0031893ead840d4e2746c6c7fe5",
+      "counts": { "tests": 127, "pass": 127, "fail": 0, "skipped": 0 },
+      "output_sha256": "294bbe20feb5601ca04c1e2e14da9c263b0e52d172ee22484c1acdd9222858b8",
+      "source_sha256": "f066dec17056199161a509c9150d3382fd19b255eea25ac073476b6d8d7f9953",
       "source_files": [
         "apps/pocketbase/pb_hooks/classroom-media.js",
         "apps/pocketbase/pb_hooks/classroom-presence.pb.js",
