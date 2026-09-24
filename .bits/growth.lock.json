@@ -1,9 +1,9 @@
 {
   "progression": {
     "dispatch_tasks": {
-      "done": 157,
-      "progress": 0.8351,
-      "total": 188
+      "done": 156,
+      "progress": 0.8342,
+      "total": 187
     },
     "dispatches": {
       "USO-BUILDANDDO-CRAWL-001": {
@@ -61,7 +61,7 @@
         "tasks_total": 5
       },
       "VCC-BUILDANDDO-DAY21-CLOSURE-001": {
-        "srs": "",
+        "srs": "SRS-BUILDANDDO-DAY21-CLOSURE-001",
         "status": "unknown",
         "tasks_done": 0,
         "tasks_total": 7
@@ -79,7 +79,7 @@
         "tasks_total": 2
       },
       "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001": {
-        "srs": "",
+        "srs": "SRS-BUILDANDDO-DEVELOPMENT-LOOP-001",
         "status": "unknown",
         "tasks_done": 0,
         "tasks_total": 0
@@ -107,6 +107,12 @@
         "status": "in_progress",
         "tasks_done": 2,
         "tasks_total": 2
+      },
+      "VCC-BUILDANDDO-HYGIENE-001": {
+        "srs": "SRS-BUILDANDDO-HYGIENE-001",
+        "status": "in_progress",
+        "tasks_done": 5,
+        "tasks_total": 5
       },
       "VCC-BUILDANDDO-INTEGRITY-001": {
         "srs": "SRS-BUILDANDDO-INTEGRITY-001",
@@ -174,12 +180,6 @@
         "tasks_done": 11,
         "tasks_total": 11
       },
-      "VCC-BUILDANDDO-SEMANTIC-TWIN-INGESTION-001": {
-        "srs": "SRS-BUILDANDDO-SEMANTIC-TWIN-INGESTION-001",
-        "status": "in_progress",
-        "tasks_done": 6,
-        "tasks_total": 6
-      },
       "VCC-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001": {
         "srs": "SRS-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001",
         "status": "in_progress",
@@ -208,12 +208,12 @@
     "srs": {
       "by_risk": {
         "A0": 2,
-        "A1": 26,
-        "A2": 22
+        "A1": 28,
+        "A2": 24
       },
       "by_status": {
         "delivered": 4,
-        "in_progress": 40,
+        "in_progress": 44,
         "proposed": 6
       },
       "specs": {
@@ -226,6 +226,8 @@
         "SRS-BUILDANDDO-CHANGELOG-001": "in_progress",
         "SRS-BUILDANDDO-CI-001": "delivered",
         "SRS-BUILDANDDO-CLASSROOM-GLOBAL-001": "in_progress",
+        "SRS-BUILDANDDO-COMMUNITY-001": "in_progress",
+        "SRS-BUILDANDDO-COMMUNITY-WEB-001": "in_progress",
         "SRS-BUILDANDDO-CRAWL-001": "in_progress",
         "SRS-BUILDANDDO-DAY21-CLOSURE-001": "in_progress",
         "SRS-BUILDANDDO-DECISION-001": "in_progress",
@@ -243,6 +245,7 @@
         "SRS-BUILDANDDO-FEDERAL-SEMANTIC-ISR-001": "proposed",
         "SRS-BUILDANDDO-GROWTH-001": "in_progress",
         "SRS-BUILDANDDO-HEADERS-001": "in_progress",
+        "SRS-BUILDANDDO-HYGIENE-001": "in_progress",
         "SRS-BUILDANDDO-INTEGRITY-001": "in_progress",
         "SRS-BUILDANDDO-JOURNEY-001": "in_progress",
         "SRS-BUILDANDDO-KNOWLEDGE-UNIT-001": "in_progress",
@@ -265,10 +268,11 @@
         "SRS-BUILDANDDO-TEST-001": "in_progress",
         "SRS-BUILDANDDO-TRUST-001": "in_progress",
         "SRS-BUILDANDDO-UPGRADE-001": "in_progress",
+        "SRS-BUILDANDDO-WITNESS-001": "in_progress",
         "SRS-BUILDANDDO-WORKSPACE-001": "in_progress",
         "SRS-BUILDANDDO-WORLD-TWIN-001": "in_progress"
       },
-      "total": 50
+      "total": 54
     }
   },
   "schema": "buildanddo.growth-lock/v1",
@@ -279,7 +283,7 @@
     "pocketbase_hooks": 29,
     "pocketbase_migrations": 65,
     "readmes": 50,
-    "tracked_files": 1816
+    "tracked_files": 1767
   },
   "systems": {
     "apps/career": {
@@ -438,19 +442,19 @@
       "test_files": 7
     },
     "apps/web": {
-      "cgrf_coverage": 0.6706,
-      "cgrf_files": 340,
-      "files": 545,
+      "cgrf_coverage": 0.739,
+      "cgrf_files": 337,
+      "files": 494,
       "lines": {
         "css": 1101,
-        "data": 1481,
+        "data": 1449,
         "html": 22,
-        "javascript": 76386,
+        "javascript": 70414,
         "markdown": 129
       },
       "readme": true,
-      "source_files": 507,
-      "source_lines": 77509,
+      "source_files": 456,
+      "source_lines": 71537,
       "srs_codes": [
         "SRS-BUILDANDDO-BUDDI-001",
         "SRS-BUILDANDDO-BUDDI-003",
@@ -581,11 +585,11 @@
       "lines": {
         "data": 654,
         "javascript": 50,
-        "python": 18997
+        "python": 19028
       },
       "readme": false,
       "source_files": 51,
-      "source_lines": 19047,
+      "source_lines": 19078,
       "srs_codes": [
         "SRS-BUILDANDDO-AGENTCTX-001",
         "SRS-BUILDANDDO-CHANGELOG-001",
@@ -686,13 +690,13 @@
     }
   },
   "totals": {
-    "cgrf_coverage": 0.7778,
-    "files": 1118,
-    "source_lines": 172668,
+    "cgrf_coverage": 0.8188,
+    "files": 1067,
+    "source_lines": 166727,
     "systems": 22,
     "systems_with_readme": 4,
     "systems_with_tests": 21,
     "test_files": 220,
-    "test_files_unattributed": 104
+    "test_files_unattributed": 105
   }
 }
