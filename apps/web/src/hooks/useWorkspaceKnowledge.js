@@ -8,9 +8,11 @@
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-18
-// Depends:     apps/web/src/lib/workspaceKnowledge.js
+// Depends:     apps/web/src/lib/workspaceKnowledge.js,
+//              apps/web/src/lib/observability/runtime.js, apps/web/src/lib/navigationIntent.js
 // EnumType:    Adapter
-// EnumEdges:   CONSUMES apps/web/src/lib/workspaceKnowledge.js
+// EnumEdges:   CONSUMES apps/web/src/lib/workspaceKnowledge.js;
+//              CONSUMES apps/web/src/lib/observability/runtime.js; CONSUMES apps/web/src/lib/navigationIntent.js
 // DAG Node:    none
 // Intent:      Assemble context automatically on query and scope changes while bounding visible polling and clearing stale private results.
 // ───────────────────────────────────────────────────────────────
@@ -21,6 +23,8 @@ import { useWorkspace } from '@/contexts/WorkspaceContext';
 import { useDemoMode } from '@/hooks/useDemoMode';
 import pb from '@/lib/pocketbaseClient';
 import { createKnowledgeClient } from '@/lib/workspaceKnowledge';
+import { readFailed } from '@/lib/observability/runtime';
+import { telemetrySection } from '@/lib/navigationIntent';
 
 /** Assemble current context after input settles and refresh while the page is visible. */
 export function useWorkspaceKnowledge(options = {}) {
@@ -38,12 +42,19 @@ export function useWorkspaceKnowledge(options = {}) {
         const sequence = ++request.current.sequence;
         const controller = new AbortController(); request.current.controller = controller; request.current.running = true;
         setState({ key, data: null, loading: true, error: '' });
-        const timeout = setTimeout(() => controller.abort(), 15000);
+        const pathname = globalThis.window?.location?.pathname;
+        const section = telemetrySection(pathname);
+        let timedOut = false;
+        const timeout = setTimeout(() => { timedOut = true; controller.abort(); }, 15000);
         try {
             const result = !accountId || !workspaceId || demo ? { ok: false, error: 'Sign in and select a workspace outside demonstration mode to assemble knowledge.' } :
                 await api.assemble(JSON.parse(optionsKey), controller.signal);
-            if (live.current.mounted && live.current.key === key && request.current.sequence === sequence)
-                setState({ key, data: result.ok ? result.data : null, loading: false, error: result.error || '' });
+            if (live.current.mounted && live.current.key === key && request.current.sequence === sequence) {
+                const readFailure = timedOut && result.readFailure?.reason === 'cancelled' ? { reason: 'network', status: 0 } : result.readFailure;
+                if (readFailure && pathname === globalThis.window?.location?.pathname)
+                    readFailed(section, 'knowledge', readFailure.reason, readFailure.status);
+                setState({ key, data: result.ok ? result.data : null, loading: false, error: result.error || '', readFailure });
+            }
         } finally {
             clearTimeout(timeout);
             if (request.current.sequence === sequence) { request.current.running = false; request.current.controller = null; }
@@ -62,5 +73,6 @@ export function useWorkspaceKnowledge(options = {}) {
         };
     }, [refresh, accountId, workspaceId, demo]);
     const current = state.key === key;
-    return { scope, demo, data: current ? state.data : null, error: current ? state.error : '', loading: !current || state.loading, refresh };
+    return { scope, demo, data: current ? state.data : null, error: current ? state.error : '', loading: !current || state.loading, refresh,
+        readFailure: current && !state.loading ? state.readFailure : undefined };
 }

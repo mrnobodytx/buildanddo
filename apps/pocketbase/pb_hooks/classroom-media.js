@@ -8,9 +8,9 @@
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-23
-// Depends:     apps/pocketbase/pb_hooks/classrooms.js, apps/pocketbase/pb_hooks/workspace-access.js, apps/pocketbase/pb_hooks/classroom-realtime-lib.js, apps/pocketbase/pb_migrations/1791400000_classroom_media_sessions.js
+// Depends:     apps/pocketbase/pb_hooks/classrooms.js, apps/pocketbase/pb_hooks/workspace-access.js, apps/pocketbase/pb_hooks/classroom-realtime-lib.js, apps/pocketbase/pb_migrations/1791400000_classroom_media_sessions.js, apps/pocketbase/pb_hooks/telemetry.js
 // EnumType:    Service
-// EnumEdges:   CONSUMES apps/pocketbase/pb_hooks/classrooms.js; CONSUMES apps/pocketbase/pb_hooks/workspace-access.js; CONSUMES apps/pocketbase/pb_hooks/classroom-realtime-lib.js; DEPENDS_ON apps/pocketbase/pb_migrations/1791400000_classroom_media_sessions.js
+// EnumEdges:   CONSUMES apps/pocketbase/pb_hooks/classrooms.js; CONSUMES apps/pocketbase/pb_hooks/workspace-access.js; CONSUMES apps/pocketbase/pb_hooks/classroom-realtime-lib.js; DEPENDS_ON apps/pocketbase/pb_migrations/1791400000_classroom_media_sessions.js; CONSUMES apps/pocketbase/pb_hooks/telemetry.js
 // Intent:      Authorize each signalling operation against live native attendance and exact owned provider sessions before any external effect.
 // ----------------------------------------------------------------
 
@@ -25,12 +25,19 @@ const denied = () => { throw new ForbiddenError('This media session or track is 
 const stamp = (value) => Date.parse(String(value || '').replace(' ', 'T'));
 const assign = (record, values) => { Object.entries(values).forEach(([key, value]) => record.set(key, value)); return record; };
 
+function diagnose(operation, category, status) {
+    try { require(`${__hooks}/telemetry.js`).diagnostic(operation, category, status); }
+    catch (_) { /* Keep original provider/permission failures and recovery semantics. */ }
+}
+
 /** Fail closed when the locked native session contract is absent or altered. */
 function schema(app) {
-    const collection = access.schema(app, COLLECTION, FIELDS);
-    if (['listRule', 'viewRule', 'createRule', 'updateRule', 'deleteRule'].some((key) => collection[key] !== null))
-        throw new ApiError(503, 'The media session store requires operator review.');
-    return collection;
+    try {
+        const collection = access.schema(app, COLLECTION, FIELDS);
+        if (['listRule', 'viewRule', 'createRule', 'updateRule', 'deleteRule'].some((key) => collection[key] !== null))
+            throw new ApiError(503, 'The media session store requires operator review.');
+        return collection;
+    } catch (error) { diagnose('classroom.media.schema', 'schema', 503); throw error; }
 }
 function configuration() {
     const config = provider.realtimeConfig();
@@ -99,9 +106,11 @@ function remoteTracks(app, scope, tracks, config) {
         if (!published(source).some((item) => item.trackName === track.trackName)) denied();
     }
 }
-function providerResult(out) {
-    if (![200, 201].includes(out.status) || !out.body || typeof out.body !== 'object' || out.body.errorCode)
+function providerResult(out, operation) {
+    if (![200, 201].includes(out.status) || !out.body || typeof out.body !== 'object' || out.body.errorCode) {
+        if ([200, 201].includes(out.status)) diagnose(operation, 'schema', out.status);
         throw new ApiError(502, 'The media provider did not confirm the operation. Rejoin rather than replaying an uncertain operation.');
+    }
     return out.body;
 }
 
@@ -121,10 +130,14 @@ function session(e) {
             throw new ApiError(429, 'Close unused media sessions before joining again.');
     };
     capacity(e.app);
-    const result = providerResult(provider.callRealtime(`/${config.appId}/sessions/new`, config.secret, { sessionDescription: offer }));
-    if (!access.text(result.sessionId, 200) || /[\x00-\x20]/.test(result.sessionId))
+    const result = providerResult(provider.callRealtime(`/${config.appId}/sessions/new`, config.secret, { sessionDescription: offer }), 'classroom.media.session');
+    if (!access.text(result.sessionId, 200) || /[\x00-\x20]/.test(result.sessionId)) {
+        diagnose('classroom.media.session', 'schema');
         throw new ApiError(502, 'The media provider returned no usable session.');
-    const answer = description(result.sessionDescription, ['answer']);
+    }
+    let answer;
+    try { answer = description(result.sessionDescription, ['answer']); }
+    catch (error) { diagnose('classroom.media.session', 'schema'); throw error; }
     let canPublish;
     e.app.runInTransaction((app) => {
         const current = scopeFor(app, e.auth, body.room);
@@ -170,11 +183,13 @@ function change(e, renegotiating) {
     try {
         const suffix = renegotiating ? 'renegotiate' : 'tracks/new';
         const result = providerResult(provider.callRealtime(`/${config.appId}/sessions/${encodeURIComponent(body.sessionId)}/${suffix}`,
-            config.secret, payload, renegotiating ? 'PUT' : 'POST'));
+            config.secret, payload, renegotiating ? 'PUT' : 'POST'), 'classroom.media.change');
         if (!renegotiating && (!Array.isArray(result.tracks) || result.tracks.length !== tracks.length ||
             tracks.some((track) => !result.tracks.some((echo) => !echo.errorCode && echo.trackName === track.trackName &&
-                (publishing ? echo.mid === track.mid : echo.sessionId === track.sessionId)))))
+                (publishing ? echo.mid === track.mid : echo.sessionId === track.sessionId))))) {
+            diagnose('classroom.media.change', 'schema');
             throw new ApiError(502, 'The media provider did not confirm every requested track. Rejoin before retrying.');
+        }
         e.app.runInTransaction((app) => {
             const record = authorize(app, true);
             if (record.id !== recordId) denied();

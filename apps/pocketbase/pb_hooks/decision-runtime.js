@@ -8,9 +8,9 @@
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-17
-// Depends:     apps/pocketbase/pb_hooks/workflow-policy.js, apps/decision/adapters/server.py
+// Depends:     apps/pocketbase/pb_hooks/workflow-policy.js, apps/decision/adapters/server.py, apps/pocketbase/pb_hooks/telemetry.js
 // EnumType:    Adapter
-// EnumEdges:   DEPENDS_ON apps/pocketbase/pb_hooks/workflow-policy.js; CONSUMES apps/decision/adapters/server.py
+// EnumEdges:   DEPENDS_ON apps/pocketbase/pb_hooks/workflow-policy.js; CONSUMES apps/decision/adapters/server.py; CONSUMES apps/pocketbase/pb_hooks/telemetry.js
 // DAG Node:    none
 // Intent:      Persist Python decision receipts behind native workspace authorization without exposing source content to telemetry.
 // ───────────────────────────────────────────────────────────────
@@ -20,6 +20,11 @@ const TIERS = { A0: 0, A1: 1, A2: 2, A3: 3 };
 const MAX_RESPONSE = 12 * 1024 * 1024;
 const REQUIRED = ['workspace', 'owner', 'decision_id', 'request_key', 'request_hash', 'state',
     'questions', 'answers', 'confidence', 'route', 'latency_ms', 'cost_usd', 'result', 'protocol_version'];
+
+function diagnose(operation, category, status) {
+    try { require(`${__hooks}/telemetry.js`).diagnostic(operation, category, status); }
+    catch (_) { /* Do not alter processor errors, permissions or stored receipts. */ }
+}
 
 function own(value, key) { return Object.prototype.hasOwnProperty.call(value, key); }
 function object(value) {
@@ -44,23 +49,32 @@ function scope(e) {
 function local(operation, body) {
     // An operator may choose a port, never a user-controlled host or URL.
     const port = $os.getenv('BUILDANDDO_DECISION_PORT') || '8091';
-    if (!/^\d{1,5}$/.test(port) || Number(port) < 1 || Number(port) > 65535)
+    if (!/^\d{1,5}$/.test(port) || Number(port) < 1 || Number(port) > 65535) {
+        diagnose('decision.request', 'config');
         throw new ApiError(503, 'The local decision runtime is not configured.');
+    }
     let response;
     try {
         response = $http.send({ url: 'http://127.0.0.1:' + port + '/' + operation,
             method: 'POST', headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(body), timeout: 35 });
     } catch (_) {
+        diagnose('decision.request', 'transport');
         throw new ApiError(503, 'The local Python decision runtime is unavailable.');
     }
-    if (response.statusCode === 400) policy.invalid('The Python runtime rejected the input.');
-    if (response.statusCode === 403) throw new ForbiddenError('The requested authority is unavailable.');
-    if (response.statusCode !== 200) throw new ApiError(503, 'The local Python processor could not complete this request.');
-    const result = response.json;
-    if (!object(result) || JSON.stringify(result).length > MAX_RESPONSE)
-        throw new ApiError(502, 'The local processor returned an invalid result.');
-    return result;
+    let status;
+    try { status = response.statusCode; }
+    catch (error) { diagnose('decision.request', 'schema'); throw error; }
+    if (status !== 200) diagnose('decision.request', 'upstream_status', status);
+    if (status === 400) policy.invalid('The Python runtime rejected the input.');
+    if (status === 403) throw new ForbiddenError('The requested authority is unavailable.');
+    if (status !== 200) throw new ApiError(503, 'The local Python processor could not complete this request.');
+    try {
+        const result = response.json;
+        if (!object(result) || JSON.stringify(result).length > MAX_RESPONSE)
+            throw new ApiError(502, 'The local processor returned an invalid result.');
+        return result;
+    } catch (error) { diagnose('decision.request', 'parse', 200); throw error; }
 }
 function validateResult(result, questions, maximum) {
     const finite = (v) => typeof v === 'number' && Number.isFinite(v) && v >= 0;
@@ -130,8 +144,10 @@ function decide(e) {
         return policy.json(cached, 'result');
     }
     const result = local('decide', request);
-    validateResult(result, request.questions, authority);
-    if (result.trace_id !== traceId) throw new ApiError(502, 'The Python decision trace does not match.');
+    try {
+        validateResult(result, request.questions, authority);
+        if (result.trace_id !== traceId) throw new ApiError(502, 'The Python decision trace does not match.');
+    } catch (error) { diagnose('decision.result', 'schema', 200); throw error; }
     let response;
     e.app.runInTransaction((app) => {
         // Membership may have changed while the local processor was running.
@@ -139,11 +155,9 @@ function decide(e) {
         response = save(app, e.auth, workspace, traceId, request, result,
             'decision-' + $security.sha256(workspace + ':' + e.auth.id + ':' + traceId));
     });
-    // Raw state and question content stay in the locked collection, not logs.
-    try { console.log(JSON.stringify({ message: 'buildanddo.decision', data: {
-        decision_id: response.decision_id, state_hash: response.state_hash,
-        route: response.route, latency_ms: response.latency_ms, cost_usd: response.cost_usd,
-        outcome: null, verification: null, human_correction: null } })); } catch (_) { /* best effort */ }
+    // Source content, receipt IDs and fingerprints stay in the locked collection.
+    try { require(`${__hooks}/telemetry.js`).decision(response.route, response.latency_ms, response.cost_usd); }
+    catch (_) { /* Do not change the saved result. */ }
     return response;
 }
 function blueprint(e) {
@@ -157,22 +171,24 @@ function blueprint(e) {
         || (body.include_prompts !== undefined && typeof body.include_prompts !== 'boolean'))
         policy.invalid('Supply a PDF for A0 analysis.');
     const result = local('blueprint', { ...body, authority: 'A0' });
-    if (result.verified !== false || result.authority !== 'A0' || !object(result.blueprint)
-        || result.blueprint.verified !== false || result.blueprint.authority !== 'A0'
-        || !Array.isArray(result.evaluations) || result.evaluations.length > 500
-        || !object(result.component_graph) || result.component_graph.verified !== false
-        || !Array.isArray(result.session_prompts))
-        throw new ApiError(502, 'The blueprint result is invalid.');
-    for (const evaluation of result.evaluations) {
-        if (!object(evaluation.questions) || evaluation.blueprint_id !== result.blueprint.id
-            || evaluation.source?.input_sha256 !== result.blueprint.input_sha256
-            || !/^evaluation-[a-f0-9]{64}$/.test(evaluation.id))
-            throw new ApiError(502, 'The blueprint evaluation provenance is invalid.');
-        validateResult(evaluation.decision, evaluation.questions, 'A0');
-    }
-    if ((result.mission_plan && (result.mission_plan.verified !== false || result.mission_plan.authority !== 'A0'))
-        || result.session_prompts.some((p) => p.verified !== false || p.authority !== 'A0' || p.review_required !== true))
-        throw new ApiError(502, 'The blueprint plan authority is invalid.');
+    try {
+        if (result.verified !== false || result.authority !== 'A0' || !object(result.blueprint)
+            || result.blueprint.verified !== false || result.blueprint.authority !== 'A0'
+            || !Array.isArray(result.evaluations) || result.evaluations.length > 500
+            || !object(result.component_graph) || result.component_graph.verified !== false
+            || !Array.isArray(result.session_prompts))
+            throw new ApiError(502, 'The blueprint result is invalid.');
+        for (const evaluation of result.evaluations) {
+            if (!object(evaluation.questions) || evaluation.blueprint_id !== result.blueprint.id
+                || evaluation.source?.input_sha256 !== result.blueprint.input_sha256
+                || !/^evaluation-[a-f0-9]{64}$/.test(evaluation.id))
+                throw new ApiError(502, 'The blueprint evaluation provenance is invalid.');
+            validateResult(evaluation.decision, evaluation.questions, 'A0');
+        }
+        if ((result.mission_plan && (result.mission_plan.verified !== false || result.mission_plan.authority !== 'A0'))
+            || result.session_prompts.some((p) => p.verified !== false || p.authority !== 'A0' || p.review_required !== true))
+            throw new ApiError(502, 'The blueprint plan authority is invalid.');
+    } catch (error) { diagnose('decision.result', 'schema', 200); throw error; }
     e.app.runInTransaction((app) => {
         policy.role(app, e.auth, workspace);
         for (const evaluation of result.evaluations) {

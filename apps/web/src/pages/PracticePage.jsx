@@ -1,3 +1,19 @@
+// --- CGRF Header ------------------------------------------------
+// File:        apps/web/src/pages/PracticePage.jsx
+// Stage:       07_BUILD
+// SRS:         SRS-BUILDANDDO-UPGRADE-001
+// CAPS:        pending
+// CK:          pending
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+// Seat:        BITS-CODEGEN
+// Owner:       Citadel Nexus Inc.
+// Created:     2026-09-24
+// Depends:     apps/web/src/lib/pocketbaseClient.js, apps/web/src/lib/observability/runtime.js, apps/web/src/lib/navigationIntent.js
+// EnumType:    Widget
+// EnumEdges:   CONSUMES apps/web/src/lib/pocketbaseClient.js; CONSUMES apps/web/src/lib/observability/runtime.js; CONSUMES apps/web/src/lib/navigationIntent.js
+// Intent:      Keep an unavailable practice library distinct from a successfully read empty collection.
+// ----------------------------------------------------------------
+
 import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { BookOpen, Info, Users } from 'lucide-react';
@@ -6,6 +22,8 @@ import Footer from '@/components/site/Footer';
 import Seo from '@/components/Seo';
 import { Section, SectionLabel, Card, StatePill } from '@/components/site/ui';
 import pb from '@/lib/pocketbaseClient';
+import { readFailed } from '@/lib/observability/runtime';
+import { telemetrySection } from '@/lib/navigationIntent';
 
 // Public praxis knowledge base - "how do I do X" methods with their evidence
 // state, backed by the community-audited evidence fabric (knowledge_claims /
@@ -24,9 +42,26 @@ export default function PracticePage() {
 
     useEffect(() => {
         let cancelled = false;
+        let received = false;
+        const accountId = pb.authStore.record?.id;
+        const pathname = globalThis.window?.location?.pathname;
+        const section = telemetrySection(pathname);
         pb.collection('praxis_methods').getList(1, 20, { sort: '-created' })
-            .then((res) => { if (!cancelled) setMethods(res.items); })
-            .catch(() => { if (!cancelled) setError(true); });
+            .then((res) => {
+                if (cancelled) return;
+                received = true;
+                if (!Array.isArray(res?.items) || res.items.some((item) => !item || typeof item.id !== 'string' || !item.id))
+                    throw new Error('Unexpected practice response');
+                setMethods(res.items);
+            })
+            .catch((error) => {
+                if (cancelled) return;
+                const aborted = error?.isAbort || error?.name === 'AbortError' || error?.originalError?.name === 'AbortError';
+                const malformed = received || error?.name === 'SyntaxError' || error?.originalError?.name === 'SyntaxError';
+                if (!aborted && accountId === pb.authStore.record?.id && pathname === globalThis.window?.location?.pathname)
+                    readFailed(section, 'practice', malformed ? 'invalid_response' : 'unavailable', received ? 200 : malformed && error?.status === 0 ? undefined : error?.status);
+                setError(true);
+            });
         return () => { cancelled = true; };
     }, []);
 

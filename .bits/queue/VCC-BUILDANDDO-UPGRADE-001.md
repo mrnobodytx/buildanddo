@@ -20,6 +20,24 @@
 **SRS:** SRS-BUILDANDDO-UPGRADE-001 **Risk:** A2 **Seat:** BITS-CODEGEN
 **Status:** in_progress **Actor:** actor:agent
 
+## Telemetry coverage repair - 2026-09-24
+
+The owner supplies a reviewed coverage audit and requests source improvements.
+Continue this A2 scope without external writes, secrets or operational activation.
+
+| Phase | Task | Gate | Status |
+|---|---|---|---|
+| TC-1 | Privacy-safe route, identity and browser collection | Stubbed SDK, URL, network and visibility regressions | source controls pass, including SDK routing token, document-anonymous identity and release tags; real SDK/browser delivery unmeasured |
+| TC-2 | Truthful mutation outcomes, section failures and primary actions | Malformed-200, permission, uncertainty and sink-failure controls | source controls pass, including 65 late-rejection cases; rendered cases remain unavailable |
+| TC-3 | Backend cause visibility and release artifact guard | Local hook/middleware, build and promotion negative controls | source controls pass; both release controllers guarded; real bundler/native runtime and operational activation remain unmeasured |
+| TC-4 | Source validation, reviewed bindings and receiving handoff | Connected regressions, boundary, memory and explicit runtime gaps | PARTIAL: 1,358 Node passes with one prerequisite skip; 107 focused Python passes per declared interpreter; broad Python retains seven inherited failures and eight skips; report and receiving checklist retained |
+
+Memory brief: PR 103 is merged. This session fast-forwards to current public main
+before changes; the audit's release is a separate public revision, not asserted
+to be the checkout or current deployment. Its later real-visit correction
+supersedes the earlier PostHog silence conclusion. No authenticated workspace or
+live vendor verification is performed here, and no seat event is fabricated.
+
 ## Live classroom on the staging line - 2026-09-23
 
 Operator direction (2026-09-23): the live classroom system should be on staging. Staging is built from

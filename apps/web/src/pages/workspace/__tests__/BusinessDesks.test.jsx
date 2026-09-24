@@ -30,7 +30,7 @@ vi.mock('@/lib/pocketbaseClient', async () => {
     const client = createMockPocketBase();
     return { default: client, pocketbaseClient: client };
 });
-vi.mock('@/lib/observability/runtime', () => ({ reportAction: vi.fn(), reportMetric: vi.fn(), trackAuthIdentity: vi.fn() }));
+vi.mock('@/lib/observability/runtime', () => ({ reportAction: vi.fn(), reportMetric: vi.fn(), trackAuthIdentity: vi.fn(), readFailed: vi.fn() }));
 const access = vi.hoisted(() => ({ data: { role: 'admin', can_write: true, can_admin: true }, loading: false, error: '' }));
 vi.mock('@/contexts/WorkspaceAccessContext', () => ({ useWorkspaceAccess: () => access }));
 const objective = { id: 'objective1', title: 'Reduce response time', description: 'A bounded test.', success_metric: 'Compare the observed median over one week.', status: 'active', due_date: '', workspace: 'ws_test', owner: 'user_test' };

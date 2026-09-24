@@ -8,9 +8,11 @@
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-10
-// Depends:     apps/web/src/lib/pocketbaseClient.js, apps/web/src/contexts/WorkspaceContext.jsx, apps/web/src/lib/demoWorkspace.js, apps/web/src/lib/workspaceActions.js, apps/web/src/lib/workspaceRecords.js, apps/web/src/contexts/AuthContext.jsx
+// Depends:     apps/web/src/lib/pocketbaseClient.js, apps/web/src/contexts/WorkspaceContext.jsx, apps/web/src/lib/demoWorkspace.js, apps/web/src/lib/workspaceActions.js, apps/web/src/lib/workspaceRecords.js, apps/web/src/contexts/AuthContext.jsx,
+//              apps/web/src/lib/observability/runtime.js, apps/web/src/lib/navigationIntent.js
 // EnumType:    Adapter
-// EnumEdges:   CONSUMES apps/web/src/lib/pocketbaseClient.js; CONSUMES apps/web/src/lib/demoWorkspace.js; PRODUCES workspace.record.write_failed; CONSUMES apps/web/src/lib/workspaceRecords.js; CONSUMES apps/web/src/contexts/AuthContext.jsx
+// EnumEdges:   CONSUMES apps/web/src/lib/pocketbaseClient.js; CONSUMES apps/web/src/lib/demoWorkspace.js; PRODUCES workspace.record.write_failed; CONSUMES apps/web/src/lib/workspaceRecords.js; CONSUMES apps/web/src/contexts/AuthContext.jsx;
+//              CONSUMES apps/web/src/lib/observability/runtime.js; CONSUMES apps/web/src/lib/navigationIntent.js
 // Intent:      One read/write path for workspace collections, so every page reports failure the same way and none of them can confuse an empty collection with an unreachable one.
 // ───────────────────────────────────────────────────────────────
 
@@ -20,6 +22,8 @@ import { useAuth } from '@/contexts/AuthContext';
 import { createWorkspaceRecordClient } from '@/lib/workspaceRecords';
 import { useWorkspace } from '@/contexts/WorkspaceContext';
 import { observeMutation } from '@/lib/observability/mutations';
+import { readFailed } from '@/lib/observability/runtime';
+import { telemetrySection } from '@/lib/navigationIntent';
 import { useDemoMode } from '@/hooks/useDemoMode';
 import { demoRecords } from '@/lib/demoWorkspace';
 import pb from '@/lib/pocketbaseClient';
@@ -90,8 +94,13 @@ export function useWorkspaceRecords(collection, options = {}) {
             return;
         }
         setSnapshot({ key, records: [], loading: true, error: '' });
+        const pathname = globalThis.window?.location?.pathname;
+        const section = telemetrySection(pathname);
         const result = await api.read({ sort, expand, extraFilter });
         if (!live.current.mounted || live.current.key !== key || attempt !== request.current || result.stale) return;
+        // Attempts are separate from the shared notices' rendered-state signals.
+        if (result.readFailure && pathname === globalThis.window?.location?.pathname)
+            readFailed(section, 'records', result.readFailure.reason, result.readFailure.status);
         setSnapshot({ key, records: result.ok ? result.records : [], loading: false, error: result.error || '' });
     }, [api, key, enabled, workspaceId, accountId, demo, collection, sort, expand, extraFilter]);
     const reload = useRef(load); reload.current = load;
@@ -147,6 +156,10 @@ export function useRecords(collection, options = {}) {
 			return;
 		}
 		setLoading(true);
+		const pathname = globalThis.window?.location?.pathname;
+		const section = telemetrySection(pathname);
+		const accountId = pb.authStore.record?.id;
+		let received = false;
 		try {
 			const list = await pb.collection(collection).getFullList({
 				sort: sort || '-created',
@@ -154,12 +167,18 @@ export function useRecords(collection, options = {}) {
 				requestKey: null,
 			});
 			if (requestRef.current !== request) return;
+			received = true;
+			if (!Array.isArray(list) || list.some((row) => !row || typeof row.id !== 'string' || !row.id))
+				throw new Error('Unexpected record response');
 			setRecords(list);
 			setError('');
 			setDegraded(false);
 		} catch (err) {
 			if (requestRef.current !== request) return;
-			console.error(`load ${collection} failed`, err);
+			const cancelled = err?.isAbort || err?.name === 'AbortError' || err?.originalError?.name === 'AbortError';
+			const malformed = received || err?.name === 'SyntaxError' || err?.originalError?.name === 'SyntaxError';
+			if (!cancelled && accountId === pb.authStore.record?.id && pathname === globalThis.window?.location?.pathname)
+				readFailed(section, 'records', malformed ? 'invalid_response' : 'unavailable', received ? 200 : malformed && err?.status === 0 ? undefined : err?.status);
 			setError(READ_FAILED);
 			setDegraded(true);
 			setRecords([]);

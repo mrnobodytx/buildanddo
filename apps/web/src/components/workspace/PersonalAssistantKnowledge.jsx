@@ -8,9 +8,11 @@
 // Seat:         BITS-CODEGEN
 // Owner:        Citadel Nexus Inc.
 // Created:      2026-09-20
-// Depends:      apps/web/src/lib/workspaceAssistant.js
+// Depends:      apps/web/src/lib/workspaceAssistant.js, apps/web/src/lib/observability/mutations.js,
+//               apps/web/src/lib/observability/runtime.js, apps/web/src/lib/navigationIntent.js
 // EnumType:     Widget
-// EnumEdges:    DEPENDS_ON apps/web/src/lib/workspaceAssistant.js
+// EnumEdges:    DEPENDS_ON apps/web/src/lib/workspaceAssistant.js; CONSUMES apps/web/src/lib/observability/mutations.js;
+//               CONSUMES apps/web/src/lib/observability/runtime.js; CONSUMES apps/web/src/lib/navigationIntent.js
 // DAG Node:     none
 // Intent:       Expose current-account assistant pattern graphs, bounded export and session forgetting without sharing personal knowledge with tenant administrators.
 // ───────────────────────────────────────────────────────────────
@@ -21,15 +23,30 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useWorkspace } from '@/contexts/WorkspaceContext';
 import { useDemoMode } from '@/hooks/useDemoMode';
 import pb from '@/lib/pocketbaseClient';
+import { observeMutation } from '@/lib/observability/mutations';
+import { readFailed } from '@/lib/observability/runtime';
+import { telemetrySection } from '@/lib/navigationIntent';
 import { createAssistantClient } from '@/lib/workspaceAssistant';
 function PersonalKnowledge({ accountId, workspaceId, demo, renderGraph }) {
     const [data, setData] = useState(null), [error, setError] = useState(''), [page, setPage] = useState(1), [refresh, setRefresh] = useState(0), [forget, setForget] = useState(''), [busy, setBusy] = useState(false);
     const alive = useRef(true);
-    const api = useMemo(() => createAssistantClient({ client: pb, workspaceId, accountId, isCurrent: () => alive.current && !demo }), [workspaceId, accountId, demo]);
+    const api = useMemo(() => createAssistantClient({ client: pb, workspaceId, accountId, isCurrent: () => alive.current && !demo,
+        observe: observeMutation }), [workspaceId, accountId, demo]);
     useEffect(() => { alive.current = true; return () => { alive.current = false; }; }, []);
-    useEffect(() => { let current = true; setData(null); setError(''); if (!demo) api.knowledge(page).then((result) => {
-        if (current && alive.current && !result.stale) { if (result.ok) setData(result.data); else setError(result.error); }
-    }); return () => { current = false; }; }, [api, page, refresh, demo]);
+    useEffect(() => {
+        let current = true; setData(null); setError('');
+        const pathname = globalThis.window?.location?.pathname;
+        const section = telemetrySection(pathname);
+        if (!demo) api.knowledge(page).then((result) => {
+            if (!current || !alive.current || result.stale) return;
+            const malformed = result.ok && (!Array.isArray(result.data?.patterns) || result.data.patterns.some((pattern) => !pattern));
+            if ((!result.ok || malformed) && pathname === globalThis.window?.location?.pathname)
+                readFailed(section, 'assistant', malformed ? 'invalid_response' : 'unavailable', malformed ? 200 : undefined);
+            if (malformed) setError("Could not confirm Buddi's response. Reload the session or retry the same message.");
+            else if (result.ok) setData(result.data); else setError(result.error);
+        });
+        return () => { current = false; };
+    }, [api, page, refresh, demo]);
     const forgetSession = async () => {
         if (busy || !forget) return; setBusy(true);
         const result = await api.command('session.forget', { session: forget }, globalThis.crypto.randomUUID());

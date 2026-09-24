@@ -27,6 +27,7 @@ import { useWorkspace } from '@/contexts/WorkspaceContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { workspaceDestination } from '@/lib/navigationIntent';
 import { createWorkspace as saveWorkspace, ONBOARDING_INTENTS } from '@/lib/onboarding';
+import { PUBLIC_ACTIONS, publicActionSection, trackPublicAction } from '@/lib/publicActions';
 
 const INPUT_STYLE = 'h-11 border-paper bg-paper-subtle text-paper-fg placeholder:text-paper-muted/70';
 
@@ -51,6 +52,7 @@ function OnboardingDesk() {
 
     const next = (event) => {
         event.preventDefault();
+        const section = publicActionSection(location.pathname);
         setError('');
         if (step === 0 && !intent) { setError('Choose what you want to do.'); return; }
         if (step === 1) {
@@ -58,11 +60,13 @@ function OnboardingDesk() {
             if (!name.trim()) setName(objective.trim().slice(0, 120));
         }
         setStep((value) => value + 1);
+        trackPublicAction(PUBLIC_ACTIONS.ONBOARDING_STEP, 'advanced', 'local_step', { step: step + 1 }, { section });
     };
     const createWorkspace = async (event) => {
         event.preventDefault();
         if (pending.current) return;
         if (!intent || !objective.trim() || !name.trim()) { setError('Choose an intent, objective and workspace name.'); return; }
+        const section = publicActionSection(location.pathname);
         const account = pb.authStore.record?.id;
         pending.current = true;
         setCreating(true);
@@ -73,18 +77,26 @@ function OnboardingDesk() {
                 objective: objective.trim(), business_context: business.trim(),
             });
             if (!alive.current || pb.authStore.record?.id !== account) return;
-            if (!result.ok) { setError(result.error || 'Workspace setup could not be confirmed. Retry the same details.'); return; }
+            if (!result.ok) {
+                trackPublicAction(PUBLIC_ACTIONS.ONBOARDING_COMPLETE, 'uncertain', 'unconfirmed', undefined, { section });
+                setError(result.error || 'Workspace setup could not be confirmed. Retry the same details.'); return;
+            }
             setReceipt(result);
             const workspaces = await refresh(result.workspace);
             if (!alive.current || pb.authStore.record?.id !== account) return;
             if (!workspaces?.some((workspace) => workspace.id === result.workspace)) {
+                trackPublicAction(PUBLIC_ACTIONS.ONBOARDING_COMPLETE, 'uncertain', 'workspace_unavailable', undefined, { section });
                 setError('Workspace saved. We could not load it yet. Retry opening it without creating another workspace.');
                 return;
             }
+            trackPublicAction(PUBLIC_ACTIONS.ONBOARDING_STEP, 'success', 'confirmed', { step: 3 }, { section });
+            trackPublicAction(PUBLIC_ACTIONS.ONBOARDING_COMPLETE, 'success', 'confirmed', undefined, { section });
             navigate(workspaceDestination(location.state?.returnTo), { replace: true });
         } catch {
-            if (alive.current && pb.authStore.record?.id === account)
+            if (alive.current && pb.authStore.record?.id === account) {
+                trackPublicAction(PUBLIC_ACTIONS.ONBOARDING_COMPLETE, 'uncertain', 'unconfirmed', undefined, { section });
                 setError('We could not open your workspace. Retry to recover the saved setup.');
+            }
         } finally {
             pending.current = false;
             if (alive.current) setCreating(false);

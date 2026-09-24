@@ -205,7 +205,7 @@ test('room, workspace and personal lesson identifiers stay out of classroom tele
         ['/api/buildanddo/workspaces/workspacealpha/classrooms', '/api/buildanddo/workspaces/:workspace/classrooms'],
         ['/api/buildanddo/workspaces/workspacealpha/classrooms/roomalpha', '/api/buildanddo/workspaces/:workspace/classrooms/:room'],
         ['/app/tutorials?lesson=lessonalpha', '/app/tutorials'],
-        ['/docs?guide=public', '/docs?guide=public'], [null, null], ['http://[', 'http://['],
+        ['/docs?guide=public', '/docs'], [null, null], ['http://[', '/unknown'],
     ]) assert.equal(classroomTelemetryLocation(value), expected);
     const event = { event: '$pageview', properties: { $current_url: 'https://buildanddo.com/app/classrooms/roomalpha?workspace=workspacealpha',
         $pathname: '/app/classrooms/roomalpha', $set_once: { $initial_current_url: 'https://buildanddo.com/app/classrooms/roomalpha' },

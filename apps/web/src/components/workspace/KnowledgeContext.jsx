@@ -8,9 +8,9 @@
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-18
-// Depends:     apps/web/src/hooks/useWorkspaceKnowledge.js
+// Depends:     apps/web/src/hooks/useWorkspaceKnowledge.js, apps/web/src/hooks/useFailureTelemetry.js
 // EnumType:    Widget
-// EnumEdges:   CONSUMES apps/web/src/hooks/useWorkspaceKnowledge.js
+// EnumEdges:   CONSUMES apps/web/src/hooks/useWorkspaceKnowledge.js; CONSUMES apps/web/src/hooks/useFailureTelemetry.js
 // DAG Node:    none
 // Intent:      Surface automatically assembled mission context with readable citations, explicit omissions and an intentional export.
 // ───────────────────────────────────────────────────────────────
@@ -20,10 +20,12 @@ import { Link } from 'react-router-dom';
 import { Button, Card } from '@/components/site/ui';
 import { dateLabel } from '@/components/workspace/ControlPrimitives';
 import { useWorkspaceKnowledge } from '@/hooks/useWorkspaceKnowledge';
+import { useFailureTelemetry } from '@/hooks/useFailureTelemetry';
 
 /** Display the exact cited packet offered for export. */
 export function KnowledgeContextResults({ context, onSelect }) {
     const packet = JSON.parse(context.text);
+    useFailureTelemetry(Boolean(packet.source_coverage?.some((entry) => entry.state === 'unavailable')), 'control_state', 'degraded', 200);
     const download = () => {
         const url = URL.createObjectURL(new Blob([context.text], { type: 'application/json' }));
         const link = document.createElement('a'); link.href = url; link.download = 'buildanddo-context.json';
@@ -55,6 +57,9 @@ export function KnowledgeContextResults({ context, onSelect }) {
 /** Assemble the selected mission's current context when its detail view opens. */
 export default function MissionKnowledgeContext({ missionId }) {
     const control = useWorkspaceKnowledge({ mission: missionId, max_chars: 8000, max_sources: 8 });
+    // Rendered context state is not another knowledge read attempt.
+    useFailureTelemetry(!control.loading && !control.demo && Boolean(control.error && control.readFailure),
+        'control_state', control.readFailure?.reason, control.readFailure?.status);
     return <Card className="space-y-3 p-4 ph-no-capture" data-dd-privacy="mask">
         <h3 className="font-display text-lg">Assembled mission context</h3>
         <p className="text-sm text-muted-foreground">Current mission, research and evidence, with relevant shared signals and published wiki pages.</p>

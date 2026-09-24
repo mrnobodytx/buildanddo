@@ -40,6 +40,8 @@ export const WORKSPACE_ENTITIES = Object.freeze({
     research_uploads: 'research_upload',
     daily_editions: 'edition',
     editions: 'edition',
+    specialist_desks: 'specialist_desk',
+    seat_events: 'seat_event',
     domains: 'domain',
     tutorial_progress: 'tutorial_progress',
     classroom_rooms: 'classroom_room',
@@ -57,18 +59,70 @@ export const WORKSPACE_ENTITIES = Object.freeze({
     forum_replies: 'forum_reply',
 });
 
+// These are native command names, not arbitrary body.action values or CRUD aliases.
+const COMMAND_ACTIONS = {
+    workspace_controls: {
+        'settings.save': 'workspace.settings.save',
+        'member.set': 'workspace.member.set',
+        'member.remove': 'workspace.member.remove',
+        'integration.save': 'workspace.integration.save',
+        'integration.check': 'workspace.integration.check',
+    },
+    wiki_pages: { 'wiki.save': 'workspace.wiki.save', 'wiki.transition': 'workspace.wiki.transition' },
+    forum_topics: { 'forum.create': 'workspace.forum.create', 'forum.moderate': 'workspace.forum.moderate' },
+    forum_replies: { 'forum.reply': 'workspace.forum.reply', 'forum.moderate': 'workspace.forum.moderate' },
+    support_sources: { 'support.request': 'workspace.support.request' },
+    corrections: { 'correction.save': 'workspace.correction.save' },
+    daily_editions: { 'edition.save': 'workspace.edition.save', 'edition.publish': 'workspace.edition.publish' },
+    specialist_desks: { 'desk.save': 'workspace.desk.save' },
+    social_content: { 'content.save': 'workspace.content.save' },
+    social_channels: { 'channel.request': 'workspace.channel.request' },
+    seat_events: { 'seat.report': 'workspace.seat.report' },
+    business_jobs: {
+        'source.capture': 'workspace.business.source.capture',
+        'action.enqueue': 'workspace.business.action.enqueue',
+        'action.claim': 'workspace.business.action.claim',
+        'action.begin': 'workspace.business.action.begin',
+        'action.complete': 'workspace.business.action.complete',
+        'action.hold': 'workspace.business.action.hold',
+        'action.cancel': 'workspace.business.action.cancel',
+        'action.reconcile': 'workspace.business.action.reconcile',
+        'integration.observe': 'workspace.business.integration.observe',
+    },
+    assistant_sessions: {
+        'session.start': 'workspace.assistant.session.start',
+        'session.close': 'workspace.assistant.session.close',
+        'session.forget': 'workspace.assistant.session.forget',
+        'plan.record': 'workspace.assistant.plan.record',
+        chat: 'workspace.assistant.chat',
+    },
+    private_dossiers: {
+        'dossier.update': 'workspace.dossier.update',
+        'entity.create': 'workspace.dossier.entity.create',
+        'entity.update': 'workspace.dossier.entity.update',
+        'entity.delete': 'workspace.dossier.entity.delete',
+        'note.add': 'workspace.dossier.note.add',
+        'note.update': 'workspace.dossier.note.update',
+        'note.delete': 'workspace.dossier.note.delete',
+    },
+    career_reviews: { 'review.import': 'workspace.career.review.import' },
+    blueprints: { analyze: 'workspace.blueprint.analyze', upload: 'workspace.blueprint.upload',
+        retry: 'workspace.blueprint.retry', cancel: 'workspace.blueprint.cancel' },
+};
+
 export const MUTATION_ACTIONS = Object.freeze(
     Object.fromEntries(
-        Object.entries(WORKSPACE_ENTITIES).map(([collection, entity]) => [
+        [...new Set([...Object.keys(WORKSPACE_ENTITIES), ...Object.keys(COMMAND_ACTIONS)])].map((collection) => [
             collection,
-            Object.freeze(
-                Object.fromEntries(
-                    ['create', 'update', 'delete'].map((verb) => [
+            Object.freeze({
+                ...Object.fromEntries(
+                    (Object.hasOwn(WORKSPACE_ENTITIES, collection) ? ['create', 'update', 'delete'] : []).map((verb) => [
                         verb,
-                        `workspace.${entity}.${verb}`,
+                        `workspace.${WORKSPACE_ENTITIES[collection]}.${verb}`,
                     ]),
                 ),
-            ),
+                ...COMMAND_ACTIONS[collection],
+            }),
         ]),
     ),
 );

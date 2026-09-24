@@ -30,6 +30,8 @@ import pb from '@/lib/pocketbaseClient';
 import { observeMutation } from '@/lib/observability/mutations';
 import { createOperatorClient, importOperatorBlueprint, OPERATOR_MAX_BYTES, projectOperator } from '@/lib/operatorPlane';
 import { STATUS_PATH } from '@/lib/communityLinks';
+import { readFailed } from '@/lib/observability/runtime';
+import { publicActionSection } from '@/lib/publicActions';
 
 const EMPTY_WRITE = { busy: false, uncertain: false, error: '', receipt: null };
 const label = (value) => typeof value === 'string' ? value.replaceAll('_', ' ') : 'Unknown';
@@ -200,11 +202,15 @@ function OperatorDesk({ accountId, workspaceId, canWrite, checkingAccess }) {
 
     const refresh = useCallback(async (targetPage) => {
         const attempt = ++reading.current;
+        const pathname = globalThis.window?.location?.pathname, section = publicActionSection(pathname);
         setSnapshot({ loading: true, data: null, error: '' });
         let result;
         try { result = await api.read(targetPage); }
         catch { result = { ok: false, error: 'Workspace state could not be read. Refresh to try again.' }; }
         if (!live.current || attempt !== reading.current) return;
+        if (!result.stale && !['scope_changed', 'cancelled'].includes(result.reason) && (result.readFailure || !result.ok) &&
+            pathname === globalThis.window?.location?.pathname)
+            readFailed(section, 'operator', result.readFailure?.reason || 'unavailable', result.readFailure?.status);
         setNow(Date.now());
         setSnapshot({ loading: false, data: result.ok ? result.data : null, error: result.error || (result.ok ? '' : 'Workspace state is unavailable.') });
         if (!result.ok) {

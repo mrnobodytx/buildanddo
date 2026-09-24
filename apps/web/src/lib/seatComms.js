@@ -10,14 +10,15 @@
 // Created:     2026-09-10
 // Depends:     apps/web/src/lib/pocketbaseClient.js,
 //              apps/web/src/lib/observability/runtime.js,
-//              apps/pocketbase/pb_migrations/1788940000_create_community_contributor_collections.js, apps/web/src/lib/workspaceClaims.js
+//              apps/pocketbase/pb_migrations/1788940000_create_community_contributor_collections.js, apps/web/src/lib/workspaceClaims.js, apps/web/src/lib/observability/mutations.js
 // EnumType:    Adapter
-// EnumEdges:   PRODUCES seat_events; CONSUMES apps/web/src/lib/pocketbaseClient.js; CONSUMES apps/web/src/lib/workspaceClaims.js
+// EnumEdges:   PRODUCES seat_events; CONSUMES apps/web/src/lib/pocketbaseClient.js; CONSUMES apps/web/src/lib/workspaceClaims.js; CONSUMES apps/web/src/lib/observability/mutations.js
 // Intent:      Let several seats working one workspace see each other's work instead of colliding.
 // ───────────────────────────────────────────────────────────────
 
 import pb from '@/lib/pocketbaseClient';
 import { reportAction } from '@/lib/observability/runtime';
+import { observeMutation } from '@/lib/observability/mutations';
 import { createWorkspaceClaimClient } from './workspaceClaims.js';
 
 /**
@@ -253,7 +254,7 @@ export async function publishSeatEvent({
                 }
                 current = { scope, lifetime: 0 };
                 current.api = createWorkspaceClaimClient({ client: pb, collection: COLLECTION, accountId, workspaceId,
-                    isCurrent: () => publisher === current, getLifetime: () => current.lifetime, deferConfirmation: true });
+                    isCurrent: () => publisher === current, getLifetime: () => current.lifetime, deferConfirmation: true, observe: observeMutation });
             }
             current.lifetime += 1;
             publisher = current;

@@ -1,4 +1,19 @@
 #!/usr/bin/env node
+// --- CGRF Header ------------------------------------------------
+// File:        apps/web/tools/build.mjs
+// Stage:       07_BUILD
+// SRS:         SRS-BUILDANDDO-UPGRADE-001
+// CAPS:        pending
+// CK:          pending
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+// Seat:        BITS-CODEGEN
+// Owner:       Citadel Nexus Inc.
+// Created:     2026-09-24
+// Depends:     apps/web/tools/release-telemetry.mjs
+// EnumType:    Adapter
+// EnumEdges:   CONSUMES apps/web/tools/release-telemetry.mjs
+// Intent:      Keep offline builds usable while binding designated release telemetry to the actual build.
+// ----------------------------------------------------------------
 // Cross-platform replacement for the old inline npm script:
 //   "node tools/generate-llms.js || true && vite build --outDir ../../dist/apps/web"
 // That relied on shell "||"/"&&" chaining, which is NOT portable: Windows cmd.exe parses
@@ -8,17 +23,23 @@
 // CI runners, which have no such path. A plain Node script has no shell-dialect
 // dependence at all - the correct, durable fix, not another shell-specific patch.
 import { spawnSync } from 'node:child_process';
+import { rmSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { resolveBuildRelease } from '../../../scripts/ci/release.mjs';
 import { generatePublicAssets, generatePageHeads } from './generate-seo.mjs';
 import { generateCommunityCatalogue } from './generate-community.mjs';
 import { findLessonAnswers } from './check-public-lessons.mjs';
+import { releaseTelemetryContract, releaseTelemetryPlugin, TELEMETRY_MANIFEST } from './release-telemetry.mjs';
 
 // Container build contexts deliberately exclude .git. The staging image passes
 // the exact candidate SHA instead, keeping the release stamped into RUM and the
 // generated catalogue tied to the source that produced the image.
-const release = resolveBuildRelease({ commitSha: process.env.BUILD_SHA });
 const output = fileURLToPath(new URL('../../../dist/apps/web', import.meta.url));
+// A failed or ordinary build must not retain a previous release's certificate.
+rmSync(`${output}/${TELEMETRY_MANIFEST}`, { force: true });
+const release = resolveBuildRelease({ commitSha: process.env.BUILD_SHA });
+const contract = releaseTelemetryContract(process.env, release);
+const telemetry = contract ? releaseTelemetryPlugin(contract) : null;
 
 generatePublicAssets(fileURLToPath(new URL('../public', import.meta.url)));
 
@@ -40,13 +61,18 @@ const buildEnvironment = {
     VITE_DD_VERSION: release.version,
     VITE_BUILD_SHA: release.commit_sha,
     VITE_DD_ENV: process.env.VITE_DD_ENV || '',
+    ...contract?.publicConfig,
 };
 // The output sits outside the app root, so Vite keeps old bundles unless told to
 // empty it; a stale chunk could still carry lesson answers. Vite writes first.
-const vite = spawnSync('vite', ['build', '--outDir', '../../dist/apps/web', '--emptyOutDir'], {
-    stdio: 'inherit',
-    env: buildEnvironment,
-    shell: process.platform === 'win32', // Windows needs shell:true to resolve vite.cmd; POSIX doesn't
+Object.assign(process.env, buildEnvironment);
+// Inject the measuring plugin without taking ownership of the shared Vite config.
+// Release inputs are explicit; a forgotten .env file cannot silently enable a sink.
+const { build } = await import('vite');
+await build({
+    ...(contract ? { envFile: false } : {}),
+    plugins: telemetry ? [telemetry.plugin] : [],
+    build: { outDir: output, emptyOutDir: true },
 });
 if (vite.error) console.error('Unable to start Vite:', vite.error.message);
 if (vite.status !== 0) process.exit(vite.status ?? 1);

@@ -23,6 +23,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { communityLink } from '@/lib/communityLinks';
 import { COMMERCIAL_CONTACT, ENQUIRY_LIMITS, commercialInterest, prepareCommercialEnquiry } from '@/lib/commercialEnquiry';
+import { PUBLIC_ACTIONS, publicActionSection, trackPublicAction } from '@/lib/publicActions';
 
 // Both links come from communityLinks.js: this page used to carry its own copy of the Discord
 // invite, and only one invite may ever be published.
@@ -35,6 +36,7 @@ function CommercialEnquiryForm({ interest }) {
     const pilot = interest === 'pilot';
     const prepareDraft = (event) => {
         event.preventDefault();
+        const section = publicActionSection();
         const fields = new FormData(event.currentTarget);
         setDraft(null);
         setError('');
@@ -44,9 +46,15 @@ function CommercialEnquiryForm({ interest }) {
                 name: fields.get('name'), email: fields.get('email'), message: fields.get('message'),
                 ...(pilot ? { outcome: fields.get('outcome'), constraints: fields.get('constraints') } : {}),
             }));
+            trackPublicAction(PUBLIC_ACTIONS.ENQUIRY_DRAFT, 'prepared', 'local_draft', undefined, { section });
         } catch (failure) {
+            trackPublicAction(PUBLIC_ACTIONS.ENQUIRY_DRAFT, 'failure', failure instanceof TypeError ? 'validation' : 'unknown', undefined, { section });
             setError(failure instanceof TypeError ? failure.message : 'Could not prepare the draft. Check the form and try again.');
         }
+    };
+    const openDraft = () => {
+        // Observe link activation only; mailto provides no sending or delivery receipt.
+        trackPublicAction(PUBLIC_ACTIONS.ENQUIRY_DRAFT, 'opened', 'mailto_handoff');
     };
     return (
         <form
@@ -103,7 +111,7 @@ function CommercialEnquiryForm({ interest }) {
                     <p className="text-sm">Your draft is ready. Open it in your email app to send.</p>
                     <label htmlFor="contact-draft" className="block text-sm font-medium">Email draft preview</label>
                     <Textarea id="contact-draft" value={draft.body} readOnly rows={10} />
-                    <a href={draft.href} data-dd-action-name="Open commercial email draft"
+                    <a href={draft.href} onClick={openDraft} data-dd-action-name="Open commercial email draft"
                         className="inline-flex min-h-10 items-center font-semibold text-primary underline underline-offset-4">
                         Open email draft
                     </a>
