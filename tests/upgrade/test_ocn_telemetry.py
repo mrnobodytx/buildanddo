@@ -57,7 +57,10 @@ EGRESS = ".".join(("198", "51", "100", "9"))
 EMAIL = "seat" + "@" + "example.org"
 RECORD = "q" * 3 + "1234567890ab"
 FORUM = "https://" + "forum.example.org" + "/t/topic/1"
-PLANTED = (BOX, ALIAS, BOX_TWO, BOX_UNPLACED, ADDRESS, EGRESS, EMAIL, RECORD, "forum.example.org")
+SESSION = "0f0e0d0c-0b0a-4908-8706-050403020100"
+PLANTED = (BOX, ALIAS, BOX_TWO, BOX_UNPLACED, ADDRESS, EGRESS, EMAIL, RECORD, "forum.example.org", SESSION)
+# The probes that take --env and never record it: their receipts publish only with an env named.
+NO_ENV = frozenset({"ocn_guild_dogfood", "ocn_mission_work", "ocn_room_probe"})
 KEEP = ("SYSTEMROOT", "WINDIR", "PATH", "PATHEXT", "COMSPEC", "TEMP", "TMP")
 
 _GUARDS: list = []
@@ -116,7 +119,7 @@ def seat_session() -> dict:
     return {"schema": "buildanddo.ocn-seat-session/v1", "seat": BOX, "env": "staging", "persona": "Forge",
             "guild": "builder", "egress_ip": EGRESS,
             "identity": {"state": "RESOLVED", "guild_from": ["node.json"], "sources": {"node.json": "read"}},
-            "session_id": "0f0e0d0c-0b0a-4908-8706-050403020100", "distinct_id": "ocn:" + BOX, "at": AT,
+            "session_id": SESSION, "distinct_id": "ocn:" + BOX, "at": AT,
             "login": "LOGIN_OK",
             "replay": [{"step": "ocn_login", "result": "LOGIN_OK"},
                        {"step": "pageview", "route": "/", "http": 200, "ms": 120, "prerendered_chars": 900},
@@ -207,6 +210,8 @@ def receipts() -> dict[str, dict]:
             "distinct_public_ips": 2, "workspace": RECORD, "mission_title": "OCN Multiplayer x", "mission": RECORD,
             "checks": [{"check": "login", "box": BOX, "expect": "200", "http": 200, "stage": "login",
                         "outcome": "AS_EXPECTED", "message": None},
+                       {"check": "concurrent-enqueue", "box": BOX + "+" + BOX_TWO, "expect": "exactly one winner",
+                        "http": 200, "stage": "call", "outcome": "AS_EXPECTED", "message": ""},
                        {"check": "non-member-refused", "box": BOX_TWO, "expect": "403/404", "http": 403,
                         "stage": "call", "outcome": "AS_EXPECTED", "message": "member " + EMAIL}],
             "race": {"verdict": "MUTUAL_EXCLUSION_HELD", "why": "x", "winners": [BOX], "refused": [BOX_TWO],
@@ -299,6 +304,37 @@ def receipts() -> dict[str, dict]:
     }
 
 
+def dogfood(action: str, **fields) -> dict:
+    """A guild_dogfood receipt for one action, shaped like the probe's own output for it."""
+    receipt = {"schema": "buildanddo.ocn-guild-dogfood/v1", "seat": BOX, "guild": "builder", "action": action,
+               "workspace": RECORD, "at": AT, "login": "OK", "uid": RECORD}
+    receipt.update(fields)
+    return receipt
+
+
+def dogfood_actions() -> dict[str, dict]:
+    """Every dogfood branch the adapter reads, with private values in the fields it must not copy."""
+    return {
+        "sprint": dogfood("sprint", proposed=[RECORD], missions=[
+            {"guild": "builder", "http": 403, "headline": "raised by " + EMAIL + " on " + BOX, "state": "REFUSED",
+             "message": "refused for " + EMAIL + " from " + ADDRESS, "fields": {"title": "too long: " + EMAIL}},
+            {"guild": "research", "http": 200, "headline": "from " + BOX, "mission": RECORD, "state": "PROPOSED"},
+            {"guild": "guild of " + BOX, "http": 200, "headline": "x", "mission": RECORD, "state": "PROPOSED"}]),
+        "promote": dogfood("promote", signals=[RECORD], promoted=[
+            {"n": 1, "short": "from " + EMAIL, "evidence": RECORD, "signal": RECORD, "signal_http": 201},
+            {"n": 2, "short": BOX, "evidence": RECORD, "signal": None, "signal_http": 400, "message": EMAIL,
+             "fields": {"title": ADDRESS}}]),
+        "verify": dogfood("verify", mission=RECORD, verified={
+            "mission_readable": True, "mission_running": False, "mission_has_approval": True,
+            "signals_bound_to_mission": 2, "signals_whose_evidence_names_a_source": 1}),
+        "cleanup": dogfood("cleanup", removed=[{"id": RECORD, "http": 204}, {"id": RECORD, "http": 404}]),
+        "inventory": dogfood("inventory", inventory={
+            "missions": {"total": 2, "items": [{"id": RECORD, "owner": RECORD, "label": "by " + EMAIL}]},
+            "wiki_pages": {"http": 403}}),
+        "login-failed": dogfood("workload", login="FAILED"),
+    }
+
+
 class Harness(unittest.TestCase):
     """A cleared environment, a private fleet map, a ledger and a store, all in a temporary directory."""
 
@@ -323,6 +359,8 @@ class Harness(unittest.TestCase):
     def plan(self, receipt: dict, **options) -> t.Plan:
         options.setdefault("fleet_map", self.fleet)
         options.setdefault("now", NOW)
+        if t.detect_probe(receipt) in NO_ENV:
+            options.setdefault("env", "staging")
         return t.prepare(receipt, **options)
 
     def publish(self, receipt: dict, mode: str = "send", **options) -> dict:
@@ -330,9 +368,18 @@ class Harness(unittest.TestCase):
         options.setdefault("ledger_dir", self.ledger)
         options.setdefault("now", NOW)
         options.setdefault("stderr", io.StringIO())
+        if t.detect_probe(receipt) in NO_ENV:
+            options.setdefault("env", "staging")
         if mode == "send":
             options.setdefault("credentials", keys())
         return t.publish(receipt, mode=mode, **options)
+
+    def assert_clean(self, plan: t.Plan) -> None:
+        """No planted value reaches an outbound body, as written or as slug() would rewrite it."""
+        text = json.dumps(plan.bodies)
+        for index, value in enumerate(PLANTED):
+            self.assertFalse(value in text, "planted value %d reached an outbound body" % index)
+            self.assertFalse(t.slug(value) in text, "planted value %d reached an outbound body slugged" % index)
 
 
 class RegistryTests(Harness):
@@ -451,14 +498,27 @@ class AdapterTests(Harness):
                 self.assertEqual(plan.bodies["posthog.batch"][0]["distinct_id"], "ocn:multiple")
         self.assertEqual(self.plan(receipts()["ocn_classroom_fleet"]).view["actor"]["personas"], ["forge", "oracle"])
 
-    def test_project_races_are_checks_and_labels(self):
-        view = self.plan(receipts()["ocn_project_fleet"]).view
+    def test_project_races_are_the_probes_own_checks_and_labels(self):
+        receipt = receipts()["ocn_project_fleet"]
+        view = self.plan(receipt).view
         races = {c["id"]: c for c in view["checks"] if c["kind"] == "race"}
-        self.assertEqual(races["race.enqueue"]["state"], "MUTUAL_EXCLUSION_HELD")
-        self.assertIs(races["race.enqueue"]["as_expected"], True)
-        self.assertIsNone(races["race.claim"]["as_expected"])
-        self.assertEqual(view["labels"]["ocn_race_enqueue"], "MUTUAL_EXCLUSION_HELD")
+        self.assertEqual(list(races), ["concurrent-enqueue"])
+        self.assertEqual(races["concurrent-enqueue"]["state"], "MUTUAL_EXCLUSION_HELD")
+        self.assertIs(races["concurrent-enqueue"]["as_expected"], True)
+        self.assertEqual(view["labels"], {"ocn_race_enqueue": "MUTUAL_EXCLUSION_HELD", "ocn_race_claim": "UNMEASURED"})
         self.assertIs([c for c in view["checks"] if c["id"] == "non-member-refused"][0]["is_control"], True)
+        # One check per row the probe recorded, never a second one per race.
+        self.assertEqual(view["counts"]["checks_total"], len(receipt["checks"]))
+
+    def test_a_double_claim_counts_once(self):
+        receipt = copy.deepcopy(receipts()["ocn_project_fleet"])
+        receipt.update(state="CONTRACT_BROKEN", contract_broken=["concurrent-enqueue"],
+                       race={"verdict": "DOUBLE_CLAIM", "why": "x", "winners": [BOX, BOX_TWO]})
+        receipt["checks"][1].update(http=0, outcome="CONTRACT_BROKEN")
+        view = self.plan(receipt).view
+        self.assertEqual((view["outcome"], view["counts"]["checks_failed"]), ("fail", len(receipt["contract_broken"])))
+        self.assertEqual([(c["id"], c["state"]) for c in view["checks"] if c["as_expected"] is False],
+                         [("concurrent-enqueue", "DOUBLE_CLAIM")])
 
     def test_seat_sessions_publish_their_persona_and_perception(self):
         plan = self.plan(receipts()["ocn_seat_session"])
@@ -521,6 +581,163 @@ class AdapterTests(Harness):
         paths = [c["path_template"] for c in view["checks"]]
         self.assertIn("/api/collections/missions/records/:id", paths)
         self.assertIn("/api/buildanddo/workspaces/:workspace/suite", paths)
+
+    def void_sweep(self, state: str = "VOID") -> dict:
+        """The SPA fallback: every route answers 200, both controls with it, so the sweep is VOID."""
+        sweep = copy.deepcopy(receipts()["ocn_feature_sweep"])
+        for row in sweep["checks"][:2]:
+            row.update(http=200, state="OK", alive=False)
+        if state != "VOID":
+            for row in sweep["checks"][:2]:
+                row.update(alive=True)
+        sweep.update(state=state, controls_held=state != "VOID", broken=[] if state == "VOID" else ["workspace.admin"],
+                     degraded=[])
+        return sweep
+
+    def test_a_void_sweep_judges_only_the_controls_that_voided_it(self):
+        plan = self.plan(self.void_sweep(), dd_metrics=True)
+        view = plan.view
+        self.assertEqual(view["outcome"], "void")
+        self.assertEqual([c["id"] for c in view["checks"] if c["as_expected"] is False],
+                         ["control.absent-route", "control.unauthenticated"])
+        self.assertEqual([c["as_expected"] for c in view["checks"] if not c["is_control"]], [None, None])
+        self.assertEqual(view["counts"]["checks_failed"], 2)
+        self.assertIn("Failing checks: control.absent-route, control.unauthenticated\n",
+                      plan.bodies["datadog.event"]["text"])
+        statuses = [record["status"] for record in plan.bodies["datadog.logs"]]
+        self.assertEqual(statuses, ["warn", "error", "error", "info", "info"])
+        self.assertEqual([s["metric"] for s in plan.bodies["datadog.series"]], [t.METRIC_MEASURED])
+        # The control for this test: the same rows on a run whose controls held are judged.
+        held = self.plan(self.void_sweep("REPAIR_NEEDED")).view
+        self.assertEqual([c["as_expected"] for c in held["checks"] if not c["is_control"]], [False, True])
+
+    def test_a_void_walk_judges_only_its_controls(self):
+        walk = copy.deepcopy(receipts()["ocn_journey_report"])
+        for row in walk["legs"][:2]:
+            row.update(http=200, verdict="BROKEN")
+        walk.update(state="VOID", controls_held=False, defects=[])
+        plan = self.plan(walk)
+        self.assertEqual(plan.view["counts"]["checks_failed"], 2)
+        self.assertEqual([c["as_expected"] for c in plan.view["checks"]], [False, False, None])
+        judged = [event["properties"].get("ocn_as_expected") for event in plan.bodies["posthog.batch"][1:]]
+        self.assertEqual(judged, [False, False, None])
+        walked = self.plan(dict(walk, state="DEFECTS", controls_held=True)).view
+        self.assertIs(walked["checks"][2]["as_expected"], False)
+
+    def test_a_probe_that_never_records_its_env_needs_one(self):
+        self.assertEqual({name for name, probe in t.PROBES.items() if not probe.env_default}, NO_ENV)
+        for name in sorted(NO_ENV):
+            with self.subTest(probe=name):
+                source = (ROOT / "scripts" / "ci" / (name + ".py")).read_text(encoding="utf-8")
+                self.assertIn('add_argument("--env"', source)
+                self.assertNotIn('"env":', source)
+                receipt = receipts()[name]
+                with self.assertRaises(t.Unsent) as refused:
+                    self.plan(receipt, env=None)
+                self.assertEqual(refused.exception.reason, "NO_ENV")
+                self.assertEqual(self.publish(receipt, mode="dry-run", env=None)["reason"], "NO_ENV")
+                self.assertEqual(self.plan(receipt, env="production").view["env"], "production")
+        for name in ("ocn_rbac_probe", "ocn_box_exercise"):
+            self.assertEqual(self.plan(receipts()[name]).view["env"], "staging")
+
+    def test_a_request_that_got_no_answer_is_a_transport_fault(self):
+        for name in ("ocn_guild_forum", "ocn_room_probe"):
+            for code, state in ((0, "TRANSPORT_FAULT"), (None, "TRANSPORT_FAULT"), (403, "REFUSED"),
+                                (502, "SERVER_ERROR"), (201, "ACCEPTED")):
+                with self.subTest(probe=name, http=code):
+                    view = self.plan(dict(receipts()[name], result={"http": code, "err": "URLError"})).view
+                    self.assertEqual((view["state"], view["outcome"]), (state, "pass" if code == 201 else "fail"))
+
+    def test_only_known_score_and_collection_names_become_property_names(self):
+        seat = copy.deepcopy(receipts()["ocn_seat_session"])
+        seat["perception"]["score"].update({BOX: 1, ADDRESS: 2, EMAIL: 3})
+        inventory = dict(receipts()["ocn_guild_dogfood"],
+                         inventory={"missions": {"total": 3}, BOX: {"total": 1}, ADDRESS: {"http": 403}})
+        for receipt in (seat, inventory):
+            text = json.dumps(self.plan(receipt).bodies)
+            for value in (BOX, ADDRESS, EMAIL):
+                # The rewrite the old key handling made: every character outside [a-z0-9_] became "_".
+                self.assertNotIn(re.sub(r"[^a-z0-9_]", "_", value.lower()), text)
+        run = self.plan(seat).bodies["posthog.batch"][0]["properties"]
+        self.assertEqual({name for name in run if name.startswith("perc_")}, {
+            "perc_reachable_routes", "perc_reachable_routes_total", "perc_median_latency_ms",
+            "perc_prerendered_text_chars", "perc_persona_vocabulary_hits_count", "perc_persona_vocabulary_coverage",
+            "perc_persona_vocabulary_coverage_total", "perc_data_endpoints_ok", "perc_data_endpoints_total",
+            "perc_observation_count"})
+        plan = self.plan(inventory)
+        run = plan.bodies["posthog.batch"][0]["properties"]
+        self.assertEqual({name for name in run if name.startswith("ocn_inventory_")}, {"ocn_inventory_missions"})
+        self.assertEqual([c["id"] for c in plan.view["checks"] if c["kind"] == "collection"],
+                         ["inventory.missions", "inventory.other", "inventory.other"])
+
+    def test_the_allowlists_are_the_names_the_probes_write(self):
+        seat = t._sibling("ocn_seat_session")
+        score = seat.perceive("seat-alpha", {"persona": "Forge", "guild": "builder", "lens": "x"},
+                              [{"route": "/", "status": 200, "ms": 5, "text": "build"}], [])["score"]
+        self.assertEqual(set(score), set(t.PERCEPTION_SCORES))
+        from scripts.ci import ocn_guild_dogfood
+
+        out: dict = {}
+        with mock.patch.object(ocn_guild_dogfood, "http", return_value=(200, {"items": [], "totalItems": 0})):
+            ocn_guild_dogfood.inventory("root", {}, argparse.Namespace(workspace="w"), out)
+        self.assertEqual(set(out["inventory"]), t.INVENTORY_COLLECTIONS)
+
+    def test_reason_prose_becomes_a_bounded_code(self):
+        table = {"no ssh key for " + BOX: "NO_SSH_KEY", "ssh timeout after 12s": "SSH_TIMEOUT",
+                 BOX + " is not in the fleet map at x": "NOT_IN_FLEET_MAP", "sign failed: " + EMAIL: "SIGN_FAILED",
+                 "could not sign in: 403": "LOGIN_FAILED", "login refused": "LOGIN_FAILED",
+                 "something else from " + ADDRESS: "OTHER", "": "", None: ""}
+        for reason, code in table.items():
+            self.assertEqual(t.reason_code("UNMEASURED", reason), code)
+        self.assertEqual(t.reason_code("VOID", "anything at all"), "CONTROLS_FAILED")
+
+    def test_reason_prose_and_list_items_never_leave_as_text(self):
+        sweep = dict(receipts()["ocn_feature_sweep"], state="UNMEASURED", reason="seat " + EMAIL + " record " + RECORD,
+                     broken=["workspace.admin", RECORD, BOX], degraded=[ADDRESS])
+        plan = self.plan(sweep)
+        self.assertEqual(plan.view["reason_code"], "OTHER")
+        self.assertEqual(plan.view["lists"]["ocn_broken"], ["workspace.admin", "id", "box"])
+        self.assertEqual(plan.view["lists"]["ocn_degraded"], ["addr"])
+        self.assert_clean(plan)
+
+    def test_every_dogfood_action_is_read_by_allowlist(self):
+        expected = {
+            "sprint": [("sprint.builder", 403, "REFUSED", None), ("sprint.research", 200, "PROPOSED", None),
+                       ("sprint.other", 200, "PROPOSED", None)],
+            "promote": [("proposal.1", 201, None, True), ("proposal.2", 400, None, False)],
+            "verify": [("verify.mission_readable", None, None, True), ("verify.mission_running", None, None, False),
+                       ("verify.mission_has_approval", None, None, True)],
+            "cleanup": [("cleanup.1", 204, None, True), ("cleanup.2", 404, None, False)],
+            "inventory": [("inventory.missions", 200, None, None), ("inventory.wiki_pages", 403, None, None)],
+            "login-failed": []}
+        for action, receipt in dogfood_actions().items():
+            with self.subTest(action=action):
+                plan = self.plan(receipt)
+                self.assertEqual([(c["id"], c["http"], c["state"], c["as_expected"]) for c in plan.view["checks"]],
+                                 expected[action])
+                self.assertEqual(plan.view["outcome"], "fail" if action == "login-failed" else "observed")
+                self.assert_clean(plan)
+        verified = self.plan(dogfood_actions()["verify"]).view["measures"]
+        self.assertEqual((verified["ocn_signals_bound_to_mission"],
+                          verified["ocn_signals_whose_evidence_names_a_source"]), (2, 1))
+
+    def test_a_box_exercise_probe_reads_its_control_and_collections(self):
+        probe = {"seat": BOX, "mode": "probe", "at": AT,
+                 "login": {"state": "LOGIN_OK", "record_id": RECORD, "name": "OCN seat " + BOX},
+                 "control_absent_collection": 404,
+                 "authenticated_reads": {"missions": {"http": 200, "items": 3},
+                                         "evidence": {"http": 403, "items": None}}}
+        plan = self.plan(probe)
+        self.assertEqual([(c["id"], c["kind"], c["http"], c["as_expected"]) for c in plan.view["checks"]],
+                         [("login", "login", None, True), ("control.absent-collection", "control", 404, True),
+                          ("collection.missions", "collection", 200, None),
+                          ("collection.evidence", "collection", 403, None)])
+        self.assertIs(plan.view["controls_held"], True)
+        self.assert_clean(plan)
+        self.assertIs(self.plan(dict(probe, control_absent_collection=200)).view["controls_held"], False)
+        refused = self.plan(dict(probe, login={"state": "LOGIN_403"})).view
+        self.assertEqual((refused["outcome"], refused["reason_code"], refused["checks"][0]["http"]),
+                         ("fail", "LOGIN_FAILED", 403))
 
 
 # Each probe's own rule, applied to the receipt receipts() shapes like its real output.
@@ -949,7 +1166,7 @@ class ReceiptParsingTests(Harness):
         path = self.dir / "receipt.json"
         path.write_bytes(json.dumps(receipts()["ocn_mission_work"]).encode("utf-16"))
         out, err = io.StringIO(), io.StringIO()
-        argv = ["publish", "--receipt", str(path), "--tee", "--fleet-map", str(self.fleet),
+        argv = ["publish", "--receipt", str(path), "--tee", "--env", "staging", "--fleet-map", str(self.fleet),
                 "--ledger-dir", str(self.ledger)]
         with contextlib.redirect_stdout(out), contextlib.redirect_stderr(err):
             code = t.main(argv)

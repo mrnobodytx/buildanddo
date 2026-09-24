@@ -72,8 +72,10 @@ python scripts/ci/ocn_telemetry.py selftest
   (its stdout). It prints exactly one JSON line on stdout: the `ocn_telemetry` block, or with `--tee` the
   receipt with its block. Box receipts come this way. For example, a seat record from the estate
   collector goes through `publish --probe ocn_seat_session --receipt - --tee`.
-  - For receipts that do not record their environment, `--env` says which one it was. Otherwise it is
-    the probe's own default, staging.
+  - `ocn_guild_dogfood`, `ocn_mission_work` and `ocn_room_probe` take `--env` but never record it, so
+    their receipts need `--env` here; without it they are refused (`NO_ENV`), never guessed. Under `run`,
+    the probe command's own `--env` is read. `ocn_rbac_probe` and `ocn_box_exercise` only ever reach
+    staging.
   - `--force` sends again a run the ledger already records as sent, with the same PostHog uuids.
   - `--probe-digest` names the digest of the script that actually ran.
   - `--strict` exits non-zero on anything short of a clean send, or on a failed gate in a dry run.
@@ -117,20 +119,22 @@ prints this table from the code.
 ### Outcomes
 
 The outcome always follows the probe's own rule; the publisher never re-judges a probe. The values are
-`pass`, `degraded`, `fail`, `partial`, `void`, `unmeasured`, `observed` and `error`.
+`pass`, `degraded`, `fail`, `partial`, `void`, `unmeasured`, `observed` and `error`. On a VOID sweep or
+walk the probe says that no row means what it says, so only the controls that voided it are judged; every
+other check goes out unjudged and is never counted as failed.
 
 | Probe | Rule |
 |-------|------|
 | feature sweep | PASS is pass; REPAIR_NEEDED is fail when `broken` is not empty, else degraded; PARTIAL is partial; VOID is void; UNMEASURED is unmeasured |
 | journey report | CLEAN is pass; DEFECTS is fail when a leg is BROKEN or BLOCKED, else degraded; VOID is void; UNMEASURED is unmeasured |
 | classroom fleet and live | PASS is pass, FAIL is fail; a `CONTROL` prefix marks a control |
-| project fleet | PASS is pass, CONTRACT_BROKEN is fail, UNMEASURED is unmeasured; each race verdict is also a check of kind `race` |
+| project fleet | PASS is pass, CONTRACT_BROKEN is fail, UNMEASURED is unmeasured; the probe's own `concurrent-enqueue` and `concurrent-claim` checks go out as kind `race`, with the race verdict as their state |
 | seat session | pass when the login is LOGIN_OK, else fail. An identity refusal is sent nowhere (`IDENTITY_REFUSED`, COMMUNITY-WEB-001 R6) |
 | rbac cell | observed; with `--expect allow` or `deny`, pass or fail; TRANSPORT_FAULT is unmeasured; LOGIN_FAILED is fail |
 | box exercise | observed; the only expectations are its own `(... wanted)` and `(expects ...)` labels; a failed login is fail |
 | content assessment, subsystem probe | observed; a control is reported and never gates the outcome |
 | guild dogfood | observed; a crash is error |
-| guild forum, room probe | pass only on HTTP 200 or 201 |
+| guild forum, room probe | pass only on HTTP 200 or 201. The state is ACCEPTED, REFUSED (4xx), SERVER_ERROR (5xx), or TRANSPORT_FAULT when no answer came back (both probes record that as HTTP 0) |
 | mission lifecycle | pass only when the mission reached verified |
 | mission work | pass only when something was created |
 | observation record | pass only when the chain is intact |
@@ -167,7 +171,7 @@ kept (operator decision, 2026-09-24). `verify` reads this back.
 
 | Event | When | Properties besides the common ones |
 |-------|------|-------------------------------------|
-| `ocn_probe_run` | one per receipt | `ocn_receipt_sha256` (16 hex), `ocn_publisher_digest`, `ocn_probe_digest`, `ocn_receipt_schema`, `ocn_mode` (read or write), `ocn_actor`, `ocn_guild`, `ocn_personas`, `ocn_outcome`, `ocn_state`, `ocn_reason_code`, `ocn_controls_held`, `ocn_checks_total`, `ocn_checks_failed`, `ocn_checks_controls`, `ocn_checks_truncated`, and per-probe numbers and bounded names: the sweep's broken, degraded and record-missing features, the journey's defect legs, the seat's `perc_*` scores, the content grades, the race verdicts |
+| `ocn_probe_run` | one per receipt | `ocn_receipt_sha256` (16 hex), `ocn_publisher_digest`, `ocn_probe_digest`, `ocn_receipt_schema`, `ocn_mode` (read or write), `ocn_actor`, `ocn_guild`, `ocn_personas`, `ocn_outcome`, `ocn_state`, `ocn_reason_code`, `ocn_controls_held`, `ocn_checks_total`, `ocn_checks_failed`, `ocn_checks_controls`, `ocn_checks_truncated`, and per-probe numbers and bounded names: the sweep's broken, degraded and record-missing features, the journey's defect legs, the seat's seven `perc_*` scores, the dogfood inventory's eight collection counts, the content grades, the race verdicts. Only those named scores and collections become property names; any other key a receipt carries is dropped |
 | `ocn_probe_check` | one per check, for the probes marked above, 60 at most with controls always kept | `ocn_check`, `ocn_check_kind`, `ocn_check_index`, `ocn_http`, `ocn_check_state` (`HTTP_<n>` becomes `http_other`), `ocn_as_expected`, `ocn_is_control`, `ocn_method`, `ocn_path_template`, `ocn_latency_ms`, `ocn_prerendered_chars` |
 | `ocn_telemetry_control` | one per publish, in its own request, under a key no project can hold | `ocn_control: invalid_key`, distinct_id `ocn:control`. PostHog answers 200 and must never store it |
 
@@ -213,7 +217,7 @@ monitor, dashboard, facet, index or pipeline change. No signal carries a host.
   |--------|-------|---:|
   | `buildanddo.ocn.run.measured` | 1, 0.5 (partial) or 0 (void, unmeasured, error) | 34 |
   | `buildanddo.ocn.run.outcome` | pass 1, degraded 0.5, fail 0; not sent for other outcomes | 34 |
-  | `buildanddo.ocn.run.checks_failed` | count | 34 |
+  | `buildanddo.ocn.run.checks_failed` | count; sent only beside the outcome gauge, so never for a void run | 34 |
   | `buildanddo.ocn.feature.alive` | 1 or 0 per sweep feature, only when the controls held; never for a control or an UNMEASURABLE row | 76 |
 
   The ceiling is 2 environments × 17 probes × 3 run gauges, plus 2 × 38 features: **178 series**. The tag
@@ -246,6 +250,7 @@ withholds the whole receipt.
   | `WINDOW` | the receipt is too old for a Datadog signal |
   | `LEDGER_DUPLICATE` | this run was already sent; `--force` re-sends |
   | `UNKNOWN_SCHEMA`, `NO_RECEIPT`, `NOT_PUBLISHABLE` | nothing publishable was found |
+  | `NO_ENV` | a receipt that does not record its environment was published without `--env` |
   | `IDENTITY_REFUSED`, `IDENTITY_UNRESOLVED` | a seat refusal, or a box the map does not know (PostHog only) |
   | `TRANSPORT:<status or class>`, `BUDGET` | the request failed, or did not start within the budget |
   | `PUBLISHER_ERROR:<class>` | the publisher failed; this never raises into the probe |

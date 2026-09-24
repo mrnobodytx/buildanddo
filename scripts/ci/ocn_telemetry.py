@@ -211,6 +211,15 @@ ROOM_ACTIONS = frozenset({"list", "lessons", "presence-health", "realtime-health
                           "room.leave", "room.message"})
 DOGFOOD_ACTIONS = frozenset({"promote", "workload", "verify", "cleanup", "inventory", "resume", "sprint"})
 PROJECT_CONTROLS = frozenset({"unbound-member-refused", "non-member-refused", "control-discriminates"})
+# project_fleet records each race as a check of its own; the verdict it carries lives under this key.
+PROJECT_RACES = {"concurrent-enqueue": ("race", "ocn_race_enqueue"),
+                 "concurrent-claim": ("claim_race", "ocn_race_claim")}
+# The seven scores ocn_seat_session.perceive() writes, and the eight collections guild_dogfood's
+# inventory() reads. Only these become property names: any other key could carry a box name or address.
+PERCEPTION_SCORES = ("reachable_routes", "median_latency_ms", "prerendered_text_chars", "persona_vocabulary_hits",
+                     "persona_vocabulary_coverage", "data_endpoints_ok", "data_endpoints_total")
+INVENTORY_COLLECTIONS = frozenset({"missions", "workflows", "workflow_runs", "signals", "evidence", "forum_topics",
+                                   "forum_replies", "wiki_pages"})
 READ_ACTIONS = frozenset({"list", "wiki.list", "topic", "lessons", "presence-health", "realtime-health"})
 HTTP_METHODS = frozenset({"GET", "POST", "PATCH", "PUT", "DELETE", "HEAD", "OPTIONS"})
 
@@ -349,7 +358,7 @@ class Probe:
     dd_event: str                    # always | judged: rbac cells send logs only unless judged
     commands: tuple[str, ...] | None  # publishable subcommands; None when every invocation is one
     write_path: str = ""             # repository-relative receipt the probe persists with --write
-    env_default: str = "staging"
+    env_default: str = "staging"     # "" when the probe takes --env but its receipt never records it
 
 
 REGISTRY = (
@@ -359,16 +368,16 @@ REGISTRY = (
     Probe("ocn_content_assessment", "buildanddo.ocn-content-assessment/v1", "read", False, "always", None),
     Probe("ocn_feature_sweep", "buildanddo.ocn-feature-sweep/v1", "read", False, "always", ("sweep",),
           "state/ocn_feature_sweep/{env}.latest.json"),
-    Probe("ocn_guild_dogfood", "buildanddo.ocn-guild-dogfood/v1", "write", True, "always", None),
+    Probe("ocn_guild_dogfood", "buildanddo.ocn-guild-dogfood/v1", "write", True, "always", None, env_default=""),
     Probe("ocn_guild_forum", "buildanddo.ocn-guild-forum/v1", "write", True, "always", None),
     Probe("ocn_journey_report", "buildanddo.ocn-journey-report/v1", "read", True, "always", ("walk",)),
     Probe("ocn_mission_lifecycle", "buildanddo.ocn-mission-lifecycle/v1", "write", True, "always", None),
-    Probe("ocn_mission_work", "buildanddo.ocn-mission-work/v1", "write", True, "always", None),
+    Probe("ocn_mission_work", "buildanddo.ocn-mission-work/v1", "write", True, "always", None, env_default=""),
     Probe("ocn_observation_record", "buildanddo.ocn-observation-record/v1", "write", True, "always", None),
     Probe("ocn_project_fleet", "buildanddo.ocn-project-fleet/v1", "write", False, "always", ("run",),
           "state/ocn_project_fleet/{env}.latest.json"),
     Probe("ocn_rbac_probe", "", "write", False, "judged", None),
-    Probe("ocn_room_probe", "buildanddo.ocn-room-probe/v1", "write", True, "always", None),
+    Probe("ocn_room_probe", "buildanddo.ocn-room-probe/v1", "write", True, "always", None, env_default=""),
     Probe("ocn_seat_session", "buildanddo.ocn-seat-session/v1", "read", True, "always", None),
     Probe("ocn_signal_lifecycle", "buildanddo.ocn-signal-lifecycle/v1", "write", True, "always", None),
     Probe("ocn_subsystem_probe", "buildanddo.ocn-subsystem-probe/v1", "write", False, "always", None),
@@ -597,10 +606,15 @@ def _cap(checks: list[dict[str, Any]]) -> tuple[list[dict[str, Any]], int]:
 
 
 def _env_of(ctx: Context, receipt: dict[str, Any], key: str = "env") -> str:
+    """The receipt's own env, else --env, else the probe's default. A probe that takes --env but never
+    records it has no default: guessing staging would tag a production run as staging."""
     value = receipt.get(key)
     if isinstance(value, str) and value:
         return value
-    return ctx.env if ctx.env in ENVS else ctx.probe.env_default
+    env = ctx.env if ctx.env in ENVS else ctx.probe.env_default
+    if not env:
+        raise Unsent("NO_ENV")
+    return env
 
 
 def _view(ctx: Context, receipt: dict[str, Any], *, actor: dict[str, Any], outcome: str, state: str,
@@ -669,7 +683,9 @@ def adapt_feature_sweep(receipt: dict[str, Any], ctx: Context) -> dict[str, Any]
         feature = _text(row.get("feature"))
         control = feature.startswith("control.")
         alive = _bool(row.get("alive"))
-        judged = alive is not None and row.get("state") != "UNMEASURABLE"
+        # On a VOID sweep no row's status means what it says (the probe's own words), so only the
+        # controls that voided it are judged.
+        judged = alive is not None and row.get("state") != "UNMEASURABLE" and (control or state != "VOID")
         checks.append(_check(ctx, index, feature, "control" if control else "route", http=row.get("http"),
                              state=row.get("state"), vocabulary=SWEEP_STATES,
                              as_expected=alive if judged else None, is_control=control,
@@ -697,9 +713,11 @@ def adapt_journey_report(receipt: dict[str, Any], ctx: Context) -> dict[str, Any
         known = ctx.cat.legs.get(leg, {})
         control = bool(known.get("control")) or leg.startswith("control.")
         verdict = _text(row.get("verdict"))
+        # A VOID walk has no verdict that means what it says: only its controls are judged.
+        judged = verdict in JOURNEY_VERDICTS and (control or state != "VOID")
         checks.append(_check(ctx, index, leg, "control" if control else "leg", http=row.get("http"),
                              state=verdict, vocabulary=JOURNEY_VERDICTS,
-                             as_expected=(verdict in ("OK", "REFUSED")) if verdict in JOURNEY_VERDICTS else None,
+                             as_expected=(verdict in ("OK", "REFUSED")) if judged else None,
                              is_control=control, method=known.get("method"), path=known.get("path")))
     return _view(ctx, receipt, actor=actor_for_box(ctx, receipt.get("box")), outcome=outcome,
                  state=state if state in JOURNEY_RUN else "other",
@@ -758,17 +776,22 @@ def adapt_classroom_live(receipt: dict[str, Any], ctx: Context) -> dict[str, Any
 
 def adapt_project_fleet(receipt: dict[str, Any], ctx: Context) -> dict[str, Any]:
     state = _text(receipt.get("state"))
-    checks = _contract_checks(ctx, receipt.get("checks"), PROJECT_CONTROLS)
+    rows = _rows(receipt.get("checks"))
+    checks = _contract_checks(ctx, rows, PROJECT_CONTROLS)
     labels = {}
-    for key, name in (("race", "race.enqueue"), ("claim_race", "race.claim")):
+    verdicts = {}
+    for name, (key, label) in PROJECT_RACES.items():
         race = receipt.get(key) if isinstance(receipt.get(key), dict) else {}
         verdict = _text(race.get("verdict"))
-        if not verdict:
-            continue
-        judged = verdict in RACE_VERDICTS and verdict != "UNMEASURED"
-        checks.append(_check(ctx, len(checks), name, "race", state=verdict, vocabulary=RACE_VERDICTS,
-                             as_expected=(verdict == "MUTUAL_EXCLUSION_HELD") if judged else None))
-        labels["ocn_" + name.replace(".", "_")] = state_label(verdict, RACE_VERDICTS) or "other"
+        if verdict:
+            verdicts[name] = labels[label] = state_label(verdict, RACE_VERDICTS) or "other"
+    # The probe records each race as a check of its own and judges it; that row becomes the race check.
+    # Adding a second one would count a double claim twice.
+    for row, check in zip(rows, checks):
+        name = _text(row.get("check"))
+        if name in PROJECT_RACES:
+            check["kind"] = "race"
+            check["state"] = verdicts.get(name, check["state"])
     machines = receipt.get("machines") if isinstance(receipt.get("machines"), dict) else {}
     return _view(ctx, receipt, actor=actor_for_many(ctx, list(machines)),
                  outcome={"PASS": "pass", "CONTRACT_BROKEN": "fail",
@@ -802,12 +825,16 @@ def _seat_step(ctx: Context, index: int, row: dict[str, Any]) -> dict[str, Any] 
 
 
 def _perception(receipt: dict[str, Any]) -> dict[str, Any]:
-    """perc_* numbers from the seat's perception score. Words and prose stay in the receipt."""
+    """perc_* numbers from the seat's perception score, for the scores perceive() writes and no other key.
+    Words and prose stay in the receipt."""
     perception = receipt.get("perception") if isinstance(receipt.get("perception"), dict) else {}
     score = perception.get("score") if isinstance(perception.get("score"), dict) else {}
     measures: dict[str, Any] = {}
-    for key, value in score.items():
-        name = "perc_" + re.sub(r"[^a-z0-9_]", "_", str(key).lower())[:40]
+    for key in PERCEPTION_SCORES:
+        if key not in score:
+            continue
+        value = score[key]
+        name = "perc_" + key
         ratio = re.fullmatch(r"(\d+)/(\d+)", value) if isinstance(value, str) else None
         if ratio:
             measures[name], measures[name + "_total"] = int(ratio.group(1)), int(ratio.group(2))
@@ -935,9 +962,10 @@ def adapt_guild_dogfood(receipt: dict[str, Any], ctx: Context) -> dict[str, Any]
     inventory = receipt.get("inventory") if isinstance(receipt.get("inventory"), dict) else {}
     for name, entry in inventory.items():
         entry = entry if isinstance(entry, dict) else {}
-        add("inventory." + (slug(name) or "collection"), "collection",
-            http=200 if "total" in entry else entry.get("http"))
-        measures["ocn_inventory_" + re.sub(r"[^a-z0-9_]", "_", slug(name))] = entry.get("total")
+        known = name if name in INVENTORY_COLLECTIONS else "other"
+        add("inventory." + known, "collection", http=200 if "total" in entry else entry.get("http"))
+        if known != "other":
+            measures["ocn_inventory_" + known] = entry.get("total")
     verified = receipt.get("verified") if isinstance(receipt.get("verified"), dict) else {}
     for key in ("mission_readable", "mission_running", "mission_has_approval"):
         if key in verified:
@@ -959,6 +987,15 @@ def adapt_guild_dogfood(receipt: dict[str, Any], ctx: Context) -> dict[str, Any]
                  labels={"ocn_action": action if action in DOGFOOD_ACTIONS else "other"})
 
 
+def _answer_state(code: int | None) -> str:
+    """What one request's status says. Both probes record a request that got no answer as http 0."""
+    if code in (200, 201):
+        return "ACCEPTED"
+    if not code:
+        return "TRANSPORT_FAULT"
+    return "SERVER_ERROR" if code >= 500 else "REFUSED"
+
+
 def _one_command(ctx: Context, receipt: dict[str, Any], actions: frozenset[str]) -> dict[str, Any]:
     """guild_forum and room_probe: one command or read per invocation, passing only on 200 or 201."""
     action = _text(receipt.get("action"))
@@ -971,7 +1008,7 @@ def _one_command(ctx: Context, receipt: dict[str, Any], actions: frozenset[str])
                                        "command", http=code, as_expected=ok)]
     return _view(ctx, receipt, actor=actor_for_box(ctx, receipt.get("seat")),
                  outcome="pass" if ok and not failed else "fail",
-                 state="LOGIN_FAILED" if failed else _judged_state(ok, "ACCEPTED", "REFUSED"),
+                 state="LOGIN_FAILED" if failed else _answer_state(code),
                  reason="LOGIN_FAILED" if failed else "", checks=checks, labels={"ocn_action": known})
 
 
@@ -1194,7 +1231,7 @@ def dd_event(view: dict[str, Any], ids: dict[str, str], digests: dict[str, str],
     counts = view["counts"]
     failing = [check["id"] for check in view["checks"] if check["as_expected"] is False][:20]
     held = view["controls_held"]
-    lines = ["- Outcome: %s (the probe's own state: %s)" % (view["outcome"], view["state"]),
+    lines = ["- Outcome: %s (state: %s)" % (view["outcome"], view["state"]),
              "- Checks: %d, failed %d, controls %d, truncated %d" % (
                  counts["checks_total"], counts["checks_failed"], counts["checks_controls"],
                  counts["checks_truncated"]),
@@ -1263,9 +1300,11 @@ def dd_series(view: dict[str, Any], at: dt.datetime, features: Iterable[str]) ->
                        "tags": sorted(base + list(extra))})
 
     point(METRIC_MEASURED, MEASURED_VALUE.get(view["outcome"], 0.0))
+    # A failure count is a verdict too, so it goes only where the outcome gauge goes (pass, degraded, fail).
+    # A void run's rows mean nothing by the probe's own account, and the other outcomes pass no verdict.
     if view["outcome"] in OUTCOME_VALUE:
         point(METRIC_OUTCOME, OUTCOME_VALUE[view["outcome"]])
-    point(METRIC_FAILED, view["counts"]["checks_failed"])
+        point(METRIC_FAILED, view["counts"]["checks_failed"])
     known = set(features)
     if view["probe"] == "ocn_feature_sweep" and view["controls_held"] is True:
         for check in view["checks"]:
@@ -2589,7 +2628,7 @@ def verify_main(args: argparse.Namespace, read: Readback | None = None) -> int:
 
 def probes_main() -> int:
     print(json.dumps({"contract": CONTRACT, "probes": [
-        {"name": probe.name, "schema": probe.schema or "key-shape", "env_default": probe.env_default,
+        {"name": probe.name, "schema": probe.schema or "key-shape", "env_default": probe.env_default or None,
          "mode": probe.mode, "posthog_check_events": probe.ph_checks, "datadog_event": probe.dd_event,
          "publishable": list(probe.commands) if probe.commands is not None else "every invocation",
          "write_path": probe.write_path or None} for probe in REGISTRY]}, indent=2))
