@@ -88,7 +88,7 @@ export default function AgentActivity({ unattended = false, limit = 12 }) {
                 <div className="flex flex-wrap items-center gap-2">
                     <StatePill state={state} />
                     <span className="sr-only">{label}</span>
-                    <span className="inline-flex items-center gap-1 font-evidence text-xs text-muted-foreground"><Bot className="h-3.5 w-3.5" aria-hidden="true" />{item.seat}</span>
+                    <span className="inline-flex items-center gap-1 font-evidence text-xs text-muted-foreground"><Bot className="h-3.5 w-3.5" aria-hidden="true" />{seatName(item.seat)}</span>
                     {item.handoffTo && <span className="text-xs text-muted-foreground">to {seatName(item.handoffTo, 'another seat')}</span>}
                     <time className="ml-auto font-evidence text-[11px] text-muted-foreground" dateTime={item.createdAt}>{when(item.createdAt)}</time>
                 </div>
