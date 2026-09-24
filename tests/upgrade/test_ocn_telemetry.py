@@ -369,16 +369,6 @@ class RegistryTests(Harness):
 
 
 class AdapterTests(Harness):
-    def test_no_planted_value_reaches_any_outbound_byte(self):
-        for name, receipt in receipts().items():
-            with self.subTest(probe=name):
-                plan = self.plan(receipt, dd_metrics=True)
-                text = json.dumps(plan.bodies)
-                for value in PLANTED:
-                    self.assertNotIn(value, text)
-                self.assertEqual(t.tag_gate(plan.bodies, plan.cat), [])
-                self.assertEqual(t.leak_gate(plan.bodies, plan.rule)["state"], "PASS")
-
     def test_the_planted_values_are_really_in_the_receipts(self):
         # The control for the test above: without it, a receipt that planted nothing would pass.
         text = json.dumps(receipts())
@@ -515,16 +505,7 @@ class AdapterTests(Harness):
         self.assertEqual(view["counts"]["checks_truncated"], 72 - t.CHECK_CAP)
         self.assertEqual(sum(c["is_control"] for c in view["checks"]), 2)
 
-    def test_other_outcomes_follow_each_probe(self):
-        cases = {
-            "ocn_guild_forum": "pass", "ocn_room_probe": "pass", "ocn_mission_lifecycle": "pass",
-            "ocn_mission_work": "pass", "ocn_observation_record": "pass", "ocn_signal_lifecycle": "fail",
-            "ocn_subsystem_probe": "observed", "ocn_content_assessment": "observed",
-            "ocn_guild_dogfood": "observed", "ocn_classroom_live": "pass", "ocn_classroom_fleet": "fail",
-            "ocn_project_fleet": "pass"}
-        for name, outcome in cases.items():
-            with self.subTest(probe=name):
-                self.assertEqual(self.plan(receipts()[name]).view["outcome"], outcome)
+    def test_failure_shapes_follow_each_probe(self):
         crashed = dict(receipts()["ocn_guild_dogfood"], crashed="KeyError: " + BOX)
         self.assertEqual(self.plan(crashed).view["outcome"], "error")
         refused = dict(receipts()["ocn_guild_forum"], result={"http": 403, "message": EMAIL})
@@ -540,6 +521,89 @@ class AdapterTests(Harness):
         paths = [c["path_template"] for c in view["checks"]]
         self.assertIn("/api/collections/missions/records/:id", paths)
         self.assertIn("/api/buildanddo/workspaces/:workspace/suite", paths)
+
+
+# Each probe's own rule, applied to the receipt receipts() shapes like its real output.
+EXPECTED_OUTCOME = {
+    "ocn_box_exercise": "observed", "ocn_classroom_fleet": "fail", "ocn_classroom_live": "pass",
+    "ocn_content_assessment": "observed", "ocn_feature_sweep": "fail", "ocn_guild_dogfood": "observed",
+    "ocn_guild_forum": "pass", "ocn_journey_report": "degraded", "ocn_mission_lifecycle": "pass",
+    "ocn_mission_work": "pass", "ocn_observation_record": "pass", "ocn_project_fleet": "pass",
+    "ocn_rbac_probe": "observed", "ocn_room_probe": "pass", "ocn_seat_session": "pass",
+    "ocn_signal_lifecycle": "fail", "ocn_subsystem_probe": "observed"}
+
+
+class PerAdapterTests(Harness):
+    """One test per adapter, each fed a receipt shaped like that probe's real output with private
+    values planted in every field the adapter must not copy."""
+
+    def adapt(self, name: str) -> dict:
+        """The contract every adapter shares; returns the view for the probe-specific assertion."""
+        receipt = receipts()[name]
+        self.assertEqual(t.detect_probe(receipt), name)
+        plan = self.plan(receipt, dd_metrics=True)
+        self.assertEqual((plan.view["probe"], plan.view["outcome"]), (name, EXPECTED_OUTCOME[name]))
+        self.assertTrue(plan.view["checks"])
+        text = json.dumps(plan.bodies)
+        for index, value in enumerate(PLANTED):
+            self.assertFalse(value in text, "planted value %d reached an outbound body" % index)
+        self.assertEqual(t.tag_gate(plan.bodies, plan.cat), [])
+        self.assertEqual(t.leak_gate(plan.bodies, plan.rule)["state"], "PASS")
+        return plan.view
+
+    def test_the_table_covers_every_probe(self):
+        self.assertEqual(set(EXPECTED_OUTCOME), set(t.PROBES))
+
+    def test_box_exercise(self):
+        self.assertIs(self.adapt("ocn_box_exercise")["controls_held"], True)
+
+    def test_classroom_fleet(self):
+        self.assertEqual(self.adapt("ocn_classroom_fleet")["counts"]["checks_failed"], 1)
+
+    def test_classroom_live(self):
+        self.assertEqual(self.adapt("ocn_classroom_live")["actor"]["personas"], ["alex", "forge", "oracle"])
+
+    def test_content_assessment(self):
+        self.assertEqual(self.adapt("ocn_content_assessment")["measures"]["ocn_stable"], 1)
+
+    def test_feature_sweep(self):
+        self.assertEqual(self.adapt("ocn_feature_sweep")["lists"]["ocn_broken"], ["workspace.admin"])
+
+    def test_guild_dogfood(self):
+        self.assertEqual(self.adapt("ocn_guild_dogfood")["labels"]["ocn_action"], "workload")
+
+    def test_guild_forum(self):
+        self.assertEqual(self.adapt("ocn_guild_forum")["checks"][0]["id"], "command.forum.reply")
+
+    def test_journey_report(self):
+        self.assertEqual(self.adapt("ocn_journey_report")["env"], "production")
+
+    def test_mission_lifecycle(self):
+        self.assertEqual(self.adapt("ocn_mission_lifecycle")["state"], "REACHED_VERIFIED")
+
+    def test_mission_work(self):
+        self.assertEqual(self.adapt("ocn_mission_work")["measures"]["ocn_created"], 1)
+
+    def test_observation_record(self):
+        self.assertEqual(self.adapt("ocn_observation_record")["state"], "CHAIN_INTACT")
+
+    def test_project_fleet(self):
+        self.assertEqual(self.adapt("ocn_project_fleet")["measures"]["ocn_distinct_public_ips"], 2)
+
+    def test_rbac_probe(self):
+        self.assertEqual(self.adapt("ocn_rbac_probe")["checks"][0]["id"], "op.read_ws")
+
+    def test_room_probe(self):
+        self.assertEqual(self.adapt("ocn_room_probe")["checks"][0]["id"], "command.room.join")
+
+    def test_seat_session(self):
+        self.assertEqual(self.adapt("ocn_seat_session")["actor"]["persona"], "forge")
+
+    def test_signal_lifecycle(self):
+        self.assertIs(self.adapt("ocn_signal_lifecycle")["controls_held"], False)
+
+    def test_subsystem_probe(self):
+        self.assertEqual(self.adapt("ocn_subsystem_probe")["checks"][2]["state"], "http_other")
 
 
 class TemplatingTests(Harness):
