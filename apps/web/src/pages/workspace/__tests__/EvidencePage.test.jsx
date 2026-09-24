@@ -59,7 +59,8 @@ it('exposes a scoped source observation and references without claiming native o
     await screen.findByText('No evidence available yet');
     const panel = sourcePanel();
     await setupUser().click(panel.getByText('Validation evidence and public source references'));
-    expect(panel.getByLabelText('Recorded source run')).toHaveTextContent('121/121 passed');
+    const { counts } = broadcastCurriculum.source_evidence.observation;
+    expect(panel.getByLabelText('Recorded source run')).toHaveTextContent(`${counts.pass}/${counts.tests} passed`);
     expect(panel.getByLabelText('Recorded source run')).toHaveTextContent(broadcastCurriculum.source_evidence.observation.source_sha256);
     expect(panel.getByRole('link', { name: 'Download the captured source test output' })).toHaveAttribute('href', '/broadcast-repairs-source.txt');
     const plan = within(panel.getByRole('list', { name: 'Case study validation plan' }));
