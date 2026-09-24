@@ -1218,7 +1218,9 @@ class NativeWorkspaceTests(unittest.TestCase):
             self.assertEqual(after["claim_revision"], 0)
             self.assertFalse(after.get("published_at"))
         server.stop()
-        server.migrate("down", "2")
+        # revert() runs the same two rollbacks and moves their files aside: on 0.39.8 `serve` re-applies a
+        # pending migration, so a plain `migrate down` would be healed by the next start.
+        server.revert("2")
         server.start()
         code, _ = server.request("POST", f"/api/buildanddo/workspaces/{WORKSPACE}/claims", {
             "action": "edition.save", "revision": 0, "request_key": "rollback_claim_command_001", "payload": {"id": "", "values": {"title": "Blocked command"}},
