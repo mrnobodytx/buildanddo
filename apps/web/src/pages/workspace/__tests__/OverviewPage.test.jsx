@@ -1,7 +1,7 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/src/pages/workspace/__tests__/OverviewPage.test.jsx
 // Stage:       08_TEST
-// SRS:         SRS-BUILDANDDO-TEST-001, SRS-BUILDANDDO-UPGRADE-001
+// SRS:         SRS-BUILDANDDO-TEST-001, SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-SITE-001
 // CAPS:        pending
 // CK:          pending
 // Dispatch:    VCC-BUILDANDDO-UPGRADE-001
@@ -188,7 +188,7 @@ describe('OverviewPage', () => {
         });
     });
 
-    it('warns that a selected domain is not an authorised domain', async () => {
+    it('says an unverified domain is context only and unlocks nothing', async () => {
         seed();
         renderWithProviders(<OverviewPage />, {
             workspace: {
@@ -199,25 +199,35 @@ describe('OverviewPage', () => {
         });
 
         expect(await screen.findByText('example-plumbing.com')).toBeInTheDocument();
-        expect(screen.getByText(/Confirm ownership or authorization/i)).toBeInTheDocument();
-        expect(
-            screen.getByRole('button', { name: /Verify domain/ }),
-        ).toBeInTheDocument();
+        expect(screen.getByText(/Ownership of this domain is not verified\. It is context only; the label unlocks nothing\./)).toBeInTheDocument();
+        expect(screen.queryByText(/deeper analysis/i)).not.toBeInTheDocument();
+        await setupUser().click(screen.getByRole('button', { name: /Verify domain/ }));
+        expect(navigateMock).toHaveBeenCalledWith('/app/settings#website-domain');
     });
 
-    it('states that deeper analysis is authorised once the domain is verified', async () => {
+    it('says verified by DNS only for a server-verified domain', async () => {
         seed();
         renderWithProviders(<OverviewPage />, {
             workspace: {
                 active: createMockWorkspace({
-                    expand: { domain: createMockDomain({ status: 'verified' }) },
+                    expand: { domain: createMockDomain({ status: 'verified', verified_at: '2026-09-24 10:00:00.000Z' }) },
                 }),
             },
         });
 
-        expect(
-            await screen.findByText(/Domain verified — deeper analysis is authorized/),
-        ).toBeInTheDocument();
+        expect(await screen.findByText('Domain ownership verified by DNS.')).toBeInTheDocument();
+        expect(screen.queryByText(/deeper analysis/i)).not.toBeInTheDocument();
+        expect(screen.queryByRole('button', { name: /Verify domain/ })).not.toBeInTheDocument();
+    });
+
+    it('does not trust a verified label that carries no DNS check', async () => {
+        seed();
+        renderWithProviders(<OverviewPage />, {
+            workspace: { active: createMockWorkspace({ expand: { domain: createMockDomain({ status: 'verified' }) } }) },
+        });
+
+        expect(await screen.findByText(/Ownership of this domain is not verified/)).toBeInTheDocument();
+        expect(screen.queryByText('Domain ownership verified by DNS.')).not.toBeInTheDocument();
     });
 
     it('hides the domain banner while the workspace is still loading', () => {

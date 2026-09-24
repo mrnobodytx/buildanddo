@@ -1,7 +1,7 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:         apps/pocketbase/pb_hooks/workspace-onboarding.js
 // Stage:        07_BUILD
-// SRS:          SRS-BUILDANDDO-UPGRADE-001
+// SRS:          SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-SITE-001
 // CAPS:         pending
 // CK:           pending
 // Dispatch:     VCC-BUILDANDDO-UPGRADE-001
@@ -30,15 +30,12 @@ function create(e) {
     const input = e.requestInfo().body;
     const objectiveSetup = input && Object.prototype.hasOwnProperty.call(input, 'intent');
     access.exact(input, objectiveSetup ? ['name', 'domain', 'intent', 'objective', 'business_context'] : ['name', 'domain']);
-    const value = { name: access.bounded(input.name, 120), domain: access.bounded(input.domain, 253, false).toLowerCase() };
+    const value = { name: access.bounded(input.name, 120), domain: access.domainName(input.domain, false) };
     if (objectiveSetup) {
         if (!INTENTS.includes(input.intent)) access.invalid('Choose a supported intent.');
         Object.assign(value, { intent: input.intent, objective: access.bounded(input.objective, 160),
             business_context: access.bounded(input.business_context, 120, false) });
     }
-    const labels = value.domain.split('.');
-    if (value.domain && (labels.length < 2 || labels.some((label) => !/^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$/.test(label)) || !/[a-z]/.test(labels[labels.length - 1]) || labels[labels.length - 1].length < 2))
-        access.invalid('Enter a domain name without a scheme, path or credentials.');
     const key = $security.sha256(access.canonical(value));
     let result;
     e.app.runInTransaction((app) => {

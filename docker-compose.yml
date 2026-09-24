@@ -91,6 +91,8 @@ services:
       CLOUDFLARE_REALTIME_APP_ID: ${CLOUDFLARE_REALTIME_APP_ID:-}
       CLOUDFLARE_REALTIME_APP_SECRET: ${CLOUDFLARE_REALTIME_APP_SECRET:-}
       BUILDANDDO_CLASSROOM_PUBLISHERS: ${BUILDANDDO_CLASSROOM_PUBLISHERS:-}
+      # Domain verification DNS-over-HTTPS resolver (https only); empty uses Cloudflare's.
+      BUILDANDDO_DOH_URL: ${BUILDANDDO_DOH_URL:-}
     ports:
       - "${POCKETBASE_PORT:-8090}:8090"
     volumes:
