@@ -167,7 +167,7 @@ npm --prefix apps/web run build
 
 Node tests execute production helpers, hooks and migration code with storage
 contracts. They are not native PocketBase or React execution. On an isolated
-PocketBase 0.28.4 instance, test original six-row upgrade, empty/custom catalogue,
+PocketBase 0.39.8 instance, test original six-row upgrade, empty/custom catalogue,
 repeated migration, seed asset availability, role removal, foreign relations,
 review tampering, publication receipt attribution and down/up retention.
 Check simultaneous editorial commands against the same saved revision and retain

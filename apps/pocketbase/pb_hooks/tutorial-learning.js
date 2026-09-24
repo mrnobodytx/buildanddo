@@ -204,7 +204,8 @@ function list(e) {
     const user = account(e.app, e);
     const filter = 'owner = {:owner} && completed_at != ""';
     const params = { owner: user.id };
-    const completed = e.app.countRecords('tutorial_learning', filter, params);
+    // countRecords takes dbx expressions, not a filter string (PocketBase 0.28 and 0.39 alike).
+    const completed = e.app.countRecords('tutorial_learning', $dbx.hashExp({ owner: user.id }), $dbx.not($dbx.hashExp({ completed_at: '' })));
     const number = access.page(e);
     const rows = e.app.findRecordsByFilter('tutorial_learning', filter, '-completed_at,-id', 6, (number - 1) * 5, params);
     const active = e.app.findRecordsByFilter('tutorial_learning', 'owner = {:owner} && completed_at = ""', '-updated,-id', 1, 0, params)[0];

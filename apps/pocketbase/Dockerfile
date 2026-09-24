@@ -23,7 +23,7 @@
 # docker-compose.yml re-mounts them read-only so an edit takes effect on
 # restart without a rebuild.
 
-ARG POCKETBASE_VERSION=0.28.4
+ARG POCKETBASE_VERSION=0.39.8
 
 FROM alpine:3.20 AS fetch
 ARG POCKETBASE_VERSION

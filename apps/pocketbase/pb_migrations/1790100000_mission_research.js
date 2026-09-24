@@ -52,7 +52,7 @@ migrate((app) => {
         for (const field of definition.fields) {
             const value = actual.fields.getByName(field.name);
             if (!value && field.name === 'protocol_version') continue;
-            if (!value || Object.keys(field).some((key) => key !== 'name' && JSON.stringify(value[key]) !== JSON.stringify(field[key])))
+            if (!value || Object.keys(field).some((key) => key !== 'name' && JSON.stringify(typeof value[key] === 'function' ? value[key]() : value[key]) !== JSON.stringify(field[key])))
                 throw new Error(`Review custom ${definition.name}.${field.name}.`);
         }
         if (!definition.indexes.every((index) => actual.indexes.includes(index))) throw new Error(`Review ${definition.name} indexes.`);

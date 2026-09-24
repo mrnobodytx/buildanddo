@@ -23,7 +23,7 @@ migrate((app) => {
     const field = { name: 'usage', type: 'json', maxSize: 2000 };
     const saved = collection.fields.getByName('usage');
     if (saved) {
-        if (Object.keys(field).some((key) => JSON.stringify(saved[key]) !== JSON.stringify(field[key])))
+        if (Object.keys(field).some((key) => JSON.stringify(typeof saved[key] === 'function' ? saved[key]() : saved[key]) !== JSON.stringify(field[key])))
             throw new Error('Review custom assistant_turns.usage.');
         return;
     }

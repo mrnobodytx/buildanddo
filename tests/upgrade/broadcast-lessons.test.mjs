@@ -19,7 +19,8 @@ import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
 import test from 'node:test';
-import { fixture, plain, repoPath, source } from './admin-fixture.mjs';
+import { fixture, plain, source } from './admin-fixture.mjs';
+import { DBX, nativeCount } from './tutorial-learning-fixture.mjs';
 import { lessonLink, mergeTutorials, validLesson } from '../../apps/web/src/lib/tutorialCurriculum.js';
 import publicLessonsPlugin from '../../apps/web/plugins/vite-plugin-public-lessons.js';
 
@@ -52,7 +53,7 @@ test('both source-case catalogue imports strip grading fields without losing the
 });
 
 function installed(data = bundle) {
-    const f = fixture({ runtime: {
+    const f = fixture({ runtime: { $dbx: DBX,
         toString: String,
         $security: { sha256: (text) => createHash('sha256').update(text).digest('hex') },
         $os: { readFile: (path) => {
@@ -64,7 +65,7 @@ function installed(data = bundle) {
     f.migration('apps/pocketbase/pb_migrations/1789700000_expand_business_learning.js').up();
     f.migration('apps/pocketbase/pb_migrations/1790600000_tutorial_learning.js').up();
     f.migration('apps/pocketbase/pb_migrations/1791500100_tutorial_answer_wait.js').up();
-    f.app.countRecords = (name, filter, params) => f.app.findRecordsByFilter(name, filter, '', 0, 0, params).length;
+    f.app.countRecords = nativeCount(f);
     return f;
 }
 

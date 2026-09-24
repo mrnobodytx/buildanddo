@@ -31,7 +31,7 @@ migrate((app) => {
         throw new Error('Review the research mission schema before adding blueprint mode.');
     const mode = { name: 'mode', type: 'select', values: ['blueprint'], maxSelect: 1, required: false };
     const savedMode = research.fields.getByName('mode');
-    if (savedMode && Object.keys(mode).some((key) => JSON.stringify(savedMode[key]) !== JSON.stringify(mode[key])))
+    if (savedMode && Object.keys(mode).some((key) => JSON.stringify(typeof savedMode[key] === 'function' ? savedMode[key]() : savedMode[key]) !== JSON.stringify(mode[key])))
         throw new Error('Review custom research blueprint mode.');
     const locked = { type: 'base', listRule: null, viewRule: null, createRule: null, updateRule: null, deleteRule: null };
     for (const key of ['listRule', 'viewRule', 'createRule', 'updateRule', 'deleteRule'])
@@ -60,7 +60,7 @@ migrate((app) => {
         for (const field of definition.fields) {
             const actual = collection.fields.getByName(field.name);
             if (!actual && field.name === 'protocol_version') continue;
-            if (!actual || Object.keys(field).some((key) => JSON.stringify(actual[key]) !== JSON.stringify(field[key])))
+            if (!actual || Object.keys(field).some((key) => JSON.stringify(typeof actual[key] === 'function' ? actual[key]() : actual[key]) !== JSON.stringify(field[key])))
                 throw new Error(`Review custom workspace_blueprints.${field.name}.`);
         }
         if (!definition.indexes.every((index) => collection.indexes.includes(index))) throw new Error('Review blueprint indexes.');

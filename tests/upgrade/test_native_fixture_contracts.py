@@ -231,8 +231,11 @@ class NativeFixtureContractTests(unittest.TestCase):
                     ROOT / "apps/pocketbase/pb_hooks/tutorial-learning.pb.js"
                 ).read_bytes(),
             )
-            self.assertIn(
-                "$filepath.join(__hooks, '..', 'pb_migrations', 'data')", learning.SEED
+            # The seed names its own data directory: 0.28.4 has no __hooks in migrations.
+            self.assertIn("const dataDir = __FIXTURE_DATA_DIR__;", learning.SEED)
+            self.assertNotIn(
+                "__FIXTURE_DATA_DIR__",
+                (server.root / "migrations/0000000001_fixture.js").read_text(),
             )
             self.assertNotIn("new Record(progress)", learning.SEED)
             self.assertNotIn("set('certificate'", learning.SEED)
@@ -446,7 +449,7 @@ class NativeFixtureContractTests(unittest.TestCase):
         self,
     ) -> None:
         self.assertEqual(runtime_version(ROOT, "package"), "0.39.8")
-        self.assertEqual(runtime_version(ROOT, "compose"), "0.28.4")
+        self.assertEqual(runtime_version(ROOT, "compose"), "0.39.8")
         for name in ("native_classroom", "native_workspace", "native_learning"):
             self.assertEqual(CHECKS[name].level, "native")
             self.assertIn("--require-binary", CHECKS[name].argv)

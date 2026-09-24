@@ -20,8 +20,7 @@ migrate((app) => {
     const field = { name: 'answer_retry_at', type: 'date' };
     const saved = collection.fields.getByName(field.name);
     if (saved) {
-        const type = String(typeof saved.type === 'function' ? saved.type() : saved.type);
-        if (type !== field.type) throw new Error('Review custom tutorial_learning.answer_retry_at.');
+        if ((typeof saved.type === 'function' ? saved.type() : saved.type) !== field.type) throw new Error('Review custom tutorial_learning.answer_retry_at.');
         return;
     }
     collection.fields.add(new Field(field));
