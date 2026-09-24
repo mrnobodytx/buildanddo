@@ -1,9 +1,9 @@
 {
   "progression": {
     "dispatch_tasks": {
-      "done": 156,
-      "progress": 0.8342,
-      "total": 187
+      "done": 161,
+      "progress": 0.8385,
+      "total": 192
     },
     "dispatches": {
       "USO-BUILDANDDO-CRAWL-001": {
@@ -23,6 +23,12 @@
         "status": "in_progress",
         "tasks_done": 5,
         "tasks_total": 9
+      },
+      "VCC-BUILDANDDO-BUDDI-002": {
+        "srs": "SRS-BUILDANDDO-BUDDI-002",
+        "status": "in_progress",
+        "tasks_done": 0,
+        "tasks_total": 0
       },
       "VCC-BUILDANDDO-BUDDI-003": {
         "srs": "SRS-BUILDANDDO-BUDDI-003",
@@ -186,6 +192,12 @@
         "tasks_done": 10,
         "tasks_total": 10
       },
+      "VCC-BUILDANDDO-SITE-001": {
+        "srs": "SRS-BUILDANDDO-SITE-001",
+        "status": "in_progress",
+        "tasks_done": 5,
+        "tasks_total": 5
+      },
       "VCC-BUILDANDDO-TRUST-001": {
         "srs": "SRS-BUILDANDDO-TRUST-001",
         "status": "in_progress",
@@ -209,17 +221,18 @@
       "by_risk": {
         "A0": 2,
         "A1": 28,
-        "A2": 24
+        "A2": 26
       },
       "by_status": {
         "delivered": 4,
-        "in_progress": 44,
+        "in_progress": 46,
         "proposed": 6
       },
       "specs": {
         "SRS-BUILDANDDO-AGENTCTX-001": "in_progress",
         "SRS-BUILDANDDO-BOOTSTRAP-001": "delivered",
         "SRS-BUILDANDDO-BUDDI-001": "in_progress",
+        "SRS-BUILDANDDO-BUDDI-002": "in_progress",
         "SRS-BUILDANDDO-BUDDI-003": "in_progress",
         "SRS-BUILDANDDO-CAPABILITY-TOKEN-001": "in_progress",
         "SRS-BUILDANDDO-CAREER-001": "in_progress",
@@ -264,6 +277,7 @@
         "SRS-BUILDANDDO-SEMANTIC-TWIN-001": "in_progress",
         "SRS-BUILDANDDO-SEMANTIC-TWIN-INGESTION-001": "delivered",
         "SRS-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001": "in_progress",
+        "SRS-BUILDANDDO-SITE-001": "in_progress",
         "SRS-BUILDANDDO-SUPPLY-001": "in_progress",
         "SRS-BUILDANDDO-TEST-001": "in_progress",
         "SRS-BUILDANDDO-TRUST-001": "in_progress",
@@ -272,7 +286,7 @@
         "SRS-BUILDANDDO-WORKSPACE-001": "in_progress",
         "SRS-BUILDANDDO-WORLD-TWIN-001": "in_progress"
       },
-      "total": 54
+      "total": 56
     }
   },
   "schema": "buildanddo.growth-lock/v1",
@@ -280,10 +294,10 @@
     "docs_pages": 55,
     "github_workflows": 8,
     "gitlab_jobs": 14,
-    "pocketbase_hooks": 29,
-    "pocketbase_migrations": 65,
+    "pocketbase_hooks": 31,
+    "pocketbase_migrations": 67,
     "readmes": 50,
-    "tracked_files": 1789
+    "tracked_files": 1814
   },
   "systems": {
     "apps/career": {
@@ -315,6 +329,24 @@
       "srs_codes": [
         "SRS-BUILDANDDO-DECISION-001",
         "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "test_files": 3
+    },
+    "apps/edge": {
+      "cgrf_coverage": 1.0,
+      "cgrf_files": 6,
+      "files": 8,
+      "lines": {
+        "data": 76,
+        "javascript": 1045
+      },
+      "readme": false,
+      "source_files": 6,
+      "source_lines": 1045,
+      "srs_codes": [
+        "SRS-BUILDANDDO-BUDDI-002",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "SRS-CN-ENTITY-CATALOGUE-001"
       ],
       "test_files": 3
     },
@@ -398,19 +430,20 @@
       "test_files": 3
     },
     "apps/pocketbase": {
-      "cgrf_coverage": 0.8722,
-      "cgrf_files": 116,
-      "files": 146,
+      "cgrf_coverage": 0.8786,
+      "cgrf_files": 123,
+      "files": 153,
       "lines": {
         "data": 3924,
-        "javascript": 14128,
+        "javascript": 15475,
         "typescript": 917
       },
       "readme": false,
-      "source_files": 133,
-      "source_lines": 15045,
+      "source_files": 140,
+      "source_lines": 16392,
       "srs_codes": [
         "SRS-BUILDANDDO-BUDDI-001",
+        "SRS-BUILDANDDO-BUDDI-002",
         "SRS-BUILDANDDO-CAREER-001",
         "SRS-BUILDANDDO-CLASSROOM-001",
         "SRS-BUILDANDDO-CLASSROOM-GLOBAL-001",
@@ -419,12 +452,13 @@
         "SRS-BUILDANDDO-LIVE-UTILIZATION-001",
         "SRS-BUILDANDDO-PRESENCE-001",
         "SRS-BUILDANDDO-QUIZ-001",
+        "SRS-BUILDANDDO-SITE-001",
         "SRS-BUILDANDDO-TRUST-001",
         "SRS-BUILDANDDO-UPGRADE-001",
         "SRS-BUILDANDDO-WORKSPACE-001",
         "SRS-CN-PERSONA-RUNTIME-001"
       ],
-      "test_files": 15
+      "test_files": 16
     },
     "apps/research": {
       "cgrf_coverage": 1.0,
@@ -442,19 +476,19 @@
       "test_files": 7
     },
     "apps/web": {
-      "cgrf_coverage": 0.7527,
-      "cgrf_files": 347,
-      "files": 499,
+      "cgrf_coverage": 0.7538,
+      "cgrf_files": 349,
+      "files": 501,
       "lines": {
         "css": 1101,
         "data": 1449,
         "html": 22,
-        "javascript": 72822,
+        "javascript": 73029,
         "markdown": 129
       },
       "readme": true,
-      "source_files": 461,
-      "source_lines": 73945,
+      "source_files": 463,
+      "source_lines": 74152,
       "srs_codes": [
         "SRS-BUILDANDDO-BUDDI-001",
         "SRS-BUILDANDDO-BUDDI-003",
@@ -472,6 +506,7 @@
         "SRS-BUILDANDDO-ROADMAP-001",
         "SRS-BUILDANDDO-RUM-001",
         "SRS-BUILDANDDO-RUM-002",
+        "SRS-BUILDANDDO-SITE-001",
         "SRS-BUILDANDDO-TEST-001",
         "SRS-BUILDANDDO-TRUST-001",
         "SRS-BUILDANDDO-UPGRADE-001",
@@ -585,11 +620,11 @@
       "lines": {
         "data": 654,
         "javascript": 50,
-        "python": 19054
+        "python": 19057
       },
       "readme": false,
       "source_files": 51,
-      "source_lines": 19104,
+      "source_lines": 19107,
       "srs_codes": [
         "SRS-BUILDANDDO-AGENTCTX-001",
         "SRS-BUILDANDDO-CHANGELOG-001",
@@ -630,11 +665,11 @@
       "cgrf_files": 9,
       "files": 10,
       "lines": {
-        "python": 2490
+        "python": 2491
       },
       "readme": false,
       "source_files": 9,
-      "source_lines": 2490,
+      "source_lines": 2491,
       "srs_codes": [
         "SRS-BUILDANDDO-QUIZ-001",
         "SRS-BUILDANDDO-UPGRADE-001"
@@ -690,13 +725,13 @@
     }
   },
   "totals": {
-    "cgrf_coverage": 0.832,
-    "files": 1072,
-    "source_lines": 169812,
-    "systems": 22,
+    "cgrf_coverage": 0.8348,
+    "files": 1089,
+    "source_lines": 172415,
+    "systems": 23,
     "systems_with_readme": 4,
-    "systems_with_tests": 21,
-    "test_files": 224,
-    "test_files_unattributed": 114
+    "systems_with_tests": 22,
+    "test_files": 228,
+    "test_files_unattributed": 117
   }
 }

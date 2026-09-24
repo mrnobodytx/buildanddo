@@ -170,6 +170,16 @@ class ReadmeCheckTests(unittest.TestCase):
         self.assertEqual(title, "Praxis evidence")
         self.assertEqual(summary, "Evidence fabric \\| with a pipe.")
 
+    def test_a_one_line_cgrf_summary_above_the_header_is_skipped(self) -> None:
+        folder = self.repo.dir / "docs/api"
+        folder.mkdir(parents=True)
+        (folder / "README.md").write_text(
+            "# CGRF: SRS=SRS-DEMO-001 | CAPS=B | Seat=DEMO\n"
+            "# ─── CGRF Header ─────\n# Intent:      Describe the API.\n# ─────────\n\n# API reference\n\nBody.\n",
+            encoding="utf-8",
+        )
+        self.assertEqual(readme_check.describe_readme(folder / "README.md"), ("API reference", "Describe the API."))
+
     def test_tool_caches_are_not_catalogued(self) -> None:
         (self.repo.dir / ".pytest_cache").mkdir()
         (self.repo.dir / ".pytest_cache/README.md").write_text("# cache\n", encoding="utf-8")

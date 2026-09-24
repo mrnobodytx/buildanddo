@@ -375,6 +375,13 @@
     },
     {
       "area": "governance",
+      "evidence": ".bits/queue/VCC-BUILDANDDO-SITE-001.md: 5/5 tasks done; mark SRS-BUILDANDDO-SITE-001 delivered once merged and verified, or add the task that remains",
+      "severity": "medium",
+      "srs": "SRS-BUILDANDDO-SITE-001",
+      "statement": "VCC-BUILDANDDO-SITE-001 has every task done but SRS-BUILDANDDO-SITE-001 is still in_progress"
+    },
+    {
+      "area": "governance",
       "evidence": ".bits/queue/VCC-BUILDANDDO-TRUST-001.md: 5/5 tasks done; mark SRS-BUILDANDDO-TRUST-001 delivered once merged and verified, or add the task that remains",
       "severity": "medium",
       "srs": "SRS-BUILDANDDO-TRUST-001",
@@ -386,6 +393,13 @@
       "severity": "medium",
       "srs": "SRS-BUILDANDDO-WORLD-TWIN-001",
       "statement": "VCC-BUILDANDDO-WORLD-TWIN-001 has every task done but SRS-BUILDANDDO-WORLD-TWIN-001 is still in_progress"
+    },
+    {
+      "area": "governance",
+      "evidence": ".bits/queue/VCC-BUILDANDDO-BUDDI-002.md: TEMPLATE.md asks every task to carry a gate command that prints PASS or FAIL",
+      "severity": "info",
+      "srs": "SRS-BUILDANDDO-BUDDI-002",
+      "statement": "VCC-BUILDANDDO-BUDDI-002 has no task table"
     },
     {
       "area": "governance",
@@ -851,7 +865,7 @@
       "wired_into_ci": true
     }
   ],
-  "generated_at": "2026-09-24T22:21:35.189685+00:00",
+  "generated_at": "2026-09-24T22:58:09.579365+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -885,6 +899,13 @@
         "spec": ".bits/srs/SRS-BUILDANDDO-BUDDI-001.md",
         "status": "in_progress",
         "title": "Buddi and the brand mark - the assistant's name, site icons and address-free public text (C-ONE), and the block mark and the Buddi mascot with server-confirmed achievements (BITS-CODEGEN)"
+      },
+      {
+        "code": "SRS-BUILDANDDO-BUDDI-002",
+        "risk": "A2",
+        "spec": ".bits/srs/SRS-BUILDANDDO-BUDDI-002.md",
+        "status": "in_progress",
+        "title": "Buddi tool endpoints - public reads over authored lessons and public evidence, bounded A2 receipts, edge proxy"
       },
       {
         "code": "SRS-BUILDANDDO-BUDDI-003",
@@ -1523,6 +1544,7 @@
     "apps": [
       "career",
       "decision",
+      "edge",
       "estate",
       "federal_foundry",
       "integrity",
@@ -1548,13 +1570,13 @@
       "scripts/deploy/ship.py",
       "scripts/deploy/staging-readback.sh"
     ],
-    "migrations": 75,
-    "python_files": 451,
+    "migrations": 77,
+    "python_files": 453,
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 1790,
-    "web_source_files": 381
+    "tracked_files": 1815,
+    "web_source_files": 383
   },
   "schema_version": 1,
   "sprint_readiness": {
@@ -1633,22 +1655,22 @@
         "why": "Competition readiness requires an evidence-backed learning-through-work journey, a reproducible replay and actual submission criteria."
       }
     ],
-    "source_sha256": "b5c164542517811756775a6bb00260948c9a1c7f3db14c8e604984c5bd0ca00f",
+    "source_sha256": "3dadfdba12e2ca6dadeb73b381818cc60920498c57d3a2dc3832e5eb79aff7c5",
     "state": "PASS"
   },
   "summary": {
-    "findings": 59,
+    "findings": 61,
     "findings_high": 32,
     "pipelines": 12,
-    "srs_open": 50,
-    "srs_total": 54,
+    "srs_open": 52,
+    "srs_total": 56,
     "unwired_gates": 32
   },
   "tests": {
     "js_runners": [
       "vitest"
     ],
-    "js_test_files": 103,
+    "js_test_files": 106,
     "js_test_script": true,
     "junit_configured": true,
     "python_suite_entrypoints": [

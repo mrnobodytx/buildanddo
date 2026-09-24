@@ -225,6 +225,7 @@ CATALOGUE_GROUPS = (
 )
 SUMMARY_MAX = 150
 CGRF_START = re.compile(r"^\s*(?:#|<!--)\s*─+\s*CGRF Header")
+CGRF_SUMMARY = re.compile(r"^#\s*CGRF:\s")
 CGRF_RULE = re.compile(r"^\s*(?:#\s*)?─{8,}\s*(?:-->)?\s*$")
 CGRF_FIELD = re.compile(r"^\s*#?\s*([A-Za-z ]+):\s*(.*)$")
 CGRF_CONTINUATION = re.compile(r"^\s*#?\s{2,}(\S.*)$")
@@ -251,10 +252,12 @@ def describe_readme(path: Path) -> tuple[str, str]:
     as exactly that. Otherwise the first prose paragraph after the title."""
     lines = path.read_text(encoding="utf-8", errors="replace").splitlines()
     intent: list[str] = []
-    body_start = 0
-    if lines and CGRF_START.match(lines[0]):
+    # Some seats put a one-line "# CGRF: SRS=... | CAPS=..." summary above the block.
+    head = 1 if lines and CGRF_SUMMARY.match(lines[0]) else 0
+    body_start = head
+    if len(lines) > head and CGRF_START.match(lines[head]):
         in_intent = False
-        for index, line in enumerate(lines[1:], start=1):
+        for index, line in enumerate(lines[head + 1:], start=head + 1):
             if CGRF_RULE.match(line):
                 body_start = index + 1
                 break

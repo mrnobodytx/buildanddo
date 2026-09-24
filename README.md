@@ -169,6 +169,7 @@ under an explicit policy. The browser is never trusted to decide.
 |---|---|---|---|
 | [`apps/web`](./apps/web) | The site: public pages and the signed-in workspace | React 18, Vite, Tailwind, Radix; nginx in production | [motion](./docs/motion-system.md), [interactive learning](./docs/interactive-learning.md) |
 | [`apps/pocketbase`](./apps/pocketbase) | The backend: 65 migrations, 29 route/hook modules and their policy libraries | PocketBase 0.39.8, JS hooks | [API reference](./docs/api/README.md) |
+| [`apps/edge`](./apps/edge) | Cloudflare Worker in front of the site: response security headers, bounded graph reads, and the voice agent's tool URLs proxied to the backend | Cloudflare Workers, wrangler | [API reference](./docs/api/README.md) |
 | [`apps/career`](./apps/career) | Career evidence engine: role matches and application packages, derived only from recorded, attributed work | Python | [career passport](./docs/career-passport.md) |
 | [`apps/decision`](./apps/decision) | Decision contract with blueprint → components → missions adapters | Python | [blueprints](./docs/blueprints.md), [pipeline](./docs/blueprint-pipeline.md) |
 | [`apps/estate`](./apps/estate) | Offline compiler that turns files, CGRF headers and manifests into a module graph | Python stdlib | [README](./apps/estate/README.md) |
