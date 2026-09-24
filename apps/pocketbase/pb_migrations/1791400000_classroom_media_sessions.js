@@ -15,6 +15,17 @@
 // ----------------------------------------------------------------
 
 migrate((app) => {
+    // A Go-bound field exposes `type` as a method, so JSON.stringify(saved.type) is undefined and a raw
+    // comparison refused every re-apply on native PocketBase ("Review custom ..."). Read values the
+    // way the classroom_rooms and classroom_presence migrations do.
+    const norm = (holder, key) => {
+        const raw = holder[key];
+        const value = typeof raw === 'function' ? raw() : raw;
+        const json = JSON.stringify(value);
+        if (json === undefined) return String(value);
+        if (json === '{}' && value !== null && typeof value === 'object') return String(value);
+        return json;
+    };
     const relation = (name, target) => ({ name, type: 'relation', required: true, maxSelect: 1,
         collectionId: app.findCollectionByNameOrId(target).id, cascadeDelete: true });
     const definition = {
@@ -43,7 +54,7 @@ migrate((app) => {
     for (const field of definition.fields) {
         const current = collection.fields.getByName(field.name);
         if (!current && field.name === 'protocol_version') continue;
-        if (!current || Object.keys(field).some((name) => JSON.stringify(current[name]) !== JSON.stringify(field[name])))
+        if (!current || Object.keys(field).some((name) => norm(current, name) !== norm(field, name)))
             throw new Error(`Review custom classroom_media_sessions.${field.name}.`);
     }
     const shape = (index) => String(index).toLowerCase().replace(/[`"[\]]/g, '')
