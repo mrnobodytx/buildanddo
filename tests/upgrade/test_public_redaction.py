@@ -49,6 +49,7 @@ WEB_PUBLIC = ROOT / "apps" / "web" / "public"
 DIST = ROOT / "dist" / "apps" / "web"
 FAMILY_NAME = "ray-xyz0-0"          # follows a machine family; no machine carries it
 DOC_IP = "203.0.113.9"              # documentation range (RFC 5737)
+UNSPECIFIED_IP = "0.0.0.0"          # the unspecified address (RFC 1122): it names no machine
 
 
 def build_platform_health(env: dict[str, str] | None = None) -> dict:
@@ -60,6 +61,7 @@ def build_platform_health(env: dict[str, str] | None = None) -> dict:
                 mock.patch.object(fleet_report, "ROOT", root), \
                 mock.patch.object(fleet_report, "PLATFORM_OUT", root / "platform-health.json"), \
                 mock.patch.object(fleet_report, "FLEET_OUT", root / "fleet-status.json"), \
+                mock.patch.object(fleet_report, "PLATFORM_PRIVATE_OUT", root / "estate-platform-health.json"), \
                 contextlib.redirect_stdout(out), contextlib.redirect_stderr(out):
             status = fleet_report.main([])
         if status != 0:
@@ -69,6 +71,14 @@ def build_platform_health(env: dict[str, str] | None = None) -> dict:
 
 def families_only() -> dict[str, str]:
     return {redaction.FLEET_MAP_ENV: ""}
+
+
+def run_scan(*paths: Path) -> tuple[int, str]:
+    """Run the scan command as a shell would, families only; return its exit status and what it printed."""
+    out = io.StringIO()
+    with mock.patch.dict(os.environ, families_only()), contextlib.redirect_stdout(out):
+        status = redaction.main(["scan", *map(str, paths)])
+    return status, out.getvalue()
 
 
 def ships(path: Path) -> bool:
@@ -117,12 +127,15 @@ class ControlTests(unittest.TestCase):
     """Each kind of leak, planted, is caught; what is not a leak is left alone."""
 
     def test_the_generator_withholds_a_name_planted_in_its_platforms(self):
+        # Planted in `label`, not `detail`: since 2026-09-24 the public artifact is a closed-set
+        # projection and `detail` is not in it, so a name planted there would be withheld by the
+        # projection and this test would no longer measure the rule at all.
         planted = copy.deepcopy(fleet_report.PLATFORMS)
-        planted[0]["detail"] = f"{planted[0]['detail']} Runs on {FAMILY_NAME}, reachable at {DOC_IP}."
+        planted[0]["label"] = f"{planted[0]['label']} on {FAMILY_NAME} at {DOC_IP}"
         with mock.patch.object(fleet_report, "PLATFORMS", planted):
             document = build_platform_health(families_only())
         self.assertEqual(redaction.Rule("").find_leaks(json.dumps(document)), {"ips": [], "machines": []})
-        self.assertIn(redaction.BAR, document["platforms"][0]["detail"])
+        self.assertIn(redaction.BAR, document["platforms"][0]["label"])
 
     def test_a_planted_family_name_and_address_are_caught_and_withheld(self):
         rule = redaction.Rule("")
@@ -146,6 +159,21 @@ class ControlTests(unittest.TestCase):
         with mock.patch.dict(os.environ, {redaction.FLEET_MAP_ENV: str(Path(tmp) / "gone.json")}):
             self.assertIn("could not be read", redaction.Rule().source)
 
+    def test_a_name_joined_into_a_slug_or_a_file_name_is_caught(self):
+        # A machine joined to other words by hyphens is still that machine. The first version of this rule
+        # counted "-" as part of a name, and a handoff file named after the release machine passed it.
+        rig = "rig0"                     # follows a machine family; no machine carries it
+        rule = redaction.Rule("")
+        for text in (f"2026-09-23-bits-codegen-{rig}-broadcast-classroom.md", f"handoff-to-{rig}",
+                     f"{rig}-release", f"codegen-{FAMILY_NAME}-broadcast", f"seat-{FAMILY_NAME}"):
+            self.assertTrue(rule.find_machines(text), text)
+        with tempfile.TemporaryDirectory() as tmp:
+            fleet = Path(tmp) / "fleet.json"
+            fleet.write_text(json.dumps({"boxes": {"box-quartz-7": {}}}), encoding="utf-8")
+            self.assertEqual(redaction.Rule(fleet).find_machines("deploy-box-quartz-7-now"), ["box-quartz-7"])
+        # The broad mesh family keeps its word boundary: a compound word that merely contains it is no machine.
+        self.assertEqual(rule.find_machines("capability-mesh-fallback, service-mesh-sidecar"), [])
+
     def test_addresses_are_caught_and_loopback_becomes_localhost(self):
         rule = redaction.Rule("")
         self.assertEqual(rule.find_ips(f"Served from {DOC_IP}."), [DOC_IP])
@@ -154,6 +182,23 @@ class ControlTests(unittest.TestCase):
                          f"from {redaction.BAR} via http://localhost:8090")
         # Code that compares the page's hostname with loopback names no machine.
         self.assertEqual(rule.find_ips('h==="localhost"||h==="127.0.0.1"||h==="::1"', allow_loopback=True), [])
+
+    def test_a_scan_passes_the_unspecified_address_and_still_fails_a_documentation_address(self):
+        # A WebRTC offer names the unspecified address before any candidate is known, and the voice SDK's
+        # chunk carries that text (SRS-BUILDANDDO-BUDDI-003). Like loopback, it identifies no machine.
+        rule = redaction.Rule("")
+        offer = f"o=- 4611 2 IN IP4 {UNSPECIFIED_IP} c=IN IP4 {UNSPECIFIED_IP} a=rtcp:9 IN IP4 {UNSPECIFIED_IP}"
+        self.assertEqual(rule.find_ips(offer, allow_loopback=True), [])
+        with tempfile.TemporaryDirectory() as tmp:
+            chunk = Path(tmp) / "VoiceSession-x.js"
+            chunk.write_text(f'const offer="{offer}";', encoding="utf-8")
+            self.assertEqual(redaction.scan_tree(chunk, rule), {})
+            # The control: a documentation address in the same place still fails the scan.
+            chunk.write_text(f'const offer="{offer.replace(UNSPECIFIED_IP, DOC_IP)}";', encoding="utf-8")
+            self.assertEqual(redaction.scan_tree(chunk, rule), {"VoiceSession-x.js": {"ips": 1, "machines": 0}})
+        # Outside a scan the address is still reported, as loopback is, and published text still withholds it.
+        self.assertEqual(rule.find_ips(offer), [UNSPECIFIED_IP])
+        self.assertNotIn(UNSPECIFIED_IP, rule.redact(offer))
 
     def test_svg_geometry_versions_and_near_names_are_not_flagged(self):
         rule = redaction.Rule("")
@@ -178,6 +223,57 @@ class ControlTests(unittest.TestCase):
             self.assertEqual(redaction.scan_tree(site, redaction.Rule("")),
                              {"assets/OperatorPage-x.js": {"ips": 0, "machines": 2},
                               "platform-health.json": {"ips": 1, "machines": 0}})
+
+    def test_a_scan_reads_react_and_typescript_sources_and_says_how_many_files_it_read(self):
+        # The scanned types were built for dist/, so a scan of React sources read nothing and printed a PASS
+        # (measured 2026-09-23). A name planted in a .jsx file must now fail, and the verdict counts the reads.
+        with tempfile.TemporaryDirectory() as tmp:
+            src = Path(tmp)
+            (src / "Panel.jsx").write_text(f'export const seat = "{FAMILY_NAME}";', encoding="utf-8")
+            (src / "Clean.tsx").write_text('export const seat = "Forge";', encoding="utf-8")
+            (src / "types.ts").write_text("export type Seat = string;", encoding="utf-8")
+            (src / "nginx.conf").write_text("server_tokens off;", encoding="utf-8")
+            status, out = run_scan(src)
+            self.assertEqual(status, 1, out)
+            self.assertIn("Panel.jsx: 0 address(es), 1 machine name(s)", out)
+            self.assertIn("read 3 file(s)", out)
+            self.assertEqual(redaction.scan_files(src, redaction.Rule("")),
+                             ({"Panel.jsx": {"ips": 0, "machines": 1}}, 3))
+
+    def test_a_scan_that_reads_nothing_says_so_instead_of_passing(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            conf = Path(tmp) / "nginx.conf"
+            conf.write_text("server_tokens off;", encoding="utf-8")
+            status, out = run_scan(conf)
+            self.assertEqual(status, 2, out)
+            self.assertIn("read 0 files", out)
+            self.assertNotIn("PASS", out)
+
+    def test_a_fixture_in_a_test_file_may_be_only_a_made_up_name_or_a_documentation_address(self):
+        # Tests are public text too, so a scan reads them; they plant names and addresses on purpose. In a test
+        # file, and only there, a scan lets through the made-up names and documentation-range addresses.
+        planted = f'const seat = "{FAMILY_NAME}"; const at = "{DOC_IP}";'
+        # Neither a documentation address nor any machine's (RFC 2544 benchmarking); built here, so no fixture
+        # in this repository holds an address the rule would let through.
+        elsewhere = ".".join(("198", "18", "0", "7"))
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            tests = root / "src" / "__tests__"
+            tests.mkdir(parents=True)
+            (tests / "Panel.test.jsx").write_text(planted, encoding="utf-8")
+            (root / "src" / "Panel.jsx").write_text(planted, encoding="utf-8")
+            (tests / "Other.test.jsx").write_text('const seat = "rig9";', encoding="utf-8")
+            (tests / "Address.test.jsx").write_text(f'const at = "{elsewhere}";', encoding="utf-8")
+            self.assertEqual(redaction.scan_tree(root, redaction.Rule("")), {
+                "src/Panel.jsx": {"ips": 1, "machines": 1},
+                "src/__tests__/Address.test.jsx": {"ips": 1, "machines": 0},
+                "src/__tests__/Other.test.jsx": {"ips": 0, "machines": 1},
+            })
+            # A made-up name that the private fleet map lists is a machine, even in a test.
+            fleet = root / "fleet.json"
+            fleet.write_text(json.dumps({"boxes": {FAMILY_NAME: {}}}), encoding="utf-8")
+            self.assertEqual(redaction.scan_tree(tests, redaction.Rule(fleet)).get("Panel.test.jsx"),
+                             {"ips": 0, "machines": 1})
 
 
 if __name__ == "__main__":

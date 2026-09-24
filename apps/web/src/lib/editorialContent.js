@@ -134,9 +134,9 @@ export function dailyHighlights(sources, now = new Date()) {
     const highlights = [];
     if (readable(sources.editions)) {
         const edition = latestPublishedEdition(sources.editions.records, now);
-        if (edition && isToday(edition.edition_date || edition.created, now)) highlights.push({
+        if (edition && isToday(edition.published_at, now)) highlights.push({
             id: 'edition/' + edition.id, title: compact(edition.title, 140), kicker: 'Published edition',
-            date: edition.edition_date || edition.created, href: '#daily-edition',
+            date: edition.published_at, href: '#daily-edition',
         });
     }
     for (const [name, label, href] of [

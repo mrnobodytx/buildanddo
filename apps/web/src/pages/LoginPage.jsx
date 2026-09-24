@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label';
 import { useAuth } from '@/contexts/AuthContext';
 import { workspaceDestination } from '@/lib/navigationIntent';
 import { OCN_MESSAGES, ocnLogin, ocnRequested, readOcnHeader } from '@/lib/ocnLogin';
+import { PUBLIC_ACTIONS, publicActionFailureReason, publicActionSection, trackPublicAction } from '@/lib/publicActions';
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -31,12 +32,15 @@ export default function LoginPage() {
     const [ocnBusy, setOcnBusy] = useState(false);
     const [ocnError, setOcnError] = useState('');
     const handleOcnLogin = async () => {
+        const section = publicActionSection(location.pathname);
         setOcnError('');
         setOcnBusy(true);
         try {
             await ocnLogin();
+            trackPublicAction(PUBLIC_ACTIONS.OCN_LOGIN, 'success', 'confirmed', undefined, { section });
             navigate('/app', { replace: true });
         } catch (error) {
+            trackPublicAction(PUBLIC_ACTIONS.OCN_LOGIN, 'failure', publicActionFailureReason(error), undefined, { section });
             setOcnError(error?.message || 'Seat sign-in failed. Nothing was signed in.');
         } finally {
             setOcnBusy(false);
@@ -65,14 +69,20 @@ export default function LoginPage() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (status === 'submitting') return;
+        const section = publicActionSection(location.pathname);
         setServerError('');
-        if (!validate()) return;
+        if (!validate()) {
+            trackPublicAction(PUBLIC_ACTIONS.LOGIN, 'failure', 'validation', undefined, { section });
+            return;
+        }
         setStatus('submitting');
         try {
             await login(form.email.trim(), form.password);
+            trackPublicAction(PUBLIC_ACTIONS.LOGIN, 'success', 'confirmed', undefined, { section });
             // WorkspaceGate distinguishes missing workspaces from failed reads.
             navigate(returnTo, { replace: true });
         } catch (err) {
+            trackPublicAction(PUBLIC_ACTIONS.LOGIN, 'failure', publicActionFailureReason(err), undefined, { section });
             const msg =
                 err?.response?.message ||
                 'We couldn\u2019t sign you in. Check your email and password and try again.';

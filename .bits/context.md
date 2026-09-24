@@ -46,12 +46,19 @@ defines the precise tiers and hard NO list.
 
 ## What is already wired
 
-Three pipelines: PR governance (boundary scan, lint, build, artifact), candidate
-mirror to private GitLab on main, and DORA deployment reporting. Every run also
-measures itself — bundle, dependencies, source volume, tests, lint, dead code,
-boundary results — compares against the last main baseline, and publishes
-metrics, deltas, events and logs to Datadog on us5. The browser ships RUM and
-browser logs. Run the briefing for the current, measured version of this list.
+GitLab executes CI through `.gitlab-ci.yml` and its reachable local includes.
+The Day-21 lane checks governance, runs the complete eighteen-profile acceptance
+matrix and retains the receipts, logs and referenced artifacts together. The
+source-validation include retains the native SDK/parser gates and Python
+3.11/3.12 foundry, portfolio and mission coverage. GitLab review pipelines also
+require exactly one actor label; external GitHub reviews require an export
+bound to the tested head. GitHub governance also runs automatically on public PR changes and label updates.
+Manual diagnostics remain available; no required GitLab check is removed. The
+existing private release path remains separately governed. GitHub is the public
+collaboration plane; its workflow definitions and historical check observations
+do not establish GitLab execution or runner health. The browser ships RUM and
+browser logs. Run the briefing for the current source inventory; configured jobs
+remain unmeasured until actual pipeline records and acceptance exports exist.
 
 ## Invariants this repo has already paid for
 
@@ -74,6 +81,16 @@ These are not style preferences. Each one exists because it broke something.
 
 ## Current plan
 
+The September 22 owner continuation also authorizes the restricted government
+research desk and eight-category assurance matrix under the existing upgrade
+dispatch. `docs/research-sprint.md` defines the provisional $100/month plus
+approval policy, local Decision Packages, market controls and polynomial checks.
+`docs/test-assurance.md` defines source and receiving-runtime checks. Generated
+research stays advisory; supplied opportunity dates and parameters are unverified.
+The native/browser, billing, official-notice, model and GPU receiving work is
+recorded in `.bits/handoffs/2026-09-22-bits-codegen-research-assurance.md`.
+This continuation does not complete or replace the existing acceptance gates.
+
 The owner prioritizes the 21-day Hostinger demo under the existing upgrade
 SRS/dispatch. Run `python scripts/ci/hostinger_readiness.py --check` and
 `python scripts/ci/submission_readiness.py --check` before
@@ -84,14 +101,22 @@ dependencies and recheck them against changed source. Review, update and refresh
 the source binding before final validation; never refresh as a substitute for
 acceptance. The contract does not assert a percentage or rewrite sprint state.
 
-1. Restore the ability to execute acceptance. GitHub check annotations observed
-   on September 20 report an account billing lock; that needs the account owner.
-   Then run the locked web toolchain and both declared disposable PocketBase
-   profiles, retaining actual failure and skip counts. Vitest/JUnit, release
+1. Run acceptance on the GitLab `buildanddo` shell runner with Node from `.nvmrc`,
+   isolated declared Python dependencies, the locked web toolchain and both
+   disposable PocketBase profiles. Retain the entire candidate-bound export and
+   actual failure/skip counts. The earlier GitHub billing annotation is historical
+   evidence about GitHub only; it is not a GitLab prerequisite. Vitest/JUnit, release
    tags and supply telemetry now exist; older proposed specs are not a current
    inventory of missing implementations.
-2. Complete one connected small-business journey: saved signal, bounded mission,
-   explicit approval, action, a different verifier, evidence and operator readback.
+   The receiving owner must confirm candidate mirroring, review metadata and
+   same-revision GitLab statuses on the public review before changing required
+   checks. The source configuration cannot repair provider account settings or
+   publish those statuses. See docs/hostinger-sprint-closure.md for that handoff.
+2. Demonstrate educational collaboration through one real objective: a relevant
+   lesson or practice, collaborators, bounded work, observed evidence, a different
+   verifier and retained reflection. The existing business automation lane is
+   one application domain; it still requires its saved signal, explicit approval,
+   actual action and operator readback.
    The workflow desk now separates recorded procedures from frozen executable
    ERP, Firecrawl and registered n8n steps. The worker retains uncertain effects
    for reconciliation. Provider activation and current NXC context retain their
@@ -107,9 +132,10 @@ acceptance. The contract does not assert a percentage or rewrite sprint state.
 `docs/workspace-assistant.md` explain the implemented paths, personal-data
 boundaries, runtime bindings, acceptance commands and remaining owner decisions.
 
-The live Praxis suite and fleet/deployment tools retain their separately scoped
-runtime requirements. Do not silently run them against a shared backend or hide
-unwired-gate findings to make a progress indicator green.
+The Praxis suite now requires its runner-owned disposable native backend on both
+declared profiles; standalone selftests cannot inherit a shared target. Actual
+native runs are still required. Fleet/deployment tools retain separately scoped
+runtime authority. Never hide unwired-gate findings to make a progress indicator green.
 
 Findings that are not yet specs appear in the briefing with their evidence.
 Promote one to a spec rather than fixing it inline in an unrelated PR.

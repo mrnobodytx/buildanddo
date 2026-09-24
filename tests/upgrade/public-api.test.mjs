@@ -66,7 +66,7 @@ test('mirrored public text still matches the files it cites', () => {
         assert.ok(flat(pages).includes(`path: '${page.path}'`), `page ${page.path} is gone`);
         assert.ok(flat(pages).includes(page.description), `description of ${page.path} changed`);
     }
-    assert.ok(pages.includes(api.BOUNDARIES.pricing), 'pricing statement changed');
+    assert.ok(flat(source('apps/web/src/pages/PricingPage.jsx')).includes(api.BOUNDARIES.pricing), 'pricing statement changed');
     // One source for community links since SRS-BUILDANDDO-COMMUNITY-WEB-001; the footer reads from it.
     assert.equal(api.COMMUNITY.source, 'apps/web/src/lib/communityLinks.js');
     const links = flat(source(api.COMMUNITY.source));

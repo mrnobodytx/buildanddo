@@ -1,15 +1,32 @@
 #!/usr/bin/env python3
+# --- CGRF Header ------------------------------------------------
+# File: services/praxis_evidence/selftest_reputation.py
+# Stage: 08_TEST
+# SRS: SRS-BUILDANDDO-UPGRADE-001
+# CAPS: pending
+# CK: pending
+# Dispatch: VCC-BUILDANDDO-UPGRADE-001
+# Seat: BITS-CODEGEN
+# Owner: Citadel Nexus Inc.
+# Created: 2026-09-23
+# Depends: services/praxis_evidence/isolated_test.py
+# EnumType: Test
+# EnumEdges: CONSUMES services/praxis_evidence/isolated_test.py; VALIDATES services/praxis_evidence/reputation.py
+# Intent: Test attribution and reputation without introducing fixture accounts or awards into production.
+# ----------------------------------------------------------------
 """selftest_reputation.py - proves real self-audit rejection (by actual
 authorship, not caller-honesty) and XP/TP settlement against the live PocketBase."""
 from __future__ import annotations
+import secrets
 import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from client import PocketBaseClient, PocketBaseError  # noqa: E402
+from client import PocketBaseError  # noqa: E402
+from isolated_test import isolated_client  # noqa: E402
 from claims import create_source, create_claim, audit_claim  # noqa: E402
 
-client = PocketBaseClient()
+client = isolated_client()
 checks: list[tuple[str, bool]] = []
 cleanup: list[tuple[str, str]] = []
 
@@ -18,7 +35,8 @@ def _user(email: str) -> str:
     existing = client.list("users", filter_expr=f'email="{email}"')
     if existing:
         return existing[0]["id"]
-    rec = client.create("users", {"email": email, "password": "RepTest123!", "passwordConfirm": "RepTest123!"})
+    password = secrets.token_urlsafe(24)  # throwaway user; never reused or printed
+    rec = client.create("users", {"email": email, "password": password, "passwordConfirm": password})
     return rec["id"]
 
 

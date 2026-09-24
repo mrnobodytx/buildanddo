@@ -1,29 +1,29 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/src/hooks/useWorkspaceRecords.js
 // Stage:       07_BUILD
-// SRS:         SRS-BUILDANDDO-WORKSPACE-001
+// SRS:         SRS-BUILDANDDO-WORKSPACE-001, SRS-BUILDANDDO-UPGRADE-001
 // CAPS:        pending
 // CK:          pending
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-10
-// Depends:     apps/web/src/lib/pocketbaseClient.js,
-//              apps/web/src/contexts/WorkspaceContext.jsx,
-//              apps/web/src/lib/demoWorkspace.js,
-//              apps/web/src/lib/workspaceActions.js
+// Depends:     apps/web/src/lib/pocketbaseClient.js, apps/web/src/contexts/WorkspaceContext.jsx, apps/web/src/lib/demoWorkspace.js, apps/web/src/lib/workspaceActions.js, apps/web/src/lib/workspaceRecords.js, apps/web/src/contexts/AuthContext.jsx,
+//              apps/web/src/lib/observability/runtime.js, apps/web/src/lib/navigationIntent.js
 // EnumType:    Adapter
-// EnumEdges:   CONSUMES apps/web/src/lib/pocketbaseClient.js;
-//              CONSUMES apps/web/src/lib/demoWorkspace.js;
-//              PRODUCES workspace.record.write_failed
-// Intent:      One read/write path for workspace collections, so every page
-//              reports failure the same way and none of them can confuse an
-//              empty collection with an unreachable one.
+// EnumEdges:   CONSUMES apps/web/src/lib/pocketbaseClient.js; CONSUMES apps/web/src/lib/demoWorkspace.js; PRODUCES workspace.record.write_failed; CONSUMES apps/web/src/lib/workspaceRecords.js; CONSUMES apps/web/src/contexts/AuthContext.jsx;
+//              CONSUMES apps/web/src/lib/observability/runtime.js; CONSUMES apps/web/src/lib/navigationIntent.js
+// Intent:      One read/write path for workspace collections, so every page reports failure the same way and none of them can confuse an empty collection with an unreachable one.
 // ───────────────────────────────────────────────────────────────
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
+import { useAuth } from '@/contexts/AuthContext';
+import { createWorkspaceRecordClient } from '@/lib/workspaceRecords';
 import { useWorkspace } from '@/contexts/WorkspaceContext';
 import { observeMutation } from '@/lib/observability/mutations';
+import { readFailed } from '@/lib/observability/runtime';
+import { telemetrySection } from '@/lib/navigationIntent';
 import { useDemoMode } from '@/hooks/useDemoMode';
 import { demoRecords } from '@/lib/demoWorkspace';
 import pb from '@/lib/pocketbaseClient';
@@ -71,166 +71,63 @@ export function describeWriteError(err, fallback) {
  *   saving: boolean, writeError: string, clearWriteError: Function}} Records and operations.
  */
 export function useWorkspaceRecords(collection, options = {}) {
-	const { active } = useWorkspace();
-	const { demo } = useDemoMode();
-	const { sort, expand, enabled = true, extraFilter } = options;
-
-	const [records, setRecords] = useState([]);
-	const [loading, setLoading] = useState(true);
-	const [error, setError] = useState('');
-	const [degraded, setDegraded] = useState(false);
-	const [saving, setSaving] = useState(false);
-	const [writeError, setWriteError] = useState('');
-
-	// A slow response for a workspace the user has already navigated away from
-	// must not overwrite the records now on screen.
-	const requestRef = useRef(0);
-	const mountedRef = useRef(false);
-	const workspaceId = active?.id;
-	const workspaceRef = useRef(workspaceId);
-	workspaceRef.current = workspaceId;
-
-	const load = useCallback(async () => {
-		const request = requestRef.current + 1;
-		requestRef.current = request;
-
-		if (demo) {
-			setRecords(demoRecords(collection));
-			setError('');
-			setDegraded(false);
-			setLoading(false);
-			return;
-		}
-
-		if (!enabled || !active) {
-			setRecords([]);
-			setDegraded(false);
-			setLoading(false);
-			return;
-		}
-
-		setLoading(true);
-		try {
-			const base = pb.filter('workspace = {:ws}', { ws: active.id });
-			const filter = extraFilter ? `${base} && ${extraFilter}` : base;
-			const list = await pb.collection(collection).getFullList({
-				sort: sort || '-created',
-				expand,
-				filter,
-				requestKey: null,
-			});
-			if (requestRef.current !== request) return;
-			setRecords(list);
-			setError('');
-			setDegraded(false);
-		} catch (err) {
-			if (requestRef.current !== request) return;
-			console.error(`load ${collection} failed`, err);
-			setError(READ_FAILED);
-			setDegraded(true);
-			setRecords([]);
-		}
-		if (requestRef.current === request) setLoading(false);
-	}, [collection, active, enabled, sort, expand, extraFilter, demo]);
-
-	useEffect(() => {
-		mountedRef.current = true;
-		load();
-		return () => {
-			mountedRef.current = false;
-			requestRef.current += 1;
-		};
-	}, [load]);
-
-	// Demonstration mode short-circuits before any PocketBase call, so a
-	// demonstration can never leave a record behind.
-	const guardDemo = useCallback(() => {
-		if (!demo) return null;
-		setWriteError(DEMO_READ_ONLY);
-		return { ok: false, reason: 'demo_mode_read_only', error: DEMO_READ_ONLY };
-	}, [demo]);
-
-	const runWrite = useCallback(
-		async (operation, fallbackMessage, context) => {
-			const accountId = pb.authStore.record?.id;
-			setSaving(true);
-			setWriteError('');
-			try {
-				const record = await observeMutation(collection, context.op, operation);
-				if (mountedRef.current && workspaceRef.current === workspaceId && pb.authStore.record?.id === accountId) await load();
-				setSaving(false);
-				return { ok: true, record };
-			} catch (err) {
-				const message = describeWriteError(err, fallbackMessage);
-				console.error(`${context.op} ${collection} failed`, err);
-				setWriteError(message);
-
-				setSaving(false);
-				return { ok: false, reason: 'write_failed', error: message };
-			}
-		},
-		[collection, load, workspaceId],
-	);
-
-	const create = useCallback(
-		(data) => {
-			const blocked = guardDemo();
-			if (blocked) return Promise.resolve(blocked);
-			if (!active) {
-				return Promise.resolve({ ok: false, reason: 'no_workspace', error: 'No active workspace.' });
-			}
-			const ownerId = pb.authStore.record && pb.authStore.record.id;
-			return runWrite(
-				() => pb.collection(collection).create({ ...data, workspace: active.id, owner: ownerId }),
-				'Could not save that. Nothing was written.',
-				{ op: 'create' },
-			);
-		},
-		[active, collection, guardDemo, runWrite],
-	);
-
-	const update = useCallback(
-		(id, data) => {
-			const blocked = guardDemo();
-			if (blocked) return Promise.resolve(blocked);
-			return runWrite(
-				() => pb.collection(collection).update(id, data),
-				'Could not save that change. The record is unchanged.',
-				{ op: 'update' },
-			);
-		},
-		[collection, guardDemo, runWrite],
-	);
-
-	const remove = useCallback(
-		(id) => {
-			const blocked = guardDemo();
-			if (blocked) return Promise.resolve(blocked);
-			return runWrite(
-				() => pb.collection(collection).delete(id),
-				'Could not delete that record.',
-				{ op: 'delete' },
-			);
-		},
-		[collection, guardDemo, runWrite],
-	);
-
-	const clearWriteError = useCallback(() => setWriteError(''), []);
-
-	return {
-		records,
-		loading,
-		error,
-		degraded,
-		demo,
-		refresh: load,
-		create,
-		update,
-		remove,
-		saving,
-		writeError,
-		clearWriteError,
-	};
+    const { active } = useWorkspace();
+    const auth = useAuth();
+    const { demo } = useDemoMode();
+    const { sort, expand, enabled = true, extraFilter } = options;
+    const accountId = auth ? (auth.isAuthed ? auth.user?.id : '') : pb.authStore.record?.id;
+    const workspaceId = active?.id || '';
+    const scope = `${accountId || ''}:${workspaceId}:${demo}:${collection}:${enabled}`;
+    const key = `${scope}:${enabled}:${sort || ''}:${expand || ''}:${extraFilter || ''}`;
+    const live = useRef({ scope, key, mounted: true });
+    live.current.scope = scope; live.current.key = key;
+    const request = useRef(0);
+    const [snapshot, setSnapshot] = useState({ key: '', records: [], loading: true, error: '' });
+    const [write, setWrite] = useState({ scope: '', saving: false, error: '' });
+    const api = useMemo(() => createWorkspaceRecordClient({ client: pb, collection, accountId, workspaceId,
+        isCurrent: () => live.current.mounted && live.current.scope === scope && !demo && enabled,
+        observe: observeMutation }), [collection, accountId, workspaceId, scope, demo, enabled]);
+    const load = useCallback(async () => {
+        const attempt = ++request.current;
+        if (!enabled || !workspaceId || !accountId || demo) {
+            setSnapshot({ key, records: enabled && demo ? demoRecords(collection) : [], loading: false, error: '' });
+            return;
+        }
+        setSnapshot({ key, records: [], loading: true, error: '' });
+        const pathname = globalThis.window?.location?.pathname;
+        const section = telemetrySection(pathname);
+        const result = await api.read({ sort, expand, extraFilter });
+        if (!live.current.mounted || live.current.key !== key || attempt !== request.current || result.stale) return;
+        // Attempts are separate from the shared notices' rendered-state signals.
+        if (result.readFailure && pathname === globalThis.window?.location?.pathname)
+            readFailed(section, 'records', result.readFailure.reason, result.readFailure.status);
+        setSnapshot({ key, records: result.ok ? result.records : [], loading: false, error: result.error || '' });
+    }, [api, key, enabled, workspaceId, accountId, demo, collection, sort, expand, extraFilter]);
+    const reload = useRef(load); reload.current = load;
+    useEffect(() => { live.current.mounted = true; load(); return () => { live.current.mounted = false; request.current++; }; }, [load]);
+    const perform = useCallback(async (operation, id, data, version) => {
+        if (live.current.scope !== scope || !live.current.mounted) return { ok: false, stale: true };
+        if (demo) { setWrite({ scope, saving: false, error: DEMO_READ_ONLY }); return { ok: false, reason: 'demo_mode_read_only', error: DEMO_READ_ONLY }; }
+        if (!enabled || !accountId || !workspaceId) {
+            const error = 'Select an available workspace before saving.';
+            setWrite({ scope, saving: false, error }); return { ok: false, reason: 'unavailable', error };
+        }
+        setWrite((before) => ({ scope, saving: true, error: '', uncertain: before.scope === scope && before.uncertain === true }));
+        const result = operation === 'retry' ? await api.retry() : await api.write(operation, id, data, version);
+        if (live.current.scope !== scope || !live.current.mounted || result.stale) return { ok: false, stale: true };
+        if (result.reason === 'busy') return result;
+        setWrite({ scope, saving: false, error: result.error || '', uncertain: result.reason === 'uncertain' || result.uncertain === true });
+        if (result.ok) await reload.current();
+        return result;
+    }, [api, scope, demo, enabled, accountId, workspaceId]);
+    const current = snapshot.key === key;
+    const writing = write.scope === scope ? write : { saving: false, error: '' };
+    return { scope, records: current ? snapshot.records : [], loading: !current || snapshot.loading,
+        error: current ? snapshot.error : '', degraded: current && Boolean(snapshot.error), demo,
+        refresh: load, create: (data) => perform('create', '', data), update: (id, data, version) => perform('update', id, data, version),
+        remove: (id) => perform('delete', id), saving: writing.saving, writeError: writing.error,
+        uncertain: writing.uncertain === true, retry: () => perform('retry'),
+        clearWriteError: () => setWrite((before) => ({ ...before, error: '' })) };
 }
 
 /**
@@ -259,6 +156,10 @@ export function useRecords(collection, options = {}) {
 			return;
 		}
 		setLoading(true);
+		const pathname = globalThis.window?.location?.pathname;
+		const section = telemetrySection(pathname);
+		const accountId = pb.authStore.record?.id;
+		let received = false;
 		try {
 			const list = await pb.collection(collection).getFullList({
 				sort: sort || '-created',
@@ -266,12 +167,18 @@ export function useRecords(collection, options = {}) {
 				requestKey: null,
 			});
 			if (requestRef.current !== request) return;
+			received = true;
+			if (!Array.isArray(list) || list.some((row) => !row || typeof row.id !== 'string' || !row.id))
+				throw new Error('Unexpected record response');
 			setRecords(list);
 			setError('');
 			setDegraded(false);
 		} catch (err) {
 			if (requestRef.current !== request) return;
-			console.error(`load ${collection} failed`, err);
+			const cancelled = err?.isAbort || err?.name === 'AbortError' || err?.originalError?.name === 'AbortError';
+			const malformed = received || err?.name === 'SyntaxError' || err?.originalError?.name === 'SyntaxError';
+			if (!cancelled && accountId === pb.authStore.record?.id && pathname === globalThis.window?.location?.pathname)
+				readFailed(section, 'records', malformed ? 'invalid_response' : 'unavailable', received ? 200 : malformed && err?.status === 0 ? undefined : err?.status);
 			setError(READ_FAILED);
 			setDegraded(true);
 			setRecords([]);

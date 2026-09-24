@@ -134,6 +134,9 @@ function ContributorHub() {
     const {
         records: contributors,
         loading: leaderboardLoading,
+        degraded: leaderboardDegraded,
+        error: leaderboardError,
+        refresh: refreshLeaderboard,
     } = useRecords('contributors', { sort: '-merged_prs' });
     const [pulls, setPulls] = useState({ open: [], merged: [] });
     const [pullsState, setPullsState] = useState('loading');
@@ -297,10 +300,19 @@ function ContributorHub() {
                 <h2 className="font-display text-lg font-semibold tracking-tight">
                     Contribution leaderboard
                 </h2>
+                {/* The empty state below calls the emptiness DELIBERATE and contrasts it with
+                    fake data. That is true of a workspace with no contributors and false of a
+                    read that failed - and the hook distinguishes them, so showing the same card
+                    for both is the product telling the reader something it does not know. */}
                 {leaderboardLoading ? (
                     <Card className="p-8 text-center text-sm text-muted-foreground">
                         <Loader2 className="mx-auto h-5 w-5 animate-spin" />
                     </Card>
+                ) : leaderboardDegraded ? (
+                    <DegradedNotice
+                        message={leaderboardError || 'The contributor leaderboard could not be loaded, so this is not a record of who has contributed.'}
+                        onRetry={refreshLeaderboard}
+                    />
                 ) : contributors.length === 0 ? (
                     <EmptyState
                         icon={Trophy}
@@ -474,11 +486,11 @@ function SocialTab() {
     const access = useWorkspaceAccess();
     const writing = useRef(false);
     const connect = async (key) => {
-        if (writing.current || channels.demo || channels.loading || channels.degraded || !access.data?.can_admin) return;
+        if (writing.current || channels.demo || channels.loading || channels.degraded || channels.uncertain || access.loading || access.error || !access.data?.can_admin) return;
         writing.current = true;
         const existing = channels.records.find((record) => record.platform === key);
-        if (existing) await channels.update(existing.id, { status: 'pending' });
-        else await channels.create({ platform: key, status: 'pending' });
+        if (existing) await channels.update(existing.id, { platform: key }, existing);
+        else await channels.create({ platform: key });
         writing.current = false;
     };
     return <section className="ph-no-capture space-y-4" data-dd-privacy="mask">
@@ -488,14 +500,16 @@ function SocialTab() {
         <p className="text-sm leading-6 text-muted-foreground">Request a channel connection here. Write and review posts in Content studio. A pending request does not install a connection or send content.</p>
         {channels.demo && <DemoModeBanner />}
         {channels.writeError && <p role="alert" className="text-sm text-destructive">{channels.writeError}</p>}
+        {channels.uncertain && <Button size="sm" disabled={channels.demo || channels.saving || access.loading || access.error || !access.data?.can_admin} onClick={channels.retry}>Retry previous channel request</Button>}
         {channels.loading ? <ListSkeleton label="Loading channels…" /> : channels.degraded ? <DegradedNotice message="Channel state is unavailable." onRetry={channels.refresh} /> :
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">{PLATFORMS.map((platform) => {
                 const record = channels.records.find((item) => item.platform === platform.key);
-                const connected = ['connected', 'healthy'].includes(record?.status);
-                return <Card key={platform.key} className="space-y-3 p-4"><div className="flex flex-wrap items-center justify-between gap-2"><h3 className="font-display text-lg font-semibold">{platform.label}</h3><StatePill state={record?.status || 'not-connected'} /></div><p className="text-xs text-muted-foreground">{platform.note}</p>
-                    <p className="text-xs text-muted-foreground">Previously reported channel state; live activation is unconfirmed.</p>
-                    {!connected && access.data?.can_admin && <Button size="sm" variant="secondary" disabled={channels.demo || channels.saving || record?.status === 'pending'} onClick={() => connect(platform.key)}>{record?.status === 'pending' ? 'Request pending' : 'Request connection'}</Button>}
-                    {connected && record.handle && <p className="break-all text-xs text-muted-foreground">{record.handle}</p>}
+                const duplicate = channels.records.filter((item) => item.platform === platform.key).length > 1;
+                return <Card key={platform.key} className="space-y-3 p-4"><div className="flex flex-wrap items-center justify-between gap-2"><h3 className="font-display text-lg font-semibold">{platform.label}</h3><StatePill state={record?.requested_at ? 'pending' : 'reported'} /></div><p className="text-xs text-muted-foreground">{platform.note}</p>
+                    <p className="text-xs text-muted-foreground">Previously reported channel state: {record?.status || 'not recorded'}. Live activation is unconfirmed.</p>
+                    {duplicate && <p role="alert" className="text-sm">Duplicate channel records need operator review.</p>}
+                    {access.data?.can_admin && <Button size="sm" variant="secondary" disabled={channels.demo || channels.saving || channels.uncertain || access.loading || Boolean(access.error) || duplicate} onClick={() => connect(platform.key)}>{record?.requested_at ? 'Request again' : 'Request connection'}</Button>}
+                    {record?.handle && <p className="break-all text-xs text-muted-foreground">{record.handle}</p>}
                 </Card>;
             })}</div>}
     </section>;

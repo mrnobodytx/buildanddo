@@ -8,16 +8,19 @@
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-20
-# Depends:     .bits/hostinger-readiness.json, scripts/ci/hostinger_readiness.py, scripts/ci/hostinger_replay.py
+# Depends:     .bits/hostinger-readiness.json, scripts/ci/hostinger_readiness.py, scripts/ci/hostinger_replay.py, tools/day21/day21_acceptance.py, .bits/handoffs/2026-09-21-bits-codegen-cmax-b-governance-execution.md, docs/sprint-user-journey.md, docs/development-loop.md
 # EnumType:    Doc
-# EnumEdges:   CONSUMES .bits/hostinger-readiness.json; CONSUMES scripts/ci/hostinger_readiness.py; CONSUMES scripts/ci/hostinger_replay.py; EXTENDS docs/operator-plane.md; EXTENDS docs/mission-system.md
+# EnumEdges:   CONSUMES .bits/hostinger-readiness.json; CONSUMES scripts/ci/hostinger_readiness.py; CONSUMES scripts/ci/hostinger_replay.py; CONSUMES tools/day21/day21_acceptance.py; EXTENDS docs/operator-plane.md; EXTENDS docs/mission-system.md; CONSUMES .bits/handoffs/2026-09-21-bits-codegen-cmax-b-governance-execution.md; CONSUMES docs/sprint-user-journey.md; CONSUMES docs/development-loop.md
 # Intent:      Make the reason, acceptance boundary and next action for every sprint piece a required source review rather than a remembered plan.
 # ───────────────────────────────────────────────────────────────
 
 # Hostinger sprint closure
 
-The demonstration is one small organization problem through observation,
-approved bounded work, an actual action, independent review and visible evidence.
+BuildAndDo is an educational collaboration platform: choose an objective, learn
+with people and AI, carry out real work, inspect and verify the result, then
+retain what was learned. The demonstration should make that loop visible through
+one project. Its existing business automation lane provides a bounded action,
+independent review and visible evidence within that broader product story.
 The owner requested closing the repository gaps and making next actions
 mandatory governance. This continues SRS-BUILDANDDO-UPGRADE-001 and
 VCC-BUILDANDDO-UPGRADE-001. Private runtime activation and deployment still need
@@ -31,6 +34,60 @@ no editable completion percentage. Its source binding is
 `.bits/hostinger-readiness.lock.json`. Exact bytes of the tested application,
 libraries, tests and script trees are covered so a changed helper invalidates
 earlier acceptance too. Generated reports and operational evidence are excluded.
+
+## Continuous Semantic Twin progression lane
+
+The Twin runs across the existing sprint rather than becoming another dated
+milestone or a second schedule. It is **ecosystem-wide by invitation and
+discovery, not by a hard-coded integration list**. Its principal benefit is a
+durable, evidence-backed account of developmental progression: current state,
+demonstrated capability, gaps, regressions and the next justified evidence.
+Dates, weights, dependencies and completion still belong to the existing sprint
+and readiness owners above. This lane adds no estimated completion percentage.
+
+| Existing program work | Continuous Twin work | Progression evidence |
+|---|---|---|
+| Foundations and identity | Discover and resolve canonical owners | Exact source and participant revisions; explicit conflicts |
+| Evidence and tests | Relate declarations, observations and verification | Provenance, retained failures, independent receipts |
+| Operations | Explain capability, dependencies and authority boundaries | Bounded effect, external observation and reviewed outcome |
+| Automation | Identify reuse, blockers and next evidence | Complete eligible-work population and measured repeat behavior |
+| Governance | Compare history and recommend review candidates | Canonical model, prerequisites, regression and recovery criteria |
+
+```mermaid
+flowchart TD
+    O[Inventory / Identity / SBOM / Graph / Evidence / Telemetry] --> F[Semantic Twin foundation]
+    F --> D[Discovery and invitation]
+    F --> R[Evidence reconciliation]
+    F --> T[Retained temporal state]
+    D --> G[Canonical semantic graph]
+    R --> G
+    T --> G
+    G --> Q[Search / reason / assess impact]
+    Q --> N[Current → blocker → required evidence → next action]
+    N --> V[Independent verification and progression review]
+    V --> A[Existing governed operations]
+    A --> O
+```
+
+The blueprint and local query contract are in `docs/development-loop.md`.
+Current/target development labels reference their canonical model; the Twin
+does not define A0–A5 or grant an A-level. Technical competence and the authority
+ceiling remain separate. Regression preserves earlier truth and its evidence
+rather than rewriting a milestone or silently demoting an operational grant.
+
+| Lane acceptance | Available evidence / remaining operational input |
+|---|---|
+| Open participation and identity resolution | Generic canonical captures/invitations; receiving identity owners authenticate mappings |
+| Attributed assertions and distinct state axes | P0 envelopes plus explicit stale/conflicting/unmeasured conditions |
+| Traversable dependency/impact and known gaps | Local queries retain edge states and report bounds |
+| Reconstructible historical changes | Retained captures and deltas; live synchronization/retention belongs to receiving owners |
+| Next justified development step | Exact model/prerequisite projections; independent review and promotion remain existing gates |
+| Commercial meaning without invented ROI | One workspace value projection; native review lineage and explicit missing economics |
+
+This lane is implemented locally and remains operationally unaccepted until
+the receiving owners supply real scoped feeds, independently verified outcomes,
+the canonical development model and any economic baselines. Compilation,
+dashboard presence and local tests cannot establish that acceptance.
 
 ## Mandatory review
 
@@ -61,7 +118,7 @@ update its presentation too.
 | Missions | Scope and approval must precede work | Bounded execution and a separate result reviewer |
 | Workflows | Ordered steps need durable observations and retry recovery | Native atomic receipts, plus the actual executor's result |
 | Connectors | Configuration is insufficient to establish a connection | Fresh readback for the current binding/revision |
-| ERP | The outcome must be useful to the business | Saved objectives, tasks and contacts with scoped links |
+| ERP | Business projects need useful planning and follow-up | Saved objectives, tasks and contacts with scoped links |
 | Evidence | The exact claim must be inspectable | Consistent SHA/artifact receipts and observed verification |
 | Edition and desks | Operators must see the actual result and uncertainty | Current mission/evidence readback and browser acceptance |
 | Replay | The complete story must survive inspection | A consistent captured chain and official submission review |
@@ -97,9 +154,9 @@ installed test binary. Native checks create disposable loopback instances and
 synthetic accounts; they never migrate a shared database. Run all other
 `native_*` checks required by the contract in both profiles too. `--run all
 --runtime package` runs every local check for that profile; it does not stand in
-for compose acceptance. The CI version matrix provisions the declared binaries
-and calls these commands. Receipts/logs remain workflow artifacts, including
-failed runs. Jobs that cannot start have no test acceptance.
+for compose acceptance. The GitLab full-acceptance job provisions the declared
+binaries and runs the complete matrix in one checkout. Receipts/logs remain job
+artifacts, including failed runs. Jobs that cannot start have no test acceptance.
 
 Default receipts live in ignored `state/hostinger/acceptance/`. To assess CI
 exports, collect their receipt/log files in one directory and restore referenced
@@ -114,6 +171,106 @@ or artifacts, future times, mismatched counts, altered logs and receipts older
 than 48 hours cannot establish current acceptance. These are consistency checks,
 not signed identity attestations. Private source bodies, credentials and shared
 backend exports must not enter Git or public artifacts.
+
+### Run with installed dependencies and binaries
+
+`tools/day21/day21_acceptance.py` runs the eight source/build checks and all five
+native checks for each declared runtime. It accepts a clean committed candidate
+and exports receipts, logs and artifacts through the shared Day-21 validator.
+Choose a new summary directory for each run; existing evidence is never replaced.
+
+On a provisioned runner, supply both actual binaries explicitly:
+
+```bash
+python tools/day21/day21_acceptance.py --offline \
+  --pocketbase-package /path/to/pocketbase-0.39.8 \
+  --pocketbase-compose /path/to/pocketbase-0.39.8 \
+  --evidence-dir state/day21/acceptance/run-001 \
+  --summary-output state/day21/evidence/run-001/acceptance-summary.json
+```
+
+Recheck those versions against the declarations when provisioning. Each native
+check measures `--version` before starting a disposable backend. An absent or
+incorrect binary creates a BLOCKED receipt for every affected check, even when
+older passing receipts exist. `--offline` disables installs and Docker builds;
+it does not supply missing packages. The frontend needs `npm ci` from the lock,
+and source Python needs `scripts/discordbot/requirements.txt` and
+`apps/research/requirements.txt` in the runner's interpreter.
+
+A connected runner can use `--install-deps` and the existing Docker provisioning
+instead. `--source-only` and `--native-only` are mutually exclusive. A partial
+selection still exits nonzero unless the shared validator accepts all eighteen
+current profiles; a selected command's success cannot certify missing profiles.
+GitLab executes this lane. The earlier GitHub billing observations are historical
+evidence about GitHub and do not block the GitLab runner.
+
+### GitLab execution and artifact handoff
+
+The existing `.gitlab-ci.yml` includes `.gitlab/ci/day21-submission.yml`, which
+includes `.gitlab/ci/source-validation.yml`. `day21_governance` checks source
+bindings, public boundaries, review attribution, validator regressions and
+worker/submission coverage. `day21_full_acceptance` runs on the `buildanddo`
+shell runner. The separate source jobs retain required Discord/PDF and CPU
+blueprint checks, and foundry/portfolio/mission coverage on Python 3.11 and 3.12.
+These jobs are configured for main, sprint branches, merge requests, external
+pull requests or `DAY21_FULL_ACCEPTANCE=1`.
+The full job replaces the split source/native jobs: the shared runner requires
+all eighteen profiles for success. Its Python virtual environment lives in
+ignored `state/day21/venv`; npm installs development tools from the root lock
+even if the shell inherited `NODE_ENV=production`. The runner
+needs the Node major in `.nvmrc`, Python with venv/pip, Docker and access to the
+declared package/image sources. A local provisioned machine can use the offline
+command above instead.
+
+Always download the entire `state/day21/evidence/` directory, plus
+`reports/junit/web.xml` and `dist/apps/web/index.html` at their original paths.
+The validator hashes exported copies and compares the original artifact paths;
+a standalone summary is insufficient. Artifacts are retained even for HOLD or
+failed acceptance. `day21_submission_bundle` explicitly needs the full job's
+artifacts and all required governance/source jobs, including both Python
+versions. It is manual when `DAY21_COMPILE_SUBMISSION=1`. The receiving owner
+must provide the other same-candidate captures before that bundle can pass.
+
+### Review attribution and public check status
+
+`verify_public_boundary.py --gitlab-ci` reads the current merge request's
+`CI_MERGE_REQUEST_IID` and `CI_MERGE_REQUEST_LABELS`. Exactly one of
+`actor:human`, `actor:agent` or `actor:mixed` is required. `Bits AI` is a separate
+label and does not satisfy this rule. For a GitHub external pull request, the
+receiving integration sets `BUILDANDDO_GITHUB_PR_EVENT` to an authenticated
+provider export shaped as `{"pull_request": <GitHub pull object>}`. The gate
+checks the base repository, review number, labels and exact checked-out SHA;
+missing or foreign exports fail. No tokens belong in that file. Default-branch
+scans report review attribution as NOT_APPLICABLE, never as a reviewed actor.
+
+The GitHub governance workflow runs automatically for public PR and label changes
+and retains explicit manual diagnostics. The selected review resolves once to a
+SHA used by every job; automatic runs also require that SHA to match the triggering
+PR head. Governance
+rechecks that review's labels and revision, so an updated PR cannot silently
+supply labels for a different candidate. Old failed checks remain historical.
+
+The private CI owner must verify that public candidates reach GitLab, supply
+trusted review metadata, and publish actual job results against the same GitHub
+SHA. Required-check configuration must then name those observed GitLab checks;
+disabling an existing check cannot substitute for observed replacement enforcement.
+The read-only coding session cannot activate this integration or change repository
+settings. The receiving contract is
+`.bits/handoffs/2026-09-21-bits-codegen-cmax-b-governance-execution.md`.
+The separate Cloudflare Workers check requires its own build diagnostic.
+
+The current ten-piece product continuation is documented in
+`docs/sprint-user-journey.md`. It closes specific session, navigation, record
+isolation, capture, review and export gaps while retaining all required CI gates.
+The new complete mission export is a read-only observation bundle; the existing
+same-candidate replay, deployment and submission validators still decide admission.
+
+The stdlib source inspector follows literal local includes, rejects unresolved
+or unsafe include paths and inventories executable command lists. It does not
+resolve remote includes, YAML aliases, inherited command templates or merged
+job overrides, evaluate GitLab rules, or attest that any hosted job ran. Such
+configuration needs GitLab's merged-config review; actual acceptance still
+requires the candidate-bound run export.
 
 ## Product connection
 

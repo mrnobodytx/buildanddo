@@ -16,12 +16,13 @@
 // Intent:      Explain critical workspace flows with searchable public documentation and real destinations.
 // ───────────────────────────────────────────────────────────────
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import PublicPage from '@/components/site/PublicPage';
 import { Input } from '@/components/ui/input';
 import TutorialCatalog from '@/components/workspace/TutorialCatalog';
 import MissionGuide from '@/components/workspace/missions/MissionGuide';
+import { PUBLIC_ACTIONS, publicActionSection, trackPublicAction } from '@/lib/publicActions';
 
 export const GUIDES = [
     {
@@ -34,14 +35,14 @@ export const GUIDES = [
     {
         id: 'classrooms',
         title: 'Host or join a classroom',
-        text: 'Open Classrooms in your workspace. An editor or administrator can schedule a lesson and start the session. Members join the shared reading, post questions with editor access, and revisit the discussion after it ends. Voice and video are not connected.',
+        text: 'Open Classrooms in your workspace. An editor or administrator can schedule a lesson and start the session. Members join the shared reading, post questions with editor access, and revisit the discussion after it ends. Where the workspace has live broadcasting set up, the host can stream voice and video during the session.',
         link: '/classrooms',
         action: 'Explore Classrooms',
     },
     {
         id: 'get-started',
         title: 'Create your first workspace',
-        text: 'Create an account, then follow onboarding to name a workspace and select your business domain. Selecting a domain records your choice; it does not verify ownership.',
+        text: 'Create an account, choose an intent and objective, then name your workspace. Your starting path links to a lesson and your saved objective. Business and domain context are optional; saving a domain does not verify ownership.',
         link: '/signup',
         action: 'Create an account',
     },
@@ -84,15 +85,28 @@ export const GUIDES = [
 
 export default function DocsPage() {
     const [query, setQuery] = useState('');
+    const searched = useRef(false);
+    const changeQuery = (event) => { searched.current = true; setQuery(event.target.value); };
     const guides = GUIDES.filter((guide) =>
         `${guide.title} ${guide.text}`.toLowerCase().includes(query.trim().toLowerCase()),
     );
+    useEffect(() => {
+        if (!searched.current) return;
+        const pathname = globalThis.window?.location?.pathname, section = publicActionSection(pathname);
+        const counts = { term_length: Math.min(200, query.trim().length), result_count: guides.length };
+        const timer = setTimeout(() => {
+            if (pathname === globalThis.window?.location?.pathname)
+                trackPublicAction(PUBLIC_ACTIONS.DOCS_SEARCH, 'observed', 'query_settled', counts, { section });
+        }, 300);
+        return () => clearTimeout(timer);
+    }, [query, guides.length]);
+    const openGuide = (entry) => trackPublicAction(PUBLIC_ACTIONS.GUIDE_OPEN, 'opened', 'user_requested', undefined, { entry });
     return (
         <PublicPage
             path="/docs"
             eyebrow="The field guide"
             title="From the first signal to the final receipt."
-            intro="A practical guide to the workspace. Start with one business question, keep the source visible, and verify the result before calling the work done."
+            intro="A practical guide to the workspace. Start with one real question, keep the source visible, and verify the result before calling the work done."
         >
             <div className="grid gap-10 lg:grid-cols-[15rem_minmax(0,1fr)]">
                 <aside className="space-y-6">
@@ -104,7 +118,7 @@ export default function DocsPage() {
                             id="docs-search"
                             type="search"
                             value={query}
-                            onChange={(event) => setQuery(event.target.value)}
+                            onChange={changeQuery}
                             placeholder="Try evidence or workflows"
                         />
                     </div>
@@ -116,6 +130,7 @@ export default function DocsPage() {
                             <a
                                 key={guide.id}
                                 href={`#${guide.id}`}
+                                onClick={() => openGuide('contents')}
                                 className="text-muted-foreground hover:text-foreground"
                             >
                                 {guide.title}
@@ -125,6 +140,7 @@ export default function DocsPage() {
                     <div className="border-t border-border pt-5 text-sm">
                         <a
                             href="https://github.com/mrnobodytx/buildanddo/blob/main/docs/api/README.md"
+                            onClick={() => openGuide('reference')}
                             className="text-primary underline underline-offset-4"
                         >
                             API reference
@@ -132,6 +148,7 @@ export default function DocsPage() {
                         <br />
                         <a
                             href="https://github.com/mrnobodytx/buildanddo/blob/main/CONTRIBUTING.md"
+                            onClick={() => openGuide('reference')}
                             className="mt-3 inline-block text-primary underline underline-offset-4"
                         >
                             Contribution guide
@@ -157,6 +174,7 @@ export default function DocsPage() {
                             </p>
                             <Link
                                 to={guide.link}
+                                onClick={() => openGuide('destination')}
                                 className="mt-4 inline-block text-sm font-semibold text-primary underline underline-offset-4"
                             >
                                 {guide.action}

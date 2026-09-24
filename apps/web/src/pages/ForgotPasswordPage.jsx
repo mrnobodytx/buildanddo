@@ -1,3 +1,19 @@
+// --- CGRF Header ------------------------------------------------
+// File:        apps/web/src/pages/ForgotPasswordPage.jsx
+// Stage:       07_BUILD
+// SRS:         SRS-BUILDANDDO-UPGRADE-001
+// CAPS:        pending
+// CK:          pending
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+// Seat:        BITS-CODEGEN
+// Owner:       Citadel Nexus Inc.
+// Created:     2026-09-24
+// Depends:     apps/web/src/lib/publicActions.js, apps/web/src/lib/authErrors.js
+// EnumType:    Widget
+// EnumEdges:   CONSUMES apps/web/src/lib/publicActions.js; CONSUMES apps/web/src/lib/authErrors.js
+// Intent:      Preserve non-enumerating recovery behavior while distinguishing request acceptance from unconfirmed mail delivery.
+// ----------------------------------------------------------------
+
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Loader2, AlertCircle, CheckCircle2, Mail } from 'lucide-react';
@@ -6,13 +22,25 @@ import { Button } from '@/components/site/ui';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import pb from '@/lib/pocketbaseClient';
+import { authFailureKind } from '@/lib/authErrors';
+import { PUBLIC_ACTIONS, publicActionSection, trackPublicAction } from '@/lib/publicActions';
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+const FAILURE_MESSAGE = {
+    rate_limited:
+        'Too many reset requests. Wait a while before asking for another link.',
+    network:
+        'We couldn\u2019t reach BuildAndDo, so no link was sent. Check your connection and try again.',
+    server:
+        'BuildAndDo couldn\u2019t send the reset link right now. Please try again shortly.',
+};
 
 export default function ForgotPasswordPage() {
     const [email, setEmail] = useState('');
     const [error, setError] = useState('');
     const [status, setStatus] = useState('idle'); // idle | submitting | success | error
+    const [failure, setFailure] = useState('');
 
     const validate = () => {
         if (!email.trim()) {
@@ -30,15 +58,30 @@ export default function ForgotPasswordPage() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (status === 'submitting') return;
-        if (!validate()) return;
+        const section = publicActionSection();
+        if (!validate()) {
+            trackPublicAction(PUBLIC_ACTIONS.PASSWORD_RESET_REQUEST, 'failure', 'validation', undefined, { section });
+            return;
+        }
         setStatus('submitting');
         try {
             await pb.collection('users').requestPasswordReset(email.trim());
+            // Acceptance is not proof that an account exists or any email was delivered.
+            trackPublicAction(PUBLIC_ACTIONS.PASSWORD_RESET_REQUEST, 'accepted', 'request_accepted', undefined, { section });
             setStatus('success');
         } catch (err) {
-            // PocketBase returns 400 if the email isn't found. Treat it
-            // neutrally so we don't leak which addresses exist.
-            setStatus('success');
+            // A 400/404 must read like success so the page never reveals which
+            // addresses exist. Transport, rate-limit and server failures mean no
+            // email was sent, so saying "check your email" would be false.
+            const kind = authFailureKind(err);
+            if (kind === 'rejected' || kind === 'not_found') {
+                trackPublicAction(PUBLIC_ACTIONS.PASSWORD_RESET_REQUEST, 'opaque', 'opaque', undefined, { section });
+                setStatus('success');
+                return;
+            }
+            trackPublicAction(PUBLIC_ACTIONS.PASSWORD_RESET_REQUEST, 'failure', kind, undefined, { section });
+            setFailure(FAILURE_MESSAGE[kind]);
+            setStatus('error');
         }
     };
 
@@ -64,11 +107,12 @@ export default function ForgotPasswordPage() {
                         <Mail className="h-6 w-6 text-teal" />
                     </span>
                     <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
-                        We sent a password-reset link to{' '}
+                        If{' '}
                         <span className="font-medium text-foreground">
                             {email.trim()}
-                        </span>
-                        . The link expires after a short window. If you
+                        </span>{' '}
+                        belongs to an account, a password-reset link is on its
+                        way. The link expires after a short window. If you
                         don’t see the message within a few minutes, check
                         your spam folder.
                     </p>
@@ -125,8 +169,8 @@ export default function ForgotPasswordPage() {
                         role="alert"
                     >
                         <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
-                        Something went wrong sending the reset link. Please try
-                        again in a moment.
+                        {failure ||
+                            'Something went wrong sending the reset link. Please try again in a moment.'}
                     </p>
                 )}
 

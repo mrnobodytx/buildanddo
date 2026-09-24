@@ -8,9 +8,9 @@
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-18
-// Depends:     apps/web/src/hooks/useWorkspaceKnowledge.js
+// Depends:     apps/web/src/hooks/useWorkspaceKnowledge.js, apps/web/src/hooks/useFailureTelemetry.js
 // EnumType:    Widget
-// EnumEdges:   CONSUMES apps/web/src/hooks/useWorkspaceKnowledge.js
+// EnumEdges:   CONSUMES apps/web/src/hooks/useWorkspaceKnowledge.js; CONSUMES apps/web/src/hooks/useFailureTelemetry.js
 // DAG Node:    none
 // Intent:      Surface automatically assembled mission context with readable citations, explicit omissions and an intentional export.
 // ───────────────────────────────────────────────────────────────
@@ -20,17 +20,53 @@ import { Link } from 'react-router-dom';
 import { Button, Card } from '@/components/site/ui';
 import { dateLabel } from '@/components/workspace/ControlPrimitives';
 import { useWorkspaceKnowledge } from '@/hooks/useWorkspaceKnowledge';
+import { useFailureTelemetry } from '@/hooks/useFailureTelemetry';
 
-/** Display the exact cited packet offered for export. */
+/**
+ * THIS COMPONENT IS FED BY TWO DIFFERENT PAYLOADS AND ONLY ONE CARRIES A CONTEXT.
+ * `workspace-knowledge.js` adds `context: assembleContext(...)` to what it returns; the
+ * assistant's `workspace-assistant.js` returns the same graph WITHOUT that key. Both reach
+ * `GraphBrowser`, which rendered this unconditionally, so `JSON.parse(undefined.text)` threw and
+ * the page boundary replaced the whole of Knowledge & context with an error card. It fired on a
+ * WORKING backend answering 200, which is why every route sweep called the page healthy.
+ *
+ * A missing context is a real state, not a fault: it means nothing was assembled. It renders as
+ * absence. A context whose text will not parse IS a fault, and says so rather than showing
+ * nothing, because a silent blank is the failure this page already had.
+ *
+ * Displays the exact cited packet offered for export.
+ */
 export function KnowledgeContextResults({ context, onSelect }) {
-    const packet = JSON.parse(context.text);
+    // Read the packet, or say why it cannot be read; never throw. Parsed here rather than in a
+    // module helper so everything before the first JSX is the component's whole state.
+    let state = 'absent', packet = null;
+    if (context && typeof context.text === 'string') {
+        try {
+            const parsed = JSON.parse(context.text);
+            if (parsed && Array.isArray(parsed.sources)) { state = 'ok'; packet = parsed; } else state = 'unreadable';
+        } catch { state = 'unreadable'; }
+    }
+    // Hooks run before any return. A packet that will not parse is reported as an invalid
+    // response; a readable one with an unavailable source is reported as degraded.
+    const degraded = state === 'ok' && Array.isArray(packet.source_coverage) &&
+        packet.source_coverage.some((entry) => entry?.state === 'unavailable');
+    useFailureTelemetry(state === 'unreadable' || degraded, 'control_state',
+        state === 'unreadable' ? 'invalid_response' : 'degraded');
     const download = () => {
         const url = URL.createObjectURL(new Blob([context.text], { type: 'application/json' }));
         const link = document.createElement('a'); link.href = url; link.download = 'buildanddo-context.json';
         document.body.appendChild(link); link.click(); link.remove(); setTimeout(() => URL.revokeObjectURL(url), 0);
     };
+    if (state === 'absent')
+        return <p role="status" className="text-sm text-muted-foreground">No context has been assembled for this view.</p>;
+    if (state === 'unreadable')
+        return <p role="alert" className="text-sm">The assembled context could not be read. Refresh to assemble it again; if it persists the packet is malformed and an operator should look at it.</p>;
     return <div className="min-w-0 space-y-3">
-        <p className="text-sm text-muted-foreground">{packet.sources.length} cited sources · {context.characters.toLocaleString()} / {context.max_chars.toLocaleString()} character budget</p>
+        {/* A packet can parse and still omit its budget counters; a number that is not there is
+            reported as unknown rather than crashing the page it is one line of. */}
+        <p className="text-sm text-muted-foreground">{packet.sources.length} cited sources{Number.isFinite(context.characters) && Number.isFinite(context.max_chars)
+            ? ` · ${context.characters.toLocaleString()} / ${context.max_chars.toLocaleString()} character budget`
+            : ' · character budget unknown'}</p>
         {context.truncated && <p role="status" className="text-sm">Context is partial: {context.omitted_sources} matching sources omitted. Excerpts or source reads may also be limited.</p>}
         {!packet.sources.length && <p className="text-sm">{context.empty_reason === 'budget_too_small' ? 'Increase the context size to include a cited source.' : 'No readable sources match this request. Try another question or add research and evidence.'}</p>}
         <ol aria-label="Context citations" className="max-h-96 space-y-4 overflow-y-auto pr-1">
@@ -55,6 +91,9 @@ export function KnowledgeContextResults({ context, onSelect }) {
 /** Assemble the selected mission's current context when its detail view opens. */
 export default function MissionKnowledgeContext({ missionId }) {
     const control = useWorkspaceKnowledge({ mission: missionId, max_chars: 8000, max_sources: 8 });
+    // Rendered context state is not another knowledge read attempt.
+    useFailureTelemetry(!control.loading && !control.demo && Boolean(control.error && control.readFailure),
+        'control_state', control.readFailure?.reason, control.readFailure?.status);
     return <Card className="space-y-3 p-4 ph-no-capture" data-dd-privacy="mask">
         <h3 className="font-display text-lg">Assembled mission context</h3>
         <p className="text-sm text-muted-foreground">Current mission, research and evidence, with relevant shared signals and published wiki pages.</p>

@@ -1,7 +1,7 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/pocketbase/pb_hooks/workspace-record-policy.js
 // Stage:       07_BUILD
-// SRS:         SRS-BUILDANDDO-UPGRADE-001
+// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-TRUST-001, SRS-BUILDANDDO-SITE-001
 // CAPS:        pending
 // CK:          pending
 // Dispatch:    VCC-BUILDANDDO-UPGRADE-001
@@ -12,22 +12,39 @@
 // EnumType:    Service
 // EnumEdges:   DEPENDS_ON apps/pocketbase/pb_hooks/workspace-access.js
 // DAG Node:    none
-// Intent:      Reject stale membership, reassigned records and foreign relations at the native workspace write boundary.
+// Intent:      Reject stale membership, reassigned records, foreign relations and browser-asserted review, revenue, seat identity or domain ownership at the native workspace write boundary.
 // ───────────────────────────────────────────────────────────────
 
 const access = require(`${__hooks}/workspace-access.js`);
 const ADMIN_ONLY = ['services', 'social_channels'];
 const RELATIONS = { evidence: { mission: 'missions' }, erp_tasks: { objective: 'erp_objectives', contact: 'erp_contacts', mission: 'missions' },
     social_content: { objective: 'erp_objectives' }, operation_runs: { operation: 'operations' } };
+// Editors change only their own shared records; a verified correction or a
+// published edition is locked to owners and admins in every direction.
+const AUTHORED = ['corrections', 'specialist_desks', 'social_content', 'daily_editions'];
+const LOCKED = { corrections: 'verified', daily_editions: 'published' };
+// Written only by the server-side sync (app.save bypasses request hooks).
+const SYNCED = ['provider', 'gross', 'platform_fees', 'refunds', 'currency', 'payout_status', 'last_sync', 'date_range_start', 'date_range_end'];
+// Ownership proof is written only by the DNS verification commands.
+const PROOF = ['verification_token', 'verification_requested_at', 'verification_checked_at', 'verification_result', 'verified_at'];
 
 /** Enforce the same account/workspace boundary for native CRUD and custom commands. */
 function enforce(e, operation) {
     access.authenticated(e);
     const record = e.record;
     const name = record.collection().name;
+    if (['support_sources', 'corrections', 'daily_editions', 'specialist_desks', 'social_content', 'social_channels', 'seat_events'].includes(name))
+        throw new ForbiddenError('Use the scoped workspace claim commands. Raw claim writes are disabled.');
     const workspace = record.getString('workspace');
-    access.requireRole(e.app, e.auth, workspace,
+    const { role } = access.requireRole(e.app, e.auth, workspace,
         ADMIN_ONLY.includes(name) ? ['owner', 'admin'] : ['owner', 'admin', 'editor']);
+    const admin = ['owner', 'admin'].includes(role);
+    if (!admin && operation === 'update' && AUTHORED.includes(name) && record.original().getString('owner') !== e.auth.id)
+        throw new ForbiddenError('Editors change only records they authored. Ask an owner or admin.');
+    if (!admin && LOCKED[name] && (record.getString('status') === LOCKED[name] ||
+        (operation === 'update' && record.original().getString('status') === LOCKED[name])))
+        throw new ForbiddenError(name === 'corrections' ? 'Only a workspace owner or admin may verify a correction or change a verified one.' :
+            'Only a workspace owner or admin may publish an edition or change a published one.');
     if (operation === 'create') {
         if (record.getString('owner') !== e.auth.id) throw new ForbiddenError('Create records under your own account.');
     } else if (operation === 'update') {
@@ -66,6 +83,16 @@ function enforce(e, operation) {
                 record.getString(stamp) !== record.original().getString(stamp))
                 access.invalid('Use Integrations to request changes. Runtime health cannot be set by a browser.');
         }
+        if (name === 'support_sources') {
+            const status = record.getString('status');
+            if (operation === 'create' ? status !== 'pending' || SYNCED.some((field) => field !== 'provider' && !['', '0'].includes(record.getString(field))) :
+                (status !== 'pending' && status !== record.original().getString('status')) ||
+                SYNCED.some((field) => record.getString(field) !== record.original().getString(field)))
+                access.invalid('Request a connection only. Synced revenue and its status are written by the server.');
+        }
+        // No account maps to an agent seat yet, so a browser speaks only as its own human account.
+        if (name === 'seat_events' && (record.getString('actor_type') !== 'human' || record.getString('seat') !== e.auth.id))
+            throw new ForbiddenError('Post seat events as your own account. Agent seats publish through the server.');
     }
     return e.next();
 }
@@ -74,6 +101,8 @@ function enforce(e, operation) {
 function workspaceCreate(e) {
     access.authenticated(e);
     if (e.record.getString('owner') !== e.auth.id) throw new ForbiddenError('Create a workspace under your own account.');
+    if (['onboarding_intent', 'onboarding_objective', 'business_context'].some((field) => e.record.getString(field)))
+        access.invalid('Use workspace onboarding to save an intent and objective together.');
     const domainId = e.record.getString('domain');
     if (domainId) {
         const domain = access.find(e.app, 'domains', domainId);
@@ -83,4 +112,25 @@ function workspaceCreate(e) {
     return e.next();
 }
 
-module.exports = { enforce, workspaceCreate };
+/** A browser may record a domain as unverified context; only the server marks it verified or renames it. */
+function domainWrite(e, operation) {
+    access.authenticated(e);
+    const record = e.record;
+    if (operation === 'delete') {
+        if (record.getString('owner') !== e.auth.id) throw new ForbiddenError('Only the account that holds this domain may remove it.');
+        // workspaces.domain cascades, so removing a linked domain would delete its workspace.
+        if (e.app.findRecordsByFilter('workspaces', 'domain = {:domain}', '', 1, 0, { domain: record.id }).length)
+            access.invalid('This domain is linked to a workspace. Change the workspace domain in Settings; a linked domain cannot be removed.');
+    } else if (operation === 'create') {
+        if (record.getString('owner') !== e.auth.id) throw new ForbiddenError('Create records under your own account.');
+        if (record.getString('status') !== 'selected' || PROOF.some((field) => record.getString(field)))
+            access.invalid('A new domain starts unverified. Verify ownership from Settings.');
+    } else {
+        const old = record.original();
+        if (['domain', 'owner', 'status', ...PROOF].some((field) => record.getString(field) !== old.getString(field)))
+            access.invalid('Domain names, owners and verification are changed only through Settings.');
+    }
+    return e.next();
+}
+
+module.exports = { enforce, workspaceCreate, domainWrite };

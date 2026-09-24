@@ -1,279 +1,459 @@
 {
+  "execution_provider": "gitlab",
+  "execution_state": "UNMEASURED; source inventory is not a pipeline result",
   "findings": [
     {
       "area": "ci",
-      "evidence": "referenced by: scripts/deploy/ship.py",
+      "evidence": "run only by GitHub (.github/workflows/candidate-to-gitlab.yml); referenced by: nothing in this repo",
       "severity": "high",
       "srs": "",
-      "statement": "scripts/ci/capability_inventory.py is never executed by GitHub Actions"
-    },
-    {
-      "area": "ci",
-      "evidence": "referenced by: scripts/ci/hostinger_checks.py",
-      "severity": "high",
-      "srs": "",
-      "statement": "scripts/ci/classroom_drive.py is never executed by GitHub Actions"
-    },
-    {
-      "area": "ci",
-      "evidence": "referenced by: nothing in this repo",
-      "severity": "high",
-      "srs": "",
-      "statement": "scripts/ci/classroom_media_roundtrip.py is never executed by GitHub Actions"
-    },
-    {
-      "area": "ci",
-      "evidence": "referenced by: nothing in this repo",
-      "severity": "high",
-      "srs": "",
-      "statement": "scripts/ci/classroom_video_proof.py is never executed by GitHub Actions"
-    },
-    {
-      "area": "ci",
-      "evidence": "referenced by: nothing in this repo",
-      "severity": "high",
-      "srs": "",
-      "statement": "scripts/ci/curriculum_link_gate.py is never executed by GitHub Actions"
-    },
-    {
-      "area": "ci",
-      "evidence": "referenced by: nothing in this repo",
-      "severity": "high",
-      "srs": "",
-      "statement": "scripts/ci/day21_submission.py is never executed by GitHub Actions"
-    },
-    {
-      "area": "ci",
-      "evidence": "referenced by: tests/upgrade/test_public_redaction.py",
-      "severity": "high",
-      "srs": "",
-      "statement": "scripts/ci/fleet_report.py is never executed by GitHub Actions"
+      "statement": "scripts/ci/candidate_manifest.py is not configured in reachable GitLab jobs"
     },
     {
       "area": "ci",
       "evidence": "referenced by: scripts/deploy/ship.py",
       "severity": "high",
       "srs": "",
-      "statement": "scripts/ci/integrity_regression_check.py is never executed by GitHub Actions"
+      "statement": "scripts/ci/capability_inventory.py is not configured in reachable GitLab jobs"
+    },
+    {
+      "area": "ci",
+      "evidence": "run only by GitHub (.github/workflows/changelog.yml, .github/workflows/pr-governance.yml); referenced by: tests/upgrade/test_readme_check.py",
+      "severity": "high",
+      "srs": "",
+      "statement": "scripts/ci/changelog_gen.py is not configured in reachable GitLab jobs"
     },
     {
       "area": "ci",
       "evidence": "referenced by: nothing in this repo",
       "severity": "high",
       "srs": "",
-      "statement": "scripts/ci/migration_preflight.py is never executed by GitHub Actions"
+      "statement": "scripts/ci/classroom_media_roundtrip.py is not configured in reachable GitLab jobs"
     },
     {
       "area": "ci",
       "evidence": "referenced by: nothing in this repo",
       "severity": "high",
       "srs": "",
-      "statement": "scripts/ci/ocn_box_exercise.py is never executed by GitHub Actions"
+      "statement": "scripts/ci/classroom_video_proof.py is not configured in reachable GitLab jobs"
     },
     {
       "area": "ci",
       "evidence": "referenced by: nothing in this repo",
       "severity": "high",
       "srs": "",
-      "statement": "scripts/ci/ocn_classroom_fleet.py is never executed by GitHub Actions"
+      "statement": "scripts/ci/curriculum_link_gate.py is not configured in reachable GitLab jobs"
+    },
+    {
+      "area": "ci",
+      "evidence": "run only by GitHub (.github/actions/datadog-ci-report/action.yml, .github/workflows/datadog-dora.yml, .github/workflows/evidence-epoch.yml); referenced by: scripts/deploy/ship.py",
+      "severity": "high",
+      "srs": "",
+      "statement": "scripts/ci/datadog_publish.py is not configured in reachable GitLab jobs"
+    },
+    {
+      "area": "ci",
+      "evidence": "run only by GitHub (.github/workflows/citadel-stack-telemetry.yml); referenced by: apps/federal_foundry/operator.py, tests/upgrade/test_datadog_metrics.py",
+      "severity": "high",
+      "srs": "",
+      "statement": "scripts/ci/emit_datadog_metrics.py is not configured in reachable GitLab jobs"
+    },
+    {
+      "area": "ci",
+      "evidence": "run only by GitHub (.github/workflows/evidence-epoch.yml); referenced by: apps/federal_foundry/evidence.py, apps/federal_foundry/protocol.py, apps/mission_suite/bundle.py, apps/mission_suite/engine.py, scripts/deploy/ship.py",
+      "severity": "high",
+      "srs": "",
+      "statement": "scripts/ci/evidence_epoch.py is not configured in reachable GitLab jobs"
+    },
+    {
+      "area": "ci",
+      "evidence": "referenced by: tests/upgrade/test_platform_health_public_projection.py, tests/upgrade/test_public_redaction.py",
+      "severity": "high",
+      "srs": "",
+      "statement": "scripts/ci/fleet_report.py is not configured in reachable GitLab jobs"
     },
     {
       "area": "ci",
       "evidence": "referenced by: nothing in this repo",
       "severity": "high",
       "srs": "",
-      "statement": "scripts/ci/ocn_classroom_live.py is never executed by GitHub Actions"
+      "statement": "scripts/ci/migration_preflight.py is not configured in reachable GitLab jobs"
     },
     {
       "area": "ci",
       "evidence": "referenced by: nothing in this repo",
       "severity": "high",
       "srs": "",
-      "statement": "scripts/ci/ocn_content_assessment.py is never executed by GitHub Actions"
-    },
-    {
-      "area": "ci",
-      "evidence": "referenced by: scripts/ci/hostinger_checks.py",
-      "severity": "high",
-      "srs": "",
-      "statement": "scripts/ci/ocn_feature_sweep.py is never executed by GitHub Actions"
+      "statement": "scripts/ci/ocn_box_exercise.py is not configured in reachable GitLab jobs"
     },
     {
       "area": "ci",
       "evidence": "referenced by: nothing in this repo",
       "severity": "high",
       "srs": "",
-      "statement": "scripts/ci/ocn_guild_dogfood.py is never executed by GitHub Actions"
+      "statement": "scripts/ci/ocn_classroom_fleet.py is not configured in reachable GitLab jobs"
     },
     {
       "area": "ci",
       "evidence": "referenced by: nothing in this repo",
       "severity": "high",
       "srs": "",
-      "statement": "scripts/ci/ocn_guild_forum.py is never executed by GitHub Actions"
-    },
-    {
-      "area": "ci",
-      "evidence": "referenced by: scripts/ci/hostinger_checks.py",
-      "severity": "high",
-      "srs": "",
-      "statement": "scripts/ci/ocn_journey_report.py is never executed by GitHub Actions"
+      "statement": "scripts/ci/ocn_classroom_live.py is not configured in reachable GitLab jobs"
     },
     {
       "area": "ci",
       "evidence": "referenced by: nothing in this repo",
       "severity": "high",
       "srs": "",
-      "statement": "scripts/ci/ocn_mission_lifecycle.py is never executed by GitHub Actions"
+      "statement": "scripts/ci/ocn_content_assessment.py is not configured in reachable GitLab jobs"
     },
     {
       "area": "ci",
       "evidence": "referenced by: nothing in this repo",
       "severity": "high",
       "srs": "",
-      "statement": "scripts/ci/ocn_mission_work.py is never executed by GitHub Actions"
+      "statement": "scripts/ci/ocn_guild_dogfood.py is not configured in reachable GitLab jobs"
     },
     {
       "area": "ci",
       "evidence": "referenced by: nothing in this repo",
       "severity": "high",
       "srs": "",
-      "statement": "scripts/ci/ocn_observation_record.py is never executed by GitHub Actions"
+      "statement": "scripts/ci/ocn_guild_forum.py is not configured in reachable GitLab jobs"
     },
     {
       "area": "ci",
       "evidence": "referenced by: nothing in this repo",
       "severity": "high",
       "srs": "",
-      "statement": "scripts/ci/ocn_project_fleet.py is never executed by GitHub Actions"
+      "statement": "scripts/ci/ocn_mission_lifecycle.py is not configured in reachable GitLab jobs"
     },
     {
       "area": "ci",
       "evidence": "referenced by: nothing in this repo",
       "severity": "high",
       "srs": "",
-      "statement": "scripts/ci/ocn_rbac_probe.py is never executed by GitHub Actions"
+      "statement": "scripts/ci/ocn_mission_work.py is not configured in reachable GitLab jobs"
     },
     {
       "area": "ci",
       "evidence": "referenced by: nothing in this repo",
       "severity": "high",
       "srs": "",
-      "statement": "scripts/ci/ocn_room_probe.py is never executed by GitHub Actions"
+      "statement": "scripts/ci/ocn_observation_record.py is not configured in reachable GitLab jobs"
+    },
+    {
+      "area": "ci",
+      "evidence": "referenced by: nothing in this repo",
+      "severity": "high",
+      "srs": "",
+      "statement": "scripts/ci/ocn_project_fleet.py is not configured in reachable GitLab jobs"
+    },
+    {
+      "area": "ci",
+      "evidence": "referenced by: nothing in this repo",
+      "severity": "high",
+      "srs": "",
+      "statement": "scripts/ci/ocn_rbac_probe.py is not configured in reachable GitLab jobs"
+    },
+    {
+      "area": "ci",
+      "evidence": "referenced by: nothing in this repo",
+      "severity": "high",
+      "srs": "",
+      "statement": "scripts/ci/ocn_room_probe.py is not configured in reachable GitLab jobs"
     },
     {
       "area": "ci",
       "evidence": "referenced by: tests/upgrade/test_ocn_seat_session.py",
       "severity": "high",
       "srs": "",
-      "statement": "scripts/ci/ocn_seat_session.py is never executed by GitHub Actions"
+      "statement": "scripts/ci/ocn_seat_session.py is not configured in reachable GitLab jobs"
     },
     {
       "area": "ci",
       "evidence": "referenced by: nothing in this repo",
       "severity": "high",
       "srs": "",
-      "statement": "scripts/ci/ocn_signal_lifecycle.py is never executed by GitHub Actions"
+      "statement": "scripts/ci/ocn_signal_lifecycle.py is not configured in reachable GitLab jobs"
     },
     {
       "area": "ci",
       "evidence": "referenced by: nothing in this repo",
       "severity": "high",
       "srs": "",
-      "statement": "scripts/ci/ocn_subsystem_probe.py is never executed by GitHub Actions"
+      "statement": "scripts/ci/ocn_subsystem_probe.py is not configured in reachable GitLab jobs"
     },
     {
       "area": "ci",
-      "evidence": "referenced by: tests/upgrade/test_public_redaction.py",
+      "evidence": "referenced by: scripts/ci/hostinger_replay.py, scripts/deploy/roadmap_status.py, tests/upgrade/test_readme_check.py, tools/day21_closure.py, tools/evidence_verify.py",
       "severity": "high",
       "srs": "",
-      "statement": "scripts/ci/public_redaction.py is never executed by GitHub Actions"
+      "statement": "scripts/ci/sprint_cycle.py is not configured in reachable GitLab jobs"
+    },
+    {
+      "area": "ci",
+      "evidence": "run only by GitHub (.github/actions/datadog-ci-report/action.yml); referenced by: nothing in this repo",
+      "severity": "high",
+      "srs": "",
+      "statement": "scripts/ci/telemetry_delta.py is not configured in reachable GitLab jobs"
+    },
+    {
+      "area": "ci",
+      "evidence": "run only by GitHub (.github/actions/datadog-ci-report/action.yml); referenced by: nothing in this repo",
+      "severity": "high",
+      "srs": "",
+      "statement": "scripts/ci/telemetry_snapshot.py is not configured in reachable GitLab jobs"
     },
     {
       "area": "ci",
       "evidence": "referenced by: nothing in this repo",
       "severity": "high",
       "srs": "",
-      "statement": "scripts/ci/selftest_sprint_replay.py is never executed by GitHub Actions"
-    },
-    {
-      "area": "ci",
-      "evidence": "referenced by: scripts/ci/hostinger_replay.py, scripts/deploy/roadmap_status.py, tools/day21_closure.py",
-      "severity": "high",
-      "srs": "",
-      "statement": "scripts/ci/sprint_cycle.py is never executed by GitHub Actions"
+      "statement": "scripts/ci/verifier_control_gate.py is not configured in reachable GitLab jobs"
     },
     {
       "area": "ci",
       "evidence": "referenced by: nothing in this repo",
       "severity": "high",
       "srs": "",
-      "statement": "scripts/ci/sprint_replay.py is never executed by GitHub Actions"
+      "statement": "scripts/ci/verify_public_disclosure.py is not configured in reachable GitLab jobs"
     },
     {
       "area": "ci",
       "evidence": "referenced by: nothing in this repo",
       "severity": "high",
       "srs": "",
-      "statement": "scripts/ci/verifier_control_gate.py is never executed by GitHub Actions"
-    },
-    {
-      "area": "ci",
-      "evidence": "referenced by: nothing in this repo",
-      "severity": "high",
-      "srs": "",
-      "statement": "scripts/ci/verify_public_disclosure.py is never executed by GitHub Actions"
-    },
-    {
-      "area": "ci",
-      "evidence": "referenced by: nothing in this repo",
-      "severity": "high",
-      "srs": "SRS-BUILDANDDO-EVIDENCE-CI-001",
-      "statement": "services/praxis_evidence/run_all_tests.py is never executed by GitHub Actions"
+      "statement": "scripts/ci/workspace_readiness.py is not configured in reachable GitLab jobs"
     },
     {
       "area": "governance",
-      "evidence": ".bits/srs/SRS-BUILDANDDO-BUDDI-001.md is unregistered, so no branch may claim it",
-      "severity": "high",
-      "srs": "",
-      "statement": "SRS-BUILDANDDO-BUDDI-001 has a spec but is not in the registry"
+      "evidence": ".bits/queue/USO-BUILDANDDO-CRAWL-001.md: 4/4 tasks done; mark SRS-BUILDANDDO-CRAWL-001 delivered once merged and verified, or add the task that remains",
+      "severity": "medium",
+      "srs": "SRS-BUILDANDDO-CRAWL-001",
+      "statement": "USO-BUILDANDDO-CRAWL-001 has every task done but SRS-BUILDANDDO-CRAWL-001 is still in_progress"
     },
     {
       "area": "governance",
-      "evidence": ".bits/srs/SRS-BUILDANDDO-COMMUNITY-001.md is unregistered, so no branch may claim it",
-      "severity": "high",
-      "srs": "",
-      "statement": "SRS-BUILDANDDO-COMMUNITY-001 has a spec but is not in the registry"
+      "evidence": ".bits/queue/VCC-BUILDANDDO-BUDDI-003.md: 5/5 tasks done; mark SRS-BUILDANDDO-BUDDI-003 delivered once merged and verified, or add the task that remains",
+      "severity": "medium",
+      "srs": "SRS-BUILDANDDO-BUDDI-003",
+      "statement": "VCC-BUILDANDDO-BUDDI-003 has every task done but SRS-BUILDANDDO-BUDDI-003 is still in_progress"
     },
     {
       "area": "governance",
-      "evidence": ".bits/srs/SRS-BUILDANDDO-COMMUNITY-WEB-001.md is unregistered, so no branch may claim it",
-      "severity": "high",
-      "srs": "",
-      "statement": "SRS-BUILDANDDO-COMMUNITY-WEB-001 has a spec but is not in the registry"
+      "evidence": ".bits/queue/VCC-BUILDANDDO-CAREER-001.md: 18/18 tasks done; mark SRS-BUILDANDDO-CAREER-001 delivered once merged and verified, or add the task that remains",
+      "severity": "medium",
+      "srs": "SRS-BUILDANDDO-CAREER-001",
+      "statement": "VCC-BUILDANDDO-CAREER-001 has every task done but SRS-BUILDANDDO-CAREER-001 is still in_progress"
     },
     {
       "area": "governance",
-      "evidence": ".bits/srs/SRS-BUILDANDDO-WITNESS-001.md is unregistered, so no branch may claim it",
-      "severity": "high",
-      "srs": "",
-      "statement": "SRS-BUILDANDDO-WITNESS-001 has a spec but is not in the registry"
+      "evidence": ".bits/queue/VCC-BUILDANDDO-CHANGELOG-001.md: 5/5 tasks done; mark SRS-BUILDANDDO-CHANGELOG-001 delivered once merged and verified, or add the task that remains",
+      "severity": "medium",
+      "srs": "SRS-BUILDANDDO-CHANGELOG-001",
+      "statement": "VCC-BUILDANDDO-CHANGELOG-001 has every task done but SRS-BUILDANDDO-CHANGELOG-001 is still in_progress"
+    },
+    {
+      "area": "governance",
+      "evidence": ".bits/queue/VCC-BUILDANDDO-DECISION-001.md: 7/7 tasks done; mark SRS-BUILDANDDO-DECISION-001 delivered once merged and verified, or add the task that remains",
+      "severity": "medium",
+      "srs": "SRS-BUILDANDDO-DECISION-001",
+      "statement": "VCC-BUILDANDDO-DECISION-001 has every task done but SRS-BUILDANDDO-DECISION-001 is still in_progress"
+    },
+    {
+      "area": "governance",
+      "evidence": ".bits/queue/VCC-BUILDANDDO-DEPLOY-SWAP-001.md: 2/2 tasks done; mark SRS-BUILDANDDO-DEPLOY-SWAP-001 delivered once merged and verified, or add the task that remains",
+      "severity": "medium",
+      "srs": "SRS-BUILDANDDO-DEPLOY-SWAP-001",
+      "statement": "VCC-BUILDANDDO-DEPLOY-SWAP-001 has every task done but SRS-BUILDANDDO-DEPLOY-SWAP-001 is still in_progress"
+    },
+    {
+      "area": "governance",
+      "evidence": ".bits/queue/VCC-BUILDANDDO-ESTATE-001.md: 8/8 tasks done; mark SRS-BUILDANDDO-ESTATE-001 delivered once merged and verified, or add the task that remains",
+      "severity": "medium",
+      "srs": "SRS-BUILDANDDO-ESTATE-001",
+      "statement": "VCC-BUILDANDDO-ESTATE-001 has every task done but SRS-BUILDANDDO-ESTATE-001 is still in_progress"
+    },
+    {
+      "area": "governance",
+      "evidence": ".bits/queue/VCC-BUILDANDDO-GROWTH-001.md: 5/5 tasks done; mark SRS-BUILDANDDO-GROWTH-001 delivered once merged and verified, or add the task that remains",
+      "severity": "medium",
+      "srs": "SRS-BUILDANDDO-GROWTH-001",
+      "statement": "VCC-BUILDANDDO-GROWTH-001 has every task done but SRS-BUILDANDDO-GROWTH-001 is still in_progress"
+    },
+    {
+      "area": "governance",
+      "evidence": ".bits/queue/VCC-BUILDANDDO-HEADERS-001.md: 2/2 tasks done; mark SRS-BUILDANDDO-HEADERS-001 delivered once merged and verified, or add the task that remains",
+      "severity": "medium",
+      "srs": "SRS-BUILDANDDO-HEADERS-001",
+      "statement": "VCC-BUILDANDDO-HEADERS-001 has every task done but SRS-BUILDANDDO-HEADERS-001 is still in_progress"
+    },
+    {
+      "area": "governance",
+      "evidence": ".bits/queue/VCC-BUILDANDDO-HYGIENE-001.md: 5/5 tasks done; mark SRS-BUILDANDDO-HYGIENE-001 delivered once merged and verified, or add the task that remains",
+      "severity": "medium",
+      "srs": "SRS-BUILDANDDO-HYGIENE-001",
+      "statement": "VCC-BUILDANDDO-HYGIENE-001 has every task done but SRS-BUILDANDDO-HYGIENE-001 is still in_progress"
+    },
+    {
+      "area": "governance",
+      "evidence": ".bits/queue/VCC-BUILDANDDO-INTEGRITY-001.md: 6/6 tasks done; mark SRS-BUILDANDDO-INTEGRITY-001 delivered once merged and verified, or add the task that remains",
+      "severity": "medium",
+      "srs": "SRS-BUILDANDDO-INTEGRITY-001",
+      "statement": "VCC-BUILDANDDO-INTEGRITY-001 has every task done but SRS-BUILDANDDO-INTEGRITY-001 is still in_progress"
+    },
+    {
+      "area": "governance",
+      "evidence": ".bits/queue/VCC-BUILDANDDO-JOURNEY-001.md: 2/2 tasks done; mark SRS-BUILDANDDO-JOURNEY-001 delivered once merged and verified, or add the task that remains",
+      "severity": "medium",
+      "srs": "SRS-BUILDANDDO-JOURNEY-001",
+      "statement": "VCC-BUILDANDDO-JOURNEY-001 has every task done but SRS-BUILDANDDO-JOURNEY-001 is still in_progress"
+    },
+    {
+      "area": "governance",
+      "evidence": ".bits/queue/VCC-BUILDANDDO-KNOWLEDGE-UNIT-001.md: 5/5 tasks done; mark SRS-BUILDANDDO-KNOWLEDGE-UNIT-001 delivered once merged and verified, or add the task that remains",
+      "severity": "medium",
+      "srs": "SRS-BUILDANDDO-KNOWLEDGE-UNIT-001",
+      "statement": "VCC-BUILDANDDO-KNOWLEDGE-UNIT-001 has every task done but SRS-BUILDANDDO-KNOWLEDGE-UNIT-001 is still in_progress"
+    },
+    {
+      "area": "governance",
+      "evidence": ".bits/queue/VCC-BUILDANDDO-LEARNING-NATIVE-001.md: 5/5 tasks done; mark SRS-BUILDANDDO-LEARNING-NATIVE-001 delivered once merged and verified, or add the task that remains",
+      "severity": "medium",
+      "srs": "SRS-BUILDANDDO-LEARNING-NATIVE-001",
+      "statement": "VCC-BUILDANDDO-LEARNING-NATIVE-001 has every task done but SRS-BUILDANDDO-LEARNING-NATIVE-001 is still in_progress"
+    },
+    {
+      "area": "governance",
+      "evidence": ".bits/queue/VCC-BUILDANDDO-PRESENCE-001.md: 3/3 tasks done; mark SRS-BUILDANDDO-PRESENCE-001 delivered once merged and verified, or add the task that remains",
+      "severity": "medium",
+      "srs": "SRS-BUILDANDDO-PRESENCE-001",
+      "statement": "VCC-BUILDANDDO-PRESENCE-001 has every task done but SRS-BUILDANDDO-PRESENCE-001 is still in_progress"
+    },
+    {
+      "area": "governance",
+      "evidence": ".bits/queue/VCC-BUILDANDDO-PUBLIC-REDACTION-001.md: 16/16 tasks done; mark SRS-BUILDANDDO-PUBLIC-REDACTION-001 delivered once merged and verified, or add the task that remains",
+      "severity": "medium",
+      "srs": "SRS-BUILDANDDO-PUBLIC-REDACTION-001",
+      "statement": "VCC-BUILDANDDO-PUBLIC-REDACTION-001 has every task done but SRS-BUILDANDDO-PUBLIC-REDACTION-001 is still in_progress"
+    },
+    {
+      "area": "governance",
+      "evidence": ".bits/queue/VCC-BUILDANDDO-PURPOSE-001.md: 7/7 tasks done; mark SRS-BUILDANDDO-PURPOSE-001 delivered once merged and verified, or add the task that remains",
+      "severity": "medium",
+      "srs": "SRS-BUILDANDDO-PURPOSE-001",
+      "statement": "VCC-BUILDANDDO-PURPOSE-001 has every task done but SRS-BUILDANDDO-PURPOSE-001 is still in_progress"
+    },
+    {
+      "area": "governance",
+      "evidence": ".bits/queue/VCC-BUILDANDDO-QUIZ-001.md: 5/5 tasks done; mark SRS-BUILDANDDO-QUIZ-001 delivered once merged and verified, or add the task that remains",
+      "severity": "medium",
+      "srs": "SRS-BUILDANDDO-QUIZ-001",
+      "statement": "VCC-BUILDANDDO-QUIZ-001 has every task done but SRS-BUILDANDDO-QUIZ-001 is still in_progress"
+    },
+    {
+      "area": "governance",
+      "evidence": ".bits/queue/VCC-BUILDANDDO-ROADMAP-001.md: 4/4 tasks done; mark SRS-BUILDANDDO-ROADMAP-001 delivered once merged and verified, or add the task that remains",
+      "severity": "medium",
+      "srs": "SRS-BUILDANDDO-ROADMAP-001",
+      "statement": "VCC-BUILDANDDO-ROADMAP-001 has every task done but SRS-BUILDANDDO-ROADMAP-001 is still in_progress"
+    },
+    {
+      "area": "governance",
+      "evidence": ".bits/queue/VCC-BUILDANDDO-SEMANTIC-TWIN-001.md: 11/11 tasks done; mark SRS-BUILDANDDO-SEMANTIC-TWIN-001 delivered once merged and verified, or add the task that remains",
+      "severity": "medium",
+      "srs": "SRS-BUILDANDDO-SEMANTIC-TWIN-001",
+      "statement": "VCC-BUILDANDDO-SEMANTIC-TWIN-001 has every task done but SRS-BUILDANDDO-SEMANTIC-TWIN-001 is still in_progress"
+    },
+    {
+      "area": "governance",
+      "evidence": ".bits/queue/VCC-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001.md: 10/10 tasks done; mark SRS-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001 delivered once merged and verified, or add the task that remains",
+      "severity": "medium",
+      "srs": "SRS-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001",
+      "statement": "VCC-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001 has every task done but SRS-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001 is still in_progress"
+    },
+    {
+      "area": "governance",
+      "evidence": ".bits/queue/VCC-BUILDANDDO-SITE-001.md: 5/5 tasks done; mark SRS-BUILDANDDO-SITE-001 delivered once merged and verified, or add the task that remains",
+      "severity": "medium",
+      "srs": "SRS-BUILDANDDO-SITE-001",
+      "statement": "VCC-BUILDANDDO-SITE-001 has every task done but SRS-BUILDANDDO-SITE-001 is still in_progress"
+    },
+    {
+      "area": "governance",
+      "evidence": ".bits/queue/VCC-BUILDANDDO-TRUST-001.md: 5/5 tasks done; mark SRS-BUILDANDDO-TRUST-001 delivered once merged and verified, or add the task that remains",
+      "severity": "medium",
+      "srs": "SRS-BUILDANDDO-TRUST-001",
+      "statement": "VCC-BUILDANDDO-TRUST-001 has every task done but SRS-BUILDANDDO-TRUST-001 is still in_progress"
+    },
+    {
+      "area": "governance",
+      "evidence": ".bits/queue/VCC-BUILDANDDO-WORLD-TWIN-001.md: 5/5 tasks done; mark SRS-BUILDANDDO-WORLD-TWIN-001 delivered once merged and verified, or add the task that remains",
+      "severity": "medium",
+      "srs": "SRS-BUILDANDDO-WORLD-TWIN-001",
+      "statement": "VCC-BUILDANDDO-WORLD-TWIN-001 has every task done but SRS-BUILDANDDO-WORLD-TWIN-001 is still in_progress"
+    },
+    {
+      "area": "governance",
+      "evidence": ".bits/queue/VCC-BUILDANDDO-BUDDI-002.md: TEMPLATE.md asks every task to carry a gate command that prints PASS or FAIL",
+      "severity": "info",
+      "srs": "SRS-BUILDANDDO-BUDDI-002",
+      "statement": "VCC-BUILDANDDO-BUDDI-002 has no task table"
+    },
+    {
+      "area": "governance",
+      "evidence": ".bits/queue/VCC-BUILDANDDO-CAPABILITY-TOKEN-001.md: TEMPLATE.md asks every task to carry a gate command that prints PASS or FAIL",
+      "severity": "info",
+      "srs": "SRS-BUILDANDDO-CAPABILITY-TOKEN-001",
+      "statement": "VCC-BUILDANDDO-CAPABILITY-TOKEN-001 has no task table"
+    },
+    {
+      "area": "governance",
+      "evidence": ".bits/queue/VCC-BUILDANDDO-DEVELOPMENT-LOOP-001.md: TEMPLATE.md asks every task to carry a gate command that prints PASS or FAIL",
+      "severity": "info",
+      "srs": "SRS-BUILDANDDO-DEVELOPMENT-LOOP-001",
+      "statement": "VCC-BUILDANDDO-DEVELOPMENT-LOOP-001 has no task table"
+    },
+    {
+      "area": "governance",
+      "evidence": ".bits/queue/VCC-BUILDANDDO-EVOLUTION-001.md: TEMPLATE.md asks every task to carry a gate command that prints PASS or FAIL",
+      "severity": "info",
+      "srs": "SRS-BUILDANDDO-EVOLUTION-001",
+      "statement": "VCC-BUILDANDDO-EVOLUTION-001 has no task table"
+    },
+    {
+      "area": "governance",
+      "evidence": ".bits/queue/VCC-BUILDANDDO-UPGRADE-001.md: TEMPLATE.md asks every task to carry a gate command that prints PASS or FAIL",
+      "severity": "info",
+      "srs": "SRS-BUILDANDDO-UPGRADE-001",
+      "statement": "VCC-BUILDANDDO-UPGRADE-001 has no task table"
     }
   ],
   "gates": [
     {
+      "configured_providers": [
+        "gitlab",
+        "github"
+      ],
       "path": "scripts/ci/agent_context.py",
       "referenced_by": [
-        "tests/upgrade/test_hostinger_readiness.py"
+        "tests/upgrade/test_gitlab_acceptance.py",
+        "tests/upgrade/test_hostinger_readiness.py",
+        "tests/upgrade/test_hygiene.py"
       ],
       "wired_into_ci": true
     },
     {
+      "configured_providers": [
+        "github"
+      ],
       "path": "scripts/ci/candidate_manifest.py",
       "referenced_by": [],
-      "wired_into_ci": true
+      "wired_into_ci": false
     },
     {
+      "configured_providers": [],
       "path": "scripts/ci/capability_inventory.py",
       "referenced_by": [
         "scripts/deploy/ship.py"
@@ -281,53 +461,82 @@
       "wired_into_ci": false
     },
     {
+      "configured_providers": [
+        "github"
+      ],
       "path": "scripts/ci/changelog_gen.py",
-      "referenced_by": [],
-      "wired_into_ci": true
-    },
-    {
-      "path": "scripts/ci/classroom_drive.py",
       "referenced_by": [
-        "scripts/ci/hostinger_checks.py"
+        "tests/upgrade/test_readme_check.py"
       ],
       "wired_into_ci": false
     },
     {
+      "configured_providers": [
+        "gitlab"
+      ],
+      "path": "scripts/ci/classroom_drive.py",
+      "referenced_by": [
+        "scripts/ci/hostinger_checks.py"
+      ],
+      "wired_into_ci": true
+    },
+    {
+      "configured_providers": [],
       "path": "scripts/ci/classroom_media_roundtrip.py",
       "referenced_by": [],
       "wired_into_ci": false
     },
     {
+      "configured_providers": [],
       "path": "scripts/ci/classroom_video_proof.py",
       "referenced_by": [],
       "wired_into_ci": false
     },
     {
+      "configured_providers": [],
       "path": "scripts/ci/curriculum_link_gate.py",
       "referenced_by": [],
       "wired_into_ci": false
     },
     {
+      "configured_providers": [
+        "github"
+      ],
       "path": "scripts/ci/datadog_publish.py",
       "referenced_by": [
         "scripts/deploy/ship.py"
       ],
-      "wired_into_ci": true
-    },
-    {
-      "path": "scripts/ci/day21_submission.py",
-      "referenced_by": [],
       "wired_into_ci": false
     },
     {
+      "configured_providers": [
+        "gitlab"
+      ],
+      "path": "scripts/ci/day21_submission.py",
+      "referenced_by": [
+        "tests/upgrade/test_day21_submission.py",
+        "tests/upgrade/test_day21_support.py",
+        "tests/upgrade/test_gitlab_acceptance.py",
+        "tools/day21/day21_browser_capture.py",
+        "tools/day21/day21_public_probe.py"
+      ],
+      "wired_into_ci": true
+    },
+    {
+      "configured_providers": [
+        "github"
+      ],
       "path": "scripts/ci/emit_datadog_metrics.py",
       "referenced_by": [
         "apps/federal_foundry/operator.py",
         "tests/upgrade/test_datadog_metrics.py"
       ],
-      "wired_into_ci": true
+      "wired_into_ci": false
     },
     {
+      "configured_providers": [
+        "github"
+      ],
       "path": "scripts/ci/evidence_epoch.py",
       "referenced_by": [
         "apps/federal_foundry/evidence.py",
@@ -336,114 +545,145 @@
         "apps/mission_suite/engine.py",
         "scripts/deploy/ship.py"
       ],
-      "wired_into_ci": true
+      "wired_into_ci": false
     },
     {
+      "configured_providers": [],
       "path": "scripts/ci/fleet_report.py",
       "referenced_by": [
+        "tests/upgrade/test_platform_health_public_projection.py",
         "tests/upgrade/test_public_redaction.py"
       ],
       "wired_into_ci": false
     },
     {
+      "configured_providers": [
+        "gitlab",
+        "github"
+      ],
       "path": "scripts/ci/hostinger_readiness.py",
       "referenced_by": [
         "scripts/ci/hostinger_checks.py",
         "scripts/ci/hostinger_replay.py",
+        "tests/upgrade/test_gitlab_acceptance.py",
         "tests/upgrade/test_hostinger_readiness.py",
         "tests/upgrade/test_hostinger_replay.py",
-        "tools/day21/day21_acceptance.py",
         "tools/day21/day21_architecture_snapshot.py"
       ],
       "wired_into_ci": true
     },
     {
+      "configured_providers": [
+        "gitlab"
+      ],
       "path": "scripts/ci/integrity_regression_check.py",
       "referenced_by": [
-        "scripts/deploy/ship.py"
+        "scripts/deploy/ship.py",
+        "tests/deploy/test_ship_telemetry.py"
       ],
-      "wired_into_ci": false
+      "wired_into_ci": true
     },
     {
+      "configured_providers": [],
       "path": "scripts/ci/migration_preflight.py",
       "referenced_by": [],
       "wired_into_ci": false
     },
     {
+      "configured_providers": [],
       "path": "scripts/ci/ocn_box_exercise.py",
       "referenced_by": [],
       "wired_into_ci": false
     },
     {
+      "configured_providers": [],
       "path": "scripts/ci/ocn_classroom_fleet.py",
       "referenced_by": [],
       "wired_into_ci": false
     },
     {
+      "configured_providers": [],
       "path": "scripts/ci/ocn_classroom_live.py",
       "referenced_by": [],
       "wired_into_ci": false
     },
     {
+      "configured_providers": [],
       "path": "scripts/ci/ocn_content_assessment.py",
       "referenced_by": [],
       "wired_into_ci": false
     },
     {
+      "configured_providers": [
+        "gitlab"
+      ],
       "path": "scripts/ci/ocn_feature_sweep.py",
       "referenced_by": [
-        "scripts/ci/hostinger_checks.py"
+        "scripts/ci/hostinger_checks.py",
+        "scripts/deploy/apply_production_runtime_config.py"
       ],
-      "wired_into_ci": false
+      "wired_into_ci": true
     },
     {
+      "configured_providers": [],
       "path": "scripts/ci/ocn_guild_dogfood.py",
       "referenced_by": [],
       "wired_into_ci": false
     },
     {
+      "configured_providers": [],
       "path": "scripts/ci/ocn_guild_forum.py",
       "referenced_by": [],
       "wired_into_ci": false
     },
     {
+      "configured_providers": [
+        "gitlab"
+      ],
       "path": "scripts/ci/ocn_journey_report.py",
       "referenced_by": [
         "scripts/ci/hostinger_checks.py"
       ],
-      "wired_into_ci": false
+      "wired_into_ci": true
     },
     {
+      "configured_providers": [],
       "path": "scripts/ci/ocn_mission_lifecycle.py",
       "referenced_by": [],
       "wired_into_ci": false
     },
     {
+      "configured_providers": [],
       "path": "scripts/ci/ocn_mission_work.py",
       "referenced_by": [],
       "wired_into_ci": false
     },
     {
+      "configured_providers": [],
       "path": "scripts/ci/ocn_observation_record.py",
       "referenced_by": [],
       "wired_into_ci": false
     },
     {
+      "configured_providers": [],
       "path": "scripts/ci/ocn_project_fleet.py",
       "referenced_by": [],
       "wired_into_ci": false
     },
     {
+      "configured_providers": [],
       "path": "scripts/ci/ocn_rbac_probe.py",
       "referenced_by": [],
       "wired_into_ci": false
     },
     {
+      "configured_providers": [],
       "path": "scripts/ci/ocn_room_probe.py",
       "referenced_by": [],
       "wired_into_ci": false
     },
     {
+      "configured_providers": [],
       "path": "scripts/ci/ocn_seat_session.py",
       "referenced_by": [
         "tests/upgrade/test_ocn_seat_session.py"
@@ -451,93 +691,181 @@
       "wired_into_ci": false
     },
     {
+      "configured_providers": [],
       "path": "scripts/ci/ocn_signal_lifecycle.py",
       "referenced_by": [],
       "wired_into_ci": false
     },
     {
+      "configured_providers": [],
       "path": "scripts/ci/ocn_subsystem_probe.py",
       "referenced_by": [],
       "wired_into_ci": false
     },
     {
+      "configured_providers": [
+        "gitlab",
+        "github"
+      ],
       "path": "scripts/ci/public_redaction.py",
       "referenced_by": [
+        "tests/upgrade/test_hygiene.py",
+        "tests/upgrade/test_platform_health_public_projection.py",
         "tests/upgrade/test_public_redaction.py"
       ],
-      "wired_into_ci": false
+      "wired_into_ci": true
     },
     {
+      "configured_providers": [
+        "gitlab",
+        "github"
+      ],
+      "path": "scripts/ci/readme_check.py",
+      "referenced_by": [
+        "tests/upgrade/test_readme_check.py"
+      ],
+      "wired_into_ci": true
+    },
+    {
+      "configured_providers": [
+        "gitlab"
+      ],
       "path": "scripts/ci/selftest_sprint_replay.py",
       "referenced_by": [],
-      "wired_into_ci": false
+      "wired_into_ci": true
     },
     {
+      "configured_providers": [],
       "path": "scripts/ci/sprint_cycle.py",
       "referenced_by": [
         "scripts/ci/hostinger_replay.py",
         "scripts/deploy/roadmap_status.py",
-        "tools/day21_closure.py"
+        "tests/upgrade/test_readme_check.py",
+        "tools/day21_closure.py",
+        "tools/evidence_verify.py"
       ],
       "wired_into_ci": false
     },
     {
+      "configured_providers": [
+        "gitlab"
+      ],
       "path": "scripts/ci/sprint_replay.py",
       "referenced_by": [],
-      "wired_into_ci": false
+      "wired_into_ci": true
     },
     {
+      "configured_providers": [
+        "gitlab",
+        "github"
+      ],
       "path": "scripts/ci/submission_readiness.py",
       "referenced_by": [
         "tests/upgrade/check_sprint_execution.py",
+        "tests/upgrade/test_gitlab_acceptance.py",
         "tests/upgrade/test_submission_readiness.py"
       ],
       "wired_into_ci": true
     },
     {
+      "configured_providers": [
+        "gitlab",
+        "github"
+      ],
       "path": "scripts/ci/supply_chain.py",
       "referenced_by": [
         "scripts/ci/hostinger_checks.py",
+        "tests/upgrade/test_gitlab_acceptance.py",
         "tests/upgrade/test_hostinger_readiness.py",
         "tests/upgrade/test_supply_chain.py"
       ],
       "wired_into_ci": true
     },
     {
+      "configured_providers": [
+        "gitlab",
+        "github"
+      ],
+      "path": "scripts/ci/system_growth.py",
+      "referenced_by": [
+        "tests/upgrade/test_system_growth.py"
+      ],
+      "wired_into_ci": true
+    },
+    {
+      "configured_providers": [
+        "github"
+      ],
       "path": "scripts/ci/telemetry_delta.py",
       "referenced_by": [],
-      "wired_into_ci": true
+      "wired_into_ci": false
     },
     {
+      "configured_providers": [
+        "github"
+      ],
       "path": "scripts/ci/telemetry_snapshot.py",
       "referenced_by": [],
-      "wired_into_ci": true
+      "wired_into_ci": false
     },
     {
+      "configured_providers": [],
       "path": "scripts/ci/verifier_control_gate.py",
       "referenced_by": [],
       "wired_into_ci": false
     },
     {
+      "configured_providers": [
+        "gitlab",
+        "github"
+      ],
       "path": "scripts/ci/verify_public_boundary.py",
       "referenced_by": [
         "scripts/ci/hostinger_checks.py",
-        "scripts/publish/activity_publish.py"
+        "scripts/publish/activity_publish.py",
+        "tests/upgrade/test_gitlab_acceptance.py",
+        "tests/upgrade/test_public_boundary.py"
       ],
       "wired_into_ci": true
     },
     {
+      "configured_providers": [],
       "path": "scripts/ci/verify_public_disclosure.py",
       "referenced_by": [],
       "wired_into_ci": false
     },
     {
-      "path": "services/praxis_evidence/run_all_tests.py",
+      "configured_providers": [],
+      "path": "scripts/ci/workspace_readiness.py",
       "referenced_by": [],
       "wired_into_ci": false
+    },
+    {
+      "configured_providers": [
+        "gitlab"
+      ],
+      "path": "services/praxis_evidence/run_all_tests.py",
+      "referenced_by": [
+        "services/praxis_evidence/isolated_test.py",
+        "tests/praxis_evidence/test_target_guard.py",
+        "tests/upgrade/test_praxis_isolation.py"
+      ],
+      "wired_into_ci": true
+    },
+    {
+      "configured_providers": [
+        "gitlab"
+      ],
+      "path": "tools/day21/day21_acceptance.py",
+      "referenced_by": [
+        "tests/assurance/run.py",
+        "tests/upgrade/test_day21_acceptance.py",
+        "tests/upgrade/test_gitlab_acceptance.py"
+      ],
+      "wired_into_ci": true
     }
   ],
-  "generated_at": "2026-09-23T17:33:34.254822+00:00",
+  "generated_at": "2026-09-24T22:58:09.579365+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -566,6 +894,13 @@
         "title": "Machine-facing governance bootstrap"
       },
       {
+        "code": "SRS-BUILDANDDO-BUDDI-001",
+        "risk": "A2",
+        "spec": ".bits/srs/SRS-BUILDANDDO-BUDDI-001.md",
+        "status": "in_progress",
+        "title": "Buddi and the brand mark - the assistant's name, site icons and address-free public text (C-ONE), and the block mark and the Buddi mascot with server-confirmed achievements (BITS-CODEGEN)"
+      },
+      {
         "code": "SRS-BUILDANDDO-BUDDI-002",
         "risk": "A2",
         "spec": ".bits/srs/SRS-BUILDANDDO-BUDDI-002.md",
@@ -573,8 +908,29 @@
         "title": "Buddi tool endpoints - public reads over authored lessons and public evidence, bounded A2 receipts, edge proxy"
       },
       {
+        "code": "SRS-BUILDANDDO-BUDDI-003",
+        "risk": "A2",
+        "spec": ".bits/srs/SRS-BUILDANDDO-BUDDI-003.md",
+        "status": "in_progress",
+        "title": "Talk to Buddi on the home page - an in-page voice session with the official ElevenLabs SDK"
+      },
+      {
+        "code": "SRS-BUILDANDDO-CAPABILITY-TOKEN-001",
+        "risk": "A1",
+        "spec": ".bits/srs/SRS-BUILDANDDO-CAPABILITY-TOKEN-001.md",
+        "status": "in_progress",
+        "title": "CNWB Capability Token Protocol v1"
+      },
+      {
+        "code": "SRS-BUILDANDDO-CAREER-001",
+        "risk": "A1",
+        "spec": ".bits/srs/SRS-BUILDANDDO-CAREER-001.md",
+        "status": "in_progress",
+        "title": "Career evidence engine vertical slice 1"
+      },
+      {
         "code": "SRS-BUILDANDDO-CHANGELOG-001",
-        "risk": "A0",
+        "risk": "A2",
         "spec": ".bits/srs/SRS-BUILDANDDO-CHANGELOG-001.md",
         "status": "in_progress",
         "title": "Public record - generated changelog, release summary, README roadmap mirror"
@@ -585,6 +941,27 @@
         "spec": "",
         "status": "delivered",
         "title": "CI Visibility, DORA, build telemetry and baseline deltas"
+      },
+      {
+        "code": "SRS-BUILDANDDO-CLASSROOM-GLOBAL-001",
+        "risk": "A2",
+        "spec": ".bits/srs/SRS-BUILDANDDO-CLASSROOM-GLOBAL-001.md",
+        "status": "in_progress",
+        "title": "A class is a global object; the workspace holds a person's access to classes and renders it as their gallery"
+      },
+      {
+        "code": "SRS-BUILDANDDO-COMMUNITY-001",
+        "risk": "A1",
+        "spec": ".bits/srs/SRS-BUILDANDDO-COMMUNITY-001.md",
+        "status": "in_progress",
+        "title": "Community contributor infrastructure"
+      },
+      {
+        "code": "SRS-BUILDANDDO-COMMUNITY-WEB-001",
+        "risk": "A2",
+        "spec": ".bits/srs/SRS-BUILDANDDO-COMMUNITY-WEB-001.md",
+        "status": "in_progress",
+        "title": "One source for community links, public persona profiles, honest community health, and no machine names in seat identity"
       },
       {
         "code": "SRS-BUILDANDDO-CRAWL-001",
@@ -606,6 +983,20 @@
         "spec": ".bits/srs/SRS-BUILDANDDO-DECISION-001.md",
         "status": "in_progress",
         "title": "BuildAndDo Decision Runtime Phase 1 typed decision primitive"
+      },
+      {
+        "code": "SRS-BUILDANDDO-DEPLOY-SWAP-001",
+        "risk": "A2",
+        "spec": ".bits/srs/SRS-BUILDANDDO-DEPLOY-SWAP-001.md",
+        "status": "in_progress",
+        "title": "A deploy copies the build beside the live site and swaps it in, so the live site is never emptied first"
+      },
+      {
+        "code": "SRS-BUILDANDDO-DEVELOPMENT-LOOP-001",
+        "risk": "A1",
+        "spec": ".bits/srs/SRS-BUILDANDDO-DEVELOPMENT-LOOP-001.md",
+        "status": "in_progress",
+        "title": "Connect development observations, sprint missions and reviewed outcomes"
       },
       {
         "code": "SRS-BUILDANDDO-DEVENV-001",
@@ -678,6 +1069,55 @@
         "title": "Semantic ISR research"
       },
       {
+        "code": "SRS-BUILDANDDO-GROWTH-001",
+        "risk": "A2",
+        "spec": ".bits/srs/SRS-BUILDANDDO-GROWTH-001.md",
+        "status": "in_progress",
+        "title": "System growth lock - per-system development and progression, measured from the repository and recorded on every merge"
+      },
+      {
+        "code": "SRS-BUILDANDDO-HEADERS-001",
+        "risk": "A1",
+        "spec": ".bits/srs/SRS-BUILDANDDO-HEADERS-001.md",
+        "status": "in_progress",
+        "title": "Every location in the staging web container sends the server's security headers, built assets included"
+      },
+      {
+        "code": "SRS-BUILDANDDO-HYGIENE-001",
+        "risk": "A2",
+        "spec": ".bits/srs/SRS-BUILDANDDO-HYGIENE-001.md",
+        "status": "in_progress",
+        "title": "Verified repository hygiene - public docs name no machine, the context lock and knip report the truth, dead web code removed"
+      },
+      {
+        "code": "SRS-BUILDANDDO-INTEGRITY-001",
+        "risk": "A1",
+        "spec": ".bits/srs/SRS-BUILDANDDO-INTEGRITY-001.md",
+        "status": "in_progress",
+        "title": "Epistemic Integrity Fabric slice 1"
+      },
+      {
+        "code": "SRS-BUILDANDDO-JOURNEY-001",
+        "risk": "A2",
+        "spec": ".bits/srs/SRS-BUILDANDDO-JOURNEY-001.md",
+        "status": "in_progress",
+        "title": "Build and Do navigation and guided first-mission journey"
+      },
+      {
+        "code": "SRS-BUILDANDDO-KNOWLEDGE-UNIT-001",
+        "risk": "A1",
+        "spec": ".bits/srs/SRS-BUILDANDDO-KNOWLEDGE-UNIT-001.md",
+        "status": "in_progress",
+        "title": "Knowledge Unit contract, receipt and evidence-based mastery ladder"
+      },
+      {
+        "code": "SRS-BUILDANDDO-LEARNING-NATIVE-001",
+        "risk": "A2",
+        "spec": ".bits/srs/SRS-BUILDANDDO-LEARNING-NATIVE-001.md",
+        "status": "in_progress",
+        "title": "Native learning summary and migration replay on declared PocketBase"
+      },
+      {
         "code": "SRS-BUILDANDDO-PB-METRICS-001",
         "risk": "A2",
         "spec": ".bits/srs/SRS-BUILDANDDO-PB-METRICS-001.md",
@@ -692,11 +1132,39 @@
         "title": "MetaFunction Fabric platform page - VFX, architecture visuals, and capability dashboard"
       },
       {
+        "code": "SRS-BUILDANDDO-PRESENCE-001",
+        "risk": "A1",
+        "spec": ".bits/srs/SRS-BUILDANDDO-PRESENCE-001.md",
+        "status": "in_progress",
+        "title": "Classroom presence states one verification contract in its route, its shared library and its test"
+      },
+      {
         "code": "SRS-BUILDANDDO-PUBLIC-REDACTION-001",
         "risk": "A2",
         "spec": ".bits/srs/SRS-BUILDANDDO-PUBLIC-REDACTION-001.md",
         "status": "in_progress",
         "title": "No fleet machine name or IP address in the generated JSON or the site bundle"
+      },
+      {
+        "code": "SRS-BUILDANDDO-PURPOSE-001",
+        "risk": "A1",
+        "spec": ".bits/srs/SRS-BUILDANDDO-PURPOSE-001.md",
+        "status": "in_progress",
+        "title": "Every public page says BuildAndDo is an educational, collaborative platform"
+      },
+      {
+        "code": "SRS-BUILDANDDO-QUIZ-001",
+        "risk": "A2",
+        "spec": ".bits/srs/SRS-BUILDANDDO-QUIZ-001.md",
+        "status": "in_progress",
+        "title": "Server-graded community quiz; no answers in the public catalogue"
+      },
+      {
+        "code": "SRS-BUILDANDDO-RECONCILE-001",
+        "risk": "A2",
+        "spec": ".bits/srs/SRS-BUILDANDDO-RECONCILE-001.md",
+        "status": "in_progress",
+        "title": "One line again - main merged into the staging line, then the staging line into main"
       },
       {
         "code": "SRS-BUILDANDDO-RELEASE-TAG-001",
@@ -748,6 +1216,13 @@
         "title": "Complete and integrate Phase 1 with the version-two contracts"
       },
       {
+        "code": "SRS-BUILDANDDO-SITE-001",
+        "risk": "A2",
+        "spec": ".bits/srs/SRS-BUILDANDDO-SITE-001.md",
+        "status": "in_progress",
+        "title": "Website ownership proof by DNS TXT (front door, part 1)"
+      },
+      {
         "code": "SRS-BUILDANDDO-SUPPLY-001",
         "risk": "A1",
         "spec": ".bits/srs/SRS-BUILDANDDO-SUPPLY-001.md",
@@ -762,6 +1237,13 @@
         "title": "Web test runner emitting JUnit, with workspace component suites"
       },
       {
+        "code": "SRS-BUILDANDDO-TRUST-001",
+        "risk": "A2",
+        "spec": ".bits/srs/SRS-BUILDANDDO-TRUST-001.md",
+        "status": "in_progress",
+        "title": "Trust hardening before the website-to-credential loop"
+      },
+      {
         "code": "SRS-BUILDANDDO-UPGRADE-001",
         "risk": "A2",
         "spec": ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md",
@@ -769,11 +1251,25 @@
         "title": "BuildAndDo public, workspace and community upgrades"
       },
       {
+        "code": "SRS-BUILDANDDO-WITNESS-001",
+        "risk": "A1",
+        "spec": ".bits/srs/SRS-BUILDANDDO-WITNESS-001.md",
+        "status": "in_progress",
+        "title": "Capability Passport and External Evidence Witness"
+      },
+      {
         "code": "SRS-BUILDANDDO-WORKSPACE-001",
         "risk": "A1",
         "spec": ".bits/srs/SRS-BUILDANDDO-WORKSPACE-001.md",
         "status": "in_progress",
         "title": "Functional workspace pages backed by a real data layer"
+      },
+      {
+        "code": "SRS-BUILDANDDO-WORLD-TWIN-001",
+        "risk": "A1",
+        "spec": ".bits/srs/SRS-BUILDANDDO-WORLD-TWIN-001.md",
+        "status": "in_progress",
+        "title": "Personal world twin projection slice 1"
       }
     ]
   },
@@ -792,10 +1288,27 @@
         "build",
         "lint"
       ],
+      "provider": "github",
       "scripts": [
         "scripts/ci/candidate_manifest.py",
         "scripts/ci/supply_chain.py",
         "scripts/ci/verify_public_boundary.py"
+      ],
+      "triggers": [
+        "push",
+        "workflow_dispatch"
+      ]
+    },
+    {
+      "file": ".github/workflows/changelog.yml",
+      "kind": "workflow",
+      "local_actions": [],
+      "name": "BuildAndDo Changelog",
+      "npm_scripts": [],
+      "provider": "github",
+      "scripts": [
+        "scripts/ci/changelog_gen.py",
+        "scripts/ci/readme_check.py"
       ],
       "triggers": [
         "push",
@@ -808,6 +1321,7 @@
       "local_actions": [],
       "name": "BuildAndDo Citadel Stack Telemetry",
       "npm_scripts": [],
+      "provider": "github",
       "scripts": [
         "scripts/ci/emit_datadog_metrics.py"
       ],
@@ -822,6 +1336,7 @@
       "local_actions": [],
       "name": "Datadog DORA Deployment",
       "npm_scripts": [],
+      "provider": "github",
       "scripts": [
         "scripts/ci/datadog_publish.py"
       ],
@@ -837,10 +1352,26 @@
       "npm_scripts": [
         "build"
       ],
+      "provider": "github",
       "scripts": [
         "scripts/ci/datadog_publish.py",
         "scripts/ci/evidence_epoch.py",
         "scripts/ci/verify_public_boundary.py"
+      ],
+      "triggers": [
+        "push",
+        "workflow_dispatch"
+      ]
+    },
+    {
+      "file": ".github/workflows/growth.yml",
+      "kind": "workflow",
+      "local_actions": [],
+      "name": "BuildAndDo System Growth",
+      "npm_scripts": [],
+      "provider": "github",
+      "scripts": [
+        "scripts/ci/system_growth.py"
       ],
       "triggers": [
         "push",
@@ -855,16 +1386,21 @@
       ],
       "name": "BuildAndDo PR Governance",
       "npm_scripts": [],
+      "provider": "github",
       "scripts": [
         "scripts/ci/agent_context.py",
         "scripts/ci/changelog_gen.py",
         "scripts/ci/hostinger_readiness.py",
+        "scripts/ci/public_redaction.py",
+        "scripts/ci/readme_check.py",
         "scripts/ci/submission_readiness.py",
         "scripts/ci/supply_chain.py",
+        "scripts/ci/system_growth.py",
         "scripts/ci/verify_public_boundary.py"
       ],
       "triggers": [
-        "pull_request"
+        "pull_request",
+        "workflow_dispatch"
       ]
     },
     {
@@ -875,6 +1411,7 @@
       ],
       "name": "BuildAndDo Weekly Supply Chain",
       "npm_scripts": [],
+      "provider": "github",
       "scripts": [
         "scripts/ci/supply_chain.py"
       ],
@@ -889,6 +1426,7 @@
       "local_actions": [],
       "name": "Datadog CI report",
       "npm_scripts": [],
+      "provider": "github",
       "scripts": [
         "scripts/ci/datadog_publish.py",
         "scripts/ci/supply_chain.py",
@@ -896,38 +1434,149 @@
         "scripts/ci/telemetry_snapshot.py"
       ],
       "triggers": []
+    },
+    {
+      "configuration_errors": [],
+      "file": ".gitlab-ci.yml",
+      "jobs": [
+        "integrity_gate",
+        "sprint_replay",
+        "praxis_evidence_tests",
+        "buildanddo_release_candidate"
+      ],
+      "kind": "pipeline",
+      "local_actions": [],
+      "name": ".gitlab-ci",
+      "npm_scripts": [],
+      "provider": "gitlab",
+      "required_scripts": [
+        "scripts/ci/integrity_regression_check.py",
+        "scripts/ci/public_redaction.py",
+        "scripts/ci/readme_check.py",
+        "scripts/ci/selftest_sprint_replay.py",
+        "scripts/ci/sprint_replay.py",
+        "scripts/ci/system_growth.py",
+        "scripts/ci/verify_public_boundary.py",
+        "services/praxis_evidence/run_all_tests.py",
+        "tools/buildanddo_release.py"
+      ],
+      "scripts": [
+        "scripts/ci/integrity_regression_check.py",
+        "scripts/ci/public_redaction.py",
+        "scripts/ci/readme_check.py",
+        "scripts/ci/selftest_sprint_replay.py",
+        "scripts/ci/sprint_replay.py",
+        "scripts/ci/system_growth.py",
+        "scripts/ci/verify_public_boundary.py",
+        "services/praxis_evidence/run_all_tests.py",
+        "tools/buildanddo_release.py"
+      ],
+      "triggers": [
+        "rules (not evaluated)"
+      ]
+    },
+    {
+      "configuration_errors": [],
+      "file": ".gitlab/ci/day21-submission.yml",
+      "jobs": [
+        "day21_governance",
+        "day21_full_acceptance",
+        "day21_submission_bundle"
+      ],
+      "kind": "include",
+      "local_actions": [],
+      "name": "day21-submission",
+      "npm_scripts": [],
+      "provider": "gitlab",
+      "required_scripts": [
+        "scripts/ci/agent_context.py",
+        "scripts/ci/classroom_drive.py",
+        "scripts/ci/day21_submission.py",
+        "scripts/ci/hostinger_readiness.py",
+        "scripts/ci/ocn_feature_sweep.py",
+        "scripts/ci/ocn_journey_report.py",
+        "scripts/ci/submission_readiness.py",
+        "scripts/ci/supply_chain.py",
+        "scripts/ci/verify_public_boundary.py",
+        "tools/day21/day21_acceptance.py"
+      ],
+      "scripts": [
+        "scripts/ci/agent_context.py",
+        "scripts/ci/classroom_drive.py",
+        "scripts/ci/day21_submission.py",
+        "scripts/ci/hostinger_readiness.py",
+        "scripts/ci/ocn_feature_sweep.py",
+        "scripts/ci/ocn_journey_report.py",
+        "scripts/ci/submission_readiness.py",
+        "scripts/ci/supply_chain.py",
+        "scripts/ci/verify_public_boundary.py",
+        "tools/day21/day21_acceptance.py"
+      ],
+      "triggers": [
+        "rules (not evaluated)"
+      ]
+    },
+    {
+      "configuration_errors": [],
+      "file": ".gitlab/ci/source-validation.yml",
+      "jobs": [
+        "source_discord",
+        "source_foundry",
+        "source_federal_portfolio",
+        "source_mission_suite",
+        "source_behavior_coverage",
+        "source_assurance",
+        "assurance_full_runtime"
+      ],
+      "kind": "include",
+      "local_actions": [],
+      "name": "source-validation",
+      "npm_scripts": [],
+      "provider": "gitlab",
+      "required_scripts": [],
+      "scripts": [],
+      "triggers": [
+        "rules (not evaluated)"
+      ]
     }
   ],
   "repo": {
     "apps": [
+      "career",
       "decision",
       "edge",
       "estate",
       "federal_foundry",
+      "integrity",
+      "knowledge_units",
       "mission_suite",
       "pocketbase",
       "research",
-      "web"
+      "web",
+      "world_twin"
     ],
     "build_scripts": [
       "apps/web/tools/build.mjs",
+      "apps/web/tools/check-public-lessons.mjs",
       "apps/web/tools/generate-community.mjs",
       "apps/web/tools/generate-llms.js",
       "apps/web/tools/generate-seo.mjs",
       "apps/web/tools/lint.mjs",
       "apps/web/tools/observability-smoke.mjs",
+      "apps/web/tools/release-telemetry.mjs",
       "apps/web/vite.config.js",
+      "scripts/deploy/apply_production_runtime_config.py",
       "scripts/deploy/roadmap_status.py",
       "scripts/deploy/ship.py",
       "scripts/deploy/staging-readback.sh"
     ],
-    "migrations": 57,
-    "python_files": 299,
+    "migrations": 77,
+    "python_files": 453,
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 1302,
-    "web_source_files": 344
+    "tracked_files": 1815,
+    "web_source_files": 383
   },
   "schema_version": 1,
   "sprint_readiness": {
@@ -935,19 +1584,19 @@
     "pieces": [
       {
         "id": "HS-01",
-        "next_step": "Run the local acceptance gate against the pinned backend build. GitHub Actions is not the gate here - the operator has confirmed this estate's CI is GitLab, and the stored GitHub credential returns 401, so its check state cannot be measured from this seat and should not be read as signal. On project 104, restore the GitLab instance's write path before reading any pipeline as a code verdict: measured 2026-09-21, its reads answered in 8-12s while a pipeline retry returned 500, a second timed out and pipeline creation returned 502.",
+        "next_step": "The CI owner must confirm public candidate delivery, trusted review metadata and same-revision GitLab statuses before updating required-check settings. Execute the complete governance/source matrices, isolated Praxis profiles and all eighteen acceptance profiles with retained artifacts; Cloudflare needs its separate diagnostic. Privately audit past shared test destinations without running mutating probes against them.",
         "owner": "BITS-CODEGEN / repository owner",
         "why": "A repeatable candidate and visible failed gates are prerequisites for every demo claim."
       },
       {
         "id": "HS-02",
-        "next_step": "Execute rendered onboarding and both native profiles, then demonstrate fresh signup, setup recovery, password recovery and return navigation on the accepted candidate.",
+        "next_step": "Execute rendered objective-first onboarding and both native profiles, then demonstrate signup, an explicit intent/objective, the saved workspace's first lesson, setup recovery, password recovery and return navigation on the accepted candidate.",
         "owner": "BITS-CODEGEN / IDE1",
         "why": "A judge must enter and resume the workspace using real account authority."
       },
       {
         "id": "HS-03",
-        "next_step": "Migration rollout is now validated on BOTH environments: preflighted against a disposable copy of live data, applied behind a database backup, and confirmed by an authenticated readback from a second box (production at 72 applied migrations, 79 collections, 33 lessons). Recovery is still unexercised - backups were taken but no restore has been performed, so rollback remains a claim rather than an observation. Exercise a restore onto a disposable profile and record it.",
+        "next_step": "Migration rollout is now validated on BOTH environments: preflighted against a disposable copy of live data, applied behind a database backup, and confirmed by an authenticated readback from a second box (production at 72 applied migrations, 79 collections, 33 lessons). Recovery is still unexercised - backups were taken but no restore has been performed, so rollback remains a claim rather than an observation. Exercise a restore onto a disposable profile and record it. The later classroom migrations (media sessions and the broadcast lesson) are not rolled out yet: execute both expanded native runtime profiles, including media-session and lesson installation, typed track responses, ownership/revocation and rollback. Have the release owner install matching backend migrations/hooks before the frontend and measure actual provider delivery and stream revocation on staging.",
         "owner": "BITS-CODEGEN / IDE1",
         "why": "Persisted work and tenant isolation make the application useful beyond a visual prototype."
       },
@@ -989,39 +1638,39 @@
       },
       {
         "id": "HS-09",
-        "next_step": "Attempt denied evidence mutations, inspect frozen reviews, and reconcile the exact native result and release context with controller/provider captures.",
+        "next_step": "Attempt denied evidence mutations, inspect frozen reviews, and reconcile the exact native result and release context with controller/provider captures. Supply scoped canonical owner mappings and retained captures for developmental queries; resolve identity and evidence gaps before independent progression review. Bind the real applicant identity and independently review exact career participation before compiling any personal application. The Citadel/CSEG receiver must authenticate world-event identity/read/share scope and exact review pins before connecting live provider references or publishing a projection.",
         "owner": "BITS-CODEGEN / release owner",
         "why": "A reviewer needs inspectable receipts and integrity checks for the exact candidate."
       },
       {
         "id": "HS-10",
-        "next_step": "Run actual browser and native isolation tests, bind the existing inference endpoint under approved data authority, and observe scoped chat-to-form-to-personal-knowledge behavior.",
+        "next_step": "Run actual browser and native isolation tests, bind the existing inference endpoint under approved data authority, and observe scoped chat-to-form-to-personal-knowledge behavior. Validate value-card drill-downs against one real reviewed mission and exact provider/release receipts; collect comparable cost, effort and eligible-work baselines before displaying ROI. Exercise career export/import with the actual native account, ten real job dossiers and reviewed draft documents; obtain separate receiving authority for one permitted ATS browser submission and retain its actual receipt.",
         "owner": "BITS-CODEGEN / CMAX-B",
         "why": "The operator and daily edition must explain current work with visible uncertainty and evidence."
       },
       {
         "id": "HS-11",
-        "next_step": "Validate actual replay/native exports and all eleven owner decisions, supply six dated materials and captured official requirements, then have the owner perform submission.",
+        "next_step": "Capture one actual objective-to-reflection journey on the accepted candidate, retaining the existing business/provider lane requirements. Validate replay/native exports and all eleven owner decisions, supply six dated materials and captured official requirements, then have the owner perform submission.",
         "owner": "Repository owner / independent verifier",
-        "why": "Competition readiness requires a reproducible end-to-end story and actual submission criteria."
+        "why": "Competition readiness requires an evidence-backed learning-through-work journey, a reproducible replay and actual submission criteria."
       }
     ],
-    "source_sha256": "9b10c4a44dafa9f631f2a38bec59adaaac2b3468eda125cf2297b9d1415c3ac2",
+    "source_sha256": "3dadfdba12e2ca6dadeb73b381818cc60920498c57d3a2dc3832e5eb79aff7c5",
     "state": "PASS"
   },
   "summary": {
-    "findings": 37,
-    "findings_high": 37,
-    "pipelines": 7,
-    "srs_open": 28,
-    "srs_total": 32,
-    "unwired_gates": 33
+    "findings": 61,
+    "findings_high": 32,
+    "pipelines": 12,
+    "srs_open": 52,
+    "srs_total": 56,
+    "unwired_gates": 32
   },
   "tests": {
     "js_runners": [
       "vitest"
     ],
-    "js_test_files": 71,
+    "js_test_files": 106,
     "js_test_script": true,
     "junit_configured": true,
     "python_suite_entrypoints": [

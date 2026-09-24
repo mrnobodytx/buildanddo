@@ -30,6 +30,10 @@ when any link is absent.
 
 ## The canonical URL is a blocking defect, not a preference
 
+> **Resolved 2026-09-20 in `357c959`** (correction recorded 2026-09-24 by SRS-BUILDANDDO-HYGIENE-001):
+> `SITE_ORIGIN` is now `https://buildanddo.com`, and the canonical link, Open Graph image and
+> JSON-LD follow it. The measurement below is kept as the record of the defect, not its current state.
+
 Measured 2026-09-20 from a fleet box (rig1 cannot measure TLS - its antivirus terminates and
 re-signs every connection):
 

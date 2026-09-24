@@ -1,26 +1,22 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/src/pages/workspace/OverviewPage.jsx
 // Stage:       07_BUILD
-// SRS:         SRS-BUILDANDDO-WORKSPACE-001
+// SRS:         SRS-BUILDANDDO-WORKSPACE-001, SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-SITE-001
 // CAPS:        pending
 // CK:          pending
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-10
-// Depends:     apps/web/src/hooks/useWorkspaceRecords.js,
-//              apps/web/src/lib/workspaceActions.js
+// Depends:     apps/web/src/hooks/useWorkspaceRecords.js, apps/web/src/lib/workspaceActions.js, apps/web/src/components/workspace/NextWorkspaceActions.jsx, apps/web/src/lib/onboarding.js
 // EnumType:    Widget
-// EnumEdges:   CONSUMES apps/web/src/hooks/useWorkspaceRecords.js;
-//              PRODUCES workspace.quick_action
-// Intent:      Answer "what is happening in this workspace" in one screen —
-//              one merged activity feed, counts that mean something, and an
-//              honest statement when the data layer cannot be read.
+// EnumEdges:   CONSUMES apps/web/src/hooks/useWorkspaceRecords.js; PRODUCES workspace.quick_action; CONSUMES apps/web/src/components/workspace/NextWorkspaceActions.jsx; CONSUMES apps/web/src/lib/onboarding.js
+// Intent:      Answer "what is happening in this workspace" in one screen — one merged activity feed, counts that mean something, and an honest statement when the data layer cannot be read.
 // ───────────────────────────────────────────────────────────────
 
 import {
     ArrowRight,
     Boxes,
-    CheckCircle2,
     FileSearch,
     GraduationCap,
     Info,
@@ -33,10 +29,13 @@ import {
     Workflow,
 } from 'lucide-react';
 import React, { useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import { Button, Card } from '@/components/site/ui';
+import Buddi from '@/components/buddi/Buddi';
+import BuddiAchievements from '@/components/buddi/BuddiAchievements';
 import EmptyState from '@/components/workspace/EmptyState';
+import NextWorkspaceActions from '@/components/workspace/NextWorkspaceActions';
 import {
     MISSION_PRIORITY,
     MISSION_STATUS,
@@ -56,14 +55,15 @@ import { useWorkspaceRecords } from '@/hooks/useWorkspaceRecords';
 import { timeAgo } from '@/lib/format';
 import { cn } from '@/lib/utils';
 import { trackWorkspaceAction, WORKSPACE_ACTIONS } from '@/lib/workspaceActions';
-import { activeMissions as selectActiveMissions, verifiedEvidence } from '@/lib/workspaceSummary';
+import { activeMissions as selectActiveMissions } from '@/lib/workspaceSummary';
+import { recommendedPath } from '@/lib/onboarding';
 
 const QUICK_ACTIONS = [
     {
         icon: Target,
-        label: 'Start a mission',
-        hint: 'Turn a signal into a bounded, approved task.',
-        to: '/app/missions',
+        label: 'Start a journey',
+        hint: 'Choose an objective, a lesson and a proposed mission.',
+        to: '/app/journey',
     },
     {
         icon: Plus,
@@ -138,8 +138,12 @@ export default function OverviewPage() {
     const evidence = useWorkspaceRecords('evidence', { sort: '-created' });
     const editions = useWorkspaceRecords('daily_editions', { sort: '-created' });
 
+    // `editions` was read on the line above and then left out of this list, so the page stopped
+    // showing its skeleton while the daily edition was still loading and rendered "Nothing
+    // verified yet" underneath the degraded banner - a confident zero for a read still in flight.
     const loading =
-        signals.loading || missions.loading || workflows.loading || evidence.loading;
+        signals.loading || missions.loading || workflows.loading || evidence.loading
+        || editions.loading;
 
     // A single degraded read makes every count on this page a lower bound.
     // Saying so once, at the top, is more honest than five silent zeroes.
@@ -161,11 +165,6 @@ export default function OverviewPage() {
         [signals.records],
     );
 
-    const verifiedCount = useMemo(
-        () => verifiedEvidence(evidence.records).length,
-        [evidence.records],
-    );
-
     // One merged feed rather than four lists: the operator's question is "what
     // happened here", and the answer is chronological across collections.
     const feed = useMemo(() => {
@@ -179,7 +178,8 @@ export default function OverviewPage() {
             (byKey[source.key] || []).map((record) => ({
                 id: `${source.key}:${record.id}`,
                 icon: source.icon,
-                route: source.route,
+                route: source.key === 'missions' ? `/app/missions?mission=${encodeURIComponent(record.id)}`
+                    : source.key === 'evidence' ? `/app/evidence?evidence=${encodeURIComponent(record.id)}` : source.route,
                 label: source.label(record),
                 detail: source.detail(record),
                 at: record.created,
@@ -195,7 +195,9 @@ export default function OverviewPage() {
     }, [signals.records, missions.records, evidence.records, editions.records]);
 
     const domainRecord = active && active.expand && active.expand.domain;
-    const domainVerified = domainRecord && domainRecord.status === 'verified';
+    // Status is server-owned (SRS-BUILDANDDO-SITE-001); a verified status always carries its DNS check time.
+    const domainVerified = Boolean(domainRecord && domainRecord.status === 'verified' && domainRecord.verified_at);
+    const startingPath = recommendedPath(active);
 
     const go = (to, label) => {
         trackWorkspaceAction(WORKSPACE_ACTIONS.QUICK_ACTION, { target: to, label });
@@ -216,7 +218,21 @@ export default function OverviewPage() {
                 title="Front Page"
                 description="A live picture of what BuildAndDo noticed, what it's doing, and what it verified — for this workspace only."
             />
-
+            {!wsLoading && active?.onboarding_intent && !signals.demo && (
+                <Card className="ph-no-capture p-5" data-dd-privacy="mask">
+                    <h2 className="font-display text-xl font-semibold">Your starting path</h2>
+                    {startingPath ? <>
+                        <p className="mt-2 text-sm text-muted-foreground">{startingPath.intent}</p>
+                        <p className="mt-1 break-words font-medium">{startingPath.objective}</p>
+                        <p className="mt-3 text-sm text-muted-foreground">Start with a lesson, then use your objective to plan work. Joining a class or running a mission is a separate step.</p>
+                        <ol className="mt-4 list-inside list-decimal space-y-3 text-sm">
+                            {startingPath.steps.map((item) => <li key={item.to}><Button href={item.to} size="sm" variant="secondary" className="h-auto min-h-9 max-w-full justify-start py-2 text-left">{item.label}</Button></li>)}
+                        </ol>
+                    </> : <p role="status" className="mt-3 text-sm text-muted-foreground">Your saved objective is unavailable. Refresh the workspace or open ERP to inspect your current objectives.</p>}
+                </Card>
+            )}
+            <NextWorkspaceActions signals={signals} missions={missions} evidence={evidence} />
+            <BuddiAchievements missions={missions} />
 
             {degradedSources.length > 0 && (
                 <DegradedNotice
@@ -234,21 +250,20 @@ export default function OverviewPage() {
                             </span>
                             <div className="text-sm">
                                 <p className="font-medium">
-                                    {(domainRecord && domainRecord.domain) || 'No website connected'}
+                                    {(domainRecord && domainRecord.domain) || 'Website context is optional'}
                                 </p>
                                 <p className="mt-0.5 text-muted-foreground">
-                                    {domainVerified
-                                        ? 'Domain verified — deeper analysis is authorized.'
-                                        : 'Domain selected for analysis only. Confirm ownership or authorization before deeper analysis or actions.'}
+                                    {!domainRecord ? 'You can work toward your objective without a website.' : domainVerified
+                                        ? 'Domain ownership verified by DNS.'
+                                        : 'Ownership of this domain is not verified. It is context only; the label unlocks nothing.'}
                                 </p>
                             </div>
                         </div>
-                        {domainRecord && (
+                        {domainRecord && !domainVerified && (
                             <Button
                                 variant="secondary"
-                                size="sm"
                                 className="shrink-0"
-                                onClick={() => go('/app/settings', 'verify-domain')}
+                                onClick={() => go('/app/settings#website-domain', 'verify-domain')}
                             >
                                 Verify domain
                                 <ArrowRight className="h-4 w-4" />
@@ -289,13 +304,16 @@ export default function OverviewPage() {
                     tone="neutral"
                 />
                 <StatCard
-                    icon={CheckCircle2}
-                    label="Verified outcomes"
-                    value={verifiedCount}
-                    hint={verifiedCount ? 'Evidence checked against a source' : 'Nothing verified yet'}
-                    tone="teal"
+                    icon={FileSearch}
+                    label="Evidence recorded"
+                    value={evidence.loading ? 'Loading' : evidence.degraded ? 'Unavailable' : evidence.records.length}
+                    hint="Recording evidence is not independent verification"
+                    tone="neutral"
                 />
             </div>
+            <p className="text-sm text-muted-foreground">Activity and evidence labels do not establish successful work.{' '}
+                <Link to="/app/operator" className="underline">Inspect reviewed outcomes and their evidence</Link>{' '}
+                through the existing permission-scoped review view.</p>
 
             <div className="grid gap-6 lg:grid-cols-12">
                 <section className="lg:col-span-7">
@@ -376,7 +394,7 @@ export default function OverviewPage() {
                         <ListSkeleton rows={2} />
                     ) : activeMissions.length === 0 ? (
                         <EmptyState
-                            icon={Target}
+                            art={<Buddi pose="build" size={88} />}
                             title="No missions yet"
                             description="A mission is a bounded, approved task with a clear goal and scope. Start one from a signal — you review the plan before anything runs."
                             action={

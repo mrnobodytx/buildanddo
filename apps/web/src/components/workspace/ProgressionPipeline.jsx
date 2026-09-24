@@ -8,9 +8,9 @@
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-10
-// Depends:     apps/web/src/components/site/ui.jsx, .github/workflows/pr-governance.yml
+// Depends:     apps/web/src/components/site/ui.jsx, .gitlab/ci/day21-submission.yml, .gitlab/ci/source-validation.yml
 // EnumType:    Widget
-// EnumEdges:   VALIDATES .github/workflows/pr-governance.yml; USES_TEMPLATE apps/web/src/components/site/ui.jsx
+// EnumEdges:   VALIDATES .gitlab/ci/day21-submission.yml; USES_TEMPLATE apps/web/src/components/site/ui.jsx; CONSUMES .gitlab/ci/source-validation.yml
 // Intent:      Show the contribution flow the repository actually enforces, one step at a time.
 // ───────────────────────────────────────────────────────────────
 
@@ -99,15 +99,19 @@ export const PIPELINE_STEPS = [
             'The claim gets evidence. "It builds" is not proof a feature works, so the verification is a command someone else can run.',
         checks: [
             'Lint passes',
-            'Web coverage and public telemetry adapter suites pass',
-            'Native Discord commands and research parser checks pass with source coverage',
-            'Native CPU blueprint extraction, BDR planning and PDF-to-session provenance pass with source coverage',
+            'GitLab runs source Node/Python, semantic-twin and web coverage suites',
+            'Native Discord/PDF and CPU blueprint checks pass with required dependencies',
+            'Foundry, federal portfolio and mission coverage passes on Python 3.11 and 3.12',
+            'Career, Knowledge Unit, integrity and world-twin coverage passes on Python 3.11 and 3.12',
+            'Membership, evidence/authority and fault-handling source assurance runs on reviewed changes',
+            'The separately requested full-assurance lane exercises browser journeys, accessibility, browser sizes, load and backup restoration',
+            'Skipped or unavailable dependencies keep acceptance incomplete',
             'Native PocketBase dossier, suite, operator and classroom auth, scoped reads, storage, presence, leases and retry checks pass for both declared runtimes',
             'Native interactive tutorial checkpoints, completion certificates, concurrent credit and migration retention pass for both declared runtimes',
+            'Praxis selftests run in fresh owned loopback databases on both declared runtimes; shared targets and missing binaries cannot pass',
             'Native signal proposals, ordered workflow receipts, separate mission review and operator readback pass for both declared runtimes',
-            'Portable mission suite behavior, replay, packaging and source coverage pass on Python 3.11 and 3.12',
-            'Federal foundry execution, evidence integrity, replay and portfolio exports pass on Python 3.11 and 3.12',
-            'Federal portfolio packets, provider-independent adapters, evidence checks and source coverage pass on Python 3.11 and 3.12',
+            'All eighteen acceptance profiles pass for the same candidate',
+            'Receipts, logs, JUnit and the build artifact remain available for revalidation',
             'Every manifest matches the dependency lockfile',
             'Verification commands from the issue produce their stated output',
         ],
@@ -136,6 +140,7 @@ export const PIPELINE_STEPS = [
         checks: [
             'verify_public_boundary.py reports PASS',
             'No forbidden path or secret-like literal',
+            'The current review has exactly one actor label',
             'agent_context.py --check finds the lock current',
         ],
         tag: 'governance:boundary-scan',

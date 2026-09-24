@@ -1,22 +1,25 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/src/lib/seatComms.js
 // Stage:       07_BUILD
-// SRS:         SRS-BUILDANDDO-COMMUNITY-001
+// SRS:         SRS-BUILDANDDO-COMMUNITY-001, SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-TRUST-001
 // CAPS:        pending
 // CK:          pending
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-10
 // Depends:     apps/web/src/lib/pocketbaseClient.js,
 //              apps/web/src/lib/observability/runtime.js,
-//              apps/pocketbase/pb_migrations/1788940000_create_community_contributor_collections.js
+//              apps/pocketbase/pb_migrations/1788940000_create_community_contributor_collections.js, apps/web/src/lib/workspaceClaims.js, apps/web/src/lib/observability/mutations.js
 // EnumType:    Adapter
-// EnumEdges:   PRODUCES seat_events; CONSUMES apps/web/src/lib/pocketbaseClient.js
+// EnumEdges:   PRODUCES seat_events; CONSUMES apps/web/src/lib/pocketbaseClient.js; CONSUMES apps/web/src/lib/workspaceClaims.js; CONSUMES apps/web/src/lib/observability/mutations.js
 // Intent:      Let several seats working one workspace see each other's work instead of colliding.
 // ───────────────────────────────────────────────────────────────
 
 import pb from '@/lib/pocketbaseClient';
 import { reportAction } from '@/lib/observability/runtime';
+import { observeMutation } from '@/lib/observability/mutations';
+import { createWorkspaceClaimClient } from './workspaceClaims.js';
 
 /**
  * The seat event vocabulary. The wire values stored in PocketBase are the bare
@@ -41,6 +44,19 @@ const subscribers = new Set();
 /** Realtime connection state. One workspace at a time; a second connect swaps it. */
 let connectedWorkspaceId = null;
 let unsubscribeRealtime = null;
+let publisher = null;
+let publisherAccountId = null;
+const pendingPublishers = new Map();
+const MAX_PENDING_WORKSPACES = 32;
+
+function syncPublisherAccount() {
+    const accountId = pb.authStore.record?.id || null;
+    if (publisherAccountId === accountId) return;
+    publisherAccountId = accountId;
+    publisher = null;
+    pendingPublishers.clear();
+}
+pb.authStore.onChange(syncPublisherAccount);
 
 /**
  * Normalises a PocketBase `seat_events` record into the shape subscribers see.
@@ -55,6 +71,8 @@ function toSeatEvent(record) {
         event: record.event,
         seat: record.seat,
         actorType: record.actor_type,
+        owner: record.owner || null,
+        attribution: 'reported',
         subjectType: record.subject_type || null,
         subject: record.subject || null,
         summary: record.summary,
@@ -173,30 +191,20 @@ export function isSeatCommsConnected() {
 }
 
 /**
- * Best-effort seat label for the signed-in actor.
+ * Publishes a seat event as the signed-in human account.
  *
- * A human contributor's seat is their account handle. An agent seat overrides
- * it with `VITE_BUILDANDDO_SEAT` so its events are attributable to the seat
- * identity rather than to whichever account it authenticated as.
+ * The server binds a browser-originated event to `actor_type: 'human'` and
+ * `seat` = the authenticated account id, and refuses anything else
+ * through the native claim command. Agent seats publish through the server.
  *
- * @returns {string} Seat label, never empty.
- */
-function currentSeat() {
-    const configured = import.meta.env.VITE_BUILDANDDO_SEAT;
-    if (configured) return String(configured);
-    const record = pb.authStore.record;
-    return record?.username || record?.email || 'unknown-seat';
-}
-
-/**
- * Publishes a seat event.
+ * Reconciles an unresolved prior report using its original key before sending
+ * a different report. Workspace visits retain unresolved keys within the current
+ * account session; old-visit responses cannot settle a new visit.
  *
  * @param {object} input Event input.
  * @param {string} input.event One of `joined`, `progress`, `completed`, `blocked`, `handoff`.
  * @param {string} input.workspaceId Workspace record id.
  * @param {string} input.summary One-line human description; required.
- * @param {string} [input.seat] Seat label; defaults to `currentSeat()`.
- * @param {('human'|'agent'|'mixed')} [input.actorType] Defaults to `human`.
  * @param {string} [input.subjectType] `mission`, `workflow`, `page`, `issue`, `pull_request`, `other`.
  * @param {string} [input.subject] Record id or repository path the event is about.
  * @param {object} [input.detail] Arbitrary structured detail.
@@ -208,8 +216,6 @@ export async function publishSeatEvent({
     event,
     workspaceId,
     summary,
-    seat,
-    actorType = 'human',
     subjectType,
     subject,
     detail,
@@ -224,11 +230,9 @@ export async function publishSeatEvent({
 
     const payload = {
         event,
-        seat: seat || currentSeat(),
-        actor_type: actorType,
+        seat: pb.authStore.record.id,
+        actor_type: 'human',
         summary,
-        workspace: workspaceId,
-        owner: pb.authStore.record.id,
     };
     if (subjectType) payload.subject_type = subjectType;
     if (subject) payload.subject = subject;
@@ -237,13 +241,60 @@ export async function publishSeatEvent({
     if (handoffTo) payload.handoff_to = handoffTo;
 
     try {
-        const record = await pb.collection(COLLECTION).create(payload);
-        reportAction(SEAT_EVENTS[event], {
-            seat: payload.seat,
-            actor_type: actorType,
-            subject_type: subjectType || 'none',
-        });
-        return record;
+        syncPublisherAccount();
+        const accountId = pb.authStore.record.id;
+        const scope = `${accountId}:${workspaceId}`;
+        if (publisher?.scope !== scope) {
+            let current = pendingPublishers.get(scope);
+            if (!current) {
+                if (pendingPublishers.size >= MAX_PENDING_WORKSPACES) {
+                    publisher = null;
+                    console.error('publish seat report failed', 'Recover an unresolved workspace report before starting another.');
+                    return null;
+                }
+                current = { scope, lifetime: 0 };
+                current.api = createWorkspaceClaimClient({ client: pb, collection: COLLECTION, accountId, workspaceId,
+                    isCurrent: () => publisher === current, getLifetime: () => current.lifetime, deferConfirmation: true, observe: observeMutation });
+            }
+            current.lifetime += 1;
+            publisher = current;
+        }
+        const current = publisher;
+        if (current.publishing) { console.error('publish seat report failed', 'Wait for the current report to finish.'); return null; }
+        const lifetime = current.lifetime;
+        const sameVisit = () => publisher === current && current.lifetime === lifetime && pb.authStore.record?.id === accountId;
+        current.publishing = true;
+        current.pending = true;
+        pendingPublishers.set(scope, current);
+        try {
+            let result = await current.api.write('create', '', payload);
+            if (!sameVisit()) return null;
+            if (result.blockedByPending) {
+                // Reconcile only the original key. Same-report retries are already
+                // handled by write and must not be submitted a second time.
+                const recovered = await current.api.retry();
+                if (!sameVisit()) return null;
+                if (recovered.ok && !current.api.confirm()) return null;
+                result = recovered.ok ? await current.api.write('create', '', payload) : recovered;
+            }
+            if (!sameVisit()) return null;
+            if (!result.ok) {
+                current.pending = Boolean(result.uncertain || result.stale || result.blockedByPending);
+                console.error('publish seat report failed', result.error);
+                return null;
+            }
+            if (!current.api.confirm()) return null;
+            current.pending = false;
+            reportAction(SEAT_EVENTS[event], {
+                seat: payload.seat,
+                actor_type: payload.actor_type,
+                subject_type: subjectType || 'none',
+            });
+            return result.record;
+        } finally {
+            current.publishing = false;
+            if (!current.pending && pendingPublishers.get(scope) === current) pendingPublishers.delete(scope);
+        }
     } catch (err) {
         console.error('publish seat event failed', err);
         return null;

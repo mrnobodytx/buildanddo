@@ -30,7 +30,7 @@ function connected(options = {}, backend = classroomFixture()) {
         const event = backend.event(client.authStore.record.id, options.body || {}, { workspace: parts[4], id: parts[6], query: options.query || {} });
         try {
             return plain(options.method === 'POST' ? path.endsWith('/presence') ? backend.service.heartbeat(event) : backend.service.command(event) :
-                parts[6] ? backend.service.detail(event) : backend.service.list(event));
+                path.endsWith('/record') ? backend.service.record(event) : parts[6] ? backend.service.detail(event) : backend.service.list(event));
         } catch (error) { throw { status: error.status || 500, response: { message: error.message } }; }
     } };
     const api = createClassroomClient({ client, workspaceId: 'ws1', accountId: actor, isCurrent: () => current,
@@ -135,7 +135,7 @@ test('incomplete, foreign and inconsistent room reads never become successful em
     for (const corrupt of [
         (value) => { value.workspace = 'ws2'; }, (value) => { value.role = 'superuser'; }, (value) => { value.room.id = 'other'; },
         (value) => { value.room.can_manage = false; }, (value) => { value.membership.revision = 0; }, (value) => { value.room.section = 20; },
-        (value) => { value.media.available = true; }, (value) => { value.lesson.lesson.sections = []; }, (value) => { value.lessons.items = null; },
+        (value) => { value.media.available = 'yes'; }, (value) => { value.media.token = 'leaked'; }, (value) => { value.lesson.lesson.sections = []; }, (value) => { value.lessons.items = null; },
         (value) => { delete value.messages.has_more; }, (value) => { value.messages.items = [{ id: 'msg1', room: 'foreign' }]; },
         (value) => { value.participants.push(value.participants[0]); },
     ]) {
@@ -205,11 +205,36 @@ test('room, workspace and personal lesson identifiers stay out of classroom tele
         ['/api/buildanddo/workspaces/workspacealpha/classrooms', '/api/buildanddo/workspaces/:workspace/classrooms'],
         ['/api/buildanddo/workspaces/workspacealpha/classrooms/roomalpha', '/api/buildanddo/workspaces/:workspace/classrooms/:room'],
         ['/app/tutorials?lesson=lessonalpha', '/app/tutorials'],
-        ['/docs?guide=public', '/docs?guide=public'], [null, null], ['http://[', 'http://['],
+        ['/docs?guide=public', '/docs'], [null, null], ['http://[', '/unknown'],
     ]) assert.equal(classroomTelemetryLocation(value), expected);
     const event = { event: '$pageview', properties: { $current_url: 'https://buildanddo.com/app/classrooms/roomalpha?workspace=workspacealpha',
         $pathname: '/app/classrooms/roomalpha', $set_once: { $initial_current_url: 'https://buildanddo.com/app/classrooms/roomalpha' },
         $set: { $referrer: 'https://buildanddo.com/app/tutorials?lesson=lessonalpha' }, unrelated: 'retained' } };
     assert.ok(!JSON.stringify(scrubClassroomProperties(event)).includes('alpha'));
     assert.equal(event.properties.unrelated, 'retained'); assert.equal(scrubClassroomProperties(null), null);
+});
+
+test('a live room may offer media; a room that is not live may not', async () => {
+    const { api, backend, client } = connected(); const room = backend.create();
+    const send = client.send;
+    client.send = async (...args) => { const value = await send(...args); if (value.media) value.media = { available: true }; return value; };
+    assert.equal((await api.read(room.id)).reason, 'unavailable');
+    backend.command('room.start', { id: room.id });
+    const view = await api.read(room.id);
+    assert.equal(view.ok, true); assert.equal(view.data.media.available, true);
+});
+
+test('the class record read accepts aggregate counts only and refuses anything carrying an identity', async () => {
+    const { api, backend, client } = connected(); const room = backend.create();
+    backend.migration('apps/pocketbase/pb_migrations/1791300000_classroom_attendance.js').up();
+    backend.command('room.start', { id: room.id });
+    const view = await api.record(room.id);
+    assert.equal(view.ok, true); assert.equal(view.data.attendees, 1); assert.equal(view.data.installed, true);
+    const send = client.send;
+    for (const corrupt of [(value) => { value.names = ['owner']; }, (value) => { value.hours[0].owner = 'owner'; },
+        (value) => { value.attendees = -1; }, (value) => { value.room = 'other'; }, (value) => { value.hours = Array(49).fill(value.hours[0]); }]) {
+        client.send = async (...args) => { const value = await send(...args); corrupt(value); return value; };
+        assert.equal((await api.record(room.id)).reason, 'unavailable');
+    }
+    assert.equal((await api.record('not a room')).reason, 'invalid');
 });

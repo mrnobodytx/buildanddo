@@ -1,24 +1,25 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/src/pages/RoadmapPage.jsx
 // Stage:       07_BUILD
-// SRS:         SRS-BUILDANDDO-ROADMAP-001, SRS-BUILDANDDO-COMMUNITY-WEB-001
+// SRS:         SRS-BUILDANDDO-ROADMAP-001, SRS-BUILDANDDO-COMMUNITY-WEB-001, SRS-BUILDANDDO-UPGRADE-001
 // CAPS:        pending
 // CK:          pending
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
 // Seat:        BITS-CODEGEN, C-ONE (live sources panel, interaction layer,
 //              2026-09-11 sprint-day-3 replay of what actually landed;
 //              2026-09-22 community group read from community-status.json)
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-10
 // Depends:     scripts/ci/sprint_cycle.py,
-//              scripts/deploy/roadmap_status.py
+//              scripts/deploy/roadmap_status.py, apps/web/src/lib/observability/runtime.js, apps/web/src/lib/navigationIntent.js
 // EnumType:    Widget
 // EnumEdges:   CONSUMES apps/web/public/roadmap-status.json;
-//              VALIDATES scripts/ci/sprint_cycle.py
+//              VALIDATES scripts/ci/sprint_cycle.py; CONSUMES apps/web/src/lib/observability/runtime.js; CONSUMES apps/web/src/lib/navigationIntent.js
 // Intent:      Draw the sprint plan and, separately, whatever the projection
 //              actually measured - including saying it measured nothing.
 // ───────────────────────────────────────────────────────────────
 
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
 import { Gauge, ArrowRight, Info, TrendingUp, GitCommit, Activity, Users } from 'lucide-react';
@@ -29,6 +30,9 @@ import { Section, SectionLabel, Card, StatePill, Button } from '@/components/sit
 import { CommunityStatusPanel } from '@/components/site/StatusPanels';
 import { STATUS_PATH } from '@/lib/communityLinks';
 import { trackEvent } from '@/lib/telemetry';
+import { readFailed } from '@/lib/observability/runtime';
+import { telemetrySection } from '@/lib/navigationIntent';
+import { PUBLIC_ACTIONS, publicActionSection, trackPublicAction } from '@/lib/publicActions';
 
 const STATUSES = ['proposed', 'planned', 'in_progress', 'blocked', 'verified', 'archived'];
 
@@ -229,6 +233,31 @@ function mergeLiveStatus(live) {
             verifiedAt: entry.verified_at || null,
         };
     });
+}
+
+/**
+ * Where an activity row's measurement came from. A link only when the projection gave a web address: it also
+ * publishes plain text for sources a visitor cannot open (a private control plane, a guildmaster's members-only
+ * workspace), and rendering that text as a link produced a broken one on every such row.
+ *
+ * @param {{id: string, evidence?: string|null}} props
+ */
+export function ActivityEvidence({ id, evidence }) {
+    if (!evidence) return null;
+    if (evidence.startsWith('https://') || evidence.startsWith('http://')) {
+        return (
+            <a
+                href={evidence}
+                target="_blank"
+                rel="noreferrer"
+                onClick={() => trackEvent('roadmap_activity_evidence_click', { id })}
+                className="font-evidence text-[11px] text-primary"
+            >
+                evidence
+            </a>
+        );
+    }
+    return <span className="font-evidence text-[11px] text-muted-foreground">{evidence}</span>;
 }
 
 /**
@@ -558,30 +587,84 @@ export default function RoadmapPage() {
 
     useEffect(() => {
         let cancelled = false;
+        let status = 0, reason = 'unavailable';
+        const pathname = globalThis.window?.location?.pathname;
+        const section = telemetrySection(pathname);
         fetch('/roadmap-status.json', { cache: 'no-store' })
-            .then((r) => (r.ok ? r.json() : Promise.reject(new Error(`status ${r.status}`))))
-            .then((data) => { if (!cancelled) setLive(data); })
-            .catch(() => { if (!cancelled) setLiveError(true); });
+            .then((r) => {
+                status = r.status;
+                if (!r.ok) throw new Error(`status ${r.status}`);
+                reason = 'invalid_response'; return r.json();
+            })
+            .then((data) => {
+                if (cancelled) return;
+                if (!data || !['MEASURED', 'UNMEASURED'].includes(data.state) || data.state === 'MEASURED' && !Array.isArray(data.milestones))
+                    throw new Error('Unexpected roadmap response');
+                const unavailable = data.state === 'UNMEASURED' ? 'unmeasured' :
+                    [data.progression, data.replay].some((part) => part?.state === 'UNMEASURED') ? 'degraded' : '';
+                if (unavailable && pathname === globalThis.window?.location?.pathname) readFailed(section, 'roadmap_feed', unavailable, status);
+                setLive(data);
+            })
+            .catch((error) => {
+                if (cancelled) return;
+                if (error?.name !== 'AbortError' && pathname === globalThis.window?.location?.pathname) readFailed(section, 'roadmap_feed', reason, status);
+                setLiveError(true);
+            });
         return () => { cancelled = true; };
     }, []);
 
     useEffect(() => {
         let cancelled = false;
+        let status = 0, reason = 'unavailable';
+        const pathname = globalThis.window?.location?.pathname;
+        const section = telemetrySection(pathname);
         // A failed fetch leaves this null, and CapabilityInventory renders nothing rather than an
         // empty list — "we could not measure" must not look like "there is nothing".
         fetch('/capabilities.json', { cache: 'no-store' })
-            .then((r) => (r.ok ? r.json() : Promise.reject(new Error(`status ${r.status}`))))
-            .then((data) => { if (!cancelled) setCapabilities(data); })
-            .catch(() => {});
+            .then((r) => {
+                status = r.status;
+                if (!r.ok) throw new Error(`status ${r.status}`);
+                reason = 'invalid_response'; return r.json();
+            })
+            .then((data) => {
+                if (cancelled) return;
+                if (!data || !['MEASURED', 'UNMEASURED'].includes(data.state) || data.state === 'MEASURED' &&
+                    (!Array.isArray(data.capabilities) || data.capabilities.some((entry) => !entry) || !data.counts || typeof data.counts !== 'object'))
+                    throw new Error('Unexpected capability response');
+                if (data.state === 'UNMEASURED' && pathname === globalThis.window?.location?.pathname) readFailed(section, 'roadmap_feed', 'unmeasured', status);
+                setCapabilities(data);
+            })
+            .catch((error) => {
+                if (!cancelled && error?.name !== 'AbortError' && pathname === globalThis.window?.location?.pathname)
+                    readFailed(section, 'roadmap_feed', reason, status);
+            });
         return () => { cancelled = true; };
     }, []);
 
     useEffect(() => {
         let cancelled = false;
+        let status = 0, reason = 'unavailable';
+        const pathname = globalThis.window?.location?.pathname;
+        const section = telemetrySection(pathname);
         fetch('/activity-status.json', { cache: 'no-store' })
-            .then((r) => (r.ok ? r.json() : Promise.reject(new Error(`status ${r.status}`))))
-            .then((data) => { if (!cancelled) setActivity(data); })
-            .catch(() => { if (!cancelled) setActivityError(true); });
+            .then((r) => {
+                status = r.status;
+                if (!r.ok) throw new Error(`status ${r.status}`);
+                reason = 'invalid_response'; return r.json();
+            })
+            .then((data) => {
+                if (cancelled) return;
+                if (!data || data.state !== 'UNMEASURED' && (!Array.isArray(data.entries) || data.entries.some((entry) => !entry)))
+                    throw new Error('Unexpected activity response');
+                const unavailable = data.state === 'UNMEASURED' ? 'unmeasured' : data.entries.some((entry) => entry.state === 'UNMEASURED') ? 'degraded' : '';
+                if (unavailable && pathname === globalThis.window?.location?.pathname) readFailed(section, 'roadmap_feed', unavailable, status);
+                setActivity(data);
+            })
+            .catch((error) => {
+                if (cancelled) return;
+                if (error?.name !== 'AbortError' && pathname === globalThis.window?.location?.pathname) readFailed(section, 'roadmap_feed', reason, status);
+                setActivityError(true);
+            });
         return () => { cancelled = true; };
     }, []);
 
@@ -600,12 +683,19 @@ export default function RoadmapPage() {
         [replay],
     );
 
+    const hoverTimer = useRef(null), hoverDay = useRef(null);
+    useEffect(() => () => { clearTimeout(hoverTimer.current); hoverDay.current = null; }, []);
     const handleHover = (day) => {
         setActiveDay(day);
-        if (day) {
-            const m = milestones.find((x) => x.day === day);
-            trackEvent('roadmap_milestone_hover', { day, title: m?.title });
-        }
+        if (hoverDay.current === day) return;
+        hoverDay.current = day;
+        clearTimeout(hoverTimer.current);
+        if (!PLANNED_MILESTONES.some((milestone) => milestone.day === day)) return;
+        const pathname = globalThis.window?.location?.pathname, section = publicActionSection(pathname);
+        hoverTimer.current = setTimeout(() => {
+            if (hoverDay.current === day && pathname === globalThis.window?.location?.pathname)
+                trackPublicAction(PUBLIC_ACTIONS.ROADMAP_HOVER, 'observed', 'user_requested', { day }, { section });
+        }, 300);
     };
 
     return (
@@ -893,17 +983,7 @@ export default function RoadmapPage() {
                                     {e.count_24h ?? '—'} / 24 h · {e.count_7d ?? '—'} / 7 d
                                 </div>
                                 <div className="col-span-4 flex items-center justify-end gap-3 sm:col-span-3">
-                                    {e.evidence && (
-                                        <a
-                                            href={e.evidence}
-                                            target="_blank"
-                                            rel="noreferrer"
-                                            onClick={() => trackEvent('roadmap_activity_evidence_click', { id: e.id })}
-                                            className="font-evidence text-[11px] text-primary"
-                                        >
-                                            evidence
-                                        </a>
-                                    )}
+                                    <ActivityEvidence id={e.id} evidence={e.evidence} />
                                     <span className={`font-evidence text-[10px] uppercase tracking-[0.14em] ${e.state === 'MEASURED' ? 'text-success' : 'text-muted-foreground'}`}>
                                         {e.state}
                                     </span>

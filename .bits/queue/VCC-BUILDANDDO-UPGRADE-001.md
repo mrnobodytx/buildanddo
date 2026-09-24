@@ -20,6 +20,438 @@
 **SRS:** SRS-BUILDANDDO-UPGRADE-001 **Risk:** A2 **Seat:** BITS-CODEGEN
 **Status:** in_progress **Actor:** actor:agent
 
+## PR 112 conflict resolution - 2026-09-24
+
+The owner requests integrating current main into `claude/keen-pasteur-aoyiht`.
+This source-only continuation retains both parents' behavior and existing evidence.
+The concurrent remote update at `4c61592bf9a53f98ac956034f44620265b96a073`
+is also retained. The initial nine-path merge and subsequent fourteen-path
+reconciliation preserve both histories and the same runtime acceptance limits.
+
+| # | Task | Gate command | Status |
+|---|------|--------------|--------|
+| 1 | MP-1: Resolve conflicting source and generated paths in both integrations | `git ls-files --unmerged`; connected read/mutation/replay tests | done: no unresolved paths; concurrent-update controls have 180 Node passes and 86 Discord passes, with one dependency skip in each selection |
+| 2 | MP-2: Regenerate context, readiness, growth and changelog artifacts | Existing generators and their check modes | done: combined-source outputs regenerated and checked |
+| 3 | MP-3: Validate the integrated source and retain the review handoff | Source suites, public boundary, report and memory validation | done: 1,444 Node passes with one prerequisite skip; broad Python retains seven existing failures and eight skips; quiz/build integration controls pass and runtime limits are recorded in pr112-merge-report.md |
+
+## Telemetry coverage repair - 2026-09-24
+
+The owner supplies a reviewed coverage audit and requests source improvements.
+Continue this A2 scope without external writes, secrets or operational activation.
+
+| Phase | Task | Gate | Status |
+|---|---|---|---|
+| TC-1 | Privacy-safe route, identity and browser collection | Stubbed SDK, URL, network and visibility regressions | source controls pass, including SDK routing token, document-anonymous identity and release tags; real SDK/browser delivery unmeasured |
+| TC-2 | Truthful mutation outcomes, section failures and primary actions | Malformed-200, permission, uncertainty and sink-failure controls | source controls pass, including 65 late-rejection cases; rendered cases remain unavailable |
+| TC-3 | Backend cause visibility and release artifact guard | Local hook/middleware, build and promotion negative controls | source controls pass; both release controllers guarded; real bundler/native runtime and operational activation remain unmeasured |
+| TC-4 | Source validation, reviewed bindings and receiving handoff | Connected regressions, boundary, memory and explicit runtime gaps | PARTIAL: 1,358 Node passes with one prerequisite skip; 107 focused Python passes per declared interpreter; broad Python retains seven inherited failures and eight skips; report and receiving checklist retained |
+
+Memory brief: PR 103 is merged. This session fast-forwards to current public main
+before changes; the audit's release is a separate public revision, not asserted
+to be the checkout or current deployment. Its later real-visit correction
+supersedes the earlier PostHog silence conclusion. No authenticated workspace or
+live vendor verification is performed here, and no seat event is fabricated.
+
+## Live classroom on the staging line - 2026-09-23
+
+Operator direction (2026-09-23): the live classroom system should be on staging. Staging is built from
+the integration branch; the broadcast classroom below was merged to main only. Seat: C-ONE.
+
+| Phase | Task | Gate | Status |
+|---|---|---|---|
+| LS-1 | Apply main's live classroom and its seat-name follow-up as one change; adapt what this line lacks | Classroom flow and broadcast Vitest cases; classroom node suites | done: the class record no longer calls main's government membership helper, which this line does not have |
+| LS-2 | A known guildmaster in the live room links to its public profile | `vitest run src/components/broadcast`, with a control that drops the link | done |
+| LS-3 | Repository gates | `hostinger_readiness.py --check`, `agent_context.py --check`, `submission_readiness.py --check`, `verify_public_boundary.py` | done |
+| LS-4 | Staging-only deploy of the merged line | Staging `/_version` names the merged commit; the classroom routes answer | not part of this change |
+
+## PR 103 main integration - 2026-09-24
+
+The owner requests resolving this branch's conflicts using the command line.
+PR 93 is already merged; PR 103 is the current conflicting review. Preserve both
+parents' safeguards and historical evidence under this existing A2 dispatch.
+
+| Phase | Task | Gate | Status |
+|---|---|---|---|
+| MI-1 | Reconcile tutorial, claim, Praxis and CI contracts with main | Connected source regressions and semantic review | source PASS: all 34 conflicts resolved; authenticated seat identity and answer-wait replay regressions pass; Buddi retained |
+| MI-2 | Rebind governance and verify the integrated candidate | Focused and broad source checks, native/rendered attempts | source PASS: 874 Node checks; 1,204 Python passes and six dependency skips; native/rendered checks remain unavailable |
+| MI-3 | Retain limits and prepare the current review update | Dispatch report, memory and reviewed merge resolution | source handoff prepared; original 235 memory events retained, two integration observations added; remote synchronization remains the owner's UI action |
+
+## Test isolation and claim authority continuation - 2026-09-23
+
+Continue the owner-requested repairs and site lessons against the reported safety
+and progression defects, under the existing A2 dispatch. No production inspection,
+secret access, private deployment change or external execution is authorized.
+
+| Phase | Task | Gate | Status |
+|---|---|---|---|
+| CA-1 | Isolate mutating Praxis tests from shared backends | Rejection-before-I/O regressions and disposable native entrypoint | source PASS: 21 safety cases; both actual native profiles BLOCKED, no shared backend used |
+| CA-2 | Make guided completion server-owned and project keyless learner responses | Learning projection, retained-history and raw-write denial regressions | source PASS: 43 learning source/client cases; old reading history remains non-authoritative |
+| CA-3 | Protect workspace claims, drafts and submitting-account attribution | Scoped commands, legacy non-promotion and hookless native denial | source PASS: 56 claim cases, including workspace-return and multi-await recovery; native hookless denial remains unexecuted |
+| CA-4 | Retain corrected findings, site lessons and measured validation | Source/native/rendered checks plus readiness, boundary and memory | PARTIAL: 847 Node passes; 1,210 Python cases with six dependency skips; latest site capture records 135 behavior/fixture checks and preserves the earlier captures |
+
+Memory brief: merged PR 90 retains the broadcast security repairs. The new report
+mixes confirmed flaws with wider design decisions. Missions already emit scoped
+observations through existing execution paths; manual reading completion does
+not mint guided certificates. Praxis currently imports deployment configuration
+and has a public-backend fallback, but no actual production CI setting or write
+was inspected. Use isolated synthetic tests only and do not fabricate seat events.
+
+## Broadcast repair and learning continuation - 2026-09-23
+
+The owner requests fixing the merged classroom integration findings and retaining
+them as lessons and evidence in the site. Continue the existing A2 dispatch on
+the merged source without external activation or private data.
+
+| Phase | Task | Gate | Status |
+|---|---|---|---|
+| BR-1 | Bind media operations and presence to current room/account authority | Connected negative controls and locked migration tests | source PASS: foreign/session/track denials precede provider effects; full native execution remains unavailable |
+| BR-2 | Close late joins and safely render structured agent details | Media lifecycle and rendering regressions | source PASS: late transport/lifetime and refresh controls; rendered cases authored but blocked by missing Vitest |
+| BR-3 | Publish a lesson and separate source evidence in existing site views | Curriculum/migration, links and no-fabricated-outcome tests | source PASS: versioned lesson, 121-test dated capture, fingerprint and download; no workspace outcomes or learner state seeded |
+| BR-4 | Exercise complete native fixtures and retain receiving limits | Both declared runtime profiles, source/rendered checks and governance | PARTIAL: 761 Node passes; 1,189 Python cases with zero failures and six dependency skips; 15 source-fixture checks per Python version; 23 actual native cases remain blocked, not passed |
+
+Memory brief: PR 80 is merged at ce1ce50fe408100bc617b33b5fed277efde64648 and
+retains PR 81's evidence repairs. Source tracing found unbound SFU sessions,
+late join cleanup and object-detail rendering failures; the native classroom
+fixture does not cover the full new backend. Earlier 680 Node passes cannot
+establish media or native acceptance. No authenticated workspace is attached;
+do not fabricate seat events or insert test claims into a shared evidence ledger.
+
+## Broadcast classroom - 2026-09-23
+
+Owner-authorized continuation of the classroom scope: connect the existing
+Cloudflare Realtime client and hooks to the routed live room, port the
+Broadcast Classroom design, and add the attendance and usage ledgers the
+broadcaster and agent stats need. No provider, secret or deployment change.
+
+| Phase | Task | Gate | Status |
+|---|---|---|---|
+| BC-1 | Port stage, chart and amber-text tokens; broadcast components on site/ui primitives | Rendered component tests in both states | source PASS: 12 broadcast Vitest cases; build and lint pass |
+| BC-2 | Live media in the routed room; retire the unrouted page | Media hook and room flow tests with a signalling double | source PASS against a signalling double; real SFU and two-browser audio UNMEASURED (no realtime credentials in this session) |
+| BC-3 | Media availability from realtime configuration | Classroom node suites | source PASS: configured, unconfigured and not-live cases; no value exposed |
+| BC-4 | Append-only attendance history and host class record | Migration up/down, command and stats node tests | source PASS: 48 classroom node cases, 11 classroom flow cases; migration not applied to any hosted backend |
+| BC-5 | Assistant turn model and token usage | Assistant node tests | source PASS: 19 assistant node cases; provider-reported counts only |
+| BC-6 | Agent activity from seat_events | Rendered empty and populated states | source PASS: 3 rendered cases; realtime subscription unobserved |
+| BC-7 | Compose variable names; private-plane handoffs | Boundary scan; handoff file | PASS: boundary scan 1518 files; handoff 2026-09-23-bits-codegen-c-one-broadcast-classroom |
+
+Observed: all 643 Node upgrade cases pass. The full web Vitest run has 27
+failures in 19 files, all present in the 28-failure baseline recorded on the
+unchanged tree in this environment (wait-for timing in unrelated flows), so no
+new failure. Readiness, submission, context and boundary gates pass. Native
+PocketBase profiles, hosted media and deployed behaviour were not run.
+
+## Audited evidence and handoff repairs - 2026-09-23
+
+The owner requests fixing the completed audit in logical dependency order under
+this existing A2 dispatch. Preserve the merged source and prior evidence. Local
+synthetic tests are authorized; external writes, credentials, provider activation
+and deployment remain outside this continuation.
+
+| Phase | Task | Gate | Status |
+|---|---|---|---|
+| ER-1 | Bind assessment results and passport claims to their actual support | Adversarial career regressions and existing coverage gate | source PASS: 86 cases on both declared Python versions; bank replay is required before evidence admission |
+| ER-2 | Preserve conflicts, revision-bound mastery and independent world review | Integrity, Knowledge Unit and world-twin negative controls and coverage | source PASS: 19 integrity, 20 Knowledge Unit and 97 world-twin cases per Python version; unchanged coverage floors |
+| ER-3 | Repair native review propagation and browser work preservation | Connected producer/consumer tests and rendered lifecycle regressions | source PASS: 47 native-policy/value and 80 focused UI/client cases; native/rendered runtime acceptance remains unavailable |
+| ER-4 | Review source, retain validation and receiving blockers | Source/type/lint, readiness, boundary, context and memory checks | PARTIAL: 672 Node passes; 1,174 Python cases with zero failures and six dependency skips; source review follow-ups repaired; native/rendered and actual deployment acceptance remain open |
+
+Memory brief: the audited merged revision is 1bb22896eb1e78704d12c20b0d85c58f22e568c6.
+The assessment found reproducible evidence-binding, stale replay, review-lineage,
+mastery-version and native review-format defects despite passing earlier suites.
+UI lifecycle failures were source-traced, not rendered acceptance. The earlier
+eighteen-profile result remains historical HOLD, not evidence for this repair.
+No authenticated workspace session is attached; no seat event is fabricated.
+
+## World-event interoperability - 2026-09-23
+
+Continue the existing A2 semantic/evidence integration scope for the owner's
+event -> episode -> scoped projection request. Reuse strict canonical contracts,
+the current mission export and externally pinned review policy. No new page,
+canonical store or live provider binding is authorized.
+
+| Phase | Task | Gate | Status |
+|---|---|---|---|
+| WE-1 | Bind universal event identity, scope and opaque trace references | World-event contract and adversarial parsing tests | source PASS; typed wire version and exact metadata binding exercised |
+| WE-2 | Reconstruct correlated episodes and existing semantic graphs | Determinism, chronology, deduplication and review-pin tests | source PASS; hidden-predecessor and review-time red/green regressions retained |
+| WE-3 | Adapt a complete native mission capture through the same path | Production capture fixture -> Python compiler -> scoped graph | source PASS; 28 connected Node cases; synthetic source, not live acceptance |
+| WE-4 | Retain evidence, deployment limits and receiving contract | Required coverage, source regression, readiness, context, boundary and memory | 82 focused Python cases and 635 Node cases pass; receiving/native/browser acceptance remains unmeasured |
+
+Memory brief: PR 75 is merged and its source-acceptance repairs are retained.
+Earlier toy world events are unscoped claims, not authenticated canonical events;
+they must not silently acquire a tenant or verified status in the new pipeline.
+`libs/evolution` already owns immutable events and episode reconstruction;
+`libs/semantic_twin` owns graph contracts and `ReviewPolicy` owns externally
+pinned review admission. Use these owners without changing their vocabulary.
+No authenticated runtime session is attached, so no seat event is fabricated.
+
+## Connected learning-loop acceptance — 2026-09-23
+
+Continue the existing source-acceptance and user-journey scope. The current owner
+request prioritizes a single observed loop and one candidate identity, not more
+standalone modules. Do not alter the public/private ownership boundary.
+
+| Phase | Task | Gate | Status |
+|---|---|---|---|
+| LC-1 | Diagnose the reported resolver failure and capture prerequisites | Provider annotations and installed-runtime inspection | observed: GitHub job 106999882933 did not start because of an account billing lock; separate Cloudflare diagnostic remains unavailable |
+| LC-2 | Connect all four portable suites to required acceptance | Existing readiness/GitLab regressions and all four coverage gates | source PASS: 125 focused regressions; 102 portable cases per Python version; hosted execution unobserved |
+| LC-3 | Make existing deployment/browser capture producers admissible | Existing Day-21 producer/validator negative controls | source PASS: synthetic producer/validator regressions; actual deployed captures still required |
+| LC-4 | Repair journey, assistant and profile lifecycle integration | Connected Node regressions and existing rendered suites | PARTIAL: 38 focused Node cases pass; rendered suites cannot start without locked frontend dependencies |
+| LC-5 | Retain candidate-bound validation and receiving obligations | Full offline acceptance, source bindings, boundary and memory | local report and receiving runbook prepared; full-matrix results are retained for the frozen candidate in ignored Day-21 evidence |
+
+Memory brief: the career, journey and Knowledge Unit work is merged at 768e578;
+the current source also contains the local integrity/world-twin packages. Earlier
+statement coverage did not run the frontend or either native PocketBase version.
+The locked frontend install is unavailable from the local cache (ENOTCACHED),
+so missing rendered acceptance cannot be converted into PASS. Citadel remains
+canonical; no authenticated live workspace or external seat event is fabricated.
+
+## Career Passport dogfood authorized 2026-09-22
+
+The owner selects BuildAndDo as the first career-evidence instance. This
+continues the existing A2 source dispatch; one real reviewed application is the
+receiving target. No employment claim, sensitive answer or submission authority
+is inferred from the illustrative architecture or the platform's development.
+
+| Phase | Task | Gate | Status |
+|---|---|---|---|
+| CP1 | Bind work, personal participation and independent review | Attribution/provenance negative tests and real repository capture | source PASS — 22 real artifacts, 19 agent-attributed observations, zero verified personal claims; missing ancestor diffs retained as a gap |
+| CP2 | Normalize job requirements, explain gaps and compile draft artifacts | Feed, matching, package and approval regressions | source PASS — 90 Python cases and 82.30–100 percent statement coverage; synthetic 100/10/3 succeeds, actual job/submission counts remain zero |
+| CP3 | Connect the scoped Career Passport review desk | Client and rendered page cases | source PASS — 14 client cases within 625 Node passes; seven rendered cases await the missing frontend runtime |
+| CP4 | Retain dogfood results, validation and receiving acceptance | Typing, source regression, readiness, context, boundary and memory | PARTIAL — typing/lint/readiness/submission pass; broad Python has two missing-history errors and 32 skips; rendered/build/lint prerequisites and live receiving work remain open |
+
+The source implementation uses the existing work/read/review owners. The real
+repository-only passport remains HOLD with no personal claims or draft packages;
+its person identifier is deliberately unresolved, not a native account mapping.
+The full Python run executed 952 cases and reported two errors (one class setup)
+from unchanged Semantic Twin history consumers requiring absent ancestor trees;
+four compiler-class cases could not run. No missing objects were fetched and no
+existing tests were disabled. The seven-command application smoke is 3/7 when
+context and boundary pass: Node passes, Python and all three frontend gates do
+not. Detailed evidence and receiving actions are retained in
+`.bits/out/VCC-BUILDANDDO-UPGRADE-001/career-passport-report.md` and the dated
+Career Passport handoff. The original eighteen acceptance profiles remain.
+
+Memory brief: the merged research/assurance baseline is locally available and
+restored. Existing capability passports describe callable assets, not a person's
+work. Native mission reviews preserve exact evidence and independent review;
+the development loop already uses externally pinned ReviewPolicy receipts.
+No reviewed mapping from human.nobody to personal contributions, live ATS feed,
+job-search preferences, or approved application is supplied. Git authorship,
+seat summaries and a source PASS cannot fill those gaps. Retain all 205 previous
+memory events and the unchanged eleven milestones/eighteen-profile acceptance.
+The baseline readiness binding is stale; review and refresh it after this source
+continuation without claiming a completed milestone. No external seat event is
+sent without an authenticated receiving session and explicit authorization.
+
+## Test assurance and restricted research sprint — 2026-09-22
+
+The owner authorizes implementation of the testing recommendations and bounded
+three-lane sprint in the existing public repository, with government work
+restricted to the USD 100 high tier. Production activation, purchases, provider
+credentials, hosted model runs and official submissions require receiving owners.
+
+| Phase | Task | Gate command | Status |
+|---|---|---|---|
+| QA | Enforce membership and existing-role boundaries across government surfaces | Government Node/native/rendered regressions | source PASS — 611 Node passes; 30 government boundary cases plus the membership enquiry regression; native and rendered acceptance BLOCKED |
+| QB | Extend the existing decision and foundry owners with reproducible research packages | Research sprint Python tests and demo export | source PASS — 44 research cases; 79 exported files checked and replayed; official/model/GPU evidence remains unavailable |
+| QC | Implement all eight testing categories with explicit runtime prerequisites | Assurance runner and source regressions | source PASS — 20 recorder regressions; all eight profiles retained, 2 PASS / 6 BLOCKED; required source and explicit full-runtime GitLab lanes configured |
+| QD | Review source bindings and retain observed evidence and receiving actions | Readiness, context, boundary and memory checks | source review complete; exact validation and receiving limits are retained in research-assurance-report.md and research-assurance-validation.json |
+
+Memory brief: the retained implementation contains 580 Node cases, 802 upgrade
+Python cases, 65 frontend files and ten live Praxis suites. Last measured source
+run passed 1,350 and skipped 32. The 18-profile acceptance matrix remains HOLD.
+Frontend packages, native PocketBase, PDF/Discord runtimes and GPU tooling are
+absent in this sandbox. The existing decision runtime is advisory; the foundry
+already contains a deterministic multi-asset auction and model-independent task
+packets. Membership billing is not implemented. Do not duplicate these owners,
+fabricate a charge or use an unverified source as an official solicitation.
+
+Observed source regression: 611 Node passes; 866 Python cases, 834 passed and
+32 existing dependency skips. The portable portfolio gate passes 110 cases with
+98.84–100% statement coverage across its measured modules. The standalone market
+controls replay 36 orders each; their metrics are synthetic controls. Release
+readiness stays HOLD. Missing Vitest, Vite and eslint-plugin-import keep the
+three frontend smoke gates non-passing. Provisioning and activation follow
+`.bits/handoffs/2026-09-22-bits-codegen-research-assurance.md`; no real payment,
+hosted-model call, official submission or GPU benchmark is asserted.
+
+## Educational collaboration framing — 2026-09-22
+
+The owner's product correction continues this A2 source dispatch. Learning
+through real objectives and shared evidence defines the platform; the existing
+business demonstration remains one application domain.
+
+| Phase | Task | Gate | Status |
+|---|---|---|---|
+| PF-1 | Align public identity, project intake and homepage hierarchy | Existing homepage/challenge rendering and source/crawler checks | source PASS — 580 Node cases and 340-module diagnostic; rendered acceptance blocked by missing Vitest |
+| PF-2 | Align the README, evaluator story and video plan | Review the objective-to-reflection path and retained runtime requirements | PASS — educational identity and planned learner path aligned; all eleven checkpoint gates and prior acceptance conditions retained |
+| PF-3 | Retain validation, memory and source bindings | Dispatch smoke, readiness, submission, context, boundary and memory | source verification complete — 770 Python passes, 32 skips; web tests/lint/build unavailable; results in product-framing-report.md |
+
+Memory brief: the Twin/value implementation and its 192 historical events are
+the baseline. The homepage metadata already identifies an educational app,
+while the shared footer/FAQ, early-access categories and judge story still
+center small-business operations. Existing onboarding saves six intents and an
+objective; classes, lessons, practices and project evidence already exist.
+This continuation changes presentation, not operational acceptance. No live
+workspace, provider binding or independently accepted journey is attached.
+
+## Developmental Twin and value lenses — 2026-09-22
+
+The owner's ecosystem/progression and reviewer-dashboard request continues this
+existing A2 source dispatch. Semantic queries remain advisory; no external feed,
+workspace write, provider execution or authority promotion is authorized here.
+
+| Phase | Task | Gate | Status |
+|---|---|---|---|
+| TV-1 | Reuse canonical identity, state, history and query contracts | Semantic-twin regression and new progression cases | source PASS — 19 progression cases; retained captures preserve identity conflicts, state and authority boundaries |
+| TV-2 | Connect permission-scoped outcomes to one value projection and three lenses | Connected operator/value and rendered page cases | source PASS — 12 value cases, 100 percent helper line coverage; rendered and native acceptance require absent packages/binary |
+| TV-3 | Add the continuous Gantt lane and blueprint to existing owners | Document/source contract review | PASS — existing development-loop, sprint and operator documents own the blueprint, continuous lane and economic measurement contract |
+| TV-4 | Retain evidence, memory and source bindings | Typing, source checks, readiness, boundary, context and memory | source regression complete — 580 Node passes, 770 Python passes and 32 skips; final checks and limitations retained in twin-value-report.md |
+
+Memory brief: Phase 1 ingestion, evolution promotion and native mission review
+already exist. The canonical authority vocabulary ends at A3; an A0–A5 model
+requires its actual owner's reference. The operator route currently returns
+bounded summaries rather than economic measurements. No authenticated workspace,
+business baseline, canonical identity resolver feed or private runtime is
+attached. Latest onboarding and paid-pilot source/evidence are preserved.
+
+## Paid-pilot continuation — 2026-09-22
+
+| Phase | Task | Gate | Status |
+|---|---|---|---|
+| PP-1 | Connect a scoped paid-pilot offer to the existing commercial draft | Draft contract and existing public-page tests | source PASS — 10 draft cases, 100 percent helper line/branch coverage; three rendered regressions added, execution requires missing Vitest |
+| PP-2 | Specify one real n8n outcome with Firecrawl/inference and independent replay | Existing business-execution contract and Day-21 receiving handoff | receiving contract prepared; runtime dispatch, workspace and operator requested; live execution unavailable here |
+| PP-3 | Preserve evidence and review the governed source binding | Source, readiness, submission, boundary, context and memory checks | source regression complete — 568 Node passes, 750 Python passes and 32 skips; retained results and final bookkeeping checks in paid-pilot-report.md |
+
+Memory brief: objective-first onboarding is the committed baseline. Its retained
+full acceptance run is 4 PASS / 3 FAIL / 1 HOLD / 10 BLOCKED, not a current live
+result. Pricing and Contact already support early-access interest and an explicit
+user-sent commercial email; there is no billing account or paid entitlement.
+No n8n, Firecrawl or inference management connector is attached to this session.
+No authenticated customer workspace or independent verifier was supplied.
+Keep all 183 historical memory events and reuse the existing activation handoff.
+Do not send customer email, read credentials, deploy or manufacture seat events.
+
+## Objective-first Day-21 continuation — 2026-09-22
+
+| Phase | Task | Gate | Status |
+|---|---|---|---|
+| OC-1 | Persist intent, objective and optional context through atomic onboarding | Connected Node and existing native workspace cases | source PASS — 28 connected cases; native execution remains required |
+| OC-2 | Connect explicit intake to the saved workspace and existing lesson/planning routes | Rendered onboarding/overview cases and destination checks | implemented; rendered cases require locked frontend packages |
+| OC-3 | Run the existing candidate-bound acceptance matrix and retain evidence | Day-21 runner, readiness, boundary and memory checks | prepared for the reviewed candidate; observed results are retained separately in objective-closure-report.md |
+| OC-4 | Reconcile runtime, rollback and submission receiving obligations | Existing release source and Day-21 contracts | done for source inspection and handoff; actual receiving execution remains open |
+
+Memory brief: the audited `5077a96` revision is locally available as origin/main
+and is now the source baseline. Earlier journey repairs and all event history
+are retained. Workspace setup already has an atomic native command and a
+content-derived retry identity; it does not persist intent or an objective.
+No authenticated workspace, independent verifier or registered provider access
+is supplied. Hosted GitLab execution and private deployment are not available
+through this session's read-only GitHub provider. Do not fabricate seat events,
+live captures, release receipts or acceptance. Use the existing runner and
+receiving handoff rather than another subsystem.
+
+## Ten critical sprint repairs authorized 2026-09-21
+
+Owner request: restore governance and build the ten most critical remaining
+site pieces under the existing sprint. The source audit identifies broken or
+missing handoffs in the saved-signal to independently reviewed outcome journey.
+
+| Phase | Sprint outcome | Gate | Status |
+|---|---|---|---|
+| ST-0 | Restore automatic PR governance while retaining GitLab gates | GitLab/governance regressions | source PASS: automatic and manual review checks; all GitLab jobs retained |
+| ST-1 | Validated session and selected onboarding workspace | Session/onboarding tests | source PASS: native-refresh controller; onboarding and rendered cases require frontend dependencies |
+| ST-2 | Current-scope collections and writes | Scope/record tests | source PASS: scoped read/write and OR-filter regressions; native rules remain required |
+| ST-3 | Exact capture recovery and safe cancellation | Business execution tests | source PASS: exact old-receipt lookup and ambiguous response recovery; rendered/native/provider checks remain |
+| ST-4 | Actionable independent mission review | Mission review tests | source PASS: explicit approval, role and independent reviewer prerequisites; native/backend policy retained |
+| ST-5 | Durable workflow run navigation and revision refresh | Workflow client/rendered tests | source implemented: current-revision deep link; source parser passes, rendered cases authored |
+| ST-6 | Current connector readiness in action forms | Connector tests | source PASS: configured binding and expiring health; real providers remain a receiving gate |
+| ST-7 | ERP task triage and scoped record links | Business planning tests | source PASS: task/objective/contact filters; durable UI links require browser acceptance |
+| ST-8 | Evidence inspection and frozen review provenance | Evidence tests | source PASS: exact snapshot comparison, safe URLs and local export; rendered inspector cases authored |
+| ST-9 | Observed next actions in the workspace overview | Journey projection tests | source PASS: dependency-ordered suggestions from actual records; missing reads and demo remain explicit |
+| ST-10 | Complete bounded mission replay export | Replay/backend/client tests | source PASS: executed ERP chain, native read policy, scope denial, limits and digests; required native run unavailable |
+
+Memory brief: PR 65 retained validation code but made automatic public PR checks
+manual before hosted replacement enforcement was observed. Restore automatic
+triggers without discarding GitLab checks. Existing backend commands, immutable
+review receipts and approval gates remain the implementation base. Prior source
+results do not establish native, rendered, hosted or deployed acceptance.
+
+## Governance execution repair authorized 2026-09-21
+
+Owner request: all governance checks are failing. Continue the GitLab correction
+under this A2 dispatch, preserving prior tests and public/private boundaries.
+
+| Phase | Task | Gate | Status |
+|---|---|---|---|
+| GV-1 | Establish provider failure and reproduce scheduling/actor gaps | Provider metadata, routing and actor regressions | PASS: eleven GitHub jobs stopped before steps; missing routing and actor checks reproduced |
+| GV-2 | Complete GitLab validation parity and remove duplicate automatic scheduling | Routing, actor and existing readiness suites | source PASS: 103 regressions; manual fallback freezes one candidate; required GitLab coverage and submission dependencies retained |
+| GV-3 | Execute available governance/coverage gates and preserve exact results | Context, readiness, boundary and memory checks | local repair and evidence in governance-report.md; mission coverage recovered on both Python versions; dependency and hosted execution gates remain open |
+
+Memory brief: PR 64's GitHub run 35664137943 failed all eleven jobs with zero
+steps; job 106545971095 reports a billing lock before execution. Its Cloudflare
+check exposes no diagnostic. These observations do not describe GitLab health.
+Current local readiness/context/memory checks pass. The GitHub pull-request
+trigger remains automatic, while GitLab lacks the separate coverage jobs and
+actor-label enforcement. PR 64 carries only Bits AI, which is not an actor label.
+No job-scoped Datadog logs or candidate GitLab events were returned. No live seat
+or workspace is available; no seat event or remote status is fabricated.
+
+## GitLab acceptance correction authorized 2026-09-21
+
+Owner request: GitLab powers execution; revise the system accordingly and clear
+the other actionable blockers. This continues local A2 work on the session branch.
+
+| Phase | Task | Gate | Status |
+|---|---|---|---|
+| GL-1 | Inventory reachable GitLab CI and enforce its governance checks | GitLab inventory and readiness regressions | source PASS: 14 GitLab cases; 74 combined regressions |
+| GL-2 | Repair complete acceptance, isolated dependency setup and evidence artifacts | GitLab job/runner regressions and local acceptance | source PASS: complete artifact download revalidates; missing runtime prerequisites remain explicit |
+| GL-3 | Correct receiving actions and retain observed results | Context, readiness, boundary and memory checks | source corrected; exact local results retained in gitlab-report.md; hosted execution UNMEASURED |
+
+Memory brief: the root GitLab pipeline includes the public Day-21 acceptance
+fragment. Its default source-only job cannot satisfy the runner's full-matrix
+success requirement; the opt-in full job archives only the summary, omitting
+referenced export files. Agent context inventories only GitHub, and both
+readiness wiring validators inspect only GitHub. The last actual local result
+is 4 PASS, 3 FAIL, 1 HOLD and 10 BLOCKED. GitLab execution is not observed here;
+the recorded GitHub billing failure says nothing about GitLab runner health.
+No authenticated workspace seat is available, so no seat event is fabricated.
+
+## Acceptance-only continuation authorized 2026-09-21
+
+Owner request: focus on the failing acceptance profiles. The last retained run
+is 4/18 PASS, three FAIL, one HOLD and ten BLOCKED after the Node fixture repair.
+
+| Phase | Task | Gate | Status |
+|---|---|---|---|
+| AC-1 | Repair empty-run success, preserve failed runtime attempts and accept preinstalled versioned binaries | `python -m unittest tests.upgrade.test_day21_acceptance -v` | PASS: 13 runner regressions; 41 combined acceptance/export tests |
+| AC-2 | Execute available acceptance, retain exact remaining prerequisites and update source bindings | Eighteen-profile receipts, readiness/context and memory checks | runtime BLOCKED on missing packages and binaries; current results retained in acceptance-report.md |
+
+Memory brief: PR 63 contains the prior fixture and evidence integration.
+Governance run 35654152630 has eleven failed jobs with zero steps; annotation
+106513509603 states that billing locked the account before execution. The local
+wheel cache has neither pypdf nor Discord.py; the locked frontend packages,
+PocketBase binaries and Docker images are absent. No network download, billing
+change, CI retrigger or external effect is authorized by this local continuation.
+
+## Four-gap completion authorized 2026-09-21
+
+Owner request: build all four remaining gaps identified after the merged
+development-loop integration. Continue local A2 source work on the session
+branch; preserve external authority and independent verification requirements.
+
+| Phase | Task | Gate | Status |
+|---|---|---|---|
+| FC-1 | Repair acceptance failures and use available locked dependencies | Actual source/web/native acceptance receipts | source PASS: 510 Node tests; final acceptance and unavailable dependencies recorded in four-gap-report.md |
+| FC-2 | Make real prediction/run evidence portable for independent qualification | Review admission, source/log tamper and promotion regressions | source PASS: portable evidence, separate trust inputs; real independent grading remains a receiving gate |
+| FC-3 | Connect same-candidate acceptance, deployment, browser and product inputs | Candidate continuity and evidence rejection tests | source PASS: raw receipts, all profiles, ordered browser observations and separate product proofs are revalidated |
+| FC-4 | Assemble and audit submission materials through existing validators | Closure tests, readiness contracts and retained report | source PASS: 67 focused tests; runtime submission HOLD, detailed in .bits/out/VCC-BUILDANDDO-UPGRADE-001/four-gap-report.md |
+
+Memory brief: PR 62 provides working adapters but zero independently graded
+pairs. The prior acceptance result was 3/18 PASS, four FAIL, one HOLD and ten
+BLOCKED; Node migration fixtures omitted the PocketBase `$filepath` host API.
+The source checkout was fast-forwarded to locally available merged main before
+this continuation. Do not recycle old evidence as a new candidate's acceptance
+or substitute local producer checks for independent reviewer or owner decisions.
+
 ## Workspace assistant continuation authorized 2026-09-20
 
 The owner extends the eleven-checkpoint submission build with a persistent

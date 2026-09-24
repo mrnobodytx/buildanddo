@@ -1,0 +1,16 @@
+# ─── CGRF Header ───────────────────────────────────────────────
+# File:        tests/assurance/requirements.txt
+# Stage:       08_TEST
+# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# CAPS:        pending
+# CK:          pending
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+# Seat:        BITS-CODEGEN
+# Owner:       Citadel Nexus Inc.
+# Created:     2026-09-22
+# Depends:     tests/assurance/browser.py
+# EnumType:    ConfigDoc
+# EnumEdges:   DEPENDS_ON tests/assurance/browser.py
+# Intent:      Pin the optional browser driver used only by isolated assurance execution.
+# ───────────────────────────────────────────────────────────────
+playwright==1.55.0

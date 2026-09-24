@@ -1,19 +1,17 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/src/hooks/__tests__/useWorkspaceRecords.test.js
 // Stage:       08_TEST
-// SRS:         SRS-BUILDANDDO-TEST-001
+// SRS:         SRS-BUILDANDDO-TEST-001, SRS-BUILDANDDO-UPGRADE-001
 // CAPS:        pending
 // CK:          pending
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-10
-// Depends:     apps/web/src/hooks/useWorkspaceRecords.js,
-//              apps/web/src/test/utils.jsx
+// Depends:     apps/web/src/hooks/useWorkspaceRecords.js, apps/web/src/test/utils.jsx
 // EnumType:    Test
-// EnumEdges:   VALIDATES apps/web/src/hooks/useWorkspaceRecords.js;
-//              CONSUMES apps/web/src/test/utils.jsx
-// Intent:      Prove the read path every workspace page depends on: workspace
-//              scoping, error surfacing and loading transitions.
+// EnumEdges:   VALIDATES apps/web/src/hooks/useWorkspaceRecords.js; CONSUMES apps/web/src/test/utils.jsx
+// Intent:      Prove the read path every workspace page depends on: workspace scoping, error surfacing and loading transitions.
 // ───────────────────────────────────────────────────────────────
 
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -104,13 +102,12 @@ describe('useWorkspaceRecords', () => {
 
         expect(pb.__collection('evidence').getFullList).toHaveBeenCalledWith(
             expect.objectContaining({
-                filter: 'workspace = "ws_test" && type = "verified"',
+                filter: 'workspace = "ws_test" && (type = "verified")',
             }),
         );
     });
 
     it('surfaces a readable error and drops stale records when the request fails', async () => {
-        const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
         pb.__setError('missions', mockPocketBaseError('Something went wrong.', 500));
 
         const { result } = renderHook(() => useWorkspaceRecords('missions'), {
@@ -122,7 +119,6 @@ describe('useWorkspaceRecords', () => {
         expect(result.current.error).toMatch(/^Could not load this data right now/);
         expect(result.current.degraded).toBe(true);
         expect(result.current.records).toEqual([]);
-        expect(consoleError).toHaveBeenCalled();
     });
 
     it('does not query at all when no workspace is active', async () => {
@@ -147,6 +143,9 @@ describe('useWorkspaceRecords', () => {
         await waitFor(() => expect(result.current.loading).toBe(false));
 
         expect(result.current.records).toEqual([]);
+        expect(pb.collection).not.toHaveBeenCalled();
+        await act(async () => { expect(await result.current.create({ title: 'Disabled request' })).toMatchObject({ ok: false, reason: 'unavailable' }); });
+        expect(result.current.saving).toBe(false);
         expect(pb.collection).not.toHaveBeenCalled();
     });
 
@@ -198,7 +197,7 @@ describe('useWorkspaceRecords', () => {
         pb.authStore.clear();
         await act(async () => {
             resolveWrite({ id: 'saved-mission' });
-            expect((await pending).ok).toBe(true);
+            expect(await pending).toMatchObject({ ok: false, stale: true });
         });
         expect(pb.__collection('missions').getFullList).toHaveBeenCalledTimes(1);
     });
@@ -219,6 +218,58 @@ describe('useWorkspaceRecords', () => {
         await act(async () => { resolveWrite({ id: 'saved-previous-mission' }); await pending; });
         expect(pb.__collection('missions').getFullList).toHaveBeenCalledTimes(reads);
         expect(result.current.records[0].title).toBe('Current workspace mission');
+    });
+
+    it('uses the saved claim revision and native endpoint without a fresh pre-write read or raw update', async () => {
+        const saved = { id: 'edition1', workspace: 'ws_test', owner: 'user_test', title: 'Draft', status: 'draft', claim_revision: 3 };
+        pb.__setRecords('daily_editions', [saved]);
+        pb.send = vi.fn(async (_path, { body }) => ({ id: saved.id, workspace: 'ws_test', action: body.action,
+            revision: 4, replayed: false, record: { ...saved, title: 'Changed', claim_revision: 4 } }));
+        const { result } = renderHook(() => useWorkspaceRecords('daily_editions'), { wrapper: workspaceWrapper() });
+        await waitFor(() => expect(result.current.loading).toBe(false));
+        await act(async () => { expect((await result.current.update(saved.id, { title: 'Changed' }, saved)).ok).toBe(true); });
+        expect(pb.send).toHaveBeenCalledWith('/api/buildanddo/workspaces/ws_test/claims', expect.objectContaining({ body: expect.objectContaining({ revision: 3, action: 'edition.save' }) }));
+        expect(pb.__collection('daily_editions').update).not.toHaveBeenCalled();
+        expect(pb.__collection('daily_editions').getOne).not.toHaveBeenCalled();
+    });
+
+    it('retains an uncertain command for explicit retry rather than issuing a second creation', async () => {
+        const saved = { id: 'edition1', workspace: 'ws_test', owner: 'user_test', title: 'Draft', status: 'draft', claim_revision: 1 };
+        pb.send = vi.fn().mockRejectedValueOnce(mockPocketBaseError('Response lost', 503)).mockResolvedValueOnce({
+            id: saved.id, workspace: 'ws_test', action: 'edition.save', revision: 1, record: saved, replayed: true,
+        });
+        const { result } = renderHook(() => useWorkspaceRecords('daily_editions'), { wrapper: workspaceWrapper() });
+        await waitFor(() => expect(result.current.loading).toBe(false));
+        await act(async () => { expect((await result.current.create({ title: 'Draft' })).reason).toBe('uncertain'); });
+        expect(result.current.uncertain).toBe(true);
+        await act(async () => { expect((await result.current.retry()).replayed).toBe(true); });
+        expect(pb.send.mock.calls[0][1].body).toEqual(pb.send.mock.calls[1][1].body);
+        expect(result.current.uncertain).toBe(false);
+        expect(pb.__collection('daily_editions').create).not.toHaveBeenCalled();
+    });
+
+    it('keeps recovery visible after a denied retry and while the original save is being reconciled', async () => {
+        const saved = { id: 'edition1', workspace: 'ws_test', owner: 'user_test', title: 'Draft', status: 'draft', claim_revision: 1 };
+        let resolve;
+        pb.send = vi.fn().mockRejectedValueOnce(mockPocketBaseError('Response lost', 503))
+            .mockRejectedValueOnce(mockPocketBaseError('Permission revoked', 403))
+            .mockImplementationOnce(() => new Promise((done) => { resolve = done; }));
+        const { result } = renderHook(() => useWorkspaceRecords('daily_editions'), { wrapper: workspaceWrapper() });
+        await waitFor(() => expect(result.current.loading).toBe(false));
+        await act(async () => { await result.current.create({ title: 'Draft' }); });
+        await act(async () => { expect((await result.current.retry()).reason).toBe('forbidden'); });
+        expect(result.current.uncertain).toBe(true);
+        let pending;
+        act(() => { pending = result.current.retry(); });
+        expect(result.current.saving).toBe(true); expect(result.current.uncertain).toBe(true);
+        await waitFor(() => expect(pb.send).toHaveBeenCalledTimes(3));
+        await act(async () => {
+            resolve({ id: saved.id, workspace: 'ws_test', action: 'edition.save', revision: 1, record: saved, replayed: true });
+            expect((await pending).ok).toBe(true);
+        });
+        expect(result.current.uncertain).toBe(false);
+        for (const [, options] of pb.send.mock.calls) expect(options.body).toEqual(pb.send.mock.calls[0][1].body);
+        expect(pb.__collection('daily_editions').create).not.toHaveBeenCalled();
     });
 });
 

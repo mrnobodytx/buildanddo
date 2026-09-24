@@ -152,6 +152,14 @@ test('permission revoked during a source read invalidates the entire response', 
     assert.throws(() => f.assemble(), status(403));
 });
 
+test('fixture clocks explicitly distinguish timestamp ties from newer related observations', () => {
+    const tied = knowledgeFixture();
+    assert.equal(JSON.parse(tied.assemble({ query: 'small' }).context.text).sources[0].kind, 'evidence');
+    let clock = Date.parse('2026-09-18T14:00:00.000Z');
+    const advancing = knowledgeFixture({ now: () => new Date(clock++).toISOString() });
+    assert.equal(JSON.parse(advancing.assemble({ query: 'small' }).context.text).sources[0].kind, 'research');
+});
+
 test('context uses lexical relevance, one-hop relationships and stable citations without claiming verification', () => {
     const f = knowledgeFixture();
     f.seed('signals', { id: 'budget', workspace: 'ws1', owner: 'editor', title: 'Invoice estimate', description: 'Budget for a replacement.', type: 'user' });

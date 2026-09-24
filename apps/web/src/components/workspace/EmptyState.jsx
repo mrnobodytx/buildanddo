@@ -7,6 +7,7 @@ import { cn } from '@/lib/utils';
  */
 export default function EmptyState({
     icon: Icon,
+    art,
     title,
     description,
     action,
@@ -19,7 +20,8 @@ export default function EmptyState({
                 className,
             )}
         >
-            {Icon && (
+            {art}
+            {!art && Icon && (
                 <span className="flex h-12 w-12 items-center justify-center rounded-full border border-border bg-card text-muted-foreground">
                     <Icon className="h-5 w-5" strokeWidth={2} />
                 </span>

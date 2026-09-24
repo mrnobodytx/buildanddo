@@ -17,6 +17,7 @@
 
 import { MotionList } from '@/components/motion/MotionPrimitives';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
 import { Button, Card } from '@/components/site/ui';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
@@ -31,6 +32,10 @@ import { timeAgo } from '@/lib/format';
 
 /** Present run history for the mounted account and workspace. */
 export default function WorkflowRunsPanel({ workflows, workspaceId, accountId, demo = false, definitionsUnavailable = false, onRecordsChanged }) {
+    const [params, setParams] = useSearchParams();
+    const runId = params.get('run') || '';
+    const [opening, setOpening] = useState('');
+    const [openError, setOpenError] = useState('');
     const [page, setPage] = useState(1);
     const [workflow, setWorkflow] = useState('');
     const [status, setStatus] = useState('');
@@ -62,9 +67,32 @@ export default function WorkflowRunsPanel({ workflows, workspaceId, accountId, d
             items: [], totalItems: 0, totalPages: 0 });
     }, [api, demo, page, workflow, status]);
     useEffect(() => { refresh(); return () => { sequence.current += 1; }; }, [refresh]);
-    const saved = (record) => { setSelected(record); refresh(); onRecordsChanged?.(); };
-    const canStart = !demo && !definitionsUnavailable && !history.loading && !history.error &&
-        workflows.some((record) => record.status === 'active');
+    useEffect(() => {
+        let current = true;
+        setSelected(null); setOpenError(''); setOpening('');
+        if (!runId || demo) return () => { current = false; };
+        setOpening(runId);
+        api.read(runId).then((result) => {
+            if (!current || result.reason === 'scope_changed') return;
+            setOpening('');
+            if (result.ok) setSelected(result.record);
+            else setOpenError('This run is unavailable in the current workspace. Refresh its history or choose another run.');
+        });
+        return () => { current = false; };
+    }, [api, runId, demo]);
+    const selectRun = (id) => { const next = new URLSearchParams(params); if (id) next.set('run', id); else next.delete('run'); setParams(next); };
+    const saved = (record) => { setSelected(record); if (runId !== record.id) selectRun(record.id); refresh(); onRecordsChanged?.(); };
+    const hasActiveWorkflow = workflows.some((record) => record.status === 'active');
+    const canStart = !demo && !definitionsUnavailable && !history.loading && !history.error && hasActiveWorkflow;
+    // A new workspace's workflows are all drafts, so the greyed-out primary verb
+    // is the first thing a person meets here and it used to explain nothing. The
+    // other four blockers already print their own line - demo mode and the
+    // unavailable-history alert below, the loading skeleton, and the page's own
+    // definitions notice - so this names activation only when activation is
+    // what is actually in the way. Sending someone to activate a workflow while
+    // the history is simply still loading would be a worse answer than the
+    // silence it replaces.
+    const startBlocked = !demo && !definitionsUnavailable && !history.loading && !history.error && !hasActiveWorkflow;
 
     return (
         <section className="ph-no-capture space-y-4 border-t border-border pt-6" aria-labelledby="workflow-history-title"
@@ -74,11 +102,18 @@ export default function WorkflowRunsPanel({ workflows, workspaceId, accountId, d
                     <h2 id="workflow-history-title" className="font-display text-2xl">Run history</h2>
                     <p className="mt-1 text-sm text-muted-foreground">Recorded work, approval checkpoints and saved evidence for this workspace.</p>
                 </div>
-                <div className="flex flex-wrap gap-2">
-                    <Button type="button" variant="secondary" size="sm" onClick={refresh} disabled={history.loading || demo}>Refresh runs</Button>
-                    <Button type="button" size="sm" onClick={() => setStarting(true)} disabled={!canStart}>Start a run</Button>
+                <div className="flex flex-col items-start gap-2 sm:items-end">
+                    <div className="flex flex-wrap gap-2">
+                        <Button type="button" variant="secondary" size="sm" onClick={refresh} disabled={history.loading || demo}>Refresh runs</Button>
+                        <Button type="button" size="sm" onClick={() => setStarting(true)} disabled={!canStart}
+                            aria-describedby={startBlocked ? 'run-start-blocked' : undefined}>Start a run</Button>
+                    </div>
+                    {startBlocked && <p id="run-start-blocked" className="max-w-xs text-sm text-muted-foreground sm:text-right">
+                        No workflow is active yet, so activate one before starting a run.</p>}
                 </div>
             </div>
+            {opening && <p role="status">Loading the saved run and current revision…</p>}
+            {openError && <p role="alert">{openError} <Button size="sm" variant="ghost" onClick={() => selectRun('')}>Close unavailable run</Button></p>}
             <div className="grid gap-3 sm:grid-cols-2">
                 <div className="space-y-1.5">
                     <Label htmlFor="run-workflow-filter">Workflow history</Label>
@@ -113,7 +148,8 @@ export default function WorkflowRunsPanel({ workflows, workspaceId, accountId, d
                                     <div className="flex flex-wrap items-center gap-2">
                                         <StatusBadge map={RUN_STATUS} value={run.status} />
                                         <Button type="button" size="sm" variant="secondary" aria-label={`Open run ${run.id}`}
-                                            onClick={() => setSelected(run)}>Open run</Button>
+                                            onClick={() => selectRun(run.id)}>Open run</Button>
+                                        <Link className="text-sm underline" to={`/app/workflows?run=${encodeURIComponent(run.id)}`}>Run link</Link>
                                     </div>
                                 </Card>
                             </li>;
@@ -133,7 +169,7 @@ export default function WorkflowRunsPanel({ workflows, workspaceId, accountId, d
                         onBusy={setStartBusy} onSaved={(record) => { setStarting(false); saved(record); }} />}
                 </DialogContent>
             </Dialog>
-            <Dialog open={Boolean(selected)} onOpenChange={(open) => { if (!open && !reviewBusy) setSelected(null); }}>
+            <Dialog open={Boolean(selected && selected.id === runId)} onOpenChange={(open) => { if (!open && !reviewBusy) { setSelected(null); selectRun(''); } }}>
                 <DialogContent className="ph-no-capture max-h-[90dvh] overflow-y-auto border-border bg-card sm:max-w-2xl" data-dd-privacy="mask">
                     <DialogHeader><DialogTitle>{selected ? readRunSnapshot(selected)?.name || 'Workflow run' : 'Workflow run'}</DialogTitle>
                         <DialogDescription>Review saved steps, decisions and evidence. Only recorded outcomes advance the run.</DialogDescription></DialogHeader>

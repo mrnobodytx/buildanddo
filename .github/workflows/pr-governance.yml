@@ -1,8 +1,30 @@
+# ─── CGRF Header ───────────────────────────────────────────────
+# File:        .github/workflows/pr-governance.yml
+# Stage:       11_COMMIT
+# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# CAPS:        pending
+# CK:          pending
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+# Seat:        BITS-CODEGEN
+# Owner:       Citadel Nexus Inc.
+# Created:     2026-09-21
+# Depends:     .gitlab/ci/day21-submission.yml, .gitlab/ci/source-validation.yml, scripts/ci/verify_public_boundary.py
+# EnumType:    Workflow
+# EnumEdges:   DEPENDS_ON .gitlab/ci/day21-submission.yml; DEPENDS_ON .gitlab/ci/source-validation.yml; CONSUMES scripts/ci/verify_public_boundary.py
+# Intent:      Preserve automatic public review governance alongside the required GitLab acceptance jobs.
+# ───────────────────────────────────────────────────────────────
+
 name: BuildAndDo PR Governance
 
 on:
   pull_request:
     types: [opened, synchronize, reopened, labeled, unlabeled, ready_for_review]
+  workflow_dispatch:
+    inputs:
+      pull_request_number:
+        description: Public pull request whose exact head and actor labels will be checked
+        required: true
+        type: number
 
 permissions:
   contents: read
@@ -10,16 +32,39 @@ permissions:
   actions: read
 
 concurrency:
-  group: buildanddo-pr-${{ github.event.pull_request.number }}
+  group: buildanddo-pr-${{ github.event.pull_request.number || inputs.pull_request_number }}
   cancel-in-progress: true
 
 jobs:
+  candidate:
+    name: Resolve reviewed candidate
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    outputs:
+      sha: ${{ steps.review.outputs.sha }}
+    steps:
+      - name: Freeze the selected pull request head
+        id: review
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number || inputs.pull_request_number }}
+          EVENT_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          [[ "$PR_NUMBER" =~ ^[1-9][0-9]*$ ]]
+          candidate_sha=$(gh api "repos/$GITHUB_REPOSITORY/pulls/$PR_NUMBER" --jq '.head.sha')
+          [[ "$candidate_sha" =~ ^[a-f0-9]{40}$ ]]
+          if [[ -n "$EVENT_SHA" ]]; then [[ "$candidate_sha" == "$EVENT_SHA" ]]; fi
+          printf 'sha=%s\n' "$candidate_sha" >> "$GITHUB_OUTPUT"
+
   readiness:
     name: governance:readiness
+    needs: candidate
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.candidate.outputs.sha }}
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
@@ -35,7 +80,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: sprint-execution-${{ github.event.pull_request.number }}
+          name: sprint-execution-${{ github.event.pull_request.number || inputs.pull_request_number }}
           path: |
             reports/coverage/sprint-execution.json
             reports/junit/sprint-execution.xml
@@ -43,11 +88,13 @@ jobs:
           retention-days: 14
 
   govern:
+    needs: candidate
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
         with:
+          ref: ${{ needs.candidate.outputs.sha }}
           fetch-depth: 0
 
       - uses: actions/setup-node@v4
@@ -62,11 +109,33 @@ jobs:
       - name: Require current sprint governance before acceptance
         run: python scripts/ci/hostinger_readiness.py --check
 
+      - name: Read the selected public review metadata
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number || inputs.pull_request_number }}
+        run: gh api "repos/$GITHUB_REPOSITORY/pulls/$PR_NUMBER" --jq '{pull_request:.}' > "$RUNNER_TEMP/governance-pr.json"
+
       - name: Enforce public/private boundary and contributor visibility
-        run: python scripts/ci/verify_public_boundary.py --github-event "$GITHUB_EVENT_PATH"
+        run: python scripts/ci/verify_public_boundary.py --github-event "$RUNNER_TEMP/governance-pr.json"
+
+      # Operator rule 2026-09-22: no machine name or address in public text. The
+      # boundary scan above checks paths, not prose; this reads the prose.
+      - name: No machine name or address in public docs
+        run: python scripts/ci/public_redaction.py scan docs README.md CHANGELOG.md CLAUDE.md AGENTS.md CONTRIBUTING.md
 
       - name: Verify agent context lock is current
         run: python scripts/ci/agent_context.py --check
+
+      # Blocking: a new app, service or workflow must be named in the README,
+      # its links must resolve, and its roadmap block must match sprint_cycle.py.
+      - name: Verify README still describes the repository
+        run: python scripts/ci/readme_check.py --check
+
+      # Reported, not blocking: growth.yml refreshes the lock on main, so a PR
+      # only shows what it grows or shrinks against the lock on origin/main.
+      - name: Report this change's system growth
+        continue-on-error: true
+        run: python scripts/ci/system_growth.py --diff origin/main >> "$GITHUB_STEP_SUMMARY"
 
       # Verify-only while the changelog is new: a stale changelog is worth
       # reporting, not worth failing a build over until every contributor has
@@ -79,7 +148,7 @@ jobs:
         run: python scripts/ci/hostinger_readiness.py --run dependency_lock --evidence-dir reports/hostinger
 
       - name: Install
-        run: npm ci
+        run: npm ci --include=dev
 
       - name: Install declared source-test dependencies
         run: python -m pip install -r scripts/discordbot/requirements.txt -r apps/research/requirements.txt
@@ -147,9 +216,9 @@ jobs:
           service: buildanddo-web
           env: ci
           pipeline: pr
-          base-ref: origin/${{ github.base_ref }}
+          base-ref: origin/main
           baseline-artifact: buildanddo-telemetry-main
-          artifact-name: buildanddo-telemetry-pr-${{ github.event.pull_request.number }}
+          artifact-name: buildanddo-telemetry-pr-${{ github.event.pull_request.number || inputs.pull_request_number }}
           job-status: ${{ job.status }}
           github-token: ${{ github.token }}
 
@@ -157,7 +226,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: pr-governance-${{ github.event.pull_request.number }}
+          name: pr-governance-${{ github.event.pull_request.number || inputs.pull_request_number }}
           path: |
             .buildanddo/public/boundary-report.json
             reports/junit
@@ -169,6 +238,7 @@ jobs:
 
   foundry:
     name: ci:test / Federal foundry (Python ${{ matrix.python }})
+    needs: candidate
     runs-on: ubuntu-latest
     timeout-minutes: 10
     strategy:
@@ -177,6 +247,8 @@ jobs:
         python: ['3.11', '3.12']
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.candidate.outputs.sha }}
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python }}
@@ -207,11 +279,14 @@ jobs:
           retention-days: 14
 
   discord:
+    needs: candidate
     name: ci:test / Discord SDK
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.candidate.outputs.sha }}
 
       - uses: actions/setup-python@v5
         with:
@@ -231,6 +306,7 @@ jobs:
         run: python tests/upgrade/check_blueprint_pipeline.py --require-pdf
 
   dossier-native:
+    needs: candidate
     name: ci:test / PocketBase dossier and suite (${{ matrix.runtime }})
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -240,6 +316,8 @@ jobs:
         runtime: [compose, package]
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.candidate.outputs.sha }}
 
       - uses: actions/setup-python@v5
         with:
@@ -308,6 +386,7 @@ jobs:
           retention-days: 14
 
   federal-foundry:
+    needs: candidate
     name: ci:test / Federal portfolio (Python ${{ matrix.python }})
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -317,6 +396,8 @@ jobs:
         python: ['3.11', '3.12']
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.candidate.outputs.sha }}
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python }}
@@ -343,6 +424,7 @@ jobs:
           retention-days: 14
 
   mission-suite:
+    needs: candidate
     name: ci:test / Mission suite (Python ${{ matrix.python }})
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -352,6 +434,8 @@ jobs:
         python: ['3.11', '3.12']
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.candidate.outputs.sha }}
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python }}

@@ -1,4 +1,19 @@
 #!/usr/bin/env python3
+# --- CGRF Header ------------------------------------------------
+# File: services/praxis_evidence/selftest_dogfood_pilots.py
+# Stage: 08_TEST
+# SRS: SRS-BUILDANDDO-UPGRADE-001
+# CAPS: pending
+# CK: pending
+# Dispatch: VCC-BUILDANDDO-UPGRADE-001
+# Seat: BITS-CODEGEN
+# Owner: Citadel Nexus Inc.
+# Created: 2026-09-23
+# Depends: services/praxis_evidence/isolated_test.py
+# EnumType: Test
+# EnumEdges: CONSUMES services/praxis_evidence/isolated_test.py; VALIDATES services/praxis_evidence/dogfood_pilots.py
+# Intent: Run pilot idempotency from empty disposable storage rather than depending on permanent public seed data.
+# ----------------------------------------------------------------
 """selftest_dogfood_pilots.py - proves the 6 heterogeneous pilots ran through
 real, identical generic code (no domain-specific branching) and are
 idempotent on method creation (re-running doesn't duplicate)."""
@@ -8,10 +23,12 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from client import PocketBaseClient  # noqa: E402
+from isolated_test import isolated_client  # noqa: E402
+
+client = isolated_client()
 import dogfood_pilots  # noqa: E402
 
-client = PocketBaseClient()
+dogfood_pilots.client = client
 checks: list[tuple[str, bool]] = []
 
 # AST-based, not regex-on-text: a regex over raw source falsely flags this very
@@ -29,6 +46,7 @@ for fname in source_files:
 checks.append(("no domain-specific branching in any pilot/core module (real AST check, not regex)",
                 len(found_branching) == 0))
 
+dogfood_pilots.main()
 before = client.list("praxis_methods", per_page=500)
 before_count = len(before)
 dogfood_pilots.main()
@@ -48,5 +66,5 @@ if found_branching:
     for f, lineno in found_branching:
         print(f"  branching found: {f}:{lineno}")
 print(f"\n{passed}/{len(checks)} passed")
-print("(dogfood pilot records are PERMANENT public content, not cleaned up)")
+print("(pilot records are synthetic test data; the runner discards the complete database)")
 sys.exit(0 if passed == len(checks) else 1)

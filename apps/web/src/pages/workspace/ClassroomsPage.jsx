@@ -8,9 +8,9 @@
 // Seat:        BITS-CODEGEN, C-ONE (status link kept on the domain)
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-16
-// Depends:     apps/web/src/hooks/useClassrooms.js, apps/web/src/lib/classrooms.js
+// Depends:     apps/web/src/hooks/useClassrooms.js, apps/web/src/hooks/useOpenClasses.js, apps/web/src/lib/classrooms.js, apps/web/src/components/broadcast/LiveBroadcast.jsx
 // EnumType:    Widget
-// EnumEdges:   CONSUMES apps/web/src/hooks/useClassrooms.js; CONSUMES apps/web/src/lib/classrooms.js
+// EnumEdges:   CONSUMES apps/web/src/hooks/useClassrooms.js; CONSUMES apps/web/src/lib/classrooms.js; CONSUMES apps/web/src/components/broadcast/LiveBroadcast.jsx
 // DAG Node:    none
 // Intent:      Let workspace members schedule, join and follow real shared lesson sessions with recoverable discussion and explicit media availability.
 // ───────────────────────────────────────────────────────────────
@@ -18,12 +18,17 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { BookOpen, Users } from 'lucide-react';
+import Buddi from '@/components/brand/Buddi';
 import { Button, Card } from '@/components/site/ui';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { PageHeader } from '@/components/workspace/workspaceHelpers';
+import LiveBroadcast from '@/components/broadcast/LiveBroadcast';
+import ClassRecord from '@/components/broadcast/ClassRecord';
+import AgentActivity from '@/components/broadcast/AgentActivity';
 import { PageControls, controlInput, dateLabel } from '@/components/workspace/ControlPrimitives';
 import { useWorkspace } from '@/contexts/WorkspaceContext';
 import { useClassrooms } from '@/hooks/useClassrooms';
+import { useOpenClasses } from '@/hooks/useOpenClasses';
 import { classroomHref } from '@/lib/classrooms';
 import { STATUS_PATH } from '@/lib/communityLinks';
 
@@ -82,6 +87,28 @@ function RoomEditor({ control, room, onClose }) {
     </form>;
 }
 
+// A person should not have to know which workspace a class lives in. Measured 2026-09-24: every
+// guildmaster class sat in a workspace the operator had just been seated in, while the desk showed
+// only the active workspace and said "No classes here yet". This lists live and scheduled classes
+// from the account's OTHER readable workspaces; opening one switches the workspace through the same
+// link the desk already uses, so no new access path is created.
+function OpenClasses({ activeId }) {
+    const open = useOpenClasses();
+    const items = open.items.filter((entry) => entry.workspace.id !== activeId);
+    if (!items.length && !open.unavailable.length) return null;
+    return <section aria-labelledby="open-classes-heading" className="space-y-3" data-testid="open-classes">
+        <div><h2 id="open-classes-heading" className="font-display text-xl font-semibold">Classes you can join</h2>
+            <p className="text-sm text-muted-foreground">Live and scheduled classes in your other workspaces. Opening one switches your workspace.</p></div>
+        {items.length > 0 && <ul className="grid gap-4 md:grid-cols-2">{items.map(({ workspace, room }) => <li key={`${workspace.id}:${room.id}`} className="min-w-0"><Card className="flex h-full flex-col gap-2 p-5">
+            <div className="flex flex-wrap justify-between gap-2"><span className="text-xs font-semibold uppercase tracking-wide text-primary">{statusLabel[room.status]}</span><span className="text-xs text-muted-foreground">{workspace.name}</span></div>
+            <h3 className="break-words font-display text-lg font-semibold">{room.title}</h3>
+            <p className="text-xs text-muted-foreground">Hosted by {room.host_name}{room.status === 'scheduled' && room.starts_at ? ` · Planned for ${dateLabel(room.starts_at)}` : ''}</p>
+            <Button href={classroomHref(room.id, workspace.id)} variant="secondary" className="mt-auto self-start" aria-label={`Open ${room.title}`}>Open classroom</Button>
+        </Card></li>)}</ul>}
+        {open.unavailable.length > 0 && <p role="status" className="text-xs text-muted-foreground">Could not read classes in {open.unavailable.map((workspace) => workspace.name || workspace.id).join(', ')}.</p>}
+    </section>;
+}
+
 function ClassroomList({ control, onPage, status, onStatus }) {
     const [creating, setCreating] = useState(false);
     const navigate = useNavigate(); const { data } = control;
@@ -89,6 +116,7 @@ function ClassroomList({ control, onPage, status, onStatus }) {
         if (control.saved?.action === 'room.create') navigate(classroomHref(control.saved.id, data.workspace));
     }, [control.saved, navigate, data.workspace]);
     return <div className="space-y-5">
+        <OpenClasses activeId={data.workspace} />
         <div className="flex flex-wrap items-end justify-between gap-4">
             <div><label htmlFor="class-filter" className="mb-1 block text-sm">Show classes</label><select id="class-filter" className={controlInput} value={status} disabled={frozen(control)} onChange={(event) => onStatus(event.target.value)}>
                 <option value="all">All classes</option><option value="scheduled">Scheduled</option><option value="live">Live now</option><option value="ended">Ended</option></select></div>
@@ -96,7 +124,10 @@ function ClassroomList({ control, onPage, status, onStatus }) {
         </div>
         {!data.can_host && <p className="text-sm text-muted-foreground">Your viewer seat can join and follow lessons. An editor or administrator can host a class.</p>}
         <Feedback control={control} />
-        {!data.items.length && <Card className="space-y-3 p-6"><h2 className="font-display text-xl font-semibold">No classes here yet</h2><p className="text-sm text-muted-foreground">{status === 'all' ? 'Schedule the first class, or ask an editor in your workspace to host one.' : 'There are no classes matching this filter on this page.'}</p><Link className="text-sm underline underline-offset-4" to="/app/tutorials">Read the Field Manual while you wait</Link></Card>}
+        {!data.items.length && <Card className="p-6"><div className="flex flex-col items-start gap-5 sm:flex-row sm:items-center">
+            <Buddi pose="build" size={116} ground decorative className="shrink-0" />
+            <div className="space-y-3"><h2 className="font-display text-xl font-semibold">No classes here yet</h2><p className="text-sm text-muted-foreground">{status === 'all' ? 'Schedule the first class, or ask an editor in your workspace to host one.' : 'There are no classes matching this filter on this page.'}</p><Link className="text-sm underline underline-offset-4" to="/app/tutorials">Read the Field Manual while you wait</Link></div>
+        </div></Card>}
         <ul className="grid gap-4 md:grid-cols-2">{data.items.map((room) => <li key={room.id} className="min-w-0"><Card className="flex h-full flex-col gap-3 p-5">
             <div className="flex flex-wrap justify-between gap-2"><span className="text-xs font-semibold uppercase tracking-wide text-primary">{statusLabel[room.status]}</span><span className="text-xs text-muted-foreground">Hosted by {room.host_name}</span></div>
             <h2 className="break-words font-display text-xl font-semibold">{room.title}</h2><p className="line-clamp-3 whitespace-pre-wrap break-words text-sm text-muted-foreground">{room.description}</p>
@@ -168,11 +199,11 @@ function Room({ control, onPage }) {
         <Feedback control={control} />
         {control.presenceError && <p role="alert" className="text-sm text-destructive">{control.presenceError}</p>}
         <details className="border border-border p-4"><summary className="cursor-pointer text-sm font-semibold">Share with workspace members</summary><div className="mt-3 flex min-w-0 flex-wrap gap-3"><label htmlFor="class-link" className="sr-only">Classroom link</label><input id="class-link" readOnly className={`${controlInput} flex-1`} value={link} onFocus={(event) => event.target.select()} /><Button type="button" variant="secondary" onClick={async () => { try { await navigator.clipboard.writeText(link); setCopied('Classroom link copied.'); } catch { setCopied('Select and copy the classroom link above.'); } }}>Copy link</Button></div><p role="status" className="mt-2 text-xs text-muted-foreground">{copied || 'Only existing members of this workspace can open this room.'}</p></details>
-        <p className="text-sm text-muted-foreground">Voice and video are not connected. This session uses shared lessons and text discussion.</p>
+        <LiveBroadcast room={room} membership={membership} media={data.media} disabled={frozen(control)} />
         <div className="grid items-start gap-5 xl:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]"><SharedLesson control={control} /><div className="min-w-0 space-y-5">
             <Card className="space-y-3 p-5"><h2 className="flex items-center gap-2 font-display text-xl font-semibold"><Users className="h-5 w-5" aria-hidden="true" />{room.status === 'live' && control.connected ? `Attending (${data.participants.length})` : 'Attendance'}</h2>
                 {room.status === 'live' && control.connected ? <><ul className="space-y-2 text-sm">{data.participants.map((item) => <li key={item.id} className="break-words">{item.name}{item.is_host ? ' · Host' : ''}</li>)}</ul><p className="text-xs leading-5 text-muted-foreground">{data.participants.length ? 'Attendance expires when a member disconnects or closes this room.' : 'No members are currently attending.'}</p></> : <p className="text-sm text-muted-foreground">Attendance is shown while the session and your connection are live.</p>}
-            </Card><RoomDiscussion control={control} onPage={onPage} /></div></div>
+            </Card>{room.can_manage && room.status !== 'scheduled' && <ClassRecord room={room} readRecord={control.readRecord} />}<RoomDiscussion control={control} onPage={onPage} /><AgentActivity unattended={room.status !== 'live' || !data.participants.length} /></div></div>
         <Dialog open={editing} onOpenChange={(open) => { if (!control.saving) setEditing(open); }}><DialogContent className="max-h-[90dvh] overflow-y-auto sm:max-w-xl"><DialogHeader><DialogTitle>Edit class details</DialogTitle></DialogHeader>{editing && <RoomEditor control={control} room={room} onClose={() => setEditing(false)} />}</DialogContent></Dialog>
         <Dialog open={ending} onOpenChange={(open) => { if (!control.saving) setEnding(open); }}><DialogContent><DialogHeader><DialogTitle>{room.status === 'scheduled' ? 'Cancel this class?' : 'End this class?'}</DialogTitle></DialogHeader><p className="text-sm leading-6">Members will no longer be able to join or post. The lesson and discussion remain available. Start another class for a new session.</p><Feedback control={control} /><DialogFooter><Button variant="secondary" disabled={control.saving} onClick={() => setEnding(false)}>Keep class open</Button><Button disabled={frozen(control)} onClick={() => mutate('room.end')}>Confirm end</Button></DialogFooter></DialogContent></Dialog>
     </div>;

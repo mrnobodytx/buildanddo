@@ -50,6 +50,22 @@ module.exports = {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))',
 				},
+				stage: {
+					DEFAULT: 'hsl(var(--stage))',
+					raised: 'hsl(var(--stage-raised))',
+					border: 'hsl(var(--stage-border))',
+					foreground: 'hsl(var(--stage-foreground))',
+					muted: 'hsl(var(--stage-muted))',
+					live: 'hsl(var(--stage-live))',
+					'live-foreground': 'hsl(var(--stage-live-foreground))',
+					speaking: 'hsl(var(--stage-speaking))',
+					caution: 'hsl(var(--stage-caution))',
+				},
+				chart: {
+					human: 'hsl(var(--chart-human))',
+					agent: 'hsl(var(--chart-agent))',
+				},
+				'amber-text': 'hsl(var(--amber-text))',
 				sidebar: {
 					'DEFAULT': 'hsl(var(--sidebar-background))',
 					'foreground': 'hsl(var(--sidebar-foreground))',

@@ -1,0 +1,935 @@
+{
+  "schema_version": "buildanddo.governance-repair/v1",
+  "observed_at": "2026-09-21T23:19:02.117493+00:00",
+  "srs": "SRS-BUILDANDDO-UPGRADE-001",
+  "dispatch": "VCC-BUILDANDDO-UPGRADE-001",
+  "iteration_baseline": "36c369b2d2d166e79d43e9cb3e4ee45d08466212",
+  "implementation_commit": "25083e57208df367a1ef437e76be8e6b45ae42c9",
+  "tested_source_sha256": "506b2da60aa06a6ae6323fac7f5aa0b80c9fded6386dee4421dfda08a01ed436",
+  "tested_file_sha256": {
+    ".bits/context.lock.json": "8800a75ec9ce4fd0d4b8357dc8b60f571163ae5c6dabdc4356c2a8d6d69a9794",
+    ".bits/context.md": "cd06d6caedc46cf5375a977296468e6ee489ff1c5f771ea2e070b5a68b9cb0d7",
+    ".bits/handoffs/2026-09-21-bits-codegen-cmax-b-governance-execution.md": "47f8ff6445dfd831279130078935c0d6b5a6df415f432e72148643b1c58b7361",
+    ".bits/hostinger-readiness.json": "369d2eef108dfb58152c4dff273c05f7c914d9e9b95c7f26b4f2f6cabd0ba984",
+    ".bits/hostinger-readiness.lock.json": "6d4c19f934350319760abcd3723f4a41c0395875baf26ef0e9cd0012185553d7",
+    ".bits/out/VCC-BUILDANDDO-UPGRADE-001/memory.json": "b764b676a76f70f11105afce6822ab0ff4d86457b7c282b64cb007196cc95d72",
+    ".bits/queue/VCC-BUILDANDDO-UPGRADE-001.md": "c789ebe13c44e74fa31168f37964bac5302a6fb49f860b9f856a40d5c270dce5",
+    ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md": "2994265f6b9c7ec3148014803060eb2184cf1200895e62b0205f3abff6986d1a",
+    ".github/workflows/pr-governance.yml": "95719194fd4f928515d8aa24c780c9dae9c84b15e1896dfc05c6788f21ca7835",
+    ".gitlab/ci/day21-submission.yml": "9dfe73aa51ca42c2e953bc6cc18381523383be0ea9c248deca6244bf5dacfa0a",
+    ".gitlab/ci/source-validation.yml": "99bf53e574b1d9d7f7d6d14e921349b4ad78fc8b6dceb311c36ea7534825a3d4",
+    "AGENTS.md": "0d428472e2e65c4dba94e57f272fa2dc31fcee4907375a7c02427d0ddcc1ccf6",
+    "CLAUDE.md": "4df440b2cf0d8bd2e9a575493f4d42485320a61af01c48011f03ea2da5bce7ca",
+    "apps/web/src/components/workspace/ProgressionPipeline.jsx": "00a49222b91a10fc774777148a4094cff3bfc16df35315c97481401f2bebb2a9",
+    "docs/hostinger-sprint-closure.md": "4c4772b9dfa3567f28822483cb182c3e02464450c5d70acc7d269e885dfb3e3a",
+    "scripts/ci/verify_public_boundary.py": "5802c0f068c6bb18d092ec742841bf3ce07721f629c7567a57be78cc30eec6d6",
+    "tests/upgrade/check_mission_suite.py": "fa860124f42c2b62ca3256507f6988d30fe6986d28511f4552cb77e14561979e",
+    "tests/upgrade/test_gitlab_acceptance.py": "b0dd80a6642d6fcd54096994b56f6200f44d11d45475090bb9def0ef1f45f732",
+    "tests/upgrade/test_public_boundary.py": "010742292e032d42fc4b60d0b8b411788ada723719a0b3adf5a722432ca2b54e"
+  },
+  "provider_observations": {
+    "pr": 64,
+    "head_sha": "d67724dc1b1cde7723dc93f022fb8d946ea55cee",
+    "github_run_id": 35664137943,
+    "github_govern_job": 106545971095,
+    "failed_jobs": 11,
+    "executed_steps": 0,
+    "annotation": "The job was not started because your account is locked due to a billing issue.",
+    "cloudflare_check": 106545963262,
+    "cloudflare_diagnostic": "No error detail exposed by the check output",
+    "labels": [
+      "Bits AI"
+    ],
+    "gitlab_telemetry": "No candidate job events returned in the queried interval; execution unmeasured"
+  },
+  "hosted_execution": "UNMEASURED; no hosted GitLab job was queried or triggered and no remote configuration, label or status was written",
+  "local_runtime": {
+    "python": [
+      "3.11.15",
+      "3.12.13"
+    ],
+    "node_contracts": "22.17.0",
+    "mission_matrix": "Both Python versions also verified with Node 22 explicitly selected; earlier local runs retained",
+    "dependency_installation": "none"
+  },
+  "test_command_totals": {
+    "passing": 9,
+    "failing": 2,
+    "scope": "Latest results for eleven selected test commands, counted once per declared runtime; original failures and retry attempts remain below. This is not the eighteen-profile acceptance matrix."
+  },
+  "governance_regressions": {
+    "tests": 103,
+    "failures": 0,
+    "skipped": 0
+  },
+  "node_contracts": {
+    "tests": 30,
+    "failures": 0,
+    "skipped": 0
+  },
+  "checker_results": {
+    "sprint-coverage.log": {
+      "status": "PASS",
+      "tests": 35,
+      "failures": 0,
+      "skipped": 0,
+      "coverage_kind": "Python trace statement lines; no branch-coverage claim",
+      "fixture_scope": "Synthetic provider, runtime-loop and captured-evidence fixtures; zero external effects",
+      "coverage": {
+        "apps/mission_suite/business_worker.py": {
+          "covered": 345,
+          "statements": 368,
+          "percent": 93.75
+        },
+        "scripts/ci/submission_readiness.py": {
+          "covered": 383,
+          "statements": 386,
+          "percent": 99.22
+        }
+      }
+    },
+    "mission-312.log": {
+      "state": "FAIL",
+      "tests_passed": 23,
+      "tests_skipped": 0,
+      "coverage_kind": "Python trace statement lines; no branch or native-transport claim",
+      "backend": "actual Python worker and PocketBase policy with explicit storage/transport double",
+      "native_acceptance": "separate test_suite_native.py gate",
+      "coverage": {
+        "apps/mission_suite/__main__.py": {
+          "covered": 84,
+          "statements": 85,
+          "percent": 98.82
+        },
+        "apps/mission_suite/bundle.py": {
+          "covered": 75,
+          "statements": 77,
+          "percent": 97.4
+        },
+        "apps/mission_suite/business_worker.py": {
+          "covered": 0,
+          "statements": 368,
+          "percent": 0.0
+        },
+        "apps/mission_suite/engine.py": {
+          "covered": 444,
+          "statements": 446,
+          "percent": 99.55
+        },
+        "apps/mission_suite/worker.py": {
+          "covered": 168,
+          "statements": 191,
+          "percent": 87.96
+        }
+      }
+    },
+    "mission-312-green.log": {
+      "state": "PASS",
+      "tests_passed": 40,
+      "tests_skipped": 0,
+      "coverage_kind": "Python trace statement lines; no branch or native-transport claim",
+      "backend": "actual Python worker and PocketBase policy with explicit storage/transport double",
+      "native_acceptance": "separate test_suite_native.py gate",
+      "coverage": {
+        "apps/mission_suite/__main__.py": {
+          "covered": 84,
+          "statements": 85,
+          "percent": 98.82
+        },
+        "apps/mission_suite/bundle.py": {
+          "covered": 75,
+          "statements": 77,
+          "percent": 97.4
+        },
+        "apps/mission_suite/business_worker.py": {
+          "covered": 345,
+          "statements": 368,
+          "percent": 93.75
+        },
+        "apps/mission_suite/engine.py": {
+          "covered": 444,
+          "statements": 446,
+          "percent": 99.55
+        },
+        "apps/mission_suite/worker.py": {
+          "covered": 168,
+          "statements": 191,
+          "percent": 87.96
+        }
+      }
+    },
+    "mission-311.log": {
+      "state": "PASS",
+      "tests_passed": 40,
+      "tests_skipped": 0,
+      "coverage_kind": "Python trace statement lines; no branch or native-transport claim",
+      "backend": "actual Python worker and PocketBase policy with explicit storage/transport double",
+      "native_acceptance": "separate test_suite_native.py gate",
+      "coverage": {
+        "apps/mission_suite/__main__.py": {
+          "covered": 84,
+          "statements": 85,
+          "percent": 98.82
+        },
+        "apps/mission_suite/bundle.py": {
+          "covered": 78,
+          "statements": 80,
+          "percent": 97.5
+        },
+        "apps/mission_suite/business_worker.py": {
+          "covered": 338,
+          "statements": 363,
+          "percent": 93.11
+        },
+        "apps/mission_suite/engine.py": {
+          "covered": 446,
+          "statements": 448,
+          "percent": 99.55
+        },
+        "apps/mission_suite/worker.py": {
+          "covered": 163,
+          "statements": 187,
+          "percent": 87.17
+        }
+      }
+    },
+    "mission-312-node22.log": {
+      "state": "PASS",
+      "tests_passed": 40,
+      "tests_skipped": 0,
+      "coverage_kind": "Python trace statement lines; no branch or native-transport claim",
+      "backend": "actual Python worker and PocketBase policy with explicit storage/transport double",
+      "native_acceptance": "separate test_suite_native.py gate",
+      "coverage": {
+        "apps/mission_suite/__main__.py": {
+          "covered": 84,
+          "statements": 85,
+          "percent": 98.82
+        },
+        "apps/mission_suite/bundle.py": {
+          "covered": 75,
+          "statements": 77,
+          "percent": 97.4
+        },
+        "apps/mission_suite/business_worker.py": {
+          "covered": 345,
+          "statements": 368,
+          "percent": 93.75
+        },
+        "apps/mission_suite/engine.py": {
+          "covered": 444,
+          "statements": 446,
+          "percent": 99.55
+        },
+        "apps/mission_suite/worker.py": {
+          "covered": 168,
+          "statements": 191,
+          "percent": 87.96
+        }
+      }
+    },
+    "mission-311-node22.log": {
+      "state": "PASS",
+      "tests_passed": 40,
+      "tests_skipped": 0,
+      "coverage_kind": "Python trace statement lines; no branch or native-transport claim",
+      "backend": "actual Python worker and PocketBase policy with explicit storage/transport double",
+      "native_acceptance": "separate test_suite_native.py gate",
+      "coverage": {
+        "apps/mission_suite/__main__.py": {
+          "covered": 84,
+          "statements": 85,
+          "percent": 98.82
+        },
+        "apps/mission_suite/bundle.py": {
+          "covered": 78,
+          "statements": 80,
+          "percent": 97.5
+        },
+        "apps/mission_suite/business_worker.py": {
+          "covered": 338,
+          "statements": 363,
+          "percent": 93.11
+        },
+        "apps/mission_suite/engine.py": {
+          "covered": 446,
+          "statements": 448,
+          "percent": 99.55
+        },
+        "apps/mission_suite/worker.py": {
+          "covered": 163,
+          "statements": 187,
+          "percent": 87.17
+        }
+      }
+    },
+    "portfolio-312.log": {
+      "state": "PASS",
+      "tests_run": 66,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "coverage_kind": "Python trace statement lines; no branch-coverage claim",
+      "fixtures": "Explicit synthetic measurement/review receipts and in-process model adapters",
+      "live_model_calls": 0,
+      "research_campaigns_run": 0,
+      "coverage": {
+        "apps/federal_foundry/__main__.py": {
+          "covered": 95,
+          "statements": 97,
+          "percent": 97.94
+        },
+        "apps/federal_foundry/catalog.py": {
+          "covered": 190,
+          "statements": 190,
+          "percent": 100.0
+        },
+        "apps/federal_foundry/compiler.py": {
+          "covered": 385,
+          "statements": 385,
+          "percent": 100.0
+        },
+        "apps/federal_foundry/evidence.py": {
+          "covered": 401,
+          "statements": 403,
+          "percent": 99.5
+        },
+        "apps/federal_foundry/operator.py": {
+          "covered": 349,
+          "statements": 351,
+          "percent": 99.43
+        },
+        "apps/federal_foundry/protocol.py": {
+          "covered": 200,
+          "statements": 201,
+          "percent": 99.5
+        }
+      }
+    },
+    "portfolio-311.log": {
+      "state": "PASS",
+      "tests_run": 66,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "coverage_kind": "Python trace statement lines; no branch-coverage claim",
+      "fixtures": "Explicit synthetic measurement/review receipts and in-process model adapters",
+      "live_model_calls": 0,
+      "research_campaigns_run": 0,
+      "coverage": {
+        "apps/federal_foundry/__main__.py": {
+          "covered": 95,
+          "statements": 97,
+          "percent": 97.94
+        },
+        "apps/federal_foundry/catalog.py": {
+          "covered": 188,
+          "statements": 188,
+          "percent": 100.0
+        },
+        "apps/federal_foundry/compiler.py": {
+          "covered": 378,
+          "statements": 378,
+          "percent": 100.0
+        },
+        "apps/federal_foundry/evidence.py": {
+          "covered": 389,
+          "statements": 390,
+          "percent": 99.74
+        },
+        "apps/federal_foundry/operator.py": {
+          "covered": 344,
+          "statements": 346,
+          "percent": 99.42
+        },
+        "apps/federal_foundry/protocol.py": {
+          "covered": 184,
+          "statements": 185,
+          "percent": 99.46
+        }
+      }
+    },
+    "foundry-312.log": {
+      "coverage": {
+        "foundry/shared/federal_foundry/__main__.py": {
+          "covered": 116,
+          "percent": 95.08,
+          "statements": 122
+        },
+        "foundry/shared/federal_foundry/baselines.py": {
+          "covered": 69,
+          "percent": 98.57,
+          "statements": 70
+        },
+        "foundry/shared/federal_foundry/benchmarks.py": {
+          "covered": 439,
+          "percent": 98.21,
+          "statements": 447
+        },
+        "foundry/shared/federal_foundry/evidence.py": {
+          "covered": 195,
+          "percent": 96.53,
+          "statements": 202
+        },
+        "foundry/shared/federal_foundry/execution.py": {
+          "covered": 303,
+          "percent": 96.81,
+          "statements": 313
+        },
+        "foundry/shared/federal_foundry/interfaces.py": {
+          "covered": 79,
+          "percent": 98.75,
+          "statements": 80
+        },
+        "foundry/shared/federal_foundry/market.py": {
+          "covered": 118,
+          "percent": 100.0,
+          "statements": 118
+        },
+        "foundry/shared/federal_foundry/models.py": {
+          "covered": 249,
+          "percent": 91.88,
+          "statements": 271
+        },
+        "foundry/shared/federal_foundry/portfolio.py": {
+          "covered": 311,
+          "percent": 94.53,
+          "statements": 329
+        },
+        "foundry/shared/federal_foundry/registry.py": {
+          "covered": 87,
+          "percent": 90.62,
+          "statements": 96
+        },
+        "foundry/shared/federal_foundry/reporting.py": {
+          "covered": 269,
+          "percent": 100.0,
+          "statements": 269
+        },
+        "foundry/shared/federal_foundry/retrieval.py": {
+          "covered": 136,
+          "percent": 100.0,
+          "statements": 136
+        },
+        "foundry/shared/federal_foundry/simulations.py": {
+          "covered": 230,
+          "percent": 99.14,
+          "statements": 232
+        },
+        "foundry/shared/federal_foundry/validation.py": {
+          "covered": 250,
+          "percent": 95.79,
+          "statements": 261
+        }
+      },
+      "coverage_kind": "Python trace statement lines; no branch, live-provider or hardware claim",
+      "state": "PASS",
+      "tests_errored": 0,
+      "tests_failed": 0,
+      "tests_run": 70
+    },
+    "foundry-311.log": {
+      "coverage": {
+        "foundry/shared/federal_foundry/__main__.py": {
+          "covered": 116,
+          "percent": 95.08,
+          "statements": 122
+        },
+        "foundry/shared/federal_foundry/baselines.py": {
+          "covered": 69,
+          "percent": 98.57,
+          "statements": 70
+        },
+        "foundry/shared/federal_foundry/benchmarks.py": {
+          "covered": 430,
+          "percent": 98.17,
+          "statements": 438
+        },
+        "foundry/shared/federal_foundry/evidence.py": {
+          "covered": 191,
+          "percent": 96.46,
+          "statements": 198
+        },
+        "foundry/shared/federal_foundry/execution.py": {
+          "covered": 299,
+          "percent": 96.76,
+          "statements": 309
+        },
+        "foundry/shared/federal_foundry/interfaces.py": {
+          "covered": 82,
+          "percent": 98.8,
+          "statements": 83
+        },
+        "foundry/shared/federal_foundry/market.py": {
+          "covered": 114,
+          "percent": 100.0,
+          "statements": 114
+        },
+        "foundry/shared/federal_foundry/models.py": {
+          "covered": 247,
+          "percent": 91.82,
+          "statements": 269
+        },
+        "foundry/shared/federal_foundry/portfolio.py": {
+          "covered": 306,
+          "percent": 94.44,
+          "statements": 324
+        },
+        "foundry/shared/federal_foundry/registry.py": {
+          "covered": 88,
+          "percent": 90.72,
+          "statements": 97
+        },
+        "foundry/shared/federal_foundry/reporting.py": {
+          "covered": 249,
+          "percent": 100.0,
+          "statements": 249
+        },
+        "foundry/shared/federal_foundry/retrieval.py": {
+          "covered": 134,
+          "percent": 100.0,
+          "statements": 134
+        },
+        "foundry/shared/federal_foundry/simulations.py": {
+          "covered": 220,
+          "percent": 99.1,
+          "statements": 222
+        },
+        "foundry/shared/federal_foundry/validation.py": {
+          "covered": 248,
+          "percent": 95.75,
+          "statements": 259
+        }
+      },
+      "coverage_kind": "Python trace statement lines; no branch, live-provider or hardware claim",
+      "state": "PASS",
+      "tests_errored": 0,
+      "tests_failed": 0,
+      "tests_run": 70
+    },
+    "discord-required.log": {
+      "state": "FAIL",
+      "backend": "explicit_transport_double",
+      "native_sdk": "unavailable",
+      "native_pdf": "unavailable",
+      "tests_passed": 138,
+      "tests_skipped": 4,
+      "coverage_kind": "Python trace statement lines; no branch or live-transport claim",
+      "coverage": {
+        "apps/research/blueprint_assess.py": {
+          "covered": 11,
+          "statements": 111,
+          "percent": 9.91
+        },
+        "apps/research/blueprint_documents.py": {
+          "covered": 315,
+          "statements": 344,
+          "percent": 91.57
+        },
+        "apps/research/blueprint_models.py": {
+          "covered": 145,
+          "statements": 147,
+          "percent": 98.64
+        },
+        "apps/research/blueprint_parse.py": {
+          "covered": 23,
+          "statements": 165,
+          "percent": 13.94
+        },
+        "apps/research/blueprint_scan.py": {
+          "covered": 119,
+          "statements": 189,
+          "percent": 62.96
+        },
+        "apps/research/blueprints.py": {
+          "covered": 9,
+          "statements": 13,
+          "percent": 69.23
+        },
+        "apps/research/contracts.py": {
+          "covered": 116,
+          "statements": 118,
+          "percent": 98.31
+        },
+        "apps/research/documents.py": {
+          "covered": 72,
+          "statements": 86,
+          "percent": 83.72
+        },
+        "apps/research/processing.py": {
+          "covered": 138,
+          "statements": 156,
+          "percent": 88.46
+        },
+        "apps/research/transport.py": {
+          "covered": 110,
+          "statements": 112,
+          "percent": 98.21
+        },
+        "apps/research/worker.py": {
+          "covered": 143,
+          "statements": 162,
+          "percent": 88.27
+        },
+        "scripts/discordbot/bot.py": {
+          "covered": 363,
+          "statements": 393,
+          "percent": 92.37
+        },
+        "scripts/discordbot/catalogue.py": {
+          "covered": 151,
+          "statements": 156,
+          "percent": 96.79
+        },
+        "scripts/discordbot/contracts.py": {
+          "covered": 174,
+          "statements": 175,
+          "percent": 99.43
+        },
+        "scripts/discordbot/doctor.py": {
+          "covered": 83,
+          "statements": 85,
+          "percent": 97.65
+        },
+        "scripts/discordbot/dossier.py": {
+          "covered": 159,
+          "statements": 163,
+          "percent": 97.55
+        },
+        "scripts/discordbot/public_data.py": {
+          "covered": 145,
+          "statements": 149,
+          "percent": 97.32
+        },
+        "scripts/discordbot/research.py": {
+          "covered": 199,
+          "statements": 213,
+          "percent": 93.43
+        },
+        "scripts/discordbot/service.py": {
+          "covered": 226,
+          "statements": 226,
+          "percent": 100.0
+        }
+      }
+    },
+    "blueprint-required.log": {
+      "state": "FAIL",
+      "tests_run": 73,
+      "passed": 69,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 4,
+      "native_pdf": false,
+      "native_pdf_required": true,
+      "coverage_kind": "stdlib trace statement lines; no branch coverage claim",
+      "coverage": {
+        "apps/research/blueprint_assess.py": {
+          "covered": 109,
+          "statements": 111,
+          "percent": 98.2,
+          "missing": [
+            76,
+            77
+          ]
+        },
+        "apps/research/blueprint_documents.py": {
+          "covered": 315,
+          "statements": 344,
+          "percent": 91.57,
+          "missing": [
+            117,
+            133,
+            160,
+            163,
+            169,
+            191,
+            246,
+            308,
+            375,
+            389,
+            410,
+            421,
+            422,
+            423,
+            424,
+            425,
+            426,
+            427,
+            428,
+            429,
+            430,
+            431,
+            432,
+            433,
+            434,
+            435,
+            436,
+            440,
+            441
+          ]
+        },
+        "apps/research/blueprint_models.py": {
+          "covered": 147,
+          "statements": 147,
+          "percent": 100.0,
+          "missing": []
+        },
+        "apps/research/blueprint_parse.py": {
+          "covered": 164,
+          "statements": 165,
+          "percent": 99.39,
+          "missing": [
+            177
+          ]
+        },
+        "apps/research/blueprint_scan.py": {
+          "covered": 182,
+          "statements": 189,
+          "percent": 96.3,
+          "missing": [
+            71,
+            142,
+            165,
+            169,
+            175,
+            179,
+            231
+          ]
+        },
+        "apps/research/blueprints.py": {
+          "covered": 13,
+          "statements": 13,
+          "percent": 100.0,
+          "missing": []
+        },
+        "apps/decision/adapters/blueprint_to_components.py": {
+          "covered": 91,
+          "statements": 94,
+          "percent": 96.81,
+          "missing": [
+            80,
+            117,
+            118
+          ]
+        },
+        "apps/decision/adapters/components_to_missions.py": {
+          "covered": 37,
+          "statements": 38,
+          "percent": 97.37,
+          "missing": [
+            50
+          ]
+        },
+        "apps/decision/adapters/contracts.py": {
+          "covered": 79,
+          "statements": 79,
+          "percent": 100.0,
+          "missing": []
+        },
+        "apps/decision/adapters/missions_to_sessions.py": {
+          "covered": 46,
+          "statements": 47,
+          "percent": 97.87,
+          "missing": [
+            43
+          ]
+        },
+        "apps/decision/adapters/server.py": {
+          "covered": 72,
+          "statements": 74,
+          "percent": 97.3,
+          "missing": [
+            40,
+            111
+          ]
+        },
+        "apps/decision/adapters/service.py": {
+          "covered": 97,
+          "statements": 103,
+          "percent": 94.17,
+          "missing": [
+            92,
+            133,
+            134,
+            135,
+            136,
+            140
+          ]
+        },
+        "apps/decision/workloads/blueprint_document_evaluation.py": {
+          "covered": 86,
+          "statements": 88,
+          "percent": 97.73,
+          "missing": [
+            91,
+            93
+          ]
+        },
+        "apps/decision/workloads/blueprint_evaluation.py": {
+          "covered": 75,
+          "statements": 75,
+          "percent": 100.0,
+          "missing": []
+        }
+      }
+    }
+  },
+  "boundary_coverage": {
+    "path": "scripts/ci/verify_public_boundary.py",
+    "covered": 174,
+    "executable": 186,
+    "percent": 93.55,
+    "missing": [
+      52,
+      83,
+      128,
+      163,
+      164,
+      166,
+      167,
+      168,
+      227,
+      230,
+      231,
+      280
+    ],
+    "kind": "stdlib trace executable lines, including imports; not branch coverage"
+  },
+  "other_validation": {
+    "yaml": "PASS: local parse and pinned fallback checkouts; GitLab merged YAML not fetched",
+    "ruff": "PASS",
+    "strict_mypy": "PASS: boundary checker and 15 foundry modules",
+    "readiness": "PASS",
+    "submission_policy": "PASS",
+    "context": "PASS; 22 unwired gates and two unregistered specs remain visible",
+    "public_boundary": "PASS; local scan has no remote review context",
+    "memory": "PASS; all 166 baseline event vectors preserved"
+  },
+  "logs": {
+    "governance-final.log": {
+      "command": "python -m unittest tests.upgrade.test_public_boundary tests.upgrade.test_gitlab_acceptance tests.upgrade.test_hostinger_readiness tests.upgrade.test_hostinger_replay tests.upgrade.test_submission_readiness tests.upgrade.test_day21_acceptance tests.upgrade.test_day21_submission -v",
+      "session_path": "/tmp/buildanddo-governance-repair/governance-final.log",
+      "sha256": "b81c70fa70bc052f1d53fd8fb79e38b686de9a6844c64bd93465f37b92bbf0c5",
+      "exit_code": 0
+    },
+    "sprint-coverage.log": {
+      "command": "python tests/upgrade/check_sprint_execution.py",
+      "session_path": "/tmp/buildanddo-governance-repair/sprint-coverage.log",
+      "sha256": "6640dd16a1d8ce05ba684223b666f7c1345b2b714c7b24269004052da28a6d5b",
+      "exit_code": 0
+    },
+    "mission-312.log": {
+      "command": "python tests/upgrade/check_mission_suite.py (before test selection fix)",
+      "session_path": "/tmp/buildanddo-governance-repair/mission-312.log",
+      "sha256": "ffaf384b276adeaf66814b87739c0148013fce485e40ee5fbb5e0c0a974fdf98",
+      "exit_code": 1
+    },
+    "mission-312-green.log": {
+      "command": "python tests/upgrade/check_mission_suite.py",
+      "session_path": "/tmp/buildanddo-governance-repair/mission-312-green.log",
+      "sha256": "8670ad7e860184ece9b4b9d8e5ef0d25841746692dd5ce3f445320410860d966",
+      "exit_code": 0
+    },
+    "mission-311.log": {
+      "command": "/root/.pyenv/versions/3.11.15/bin/python tests/upgrade/check_mission_suite.py",
+      "session_path": "/tmp/buildanddo-governance-repair/mission-311.log",
+      "sha256": "579487c97699b6c027c2dd12590bdcc4410a0e1d729568ecacba2bfc65484e24",
+      "exit_code": 0
+    },
+    "mission-312-node22.log": {
+      "command": "PATH=/home/codespace/nvm/versions/node/v22.17.0/bin:$PATH python tests/upgrade/check_mission_suite.py",
+      "session_path": "/tmp/buildanddo-governance-repair/mission-312-node22.log",
+      "sha256": "781720fb80405c4a958fdc05a5637e0f3c11584ba6f1daa0f6b3068543b4fff9",
+      "exit_code": 0
+    },
+    "mission-311-node22.log": {
+      "command": "PATH=/home/codespace/nvm/versions/node/v22.17.0/bin:$PATH /root/.pyenv/versions/3.11.15/bin/python tests/upgrade/check_mission_suite.py",
+      "session_path": "/tmp/buildanddo-governance-repair/mission-311-node22.log",
+      "sha256": "53550bbeefd39b88d51b63e5310ef2b5a8c3abc7d1a06523f69276915fe39386",
+      "exit_code": 0
+    },
+    "portfolio-312.log": {
+      "command": "python tests/upgrade/check_federal_foundry.py",
+      "session_path": "/tmp/buildanddo-governance-repair/portfolio-312.log",
+      "sha256": "9f94dd9b2db11182e2a9efa6d01ff3fb7501c4324e5ba254aa8d3758053793d8",
+      "exit_code": 0
+    },
+    "portfolio-311.log": {
+      "command": "/root/.pyenv/versions/3.11.15/bin/python tests/upgrade/check_federal_foundry.py",
+      "session_path": "/tmp/buildanddo-governance-repair/portfolio-311.log",
+      "sha256": "2d99a6f212d5faf1117aa7a619832fc9cf0a1f650ec48eca32ab15ec4cfad452",
+      "exit_code": 0
+    },
+    "foundry-312.log": {
+      "command": "python tests/foundry/check_foundry.py",
+      "session_path": "/tmp/buildanddo-governance-repair/foundry-312.log",
+      "sha256": "635c3fd295a8196faf379db050c282d183fcc62a071060eaf5e75db729591602",
+      "exit_code": 0
+    },
+    "foundry-311.log": {
+      "command": "/root/.pyenv/versions/3.11.15/bin/python tests/foundry/check_foundry.py",
+      "session_path": "/tmp/buildanddo-governance-repair/foundry-311.log",
+      "sha256": "141db665eb2f33dcae0d3e11ce3bd9a06b2c6409addd6a76aeb1e3c9f5945396",
+      "exit_code": 0
+    },
+    "mission-node22.log": {
+      "command": "PATH=/home/codespace/nvm/versions/node/v22.17.0/bin:$PATH node --test tests/upgrade/suite-system.test.mjs tests/upgrade/suite-client.test.mjs tests/upgrade/government-learning.test.mjs",
+      "session_path": "/tmp/buildanddo-governance-repair/mission-node22.log",
+      "sha256": "7fe2152677a22a65e9fe854b478402d483344079902afbc1a39da21a62380b6a",
+      "exit_code": 0
+    },
+    "discord-required.log": {
+      "command": "python tests/upgrade/check_discordbot.py --include-research --require-sdk --require-pdf",
+      "session_path": "/tmp/buildanddo-governance-repair/discord-required.log",
+      "sha256": "03881989b5117036477ad2fd6b6543e9c0a9562d012688d4c2f213fbc148bf9f",
+      "exit_code": 1
+    },
+    "blueprint-required.log": {
+      "command": "python tests/upgrade/check_blueprint_pipeline.py --require-pdf",
+      "session_path": "/tmp/buildanddo-governance-repair/blueprint-required.log",
+      "sha256": "08c5abd55cf7e3727ab450122dadbcb347739b25190b1bd35c291aea2325dfbb",
+      "exit_code": 1
+    },
+    "foundry-mypy.log": {
+      "command": "mypy --strict --follow-imports=silent foundry/shared/federal_foundry",
+      "session_path": "/tmp/buildanddo-governance-repair/foundry-mypy.log",
+      "sha256": "fc409d91e6c781eb25a1ec1310b7fcb0086b74ed3aa2c415bcd73f884f23f07a",
+      "exit_code": 0
+    },
+    "foundry-ruff.log": {
+      "command": "ruff check foundry/shared/federal_foundry tests/foundry; ruff format --check foundry/shared/federal_foundry tests/foundry",
+      "session_path": "/tmp/buildanddo-governance-repair/foundry-ruff.log",
+      "sha256": "262887bcddce8fc713c09ef19481b9154a72bc9e5bcc64b0e3514ebb374ef6ca",
+      "exit_code": 0
+    },
+    "routing-red": {
+      "session_path": "/tmp/buildanddo-governance-repair/red.log",
+      "sha256": "80bc596b0853b8aa767e67e684098de2172c01da6225488bdee27dd336130e76",
+      "exit_code": 1
+    }
+  },
+  "history_boundary": "Log bytes remain session-local. Digests and measured reports are retained here; this record cannot replace a complete hosted acceptance export.",
+  "full_acceptance": "Not rerun in this continuation. Prior gitlab-validation.json records 4 PASS, 3 FAIL, 1 HOLD and 10 BLOCKED for an earlier candidate.",
+  "remaining": [
+    "native SDK/PDF packages for required checks",
+    "locked frontend dependencies and both PocketBase runtimes for full acceptance",
+    "observed GitLab execution and same-revision public status integration",
+    "one actor label on the receiving review",
+    "separate Cloudflare build diagnostic"
+  ],
+  "historical_memory_events_preserved": 166,
+  "selected_checks": [
+    "governance-final.log",
+    "sprint-coverage.log",
+    "mission-311-node22.log",
+    "mission-312-node22.log",
+    "portfolio-311.log",
+    "portfolio-312.log",
+    "foundry-311.log",
+    "foundry-312.log",
+    "mission-node22.log",
+    "discord-required.log",
+    "blueprint-required.log"
+  ]
+}

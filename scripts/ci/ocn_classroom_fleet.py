@@ -116,17 +116,28 @@ def on_box(box: str, record: dict, method: str, path: str = "", body: Any = None
         "b64": base64.b64encode(json.dumps(body).encode()).decode() if body is not None else "",
     }
     ssh = shutil.which("ssh") or "ssh"
+    # THE HOP IS INFRASTRUCTURE, NOT EVIDENCE. Measured 2026-09-23: three runs in a row lost one
+    # step each at stage=ssh with no HTTP status, always the second consecutive hop to the same box
+    # over its public address (a timed probe: 1.9 s then 8.0 s; the mesh path held 2.5-3.5 s across
+    # four hops). The release workstation sits on the mesh, so the hop goes there when the fleet map
+    # names a mesh address and falls back to the public one. What the run PROVES is unchanged: the
+    # box signs with its own key and reaches staging from its own egress, which the WHOAMI stage
+    # still measures from the box itself.
+    hop = record.get("mesh_ip") or record["public_ip"]
     try:
         done = subprocess.run(
             [ssh, "-i", str(key), "-o", "BatchMode=yes", "-o", "StrictHostKeyChecking=accept-new",
-             "-o", "ConnectTimeout=15", f"root@{record['public_ip']}",
+             "-o", "ConnectTimeout=15", f"root@{hop}",
              # Windows text-mode pipes rewrite LF as CRLF, so bash on the box sees a stray CR
              # script dies at line 1. The repo's VPS ops module strips it the same way.
              "tr -d '\\r' | bash -s"],
             input=script, capture_output=True, text=True, timeout=180)
     except subprocess.TimeoutExpired:
-        return {"stage": "ssh", "http": 0, "error": "ssh timeout"}
-    answer: dict[str, Any] = {"stage": "ssh", "http": 0}
+        return {"stage": "ssh", "http": 0, "error": "ssh timeout", "hop": "mesh" if record.get("mesh_ip") else "public"}
+    answer: dict[str, Any] = {"stage": "ssh", "http": 0, "hop": "mesh" if record.get("mesh_ip") else "public"}
+    if done.returncode != 0 and not (done.stdout or "").strip():
+        # A hop that printed nothing is otherwise indistinguishable from a refused call.
+        answer["error"] = (done.stderr or "").strip()[-160:] or f"ssh exit {done.returncode}"
     for raw in (done.stdout or "").splitlines():
         label, _, rest = raw.strip().partition(" ")
         if label == "HTTP":
@@ -231,7 +242,9 @@ def run() -> dict[str, Any]:
     host_gm = boxes[HOST_BOX]["guildmaster"]
     answer = command(HOST_BOX, "room.create", {
         "title": f"Fleet guildmaster class ({stamp})",
-        "description": f"Hosted by {host_gm} on {HOST_BOX}; each guildmaster acts from its own box.",
+        # NEVER name the machine here. This string is stored in the product and shown to every
+        # member; which box a guildmaster signs from is infrastructure, not classroom content.
+        "description": f"Hosted by {host_gm}. Each guildmaster signs from its own seat.",
         "tutorial": lesson, "starts_at": "",
     }, 0)
     if not note(checks, f"{host_gm} schedules the class", HOST_BOX, answer, "200",
@@ -255,7 +268,7 @@ def run() -> dict[str, Any]:
         note(checks, f"{gm} joins from {box}", box, answer, "200", answer.get("http") == 200)
         answer = command(box, "room.message",
                          {"id": room,
-                          "body": f"{gm} of the {boxes[box].get('guild')} guild, joining from {box}."},
+                          "body": f"{gm} of the {boxes[box].get('guild')} guild, joining the class."},
                          revision_from(box, room))
         note(checks, f"{gm} speaks from {box}", box, answer, "200", answer.get("http") == 200)
 

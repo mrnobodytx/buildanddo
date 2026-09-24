@@ -1,0 +1,15 @@
+<!-- @dsCard group="Feed" height=330 -->
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600;6..72,700;6..72,800&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap"><title>FeedItem</title><style>body{padding:16px;}</style></head>
+<body>
+<div id="root"></div>
+<script>
+  var B = window.BndClassroom, h = React.createElement;
+  ReactDOM.createRoot(document.getElementById('root')).render(h('ol',{style:{listStyle:'none',margin:0,padding:0}},
+ h(B.FeedItem,{kind:'judgment',priority:'high',status:'UNDER_REVIEW',title:'Relay fra-2 dropping groups for 3 minutes',body:'Subscribers in the EU class saw video stall; audio held. Rerouted through relay-iad.',confidence:{value:0.8,scale:'0–1',method:'analyst'},source:'sentinel',evidence:4,time:'14:12',unread:true}),
+ h(B.FeedItem,{kind:'observation',status:'OPEN',title:'New broadcast on air: Deploy your first website',source:'bnd/class/7f3a',evidence:1,time:'14:02'}),
+ h(B.FeedItem,{kind:'inferred',status:'RETRACTED',priority:'medium',title:'Audience spike from a shared link',correction:'Retracted 14:20: the spike was a test client. See the correction notice.',source:'sentinel',evidence:2,time:'13:58'})));
+</script>
+</body>
+</html>

@@ -4,57 +4,29 @@ import DiscordAccountLink from '@/components/workspace/DiscordAccountLink';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
-    Globe,
     ShieldCheck,
     LogOut,
-    Loader2,
     Info,
     Plus,
 } from 'lucide-react';
-import { workspaceCollection } from '@/lib/observability/mutations';
 import { useAuth } from '@/contexts/AuthContext';
 import { useWorkspace } from '@/contexts/WorkspaceContext';
 import { useWorkspaceAccess } from '@/contexts/WorkspaceAccessContext';
-import {
-    PageHeader,
-    StatusBadge,
-    DOMAIN_STATUS,
-} from '@/components/workspace/workspaceHelpers';
+import { PageHeader } from '@/components/workspace/workspaceHelpers';
+import WebsiteDomainPanel from '@/components/workspace/WebsiteDomainPanel';
 import { ThemeSelect } from '@/components/ThemeControls';
 import { Button, Card } from '@/components/site/ui';
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from '@/components/ui/select';
+
+const TAB_FOR_HASH = { '#discord-account': 'account', '#motion-settings': 'motion', '#website-domain': 'workspace' };
 
 export default function SettingsPage() {
     const navigate = useNavigate();
     const { hash } = useLocation();
-    const [settingsTab, setSettingsTab] = useState(hash === '#discord-account' ? 'account' : hash === '#motion-settings' ? 'motion' : 'appearance');
-    useEffect(() => { if (hash === '#motion-settings') setSettingsTab('motion'); else if (hash === '#discord-account') setSettingsTab('account'); }, [hash]);
+    const [settingsTab, setSettingsTab] = useState(TAB_FOR_HASH[hash] || 'appearance');
+    useEffect(() => { if (TAB_FOR_HASH[hash]) setSettingsTab(TAB_FOR_HASH[hash]); }, [hash]);
     const { user, logout } = useAuth();
-    const { active, workspaces, refresh } = useWorkspace();
+    const { active, workspaces } = useWorkspace();
     const access = useWorkspaceAccess();
-    const [savingDomain, setSavingDomain] = useState(false);
-    const [domainError, setDomainError] = useState('');
-
-    const domainRecord = active?.expand?.domain;
-
-    const updateDomainStatus = async (status) => {
-        if (!domainRecord) return;
-        setSavingDomain(true);
-        setDomainError('');
-        try {
-            await workspaceCollection('domains').update(domainRecord.id, { status });
-            await refresh();
-        } catch (err) {
-            setDomainError('Could not update the domain status. Please try again.');
-        }
-        setSavingDomain(false);
-    };
 
     const handleLogout = () => {
         logout();
@@ -129,62 +101,12 @@ export default function SettingsPage() {
                         </Card>
                     </section>
 
-            {/* Domain authorization */}
+            {/* Website domain */}
                     <section className="space-y-3">
                         <h2 className="font-display text-lg font-semibold tracking-tight">
-                            Domain authorization
+                            Website domain
                         </h2>
-                        <Card className="p-5">
-                            <div className="flex items-start gap-3">
-                                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-border bg-secondary text-primary">
-                                    <Globe className="h-4 w-4" />
-                                </span>
-                                <div className="min-w-0 flex-1">
-                                    <div className="flex flex-wrap items-center gap-2">
-                                        <p className="font-medium">
-                                            {domainRecord?.domain || 'No website connected'}
-                                        </p>
-                                        {domainRecord && (
-                                            <StatusBadge
-                                                map={DOMAIN_STATUS}
-                                                value={domainRecord.status}
-                                            />
-                                        )}
-                                    </div>
-                                    <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                                        A found domain is <strong>not</strong> an
-                                        authorized domain. Confirm ownership or
-                                        authorization before deeper analysis or actions.
-                                        Updating the status here is your record of that
-                                        confirmation — BuildAndDo does not verify
-                                        ownership automatically.
-                                    </p>
-                                    {domainError && <p role="alert" className="mt-3 text-sm text-destructive">{domainError}</p>}
-                                    {domainRecord && (
-                                        <div className="mt-4 flex flex-wrap items-center gap-2">
-                                            <Select
-                                                value={domainRecord.status}
-                                                onValueChange={updateDomainStatus}
-                                                disabled={savingDomain}
-                                            >
-                                                <SelectTrigger aria-label="Domain status" className="h-11 w-full sm:w-52">
-                                                    <SelectValue />
-                                                </SelectTrigger>
-                                                <SelectContent>
-                                                    <SelectItem value="selected">Selected</SelectItem>
-                                                    <SelectItem value="analyzing">Analyzing</SelectItem>
-                                                    <SelectItem value="verified">Verified</SelectItem>
-                                                    <SelectItem value="needs_attention">Needs attention</SelectItem>
-                                                </SelectContent>
-                                            </Select>
-                                            {savingDomain && (
-                                                <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
-                                            )}
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-                        </Card>
+                        <WebsiteDomainPanel />
                     </section>
 
             {/* Security & trust */}
@@ -214,9 +136,9 @@ export default function SettingsPage() {
                                         secured service instances.
                                     </li>
                                     <li>
-                                        You must confirm ownership or authorization of a
-                                        domain before deeper analysis or actions run
-                                        against it.
+                                        A domain counts as yours only after BuildAndDo
+                                        finds your DNS TXT verification record. Until
+                                        then it is context only and unlocks nothing.
                                     </li>
                                 </ul>
                             </div>

@@ -1,26 +1,34 @@
-// // --- CGRF Header ------------------------------------------------
+// ─── CGRF Header ───────────────────────────────────────────────
+// File:        apps/web/src/data/hostingerChallenge.js
 // Stage:       07_BUILD
-// SRS:         SRS-BUILDANDDO-DAY21-CLOSURE-001
+// SRS:         SRS-BUILDANDDO-DAY21-CLOSURE-001, SRS-BUILDANDDO-PURPOSE-001, SRS-BUILDANDDO-UPGRADE-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-DAY21-CLOSURE-001
-// Seat:        CLA-INSTALLER
+// Dispatch:    VCC-BUILDANDDO-DAY21-CLOSURE-001, VCC-BUILDANDDO-PURPOSE-001, VCC-BUILDANDDO-UPGRADE-001
+// Seat:        CLA-INSTALLER, C-ONE (the educational-platform framing)
 // Owner:       Citadel Nexus Inc.
+// Depends:     docs/day21/JUDGE_STORY.md
+// EnumType:    ConfigDoc
+// EnumEdges:   CONSUMES docs/day21/JUDGE_STORY.md
 // Intent:      Close Hostinger Day-21 runtime evidence and submission packaging gaps without granting deployment authority.
-// ----------------------------------------------------------------
+// ───────────────────────────────────────────────────────────────
+import { PURPOSE } from '@/lib/purpose';
+
+// The entry describes the startup as the operator decided it is: an educational, collaborative platform
+// (2026-09-11), reframed for the entry on 2026-09-23. scripts/ci/day21_submission.py carries the same four
+// texts as its defaults for the judge bundle; src/lib/__tests__/purpose.test.js fails when they drift apart.
 export const HOSTINGER_CHALLENGE = {
     campaign: 'Hostinger 21-Day Startup Challenge 2026',
     deadline: '2026-09-24',
-    promise:
-        'BuildAndDo watches the important parts of a small business, explains what changed, and turns the next best action into a verified task.',
+    promise: PURPOSE.summary,
     target:
-        'Small business owners and operators who have repetitive operational problems spread across too many tools.',
+        'People who learn best by doing: learners, teams and builders, beginners included, who want to work through a real project together with other people and AI agents, and keep proof of what they built.',
     problem:
-        'Business owners can see signals in many places, but diagnosis, coordination, follow-up, and proof of completion remain manual.',
+        'Online learning mostly stops at watching and reading. People rarely work through a real project with guidance and with others, and when they do, little records what they actually built or whether it worked.',
     solution:
-        'BuildAndDo converts one observed business problem into a bounded mission, preserves the source, requires approval, records the work, verifies the outcome, and keeps the evidence.',
+        'BuildAndDo turns one real question or project into a bounded mission: it keeps the sources, asks for approval before anything runs, records the work, verifies the outcome and keeps the evidence, with classrooms, guilds and AI guildmaster agents to learn alongside.',
     demo:
-        'A business challenge becomes a source-bound mission; a bounded action is performed; a separate verifier checks the result; the operator readback and Daily Edition explain what happened and what remains uncertain.',
+        'A learner’s project becomes a source-bound mission; a bounded action is performed; a separate verifier checks the result; the readback and the Daily Edition explain what happened and what remains uncertain.',
     products: [
         {
             name: 'Unlimited Web Hosting',

@@ -1,10 +1,10 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/src/components/workspace/TutorialReader.jsx
 // Stage:       07_BUILD
-// SRS:         SRS-BUILDANDDO-UPGRADE-001
+// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-TRUST-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-TRUST-001
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-15
@@ -12,23 +12,20 @@
 // EnumType:    Widget
 // EnumEdges:   CONSUMES apps/web/src/lib/tutorialCurriculum.js; CONSUMES apps/web/src/components/ui/dialog.jsx
 // DAG Node:    none
-// Intent:      Let learners read complete lessons, practice and check understanding with accessible focus and explicit progress persistence.
+// Intent:      Keep read-only lessons and keyless question previews separate from saved guided learning completion.
 // ───────────────────────────────────────────────────────────────
 
 import ReadingProgress from '@/components/motion/ReadingProgress';
 import StepSequence from '@/components/motion/StepSequence';
 import { useMotionCategory } from '@/contexts/MotionContext';
 import { animateElement, continuityFrames } from '@/lib/motion/runtime';
-import React, { useLayoutEffect, useRef, useState } from 'react';
+import React, { useLayoutEffect, useRef } from 'react';
 import { Button, Card } from '@/components/site/ui';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { lessonLink, validLesson } from '@/lib/tutorialCurriculum';
 
-/** @param {{tutorial: object, completed: boolean, canSave: boolean, busy: boolean, error: string, saved: string, onSave: Function, onClose: Function, opener: HTMLElement|null}} props Reader state. @returns {React.ReactElement} Lesson dialog. */
-export default function TutorialReader({ tutorial, completed, canSave, busy, error, saved, onSave, onGuided, onClose, opener, origin }) {
-    const [answer, setAnswer] = useState(null);
-    const [checked, setChecked] = useState(false);
-    const [practiced, setPracticed] = useState(false);
+/** @param {{tutorial: object, completed: boolean, onGuided?: Function, onClose: Function, opener: HTMLElement|null, origin?: object}} props Reader state. @returns {React.ReactElement} Read-only open-book lesson dialog. */
+export default function TutorialReader({ tutorial, completed, onGuided, onClose, opener, origin }) {
     const heading = useRef(null);
     const article = useRef(null);
     const { enabled, motion } = useMotionCategory('layout');
@@ -37,8 +34,7 @@ export default function TutorialReader({ tutorial, completed, canSave, busy, err
     }, enabled && Boolean(origin)), [origin, enabled, motion.duration.layout, motion.ease]);
     const lesson = tutorial.lesson;
     const available = validLesson(lesson);
-    const correct = available && checked && answer === lesson.check.answer;
-    return <Dialog open onOpenChange={(open) => { if (!open && !busy) onClose(); }}>
+    return <Dialog open onOpenChange={(open) => { if (!open) onClose(); }}>
         <DialogContent data-reading-scroll className="max-h-[92dvh] max-w-3xl overflow-y-auto"
             data-dd-privacy="mask" onOpenAutoFocus={(event) => { event.preventDefault(); heading.current?.focus(); }}
             onCloseAutoFocus={(event) => { event.preventDefault(); opener?.focus(); }}>
@@ -75,25 +71,14 @@ export default function TutorialReader({ tutorial, completed, canSave, busy, err
                         <h3 className="font-display text-xl font-semibold">Practice</h3>
                         <p className="text-sm leading-7">{lesson.exercise.prompt}</p>
                         <ul className="list-disc space-y-2 pl-5 text-sm leading-6">{lesson.exercise.checklist.map((item) => <li key={item}>{item}</li>)}</ul>
-                        <label className="flex items-start gap-3 py-2 text-sm">
-                            <input type="checkbox" checked={practiced} onChange={(event) => setPracticed(event.target.checked)} className="mt-1 h-4 w-4 shrink-0 accent-primary" />
-                            <span>I worked through the exercise or its illustrative example.</span>
-                        </label>
                     </section>
-                    <fieldset className="space-y-3">
-                        <legend className="font-display text-xl font-semibold">Check your understanding</legend>
+                    {/* The answer is graded on the server; the reader only previews the question. */}
+                    <section className="space-y-3" aria-label="Knowledge check">
+                        <h3 className="font-display text-xl font-semibold">Check your understanding</h3>
                         <p className="text-sm leading-7">{lesson.check.question}</p>
-                        {lesson.check.choices.map((choice, index) => <label key={index} className="flex cursor-pointer items-start gap-3 rounded-md border border-border p-3 text-sm leading-6">
-                            <input type="radio" name={`lesson-answer-${tutorial.catalogueKey}`} checked={answer === index}
-                                onChange={() => { setAnswer(index); setChecked(false); }} className="mt-1 h-4 w-4 shrink-0 accent-primary" />
-                            <span>{choice}</span>
-                        </label>)}
-                        <Button size="sm" variant="secondary" disabled={answer === null} onClick={() => setChecked(true)}>Check answer</Button>
-                        {checked && <div role="status" className="space-y-2 rounded-md border border-border p-3 text-sm leading-6">
-                            <p className="font-semibold">{correct ? 'That’s right.' : 'Try another answer.'}</p>
-                            <p>{lesson.check.explanation}</p>
-                        </div>}
-                    </fieldset>
+                        <ul className="list-disc space-y-2 pl-5 text-sm leading-6">{lesson.check.choices.map((choice, index) => <li key={index}>{choice}</li>)}</ul>
+                        <p className="text-sm leading-6 text-muted-foreground">{onGuided ? 'Answer this knowledge check in the interactive tutorial.' : 'Sign in and open the interactive tutorial to answer this knowledge check.'}</p>
+                    </section>
                     <nav aria-label="Lesson references" className="space-y-2">
                         <h3 className="font-display text-lg font-semibold">Continue learning</h3>
                         <ul className="space-y-2 text-sm">{lesson.references.map((reference) => <li key={reference.url}>
@@ -102,16 +87,11 @@ export default function TutorialReader({ tutorial, completed, canSave, busy, err
                     </nav>
                 </>}
                 <div className="space-y-3 border-t border-border pt-4">
-                    {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
-                    {saved && <p role="status" className="text-sm text-success">{saved}</p>}
-                    {!canSave && <p className="text-sm text-muted-foreground">Reading preview only. Saved progress needs a signed-in account, a persisted lesson and an available backend.</p>}
-                    {completed ? <p className="text-sm text-success">Completed. Reviewing keeps your saved completion.</p> : <div className="flex flex-wrap gap-2">
-                        <Button size="sm" variant="secondary" disabled={!canSave || busy || !available} onClick={() => onSave('in_progress')}>Save reading progress</Button>
-                        <Button size="sm" disabled={!canSave || busy || !correct || !practiced} onClick={() => onSave('completed')}>{busy ? 'Saving…' : 'Mark lesson complete'}</Button>
-                    </div>}
-                    <p className="text-xs leading-6 text-muted-foreground">Reading completion records your own learning activity. Finish the interactive tutorial to earn a certificate and learning points.</p>
-                    {onGuided && available && <Button size="sm" disabled={busy} onClick={onGuided}>Start interactive tutorial</Button>}
-                    <Button size="sm" variant="ghost" disabled={busy} onClick={onClose}>Close lesson</Button>
+                    <p className="text-sm text-muted-foreground">Open-book reading and practice preview only. Reading and self-reported practice here are not saved and do not award guided completion, certificates or learning points.</p>
+                    {completed && <p className="text-sm text-success">Guided tutorial completed. Reading practice does not change your saved completion.</p>}
+                    <p className="text-xs leading-6 text-muted-foreground">Grading keys remain public in the authored source, not in browser previews. Finish the interactive tutorial to complete this lesson with saved checkpoints, not independently verified mastery.</p>
+                    {onGuided && available && <Button size="sm" onClick={onGuided}>Start interactive tutorial</Button>}
+                    <Button size="sm" variant="ghost" onClick={onClose}>Close lesson</Button>
                 </div>
             </div>
         </DialogContent>

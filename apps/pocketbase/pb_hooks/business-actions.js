@@ -343,10 +343,11 @@ function list(e) {
     access.authenticated(e); const workspace = access.workspaceId(e);
     schema(e.app); access.requireRole(e.app, e.auth, workspace);
     const query = e.requestInfo().query || {}, workerRead = query.worker === '1';
-    const run = query.run || '';
+    const run = query.run || '', selected = query.id || '';
     if (run) access.id(run);
-    let filter = 'workspace = {:workspace}' + (run ? ' && run = {:run}' : '');
-    const params = { workspace, run };
+    if (selected) access.id(selected);
+    let filter = 'workspace = {:workspace}' + (run ? ' && run = {:run}' : '') + (selected ? ' && id = {:id}' : '');
+    const params = { workspace, run, id: selected };
     if (workerRead) {
         access.requireRole(e.app, e.auth, workspace, writes);
         binding(workspace, query.provider, query.binding, e.auth.id);
@@ -365,6 +366,16 @@ function list(e) {
     access.requireRole(e.app, e.auth, workspace);
     return { workspace, items, page: result.page, has_more: result.has_more };
 }
+/** Read complete bounded mission receipts under the same policy as the command API. */
+function missionHistory(app, e, workspace, mission) {
+    schema(app); access.requireRole(app, e.auth, workspace);
+    const records = app.findRecordsByFilter('business_jobs', 'workspace = {:workspace} && mission = {:mission}',
+        'created,id', 201, 0, { workspace, mission });
+    if (records.length > 200) throw new ApiError(413, 'This mission exceeds the bounded export limit. No partial capture was produced.');
+    if (records.some((record) => !readableJob(app, e, record)))
+        throw new ForbiddenError('The complete action history is not readable by this account.');
+    return records.map(output);
+}
 /** Cancel undispatched effects, retaining uncertainty for calls already issued. */
 function cancelForRun(app, run) {
     schema(app);
@@ -376,4 +387,4 @@ function cancelForRun(app, run) {
             revision: Number(job.get('revision')) + 1, finished_at: dispatched ? '' : new Date().toISOString() }); app.save(job);
     }
 }
-module.exports = { command, list, cancelForRun, output };
+module.exports = { command, list, cancelForRun, output, missionHistory };

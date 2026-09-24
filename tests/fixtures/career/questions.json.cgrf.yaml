@@ -1,0 +1,20 @@
+# ─── CGRF Header ──────────────────────────────
+# File:        tests/fixtures/career/questions.json.cgrf.yaml
+# Stage:       08_TEST
+# SRS:         SRS-BUILDANDDO-CAREER-001
+# CAPS:        pending
+# CK:          pending
+# Dispatch:    VCC-BUILDANDDO-CAREER-001
+# Seat:        BITS-CODEGEN
+# Owner:       Citadel Nexus Inc.
+# Created:     2026-09-22
+# Depends:     apps/career/compiler.py
+# EnumType:    Test
+# EnumEdges:   VALIDATES apps/career/compiler.py; VALIDATES apps/career/authority.py
+# DAG Node:    none
+# Intent:      Provide synthetic application questions mixing evidence-answerable and human-reserved classes.
+# ───────────────────────────────────────────────────────────
+
+artifact: questions.json
+encoding: utf-8
+synthetic: true

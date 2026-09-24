@@ -36,7 +36,7 @@ services:
       context: ./apps/pocketbase
       dockerfile: Dockerfile
       args:
-        POCKETBASE_VERSION: ${POCKETBASE_VERSION:-0.28.4}
+        POCKETBASE_VERSION: ${POCKETBASE_VERSION:-0.39.8}
     image: buildanddo/pocketbase:local
     command: ["migrate", "up", "--dir=/pb/pb_data", "--migrationsDir=/pb/pb_migrations"]
     environment:
@@ -56,7 +56,7 @@ services:
       context: ./apps/pocketbase
       dockerfile: Dockerfile
       args:
-        POCKETBASE_VERSION: ${POCKETBASE_VERSION:-0.28.4}
+        POCKETBASE_VERSION: ${POCKETBASE_VERSION:-0.39.8}
     image: buildanddo/pocketbase:local
     command:
       - "serve"
@@ -87,6 +87,18 @@ services:
       BUDDI_TOOL_SECRET: ${BUDDI_TOOL_SECRET:-}
       BUDDI_HANDOFF_DISCORD_WEBHOOK: ${BUDDI_HANDOFF_DISCORD_WEBHOOK:-}
       BUILDANDDO_PUBLIC_ORIGIN: ${BUILDANDDO_PUBLIC_ORIGIN:-}
+      # Community bot quiz grading (pb_hooks/community-quiz.pb.js). Unset, the
+      # route answers 503 and the bot reports grading as unavailable.
+      BUILDANDDO_COMMUNITY_BOT_TOKEN: ${BUILDANDDO_COMMUNITY_BOT_TOKEN:-}
+      # Live classroom media (pb_hooks/classroom-realtime.pb.js). Values come from
+      # your shell or an untracked .env, never this file. Unset, the classroom
+      # reports "not configured on this server" and keeps shared lessons and text.
+      # An empty publisher list means nobody may broadcast, deliberately.
+      CLOUDFLARE_REALTIME_APP_ID: ${CLOUDFLARE_REALTIME_APP_ID:-}
+      CLOUDFLARE_REALTIME_APP_SECRET: ${CLOUDFLARE_REALTIME_APP_SECRET:-}
+      BUILDANDDO_CLASSROOM_PUBLISHERS: ${BUILDANDDO_CLASSROOM_PUBLISHERS:-}
+      # Domain verification DNS-over-HTTPS resolver (https only); empty uses Cloudflare's.
+      BUILDANDDO_DOH_URL: ${BUILDANDDO_DOH_URL:-}
     ports:
       - "${POCKETBASE_PORT:-8090}:8090"
     volumes:

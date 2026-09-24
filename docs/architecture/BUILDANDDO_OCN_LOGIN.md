@@ -1,7 +1,7 @@
 <!-- CGRF: SRS=SRS-BUILDANDDO-LIVE-UTILIZATION-001 | CAPS=B | Seat=C-ONE -->
 # BuildAndDo OCN login — Citadel seats sign in with a CitadelKey
 
-"OCN login" lets a Citadel Nexus seat (the Operator on Citadel Network at rig1,
+"OCN login" lets a Citadel Nexus seat (the Operator on Citadel Network at the operator workstation,
 a guildmaster, a fleet agent) log into BuildAndDo with its **CitadelKey** instead
 of a human password, and lets the estate **test login without ever typing a
 password**. It reuses the envelope contract and the vendored Ed25519 signer the
@@ -11,7 +11,7 @@ public-key **verify** path, and it runs in that same sidecar, on loopback.
 ## Topology
 
 ```
-seat runtime (rig1 / guildmaster box)
+seat runtime (the operator workstation / guildmaster box)
    │ holds the seat PRIVATE seed (file named by BUILDANDDO_CK_PRIVATE_KEY_FILE)
    │ signs ONE envelope: audience "buildanddo-login",
    │   payload {"login":"buildanddo","ts_bucket":"<UTC YYYY-MM-DDTHH>"}
@@ -58,7 +58,7 @@ consulted (fail-closed; nothing is ever signed in on a 503).
 | SPA | `apps/web/src/lib/ocnLogin.js` | fetch + `authStore.save`; readable errors; nothing saved unless 200 + token |
 | SPA | `apps/web/src/pages/LoginPage.jsx` | "Citadel seat sign-in" affordance, only on `?ocn=1` or `window.__BND_OCN_HEADER__` |
 | Tests | `apps/web/src/lib/__tests__/ocnLogin.test.js`, `apps/web/src/components/auth/__tests__/LoginPage.ocn.test.jsx` | vitest, mocked fetch |
-| Estate | `D:\HOSTINGER_COMP\tools\citadel_staging_error_corpus.py` (+ `tests/error_corpus`) | `LOGIN_CONTRACT`, `LOGIN_OCN_ROUTE`, `LOGIN_OCN_ROUTE_MISSING`, `LOGIN_OCN_E2E` |
+| Estate | `<estate>/tools/citadel_staging_error_corpus.py` (+ `tests/error_corpus`) | `LOGIN_CONTRACT`, `LOGIN_OCN_ROUTE`, `LOGIN_OCN_ROUTE_MISSING`, `LOGIN_OCN_E2E` |
 
 ## Envelope contract (unchanged from Living Rooms)
 
@@ -123,7 +123,7 @@ All sidecar controls are exercised offline by
    desktop runtime, press **Sign in with CitadelKey**; the SPA does the POST and
    lands on `/app`.
 
-## How rig1 tests login without a password
+## How the operator workstation tests login without a password
 
 `py -3.13 tools/citadel_staging_error_corpus.py harvest --env production --network`
 on the rig that holds `BUILDANDDO_CK_PRIVATE_KEY_FILE`:
@@ -146,6 +146,6 @@ on the rig that holds `BUILDANDDO_CK_PRIVATE_KEY_FILE`:
 |---|---|---|
 | Sidecar `verifier.state` on staging/production | `BUILDANDDO_CK_PEER_REGISTRY_FILE` not placed on the hosts; no public registry copy exists on the BuildAndDo side | VCC exports `data/runtime/citadelkey/seat_keypairs.json` (public rows only, with the raw public key per seat) and the operator places it for the sidecar |
 | `/api/ocn/health`, `/api/ocn/login` live | hook + migration not deployed; both envs answer `LOGIN_OCN_ROUTE_MISSING` (production JSON 404) or `LOGIN_OCN_ROUTE` (staging HTML, proxy missing) | next PocketBase release with `pb_hooks/ocn-login.pb.js` and `1789100000_ocn_seat_users.js`; staging proxy fix lands |
-| `LOGIN_OCN_E2E` from rig1 | rig1 has no seat seed at `BUILDANDDO_CK_PRIVATE_KEY_FILE`; this repository generates no keys | VCC issues the rig1 seat seed and registers its public key in Citadel Nexus |
-| Seat rows in `1789100000_ocn_seat_users.js` match real Citadel Nexus seat ids | `rig1, forge, c-one, bits-codegen, datadog-bits` were declared, not read from the registry | registry copy arrives; any seat absent from it stays `seat_not_provisioned` (403) at login, which is DEGRADED, not a security failure |
+| `LOGIN_OCN_E2E` from the operator workstation | The operator workstation has no seat seed at `BUILDANDDO_CK_PRIVATE_KEY_FILE`; this repository generates no keys | VCC issues the operator workstation seat seed and registers its public key in Citadel Nexus |
+| Seat rows in `1789100000_ocn_seat_users.js` match real Citadel Nexus seat ids | the operator workstation's seat, `forge, c-one, bits-codegen, datadog-bits` were declared, not read from the registry | registry copy arrives; any seat absent from it stays `seat_not_provisioned` (403) at login, which is DEGRADED, not a security failure |
 | Registry row shape | assumed `seat_id, agent_id, rig, pubkey_fp, env, revoked_at` **plus** `pubkey_hex` (or `pubkey`/`public_key`/`pubkey_b64u`); a row without a raw public key is loaded as `usable:false` and refused with `registry row … is unusable` | the delivered file is inspected; the loader accepts list, `{seats:[…]}`, `{seat_keypairs:[…]}` and `{seat_id: row}` shapes |

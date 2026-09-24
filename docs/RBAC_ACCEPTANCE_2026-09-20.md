@@ -15,9 +15,9 @@ Before any fix, with the same instrument:
 
 | actor | role | `create_mission` in another account's workspace |
 |---|---|---|
-| ray-tor1-4 | **no membership at all** | **200 — record created** |
-| ray-tor1-1 | member of a *different* workspace | **200 — record created** |
-| ray-tor1-3 | viewer | 200 — record created |
+| Seat A | **no membership at all** | **200 — record created** |
+| Seat B | member of a *different* workspace | **200 — record created** |
+| Seat C | viewer | 200 — record created |
 
 Any authenticated user could write into any workspace by supplying its id. The `createRule` in force
 was
@@ -38,16 +38,20 @@ was deployed with `administration.pb.js`.
 
 ## The matrix after the fix
 
-Target workspace `56o8prujj51dmu2`, owned by `mesh-control`. Roles granted by its owner.
+> Egress addresses are held in the private GitLab mirror and deliberately not published here.
+> The matrix depends only on the six sources being DISTINCT, which the labels preserve;
+> the addresses themselves were never part of the proof.
+
+Target workspace `56o8prujj51dmu2`, owned by `Seat D`. Roles granted by its owner.
 
 | actor | role | box / egress | `read_ws` | `create_mission` | expected |
 |---|---|---|---|---|---|
-| mesh-control | owner | 68.183.60.208 | 200 | 200 | allow / allow |
-| ray-tor1-1 | admin | 167.99.179.82 | 200 | 200 | allow / allow |
-| ray-tor1-2 | editor | 167.99.191.193 | 200 | 200 | allow / allow |
-| ray-tor1-3 | **viewer** | 134.122.32.43 | 200 | **403** *"Your current workspace role does not allow this action."* | allow / **deny** |
-| ray-tor1-4 | **outsider** | 138.197.172.25 | **404** | **400** — not created | **deny / deny** |
-| mesh-memory | **outsider** | 134.209.36.80 | **404** | **400** — not created | **deny / deny** |
+| Seat D | owner | egress A | 200 | 200 | allow / allow |
+| Seat B | admin | egress B | 200 | 200 | allow / allow |
+| Seat E | editor | egress C | 200 | 200 | allow / allow |
+| Seat C | **viewer** | egress D | 200 | **403** *"Your current workspace role does not allow this action."* | allow / **deny** |
+| Seat A | **outsider** | egress E | **404** | **400** — not created | **deny / deny** |
+| Seat F | **outsider** | egress F | **404** | **400** — not created | **deny / deny** |
 
 Cross-workspace, each actor reaching for a workspace it does not belong to: `read_ws` **404** and
 `create_mission` **400** in every measured pair.

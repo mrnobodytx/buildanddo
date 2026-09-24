@@ -1,0 +1,489 @@
+{
+  "schema_version": "buildanddo.paid-pilot/v1",
+  "observed_at": "2026-09-22T01:27:23.771896+00:00",
+  "srs": "SRS-BUILDANDDO-UPGRADE-001",
+  "dispatch": "VCC-BUILDANDDO-UPGRADE-001",
+  "status": "PARTIAL",
+  "base_commit": "913fd48d62f23e405b5c858fb8e0544605e99acf",
+  "implementation_commit": "53cff4c39807dca2b7b0dfc2434ed0e30e115768",
+  "tested_file_sha256": {
+    "apps/web/src/lib/commercialEnquiry.js": "986dc77c8e2360ebb7a06c3ebe3e1227c0919982098196ee03b2093fea9eb011",
+    "apps/web/src/lib/publicPages.js": "8a8fe41f2247063a69a11e26b0ef67a829bee29200616a210cdcf145829d5967",
+    "apps/web/src/pages/ContactPage.jsx": "66ba12e467cec4c027e4da916b73c0d689ba9350c3ef8de043643bbd8bc406d1",
+    "apps/web/src/pages/PricingPage.jsx": "d023aea10a1f38e3448bb76097b1f42b09db88599d42a20d303ab58a99fe5170",
+    "apps/web/src/pages/__tests__/PublicPages.test.jsx": "a7d14185ed898f78b46d3dc400de327232e374c3dd82f2493398f494a0a7feaa",
+    "tests/upgrade/commercial-enquiry.test.mjs": "dc51ec61561c46281a6e55ce8cab53905abf29e6f0147d4522c5484f979ce6d5"
+  },
+  "test_identity": "Tests ran on local source before the implementation commit. Every listed file matches its committed bytes. These are not clean-candidate Day-21 acceptance receipts.",
+  "results": {
+    "commercial_contract": {
+      "tests": 10,
+      "passed": 10,
+      "failed": 0,
+      "skipped": 0,
+      "line_coverage": 100,
+      "branch_coverage": 100,
+      "scope": "Node 22 V8 coverage of commercialEnquiry.js only; no React rendering or live email delivery"
+    },
+    "node_regression": {
+      "tests": 568,
+      "passed": 568,
+      "failed": 0,
+      "skipped": 0
+    },
+    "python_regression": {
+      "tests": 782,
+      "passed": 750,
+      "failed": 0,
+      "skipped": 32,
+      "acceptance": "HOLD"
+    },
+    "source_diagnostic": {
+      "modules": 338,
+      "errors": 0,
+      "scope": "Global ESLint 9.16.0 diagnostic, not locked repository lint"
+    },
+    "rendered_regressions_added": 3,
+    "frontend_checks": "Required rendered tests, coverage, lint and build did not complete, including on the declared Node 22 runtime.",
+    "dispatch_smoke": {
+      "pass": 3,
+      "hold": 1,
+      "fail": 3,
+      "total": 7,
+      "meaning": "Node, context and boundary pass. Python with skips is HOLD. Rendered test, lint and build fail to start/complete."
+    }
+  },
+  "dependency_failures": [
+    {
+      "check": "rendered tests and web coverage",
+      "cause": "vitest executable absent",
+      "fix_applied": null
+    },
+    {
+      "check": "repository lint",
+      "cause": "eslint-plugin-import package absent",
+      "fix_applied": null
+    },
+    {
+      "check": "web build",
+      "cause": "Vite executable absent; the existing generator updated llms.txt before the build stopped",
+      "fix_applied": null
+    },
+    {
+      "check": "native/dependency acceptance",
+      "cause": "PocketBase runtimes, pypdf and Discord.py remain unavailable; full Python discovery retains 32 skips",
+      "fix_applied": null
+    }
+  ],
+  "verification_environment": {
+    "source_node": "22.17.0",
+    "source_python": "3.12.13",
+    "default_node": "24.13.0",
+    "required_frontend_recheck": "22.17.0; same missing dependency outcomes",
+    "dependencies_changed": false,
+    "network_install_attempted": false
+  },
+  "logs": {
+    "boundary": {
+      "argv": [
+        "python",
+        "scripts/ci/verify_public_boundary.py"
+      ],
+      "exit_code": 0,
+      "started_at": "2026-09-22T01:24:15.988338+00:00",
+      "finished_at": "2026-09-22T01:24:18.310670+00:00",
+      "log": "/tmp/buildanddo-paid-pilot/boundary.log",
+      "log_sha256": "a79063dc9a95c30a20cb35a2476d5e5d17fbaa0a6e15996a53289f20be9daad8",
+      "bytes": 82
+    },
+    "context": {
+      "argv": [
+        "python",
+        "scripts/ci/agent_context.py",
+        "--check"
+      ],
+      "exit_code": 0,
+      "started_at": "2026-09-22T01:24:15.697499+00:00",
+      "finished_at": "2026-09-22T01:24:17.109732+00:00",
+      "log": "/tmp/buildanddo-paid-pilot/context.log",
+      "log_sha256": "f625e9d776db2194712d0e1d36d5d56049117007714d6b8bcf5b4ea0de192191",
+      "bytes": 86
+    },
+    "memory": {
+      "argv": [
+        "python",
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/verify.py"
+      ],
+      "exit_code": 0,
+      "started_at": "2026-09-22T01:24:16.192363+00:00",
+      "finished_at": "2026-09-22T01:24:17.488486+00:00",
+      "log": "/tmp/buildanddo-paid-pilot/memory.log",
+      "log_sha256": "fb3f5b318e6d8ec4a6bca34efc746c489164841ca408d68c61bc26d9159fa02b",
+      "bytes": 74
+    },
+    "node-regression": {
+      "argv": [
+        "node",
+        "--test",
+        "tests/upgrade/blueprint-client.test.mjs",
+        "tests/upgrade/blueprint-saved-client.test.mjs",
+        "tests/upgrade/blueprint-system.test.mjs",
+        "tests/upgrade/build.test.mjs",
+        "tests/upgrade/business-client.test.mjs",
+        "tests/upgrade/business-execution.test.mjs",
+        "tests/upgrade/business-learning.test.mjs",
+        "tests/upgrade/classroom-client.test.mjs",
+        "tests/upgrade/classroom-presence.test.mjs",
+        "tests/upgrade/classroom-system.test.mjs",
+        "tests/upgrade/commercial-enquiry.test.mjs",
+        "tests/upgrade/decision-runtime.test.mjs",
+        "tests/upgrade/discord-catalogue.test.mjs",
+        "tests/upgrade/dossier-client.test.mjs",
+        "tests/upgrade/dossier-system.test.mjs",
+        "tests/upgrade/editorial-frontpage.test.mjs",
+        "tests/upgrade/government-learning.test.mjs",
+        "tests/upgrade/knowledge-client.test.mjs",
+        "tests/upgrade/knowledge-system.test.mjs",
+        "tests/upgrade/mission-research.test.mjs",
+        "tests/upgrade/mission-system.test.mjs",
+        "tests/upgrade/motion-system.test.mjs",
+        "tests/upgrade/objective-onboarding.test.mjs",
+        "tests/upgrade/operator-client.test.mjs",
+        "tests/upgrade/operator-system.test.mjs",
+        "tests/upgrade/pocketbase-metrics.test.mjs",
+        "tests/upgrade/policy-intelligence.test.mjs",
+        "tests/upgrade/research-client.test.mjs",
+        "tests/upgrade/signal-mission.test.mjs",
+        "tests/upgrade/source-checker.test.mjs",
+        "tests/upgrade/sprint-integrity.test.mjs",
+        "tests/upgrade/sprint-journey.test.mjs",
+        "tests/upgrade/staging-contract.test.mjs",
+        "tests/upgrade/suite-client.test.mjs",
+        "tests/upgrade/suite-system.test.mjs",
+        "tests/upgrade/tutorial-learning-client.test.mjs",
+        "tests/upgrade/tutorial-learning-system.test.mjs",
+        "tests/upgrade/work-history.test.mjs",
+        "tests/upgrade/workflow-client.test.mjs",
+        "tests/upgrade/workflow-runs.test.mjs",
+        "tests/upgrade/workspace-administration.test.mjs",
+        "tests/upgrade/workspace-assistant.test.mjs",
+        "tests/upgrade/workspace-community.test.mjs",
+        "tests/upgrade/workspace-control-client.test.mjs",
+        "tests/upgrade/workspace-integration.test.mjs",
+        "tests/upgrade/workspace-rooms.test.mjs",
+        "tests/upgrade/workspace-summary.test.mjs"
+      ],
+      "exit_code": 0,
+      "started_at": "2026-09-22T01:18:39.057583+00:00",
+      "finished_at": "2026-09-22T01:19:10.478528+00:00",
+      "log": "/tmp/buildanddo-paid-pilot/node-regression.log",
+      "log_sha256": "a9128210d1ba6ac45b318585e41ab164efef75c0bc572ac1d819eb7e7e7dece6",
+      "bytes": 134868
+    },
+    "python-regression": {
+      "argv": [
+        "state/day21/venv/bin/python",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests/upgrade",
+        "-p",
+        "test_*.py"
+      ],
+      "exit_code": 0,
+      "started_at": "2026-09-22T01:18:39.519668+00:00",
+      "finished_at": "2026-09-22T01:21:11.973792+00:00",
+      "log": "/tmp/buildanddo-paid-pilot/python-regression.log",
+      "log_sha256": "c5d73a44adb14f59b7b4d28544f3be08d8ecc4dad513f1b9ff9f7f25f96dfb25",
+      "bytes": 3497
+    },
+    "readiness": {
+      "argv": [
+        "python",
+        "scripts/ci/hostinger_readiness.py",
+        "--check"
+      ],
+      "exit_code": 0,
+      "started_at": "2026-09-22T01:24:15.959724+00:00",
+      "finished_at": "2026-09-22T01:24:17.294344+00:00",
+      "log": "/tmp/buildanddo-paid-pilot/readiness.log",
+      "log_sha256": "7799e54ef92ae57c822cdc3c86f8b0a27b57ea4cc0825d813de3e0ae6969cfd1",
+      "bytes": 85
+    },
+    "submission": {
+      "argv": [
+        "python",
+        "scripts/ci/submission_readiness.py",
+        "--check"
+      ],
+      "exit_code": 0,
+      "started_at": "2026-09-22T01:24:16.103338+00:00",
+      "finished_at": "2026-09-22T01:24:17.085191+00:00",
+      "log": "/tmp/buildanddo-paid-pilot/submission.log",
+      "log_sha256": "f67a6b0785d6eb8c1010f942b404ff5ed35157c2532d7241de173a9447ab6038",
+      "bytes": 88
+    },
+    "web-build-node22": {
+      "argv": [
+        "npm",
+        "--prefix",
+        "apps/web",
+        "run",
+        "build"
+      ],
+      "exit_code": 1,
+      "started_at": "2026-09-22T01:21:29.940352+00:00",
+      "finished_at": "2026-09-22T01:21:32.430672+00:00",
+      "log": "/tmp/buildanddo-paid-pilot/web-build-node22.log",
+      "log_sha256": "c8e1f6fca51c2294d50c1de473516617ed9f4af5434e81e1c3b1ae63cb4756fc",
+      "bytes": 587
+    },
+    "web-build": {
+      "argv": [
+        "npm",
+        "--prefix",
+        "apps/web",
+        "run",
+        "build"
+      ],
+      "exit_code": 1,
+      "started_at": "2026-09-22T01:18:39.351736+00:00",
+      "finished_at": "2026-09-22T01:18:42.299728+00:00",
+      "log": "/tmp/buildanddo-paid-pilot/web-build.log",
+      "log_sha256": "c8e1f6fca51c2294d50c1de473516617ed9f4af5434e81e1c3b1ae63cb4756fc",
+      "bytes": 587
+    },
+    "web-coverage-node22": {
+      "argv": [
+        "npm",
+        "--prefix",
+        "apps/web",
+        "run",
+        "test:coverage"
+      ],
+      "exit_code": 127,
+      "started_at": "2026-09-22T01:21:30.367247+00:00",
+      "finished_at": "2026-09-22T01:21:32.462534+00:00",
+      "log": "/tmp/buildanddo-paid-pilot/web-coverage-node22.log",
+      "log_sha256": "6f8976ca5cb827e25f07e4db6db59f32effc0d05271675117048d88e3ed0cf55",
+      "bytes": 77
+    },
+    "web-coverage": {
+      "argv": [
+        "npm",
+        "--prefix",
+        "apps/web",
+        "run",
+        "test:coverage"
+      ],
+      "exit_code": 127,
+      "started_at": "2026-09-22T01:18:39.325609+00:00",
+      "finished_at": "2026-09-22T01:18:41.080035+00:00",
+      "log": "/tmp/buildanddo-paid-pilot/web-coverage.log",
+      "log_sha256": "6f8976ca5cb827e25f07e4db6db59f32effc0d05271675117048d88e3ed0cf55",
+      "bytes": 77
+    },
+    "web-lint-node22": {
+      "argv": [
+        "npm",
+        "--prefix",
+        "apps/web",
+        "run",
+        "lint"
+      ],
+      "exit_code": 2,
+      "started_at": "2026-09-22T01:21:29.884225+00:00",
+      "finished_at": "2026-09-22T01:21:33.727047+00:00",
+      "log": "/tmp/buildanddo-paid-pilot/web-lint-node22.log",
+      "log_sha256": "080d9baad27f964fed893b4d2394fe8afde45685f1ef5083c2bfb54465e170f2",
+      "bytes": 1693
+    },
+    "web-lint": {
+      "argv": [
+        "npm",
+        "--prefix",
+        "apps/web",
+        "run",
+        "lint"
+      ],
+      "exit_code": 2,
+      "started_at": "2026-09-22T01:18:39.723893+00:00",
+      "finished_at": "2026-09-22T01:18:46.508034+00:00",
+      "log": "/tmp/buildanddo-paid-pilot/web-lint.log",
+      "log_sha256": "d0f13c60c2d9a2493dfef8a778b4e3f83a8ad78710114964cb3fc169ccf41cb8",
+      "bytes": 1837
+    },
+    "web-test-node22": {
+      "argv": [
+        "npm",
+        "--prefix",
+        "apps/web",
+        "test"
+      ],
+      "exit_code": 127,
+      "started_at": "2026-09-22T01:21:29.817090+00:00",
+      "finished_at": "2026-09-22T01:21:31.829508+00:00",
+      "log": "/tmp/buildanddo-paid-pilot/web-test-node22.log",
+      "log_sha256": "ad1008697a0e65d0c55a056826b79bc4031e3ac8af07c196e10f6e218ea33254",
+      "bytes": 140
+    },
+    "commercial-coverage": {
+      "argv": [
+        "node",
+        "--experimental-test-coverage",
+        "--test-coverage-include=apps/web/src/lib/commercialEnquiry.js",
+        "--test",
+        "tests/upgrade/commercial-enquiry.test.mjs"
+      ],
+      "exit_code": 0,
+      "finished_at": "2026-09-22T01:14:48.365262+00:00",
+      "node": "22.17.0",
+      "log": "/tmp/buildanddo-paid-pilot/commercial-coverage.log",
+      "log_sha256": "1496d976ba2db3bec8129cde746d74952d81f4a25c6609d4c06ab460f0595564",
+      "bytes": 3198
+    },
+    "source-diagnostic": {
+      "argv": [
+        "node",
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/check-source.cjs"
+      ],
+      "exit_code": 0,
+      "finished_at": "2026-09-22T01:14:52.695323+00:00",
+      "node": "22.17.0",
+      "log": "/tmp/buildanddo-paid-pilot/source-diagnostic.log",
+      "log_sha256": "82e9f9231dfb6e8ad9ea23b743ebbff3ce1891a9794801d814f3dd9b264b1889",
+      "bytes": 90
+    },
+    "rendered-public-pages": {
+      "argv": [
+        "npm",
+        "--prefix",
+        "apps/web",
+        "run",
+        "test",
+        "--",
+        "--run",
+        "src/pages/__tests__/PublicPages.test.jsx"
+      ],
+      "exit_code": 127,
+      "finished_at": "2026-09-22T01:14:48.845269+00:00",
+      "node": "24.13.0",
+      "log": "/tmp/buildanddo-paid-pilot/rendered-public-pages.log",
+      "log_sha256": "cd234624756adb9f9216bc621c1b49fccd0f762b0788c0b214695fb0e84ff632",
+      "bytes": 187
+    },
+    "final-readiness": {
+      "argv": [
+        "python",
+        "scripts/ci/hostinger_readiness.py",
+        "--check"
+      ],
+      "exit_code": 0,
+      "started_at": "2026-09-22T01:29:11.148469+00:00",
+      "finished_at": "2026-09-22T01:29:12.957217+00:00",
+      "log": "/tmp/buildanddo-paid-pilot/final-readiness.log",
+      "log_sha256": "7799e54ef92ae57c822cdc3c86f8b0a27b57ea4cc0825d813de3e0ae6969cfd1",
+      "bytes": 85
+    },
+    "final-submission": {
+      "argv": [
+        "python",
+        "scripts/ci/submission_readiness.py",
+        "--check"
+      ],
+      "exit_code": 0,
+      "started_at": "2026-09-22T01:29:11.559277+00:00",
+      "finished_at": "2026-09-22T01:29:12.065141+00:00",
+      "log": "/tmp/buildanddo-paid-pilot/final-submission.log",
+      "log_sha256": "f67a6b0785d6eb8c1010f942b404ff5ed35157c2532d7241de173a9447ab6038",
+      "bytes": 88
+    },
+    "final-context": {
+      "argv": [
+        "python",
+        "scripts/ci/agent_context.py",
+        "--check"
+      ],
+      "exit_code": 0,
+      "started_at": "2026-09-22T01:29:10.840968+00:00",
+      "finished_at": "2026-09-22T01:29:12.476933+00:00",
+      "log": "/tmp/buildanddo-paid-pilot/final-context.log",
+      "log_sha256": "f625e9d776db2194712d0e1d36d5d56049117007714d6b8bcf5b4ea0de192191",
+      "bytes": 86
+    },
+    "final-boundary": {
+      "argv": [
+        "python",
+        "scripts/ci/verify_public_boundary.py"
+      ],
+      "exit_code": 0,
+      "started_at": "2026-09-22T01:29:11.293108+00:00",
+      "finished_at": "2026-09-22T01:29:13.883467+00:00",
+      "log": "/tmp/buildanddo-paid-pilot/final-boundary.log",
+      "log_sha256": "3e8b949e8a93677c6efbf332190b9de0693862ade323ff733f123687a7d793a8",
+      "bytes": 82
+    },
+    "final-memory": {
+      "argv": [
+        "python",
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/verify.py"
+      ],
+      "exit_code": 0,
+      "started_at": "2026-09-22T01:29:11.504286+00:00",
+      "finished_at": "2026-09-22T01:29:12.833075+00:00",
+      "log": "/tmp/buildanddo-paid-pilot/final-memory.log",
+      "log_sha256": "abd945350684e58dd68e6ae06695752a166a652a077ce060e6031c944cb1cf8b",
+      "bytes": 74
+    }
+  },
+  "log_retention": "Full process output is session-local at the recorded paths; digests and results are retained here. This report is not a portable passing acceptance bundle.",
+  "historical_acceptance": {
+    "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/objective-closure-validation.json",
+    "implementation_commit": "aa4b426173e22b4728b30185d410699c9ce3cb38",
+    "counts": {
+      "PASS": 4,
+      "FAIL": 3,
+      "HOLD": 1,
+      "BLOCKED": 10
+    },
+    "rerun_for_this_continuation": false
+  },
+  "governance": {
+    "milestone_fields_reviewed": "Existing why/source/check/owner/next-step fields remain accurate; source binding refreshed without completion claims.",
+    "source_checks": "Readiness, submission, context, boundary and memory PASS with report packaging; application source matches the tested implementation.",
+    "findings_retained": 24,
+    "unwired_gates_retained": 22,
+    "prior_memory_events_preserved": 183,
+    "actor_label": "actor:agent required; remote label not applied",
+    "caps": "pending",
+    "ck": "pending",
+    "cks": "pending",
+    "final_boundary_files_checked": 1329,
+    "reviewed_source_sha256": "1974658e8fda002904b32cff21d1c98a75a550ee72fefc49d9d97175b0590d02"
+  },
+  "receiving_handoff": ".bits/handoffs/2026-09-22-bits-codegen-cmax-b-day21-activation.md",
+  "unavailable_inputs": [
+    "Confirmed scope/status of the previously supplied private runtime dispatch and receiving operator access",
+    "Authorized customer/evaluator workspace and permitted data",
+    "Registered n8n operation and provider access",
+    "Firecrawl and inference bindings",
+    "Distinct independent verifier"
+  ],
+  "not_performed": [
+    "Customer email send",
+    "Invoice or payment collection",
+    "Entitlement grant",
+    "Provider activation",
+    "Real external effect or live reconciliation",
+    "Independent live review or replay acceptance",
+    "Hosted GitLab execution",
+    "Staging/production deployment or verified rollback",
+    "Competition submission"
+  ],
+  "receiving_identifiers": {
+    "dispatch": "VCC-BUILDANDDO-OPERATOR-RUNTIME-001",
+    "srs": "SRS-CN-BUILDANDDO-OPERATOR-RUNTIME-001",
+    "state": "Owner-supplied historical identifiers; private registration, current status and coverage for this pilot remain unmeasured."
+  }
+}

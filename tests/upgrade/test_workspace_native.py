@@ -8,9 +8,9 @@
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-20
-# Depends:     tests/upgrade/test_dossier_native.py, apps/pocketbase/pb_hooks/mission-research.js, apps/pocketbase/pb_hooks/mission-policy.js, apps/pocketbase/pb_hooks/workflow-runs.js
+# Depends:     tests/upgrade/test_classroom_native.py, apps/pocketbase/pb_hooks/mission-research.js, apps/pocketbase/pb_hooks/mission-policy.js, apps/pocketbase/pb_hooks/workflow-runs.js, apps/pocketbase/pb_hooks/workspace-replay.js, apps/pocketbase/pb_hooks/workspace-value.js, apps/pocketbase/pb_migrations/1791300001_assistant_turn_usage.js, apps/pocketbase/pb_hooks/workspace-claims.js, apps/pocketbase/pb_migrations/1791500001_workspace_claim_authority.js
 # EnumType:    Test
-# EnumEdges:   CONSUMES tests/upgrade/test_dossier_native.py; VALIDATES apps/pocketbase/pb_hooks/mission-research.js; VALIDATES apps/pocketbase/pb_hooks/mission-policy.js; VALIDATES apps/pocketbase/pb_hooks/workflow-runs.js; VALIDATES apps/pocketbase/pb_hooks/business-policy.js; VALIDATES apps/pocketbase/pb_hooks/workspace-operator.js
+# EnumEdges:   CONSUMES tests/upgrade/test_classroom_native.py; VALIDATES apps/pocketbase/pb_hooks/mission-research.js; VALIDATES apps/pocketbase/pb_hooks/mission-policy.js; VALIDATES apps/pocketbase/pb_hooks/workflow-runs.js; VALIDATES apps/pocketbase/pb_hooks/business-policy.js; VALIDATES apps/pocketbase/pb_hooks/workspace-operator.js; VALIDATES apps/pocketbase/pb_hooks/workspace-replay.js; VALIDATES apps/pocketbase/pb_hooks/workspace-value.js; VALIDATES apps/pocketbase/pb_migrations/1791300001_assistant_turn_usage.js; VALIDATES apps/pocketbase/pb_hooks/workspace-claims.js; VALIDATES apps/pocketbase/pb_migrations/1791500001_workspace_claim_authority.js
 # Intent:      Require real auth, production migrations and a connected signal-to-independent-review journey before declaring workspace acceptance.
 # ───────────────────────────────────────────────────────────────
 
@@ -18,12 +18,13 @@
 
 from __future__ import annotations
 
+import hashlib
+import json
 import os
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 import shutil
 import socket
-import subprocess
 import sys
 import tempfile
 from typing import Any
@@ -32,7 +33,7 @@ import unittest
 ROOT = Path(__file__).resolve().parents[2]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
-from tests.upgrade.test_dossier_native import NO_WINDOW, NativeServer  # noqa: E402
+from tests.upgrade.test_classroom_native import DiagnosticNativeServer  # noqa: E402
 
 BINARY = os.environ.get("BUILDANDDO_TEST_POCKETBASE", "")
 WORKSPACE = "workspacealpha1"
@@ -42,6 +43,16 @@ ALICE, BRAVO, OTHER, VIEWER = (
     "accountother001",
     "accountviewer01",
 )
+CLAIM_MIGRATION = "1791500001_workspace_claim_authority"
+LEGACY_CLAIMS = {
+    "support_sources": "legacysupport01",
+    "corrections": "legacycorrect01",
+    "daily_editions": "legacyedition01",
+    "specialist_desks": "legacydesk00001",
+    "social_content": "legacycontent01",
+    "social_channels": "legacychannel01",
+    "seat_events": "legacyseatevt01",
+}
 MIGRATIONS = (
     "1788474000_create_workspace_collections",
     "1788477655_create_editorial_collections",
@@ -59,6 +70,9 @@ MIGRATIONS = (
     "1790700000_workspace_onboarding",
     "1790800000_business_execution",
     "1790900000_workspace_assistant",
+    "1791100000_objective_onboarding",
+    "1791300001_assistant_turn_usage",
+    CLAIM_MIGRATION,
 )
 AUTH = r"""
 migrate((app) => {
@@ -67,7 +81,7 @@ migrate((app) => {
     catch { users = new Collection({ name: 'users', type: 'auth' }); }
     users.authRule = ''; users.passwordAuth = { enabled: true, identityFields: ['email'] };
     users.authAlert = { enabled: false }; app.save(users);
-    for (const [id, name] of [['accountalice001', 'alice'], ['accountbravo001', 'bravo'], ['accountother001', 'other'], ['accountviewer01', 'viewer']]) {
+    for (const [id, name] of [['accountalice001', 'alice'], ['accountbravo001', 'bravo'], ['accountother001', 'other'], ['accountviewer01', 'viewer'], ['accounteditor02', 'editor2']]) {
         const user = new Record(users); user.id = id; user.set('email', name + '@fixture.invalid');
         user.set('verified', true); user.setPassword('local-fixture-password-only'); app.save(user);
     }
@@ -76,6 +90,8 @@ migrate((app) => {
 SEED = r"""
 migrate((app) => {
     const save = (name, id, values) => {
+        try { app.findRecordById(name, id); return; }
+        catch (error) { if (!String(error.message).includes('no rows in result set')) throw error; }
         const record = new Record(app.findCollectionByNameOrId(name)); record.id = id;
         for (const [key, value] of Object.entries(values)) record.set(key, value);
         app.save(record);
@@ -84,21 +100,31 @@ migrate((app) => {
     save('workspaces', 'workspacebravo1', { owner: 'accountother001', name: 'Synthetic foreign workspace' });
     save('workspace_members', 'memberalice0001', { workspace: 'workspacealpha1', user: 'accountalice001', role: 'editor' });
     save('workspace_members', 'memberviewer001', { workspace: 'workspacealpha1', user: 'accountviewer01', role: 'viewer' });
+    save('workspace_members', 'membereditor002', { workspace: 'workspacealpha1', user: 'accounteditor02', role: 'editor' });
+    const scope = { workspace: 'workspacealpha1', owner: 'accountalice001' };
+    save('support_sources', 'legacysupport01', { ...scope, provider: 'patreon', status: 'healthy', gross: 200,
+        platform_fees: 4, refunds: 1, currency: 'USD', last_sync: '2026-09-01 12:00:00.000Z' });
+    save('corrections', 'legacycorrect01', { ...scope, status: 'verified', prior_prediction: 'Synthetic legacy prediction', observed_result: 'Synthetic legacy claim' });
+    save('daily_editions', 'legacyedition01', { ...scope, status: 'published', title: 'Synthetic legacy edition', body: 'Historical reported publication' });
+    save('specialist_desks', 'legacydesk00001', { ...scope, desk: 'risk', status: 'active', scope: 'Synthetic operator report' });
+    save('social_content', 'legacycontent01', { ...scope, status: 'published', title: 'Synthetic legacy content', body: 'Historical reported publication' });
+    save('social_channels', 'legacychannel01', { ...scope, platform: 'youtube', status: 'healthy', handle: 'Synthetic legacy channel' });
+    save('seat_events', 'legacyseatevt01', { ...scope, event: 'completed', seat: 'legacy-agent-label', actor_type: 'agent', summary: 'Synthetic legacy report' });
 }, () => {});
 """
 
 
-class WorkspaceServer(NativeServer):
+class WorkspaceServer(DiagnosticNativeServer):
     """Install production public migrations with isolated synthetic auth and data."""
 
-    def __init__(self, binary: str) -> None:
+    def __init__(self, binary: str, *, hooks_enabled: bool = True, claims: bool = True) -> None:
         self.directory = tempfile.TemporaryDirectory(
             prefix="buildanddo-workspace-native-"
         )
         self.root = Path(self.directory.name)
         self.binary = str(Path(binary).resolve())
         self.process = None
-        self.log = (self.root / "native.log").open("w")
+        self.log = tempfile.TemporaryFile(mode="w+b")
         self.environment = {
             "PATH": os.environ.get("PATH", ""),
             # Windows initializes Winsock from SystemRoot. Without it the child
@@ -118,6 +144,7 @@ class WorkspaceServer(NativeServer):
                 "business-action-policy.js",
                 "business-actions.js",
                 "business-execution.pb.js",
+                "workspace-replay.js",
                 "assistant-policy.js",
                 "workspace-assistant.js",
                 "assistant.pb.js",
@@ -131,9 +158,13 @@ class WorkspaceServer(NativeServer):
                 "evidence-policy.js",
                 "evidence.pb.js",
                 "business-policy.js",
+                "tutorial-learning.js",
                 "business.pb.js",
                 "workspace-access.js",
+                "government-access.js",
                 "workspace-record-policy.js",
+                "workspace-claims.js",
+                "workspace-claims.pb.js",
                 "workspace-administration.js",
                 "workspace-community.js",
                 "administration.pb.js",
@@ -142,24 +173,26 @@ class WorkspaceServer(NativeServer):
                 "research.pb.js",
                 "operator.pb.js",
                 "workspace-operator.js",
+                "workspace-value.js",
             ):
+                if not hooks_enabled and name.endswith(".pb.js"):
+                    continue
                 shutil.copyfile(ROOT / "apps/pocketbase/pb_hooks" / name, hooks / name)
             migrations = self.root / "migrations"
             migrations.mkdir()
-            # PocketBase applies migrations in byte-wise filename order, so
-            # "1_auth.js" sorted AFTER "1999999000_seed.js" ("_" > "9") and the
-            # seed referenced fixture users that did not exist yet. This name
-            # sorts first, which is the order the fixture always intended.
             (migrations / "0000000001_auth.js").write_text(AUTH)
             for name in MIGRATIONS:
+                if name == CLAIM_MIGRATION and not claims:
+                    continue
                 shutil.copyfile(
                     ROOT / "apps/pocketbase/pb_migrations" / (name + ".js"),
                     migrations / (name + ".js"),
                 )
-            (migrations / "data").mkdir()
+            data_dir = self.root / "pb_migrations" / "data"
+            data_dir.mkdir(parents=True)
             shutil.copyfile(
                 ROOT / "apps/pocketbase/pb_migrations/data/starter-tutorials.json",
-                migrations / "data/starter-tutorials.json",
+                data_dir / "starter-tutorials.json",
             )
             (migrations / "1999999000_seed.js").write_text(SEED)
             with socket.socket() as reservation:
@@ -172,23 +205,6 @@ class WorkspaceServer(NativeServer):
             self.close()
             raise
 
-    def migrate(self) -> None:
-        """Apply only the fixture's copied public migrations."""
-        result = subprocess.run(
-            [self.binary, "migrate", "up", *self.paths()],
-            cwd=self.root,
-            env=self.environment,
-            stdout=self.log,
-            stderr=subprocess.STDOUT,
-            timeout=45,
-            check=False,
-            **NO_WINDOW,
-        )
-        if result.returncode:
-            raise AssertionError(
-                "The disposable workspace migration failed; native acceptance did not pass."
-            )
-
 
 @unittest.skipUnless(
     BINARY and Path(BINARY).is_file(),
@@ -200,6 +216,33 @@ class NativeWorkspaceTests(unittest.TestCase):
         self.addCleanup(self.server.close)
         self.alice, self.bravo, self.other, self.viewer = (
             self.server.login(name) for name in ("alice", "bravo", "other", "viewer")
+        )
+        self.editor2 = self.server.login("editor2")
+        self.claim_sequence = 0
+
+    def claim(
+        self,
+        action: str,
+        values: dict[str, Any],
+        *,
+        identity: str = "",
+        revision: int = 0,
+        token: str | None = None,
+        key: str | None = None,
+        workspace: str = WORKSPACE,
+    ) -> tuple[int, dict[str, Any]]:
+        """Invoke the real scoped command with a saved revision and retry identity."""
+        self.claim_sequence += 1
+        return self.server.request(
+            "POST",
+            f"/api/buildanddo/workspaces/{workspace}/claims",
+            {
+                "action": action,
+                "revision": revision,
+                "request_key": key or f"native_claim_request_{self.claim_sequence:04}",
+                "payload": {"id": identity} if action == "edition.publish" else {"id": identity, "values": values},
+            },
+            self.alice if token is None else token,
         )
 
     def record(
@@ -373,6 +416,16 @@ class NativeWorkspaceTests(unittest.TestCase):
                 for key in ("test", "evaluate", "verify", "validate")
             },
         }
+        for version in (None, 0, 2, "1", True):
+            self.assertEqual(
+                self.patch(
+                    "missions",
+                    mission,
+                    {"status": "verified", "mission_review": {**review, "version": version}},
+                    self.bravo,
+                )[0],
+                400,
+            )
         self.assertEqual(
             self.patch(
                 "missions", mission, {"status": "verified", "mission_review": review}
@@ -387,6 +440,7 @@ class NativeWorkspaceTests(unittest.TestCase):
         )
         self.assertEqual(status, 200)
         self.assertEqual(verified["mission_reviewed_by"], BRAVO)
+        self.assertEqual(verified["mission_review"]["version"], 1)
         self.assertEqual(
             verified["mission_review"]["evidence_snapshot"][0]["id"], evidence
         )
@@ -407,6 +461,9 @@ class NativeWorkspaceTests(unittest.TestCase):
             if row["id"] == mission
         )
         self.assertEqual(item["status"], "verified")
+        self.assertEqual(item["value"]["state"], "VERIFIED")
+        self.assertTrue(item["value"]["independent"])
+        self.assertEqual(item["value"]["reviewer"], BRAVO)
         self.assertTrue(
             any(
                 row["id"] == evidence for row in cockpit["sources"]["evidence"]["items"]
@@ -421,10 +478,92 @@ class NativeWorkspaceTests(unittest.TestCase):
         self.assertEqual(recovered["id"], mission)
         self.assertTrue(recovered["replayed"])
 
-    def test_atomic_onboarding_concurrent_retries_and_restart(self) -> None:
-        body = {"name": "Native new business", "domain": "shop.fixture"}
+    def test_review_utf8_boundary_after_snapshot_enrichment(self) -> None:
+        fields = (
+            "purpose", "beneficiary", "in_scope", "out_of_scope", "baseline", "target",
+            "authorization", "input_validation", "data_handling", "rollback",
+            "test", "evaluate", "verify", "validate",
+        )
+        tevv = ("test", "evaluate", "verify", "validate")
+        snapshot_fields = (
+            "id", "workspace", "mission", "owner", "type", "title", "source", "content",
+            "url", "created", "updated",
+        )
+        plan = {"version": 1, "risk": "A1", "independent_review": True,
+                **{key: "Observe the disposable fixture " + key for key in fields}}
 
-        def create() -> tuple[int, dict]:
+        def size(value: dict[str, Any]) -> int:
+            return len(json.dumps(value, ensure_ascii=False, separators=(",", ":")).encode("utf-8"))
+
+        for token in ("\u6f22", "\U0001f680"):
+            with self.subTest(token=ascii(token)):
+                mission = self.record("missions", {"title": "Synthetic byte boundary",
+                    "status": "proposed", "priority": "normal", "mission_plan": plan})["id"]
+                self.assertEqual(self.patch("missions", mission, {"status": "approved"}, self.bravo)[0], 200)
+                self.assertEqual(self.patch("missions", mission, {"status": "running"})[0], 200)
+                evidence = [self.record("evidence", {"mission": mission, "type": "observed",
+                    "source": "Disposable native byte fixture", "content": "Pending local observation"})
+                    for _ in tevv]
+                review = {"reflection": "\u6f22" * 1050, **{
+                    key: {"outcome": "pass", "observation": "\u6f22" * 1050, "evidence": row["id"]}
+                    for key, row in zip(tevv, evidence)
+                }}
+                code, draft = self.patch("missions", mission, {"mission_review": review}, self.bravo)
+                self.assertEqual(code, 200)
+                self.assertEqual(draft["mission_review"]["version"], 1)
+                self.assertLess(size(draft["mission_review"]), 24000)
+                for target in (24564, 24001, 24000):
+                    snapshots = [{key: row.get(key, "") for key in snapshot_fields} for row in evidence]
+                    for row in snapshots:
+                        row["content"] = ""
+                    expected = {**draft["mission_review"], "evidence_snapshot": snapshots}
+                    remaining = target - size(expected)
+                    width = len(token.encode("utf-8"))
+                    for index, row in enumerate(evidence):
+                        share = remaining // (len(evidence) - index)
+                        content = token * (share // width) + "x" * (share % width)
+                        self.assertLessEqual(len(content), 2000)
+                        code, updated = self.patch("evidence", row["id"], {"content": content})
+                        self.assertEqual(code, 200)
+                        evidence[index] = updated
+                        snapshots[index] = {key: updated.get(key, "") for key in snapshot_fields}
+                        remaining -= share
+                    self.assertEqual(size(expected), target)
+                    code, result = self.patch("missions", mission, {"status": "verified"}, self.bravo)
+                    if target > 24000:
+                        self.assertEqual(code, 400)
+                        self.assertIn("24,000", result["message"])
+                        code, retained = self.server.request(
+                            "GET", f"/api/collections/missions/records/{mission}", token=self.bravo)
+                        self.assertEqual(code, 200)
+                        self.assertEqual(retained["status"], "running")
+                        self.assertEqual(retained["mission_review"], draft["mission_review"])
+                        self.assertEqual(retained["mission_reviewed_at"], draft["mission_reviewed_at"])
+                    else:
+                        self.assertEqual(code, 200)
+                        self.assertEqual(result["mission_review"], expected)
+                        self.assertEqual(size(result["mission_review"]), 24000)
+                        code, unchanged = self.patch("missions", mission, {"mission_learning": {"scope": "measured"}})
+                        self.assertEqual(code, 200)
+                        self.assertEqual(unchanged["mission_review"], expected)
+                        self.assertEqual(unchanged["mission_reviewed_at"], result["mission_reviewed_at"])
+                        code, cockpit = self.server.request(
+                            "GET", f"/api/buildanddo/workspaces/{WORKSPACE}/operator", token=self.bravo)
+                        self.assertEqual(code, 200)
+                        item = next(row for row in cockpit["sources"]["missions"]["items"] if row["id"] == mission)
+                        self.assertEqual(item["value"]["state"], "VERIFIED")
+                        self.assertTrue(item["value"]["independent"])
+
+    def test_atomic_onboarding_concurrent_retries_and_restart(self) -> None:
+        body = {
+            "name": "Native learning workspace",
+            "domain": "",
+            "intent": "build",
+            "objective": "Deploy my first website",
+            "business_context": "",
+        }
+
+        def create() -> tuple[int, dict[str, Any]]:
             return self.server.request(
                 "POST", "/api/buildanddo/onboarding", body, self.alice
             )
@@ -435,11 +574,46 @@ class NativeWorkspaceTests(unittest.TestCase):
         self.assertEqual(results[0][1]["workspace"], results[1][1]["workspace"])
         self.assertEqual(len(set(results[0][1]["services"])), 7)
         identity = results[0][1]["workspace"]
+        objective = results[0][1]["objective"]
+        self.assertEqual(objective, results[1][1]["objective"])
+        status, workspace = self.server.request(
+            "GET",
+            f"/api/collections/workspaces/records/{identity}?expand=onboarding_objective",
+            token=self.alice,
+        )
+        self.assertEqual(status, 200)
+        self.assertEqual(workspace["onboarding_intent"], "build")
+        self.assertEqual(workspace["domain"], "")
+        self.assertEqual(
+            workspace["expand"]["onboarding_objective"]["title"], body["objective"]
+        )
+        self.assertEqual(
+            workspace["expand"]["onboarding_objective"]["workspace"], identity
+        )
+        self.assertIn(
+            self.server.request(
+                "GET",
+                f"/api/collections/erp_objectives/records/{objective}",
+                token=self.other,
+            )[0],
+            (403, 404),
+        )
         self.server.stop()
         self.server.migrate()
         self.server.start()
         self.alice = self.server.login("alice")
         self.assertEqual(create()[1]["workspace"], identity)
+        self.assertEqual(create()[1]["objective"], objective)
+        legacy = {"name": "Legacy workspace", "domain": "legacy.fixture"}
+        first = self.server.request(
+            "POST", "/api/buildanddo/onboarding", legacy, self.alice
+        )
+        again = self.server.request(
+            "POST", "/api/buildanddo/onboarding", legacy, self.alice
+        )
+        self.assertEqual(first[0], 200)
+        self.assertEqual(first[1]["workspace"], again[1]["workspace"])
+        self.assertNotIn("objective", first[1])
         self.assertIn(
             self.server.request("POST", "/api/buildanddo/onboarding", body)[0],
             (401, 403),
@@ -572,6 +746,7 @@ class NativeWorkspaceTests(unittest.TestCase):
             400,
         )
         review = {
+            "version": 1,
             "reflection": "Independent native review",
             **{
                 key: {
@@ -599,6 +774,45 @@ class NativeWorkspaceTests(unittest.TestCase):
             verified["mission_review"]["evidence_snapshot"][0]["id"],
             receipt["evidence"],
         )
+        capture_url = f"/api/buildanddo/workspaces/{WORKSPACE}/mission-replay/{mission}"
+        code, capture = self.server.request("GET", capture_url, token=self.bravo)
+        self.assertEqual(code, 200)
+        self.assertTrue(capture["capture_complete"])
+        self.assertEqual(capture["integrity"], "consistent")
+        self.assertEqual(capture["captured_by"], BRAVO)
+        self.assertEqual(capture["evidence_state"], "recorded")
+        self.assertEqual(capture["content"]["mission"]["mission_review"], verified["mission_review"])
+        self.assertEqual(capture["content"]["mission"]["mission_review"]["version"], 1)
+        self.assertEqual(capture["content"]["jobs"][0]["id"], receipt["id"])
+        self.assertEqual(capture["content"]["tasks"][0]["id"], task)
+        self.assertEqual(capture["content"]["runs"][0]["status"], "completed")
+        self.assertNotIn("lease_id", capture["content"]["jobs"][0])
+        canonical = json.dumps(
+            capture["content"],
+            sort_keys=True,
+            ensure_ascii=False,
+            separators=(",", ":"),
+        ).encode()
+        self.assertEqual(
+            hashlib.sha256(canonical).hexdigest(), capture["content_sha256"]
+        )
+        for leaf in capture["leaves"]:
+            rows = (
+                [capture["content"]["mission"]]
+                if leaf["kind"] == "mission"
+                else capture["content"][leaf["kind"]]
+            )
+            row = next(row for row in rows if row["id"] == leaf["id"])
+            encoded = json.dumps(
+                row, sort_keys=True, ensure_ascii=False, separators=(",", ":")
+            ).encode()
+            self.assertEqual(hashlib.sha256(encoded).hexdigest(), leaf["sha256"])
+        self.assertEqual(
+            self.server.request("GET", capture_url, token=self.viewer)[0], 200
+        )
+        self.assertIn(
+            self.server.request("GET", capture_url, token=self.other)[0], (403, 404)
+        )
         self.assertIn(
             self.server.request("GET", endpoint, token=self.other)[0], (403, 404)
         )
@@ -612,6 +826,14 @@ class NativeWorkspaceTests(unittest.TestCase):
     def test_assistant_isolates_personal_history_and_reports_unconfigured_inference(
         self,
     ) -> None:
+        schema = self.server.collection("assistant_turns")
+        fields = {field["name"]: field for field in schema["fields"]}
+        self.assertIn(
+            "usage", fields, "The usage migration must actually be installed."
+        )
+        self.assertEqual(fields["usage"]["type"], "json")
+        self.assertEqual(fields["usage"]["maxSize"], 2000)
+        self.assertFalse(fields["usage"]["required"])
         endpoint = f"/api/buildanddo/workspaces/{WORKSPACE}/assistant"
         code, session = self.server.request(
             "POST",
@@ -642,6 +864,16 @@ class NativeWorkspaceTests(unittest.TestCase):
         self.assertEqual(code, 200)
         self.assertEqual(turn["status"], "unavailable")
         self.assertIsNone(turn["plan"])
+        saved_turn = next(
+            row
+            for row in self.server.stored("assistant_turns")
+            if row["id"] == turn["id"]
+        )
+        self.assertIn("usage", saved_turn)
+        self.assertIn(saved_turn["usage"], (None, "null"))
+        self.assertEqual(saved_turn["owner"], ALICE)
+        self.assertEqual(saved_turn["workspace"], WORKSPACE)
+        self.assertEqual(saved_turn["session"], session["id"])
         for token in (self.bravo, self.viewer, self.other):
             self.assertIn(
                 self.server.request(
@@ -679,6 +911,101 @@ class NativeWorkspaceTests(unittest.TestCase):
                 "GET", endpoint + "?session=" + session["id"], token=self.alice
             )[0],
             404,
+        )
+
+    def test_assistant_usage_down_up_preserves_history_and_locked_rules(self) -> None:
+        endpoint = f"/api/buildanddo/workspaces/{WORKSPACE}/assistant"
+        code, session = self.server.request(
+            "POST",
+            endpoint,
+            {
+                "action": "session.start",
+                "request_key": "native_usage_session_001",
+                "payload": {"title": "Usage compatibility; no provider"},
+            },
+            self.alice,
+        )
+        self.assertEqual(code, 200)
+        body = {
+            "session": session["id"],
+            "request_key": "native_usage_absent_001",
+            "message": "No provider is configured.",
+            "surface": {"id": "usage-fixture", "route": "/app/erp", "controls": []},
+        }
+        self.server.stop()
+        # Retain the seed and claim records while rolling back through usage. revert() moves the reverted files
+        # aside too, because serve re-applies a pending migration on 0.39.8.
+        self.server.revert(str(len(MIGRATIONS) - MIGRATIONS.index("1791300001_assistant_turn_usage") + 1))
+        self.assertNotIn(
+            "usage",
+            {
+                field["name"]
+                for field in self.server.collection("assistant_turns")["fields"]
+            },
+        )
+        self.server.start()
+        code, absent = self.server.request("POST", endpoint + "/chat", body, self.alice)
+        self.assertEqual(code, 200)
+        self.assertEqual(absent["status"], "unavailable")
+        self.assertIsNone(absent["plan"])
+        self.assertNotIn("usage", self.server.stored("assistant_turns")[0])
+        self.server.stop()
+        self.server.restore()
+        self.server.migrate()
+        self.server.start()
+        fields = {
+            field["name"]
+            for field in self.server.collection("assistant_turns")["fields"]
+        }
+        self.assertIn("usage", fields)
+        code, present = self.server.request(
+            "POST",
+            endpoint + "/chat",
+            {
+                **body,
+                "request_key": "native_usage_present_001",
+            },
+            self.alice,
+        )
+        self.assertEqual(code, 200)
+        self.assertEqual(present["status"], "unavailable")
+        rows = self.server.stored("assistant_turns")
+        self.assertEqual({row["id"] for row in rows}, {absent["id"], present["id"]})
+        self.assertTrue(
+            all("usage" in row and row["usage"] in (None, "null") for row in rows)
+        )
+        for collection, identity in (
+            ("assistant_turns", present["id"]),
+            ("assistant_sessions", session["id"]),
+        ):
+            installed = self.server.collection(collection)
+            for rule in (
+                "listRule",
+                "viewRule",
+                "createRule",
+                "updateRule",
+                "deleteRule",
+            ):
+                self.assertIsNone(installed[rule])
+            for method, suffix, payload in (
+                ("GET", "", None),
+                ("POST", "", {"owner": ALICE}),
+                ("PATCH", "/" + identity, {"usage": {"input_tokens": 42}}),
+                ("DELETE", "/" + identity, None),
+            ):
+                with self.subTest(collection=collection, method=method):
+                    self.assertIn(
+                        self.server.request(
+                            method,
+                            f"/api/collections/{collection}/records" + suffix,
+                            payload,
+                            self.alice,
+                        )[0],
+                        (403, 404),
+                    )
+        self.assertEqual(
+            {row["id"] for row in self.server.stored("assistant_turns")},
+            {absent["id"], present["id"]},
         )
 
     def test_source_auth_revocation_staleness_and_foreign_denial(self) -> None:
@@ -751,15 +1078,16 @@ class NativeWorkspaceTests(unittest.TestCase):
             self.patch("erp_tasks", task["id"], {"status": "todo"}, self.viewer)[0],
             (403, 404),
         )
-        edition = self.record(
-            "daily_editions",
+        status, result = self.claim(
+            "edition.save",
             {
                 "title": "Synthetic acceptance edition",
                 "summary": "Observed local task completion.",
                 "body": "The fixture task was reviewed.",
-                "status": "draft",
             },
         )
+        self.assertEqual(status, 200)
+        edition = result["record"]
         status, saved = self.server.request(
             "GET",
             f"/api/collections/daily_editions/records/{edition['id']}",
@@ -767,6 +1095,159 @@ class NativeWorkspaceTests(unittest.TestCase):
         )
         self.assertEqual(status, 200)
         self.assertEqual(saved["summary"], edition["summary"])
+
+    def test_claim_commands_bind_author_roles_revision_and_revoked_retries(self) -> None:
+        values = {"title": "Native saved edition", "body": "A synthetic report"}
+        for token in ("", self.viewer, self.other):
+            self.assertIn(self.claim("edition.save", values, token=token)[0], (401, 403, 404))
+        self.assertIn(self.claim("edition.save", values, workspace="workspacebravo1")[0], (403, 404))
+        code, created = self.claim("edition.save", values, key="native_claim_replay_001")
+        self.assertEqual(code, 200)
+        identity = created["id"]
+        self.assertEqual(created["record"]["owner"], ALICE)
+        self.assertEqual(created["revision"], 1)
+        code, repeated = self.claim("edition.save", values, key="native_claim_replay_001")
+        self.assertEqual(code, 200)
+        self.assertTrue(repeated["replayed"])
+        self.assertEqual(repeated["id"], identity)
+        self.assertEqual(self.claim("edition.save", {"body": "Another author"}, identity=identity, revision=1, token=self.editor2)[0], 403)
+        self.assertEqual(self.claim("edition.save", {"owner": BRAVO}, identity=identity, revision=1)[0], 400)
+        self.assertEqual(self.claim("edition.save", {"workspace": "workspacebravo1"}, identity=identity, revision=1)[0], 400)
+
+        def edit(token: str) -> int:
+            return self.claim("edition.save", {"body": "Concurrent bounded edit"}, identity=identity, revision=1, token=token,
+                key="native_editor_concurrency_" + ("author" if token == self.alice else "admin"))[0]
+
+        with ThreadPoolExecutor(max_workers=2) as pool:
+            self.assertEqual(sorted(pool.map(edit, (self.alice, self.bravo))), [200, 409])
+        self.assertEqual(self.claim("edition.publish", {}, identity=identity, revision=2)[0], 403)
+        code, published = self.claim("edition.publish", {}, identity=identity, revision=2, token=self.bravo)
+        self.assertEqual(code, 200)
+        self.assertEqual(published["record"]["published_by"], BRAVO)
+        self.assertTrue(published["record"]["published_at"])
+        self.assertEqual(self.claim("edition.save", {"body": "Rewrite published"}, identity=identity, revision=3, token=self.bravo)[0], 400)
+        code, _ = self.server.request("POST", f"/api/buildanddo/workspaces/{WORKSPACE}/admin", {
+            "action": "member.remove", "revision": 0, "request_key": "claim_member_revoke_001", "payload": {"user": ALICE},
+        }, self.bravo)
+        self.assertEqual(code, 200)
+        self.assertEqual(self.claim("edition.save", values, key="native_claim_replay_001")[0], 403)
+
+    def test_support_request_only_and_legacy_comparison_nonpromotion(self) -> None:
+        self.assertEqual(self.claim("support.request", {"provider": "stripe"})[0], 403)
+        for field in ("gross", "platform_fees", "refunds", "currency", "payout_status", "last_sync", "status", "date_range_start", "date_range_end"):
+            self.assertEqual(self.claim("support.request", {"provider": "stripe", field: "claimed"}, token=self.bravo)[0], 400)
+        code, requested = self.claim("support.request", {"provider": "stripe"}, token=self.bravo)
+        self.assertEqual(code, 200)
+        self.assertEqual(requested["record"]["status"], "pending")
+        self.assertEqual(requested["record"]["requested_by"], BRAVO)
+        self.assertTrue(requested["record"]["requested_at"])
+        code, _ = self.claim("support.request", {"provider": "patreon"}, identity=LEGACY_CLAIMS["support_sources"], token=self.bravo)
+        self.assertEqual(code, 200)
+        code, retained = self.server.request("GET", f"/api/collections/support_sources/records/{LEGACY_CLAIMS['support_sources']}", token=self.alice)
+        self.assertEqual(code, 200)
+        self.assertEqual((retained["status"], retained["gross"], retained["currency"]), ("healthy", 200, "USD"))
+        values = {"prior_prediction": "Expected four", "observed_result": "Reported two"}
+        for status in ("verified", "rejected"):
+            self.assertEqual(self.claim("correction.save", {**values, "status": status}, token=self.bravo)[0], 400)
+        code, pending = self.claim("correction.save", values)
+        self.assertEqual(code, 200)
+        self.assertEqual(pending["record"]["status"], "pending")
+        self.assertEqual(self.claim("correction.save", {"observed_result": "Another author"}, identity=pending["id"], revision=1, token=self.editor2)[0], 403)
+        self.assertEqual(self.claim("correction.save", values, identity=LEGACY_CLAIMS["corrections"], token=self.bravo)[0], 400)
+
+    def test_social_review_publication_and_desk_authorship(self) -> None:
+        code, draft = self.claim("content.save", {"title": "Native draft", "body": "Synthetic supported copy", "audience": "Editors", "format": "blog"})
+        self.assertEqual(code, 200)
+        identity = draft["id"]
+        self.assertEqual(self.claim("content.save", {"body": "Another editor copy"}, identity=identity, revision=1, token=self.editor2)[0], 403)
+        self.assertEqual(self.claim("content.save", {"status": "awaiting_approval"}, identity=identity, revision=1)[0], 200)
+        review = {"status": "approved", "review_checks": {name: True for name in ("accuracy", "privacy", "rights", "accessibility")}, "review_note": "Reviewed synthetic copy"}
+        self.assertEqual(self.claim("content.save", review, identity=identity, revision=2)[0], 403)
+        self.assertEqual(self.claim("content.save", {**review, "review_checks": {}}, identity=identity, revision=2, token=self.bravo)[0], 400)
+        code, approved = self.claim("content.save", review, identity=identity, revision=2, token=self.bravo)
+        self.assertEqual(code, 200)
+        self.assertEqual(approved["record"]["reviewed_by"], BRAVO)
+        code, published = self.claim("content.save", {"status": "published", "published_url": "https://example.test/fixture"}, identity=identity, revision=3, token=self.bravo)
+        self.assertEqual(code, 200)
+        self.assertEqual(published["record"]["published_by"], BRAVO)
+        self.assertTrue(published["record"]["published_at"])
+        self.assertEqual(self.claim("content.save", {"status": "draft"}, identity=identity, revision=4, token=self.bravo)[0], 400)
+        code, desk = self.claim("desk.save", {"desk": "research", "scope": "Synthetic operator scope", "status": "active"})
+        self.assertEqual(code, 200)
+        self.assertEqual(self.claim("desk.save", {"scope": "Another author scope"}, identity=desk["id"], revision=1, token=self.editor2)[0], 403)
+        self.assertEqual(self.claim("desk.save", {"scope": "Admin edit"}, identity=desk["id"], revision=1, token=self.bravo)[0], 200)
+        self.assertEqual(self.claim("channel.request", {"platform": "x"})[0], 403)
+        self.assertEqual(self.claim("channel.request", {"platform": "x", "last_check": "2026-09-01"}, token=self.bravo)[0], 400)
+        self.assertEqual(self.claim("channel.request", {"platform": "x"}, token=self.bravo)[0], 200)
+
+    def test_seat_reports_stamp_native_account_and_cannot_be_rewritten(self) -> None:
+        values = {"event": "completed", "summary": "Synthetic self-report", "detail": {"verified": True}}
+        for token in ("", self.viewer, self.other):
+            self.assertIn(self.claim("seat.report", values, token=token)[0], (401, 403, 404))
+        self.assertEqual(self.claim("seat.report", {**values, "owner": BRAVO})[0], 400)
+        for identity in ({"seat": "Claimed agent label"}, {"seat": BRAVO}, {"actor_type": "agent"}, {"actor_type": "mixed"}):
+            self.assertEqual(self.claim("seat.report", {**values, **identity})[0], 400)
+        code, created = self.claim("seat.report", values, key="native_seat_report_retry_1")
+        self.assertEqual(code, 200)
+        self.assertEqual(created["record"]["owner"], ALICE)
+        self.assertEqual(created["record"]["seat"], ALICE)
+        self.assertEqual(created["record"]["actor_type"], "human")
+        self.assertEqual(self.claim("seat.report", values, key="native_seat_report_retry_1")[1]["id"], created["id"])
+        self.assertEqual(self.claim("seat.report", values, identity=created["id"], revision=1, token=self.bravo)[0], 400)
+        self.assertIn(self.patch("seat_events", created["id"], {"summary": "Rewrite"}, self.bravo)[0], (403, 404))
+        self.assertIn(self.server.request("DELETE", f"/api/collections/seat_events/records/{created['id']}", token=self.alice)[0], (403, 404))
+
+    def test_claim_guard_retains_legacy_data_and_down_keeps_raw_writes_locked(self) -> None:
+        server = WorkspaceServer(BINARY, claims=False)
+        self.addCleanup(server.close)
+        token = server.login("bravo")
+        before = {}
+        for name, identity in LEGACY_CLAIMS.items():
+            code, before[name] = server.request("GET", f"/api/collections/{name}/records/{identity}", token=token)
+            self.assertEqual(code, 200)
+        server.stop()
+        shutil.copyfile(ROOT / "apps/pocketbase/pb_migrations" / (CLAIM_MIGRATION + ".js"), server.root / "migrations" / (CLAIM_MIGRATION + ".js"))
+        server.migrate()
+        server.migrate()
+        server.start()
+        for name, identity in LEGACY_CLAIMS.items():
+            code, after = server.request("GET", f"/api/collections/{name}/records/{identity}", token=token)
+            self.assertEqual(code, 200)
+            for field, value in before[name].items():
+                self.assertEqual(after[field], value, f"Historical {name}.{field} was altered")
+            self.assertEqual(after["claim_revision"], 0)
+            self.assertFalse(after.get("published_at"))
+        server.stop()
+        # revert() runs the same two rollbacks and moves their files aside: on 0.39.8 `serve` re-applies a
+        # pending migration, so a plain `migrate down` would be healed by the next start.
+        server.revert("2")
+        server.start()
+        code, _ = server.request("POST", f"/api/buildanddo/workspaces/{WORKSPACE}/claims", {
+            "action": "edition.save", "revision": 0, "request_key": "rollback_claim_command_001", "payload": {"id": "", "values": {"title": "Blocked command"}},
+        }, token)
+        self.assertEqual(code, 503)
+        for name, identity in LEGACY_CLAIMS.items():
+            for rule in ("createRule", "updateRule", "deleteRule"):
+                self.assertIsNone(server.collection(name)[rule])
+            self.assertEqual(server.request("GET", f"/api/collections/{name}/records/{identity}", token=token)[0], 200)
+
+    def test_hookless_native_instance_denies_all_seven_raw_write_surfaces(self) -> None:
+        server = WorkspaceServer(BINARY, hooks_enabled=False)
+        self.addCleanup(server.close)
+        admin, viewer, foreign = (server.login(name) for name in ("bravo", "viewer", "other"))
+        self.assertFalse(list((server.root / "hooks").glob("*.pb.js")))
+        for name, identity in LEGACY_CLAIMS.items():
+            with self.subTest(collection=name):
+                base = f"/api/collections/{name}/records"
+                code, saved = server.request("GET", base + "/" + identity, token=admin)
+                self.assertEqual(code, 200)
+                self.assertEqual(server.request("GET", base + "/" + identity, token=viewer)[0], 200)
+                self.assertIn(server.request("GET", base + "/" + identity, token=foreign)[0], (403, 404))
+                payload = {key: value for key, value in saved.items() if key not in ("id", "collectionId", "collectionName", "created", "updated")}
+                payload["owner"] = BRAVO
+                for method, suffix, values in (("POST", "", payload), ("PATCH", "/" + identity, payload), ("DELETE", "/" + identity, None)):
+                    self.assertIn(server.request(method, base + suffix, values, admin)[0], (403, 404))
+                self.assertEqual(server.request("GET", base + "/" + identity, token=admin)[1], saved)
 
 
 if __name__ == "__main__":

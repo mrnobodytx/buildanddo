@@ -1,10 +1,10 @@
 # ─── CGRF Header ───────────────────────────────────────────────
 # File:        tests/upgrade/test_discordbot_adapter.py
 # Stage:       08_TEST
-# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-QUIZ-001
 # CAPS:        pending
 # CK:          pending
-# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-QUIZ-001
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-15
@@ -30,7 +30,7 @@ from types import SimpleNamespace
 import unittest
 from unittest.mock import AsyncMock, patch
 
-from discord_sdk_double import sdk_double
+from tests.upgrade.discord_sdk_double import sdk_double
 from scripts.discordbot.contracts import Caller, Page, Quiz, Reply, Settings
 from scripts.discordbot.public_data import Observation, PublicClient
 from scripts.discordbot.service import COMMANDS
@@ -40,6 +40,21 @@ from apps.research.contracts import Endpoint
 
 ROOT = Path(__file__).resolve().parents[2]
 NATIVE_SDK = importlib.util.find_spec("discord") is not None
+
+
+class ServerGrader:
+    """Grade like the server route: only the right choice earns the explanation."""
+
+    def __init__(self, right: int = 1, explanation: str = "B requires evidence.") -> None:
+        self.right, self.explanation, self.calls = right, explanation, []
+
+    async def grade(self, quiz: Quiz, choice: int, caller: Caller) -> tuple[Page, bool]:
+        self.calls.append((quiz.slug, choice, caller.user_id))
+        body = "Correct.\n\n" + self.explanation if choice == self.right else "Not the expected answer."
+        return Page("Knowledge check", body), True
+
+    async def close(self) -> None:
+        self.closed = True
 
 
 def load_adapter() -> object:
@@ -96,7 +111,8 @@ class AdapterTests(unittest.IsolatedAsyncioTestCase):
             value = self.feed if resource.path == "/community-catalog.json" else None
             return Observation(value, 200, datetime.now(timezone.utc), 1)
         self.client = PublicClient(reader)
-        self.bot = ADAPTER.BuildAndDoBot(Settings(), self.client)
+        self.grader = ServerGrader()
+        self.bot = ADAPTER.BuildAndDoBot(Settings(), self.client, grader=self.grader)
         self.addAsyncCleanup(self.bot.close)
         self.service, self.caller = self.bot.service, Caller(10, 20, 30)
 
@@ -156,7 +172,7 @@ class AdapterTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(view.session.index, 0)
 
     async def test_queued_quiz_answers_keep_exactly_one_explanation(self) -> None:
-        reply = Reply((Page("Question", "Choose."),), quiz=Quiz(("A", "B"), 1, "B requires evidence."))
+        reply = Reply((Page("Question", "Choose."),), quiz=Quiz("evidence-lesson", ("A", "B")))
         view = ADAPTER.ReplyView(self.service, self.caller, reply)
         self.addCleanup(view.stop)
         first, second = interaction(), interaction()
@@ -165,6 +181,26 @@ class AdapterTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(first.edit_original_response.await_count + second.edit_original_response.await_count, 1)
         self.assertEqual(first.followup.send.await_count + second.followup.send.await_count, 1)
         self.assertTrue(all(item.disabled for item in view.children if isinstance(item, ADAPTER.discord.ui.Select)))
+        self.assertEqual(self.grader.calls, [("evidence-lesson", 1, 10)], "the queued second answer is never sent")
+
+    async def test_unavailable_grading_is_reported_and_keeps_the_answer_menu_open(self) -> None:
+        reply = Reply((Page("Question", "Choose."),), quiz=Quiz("evidence-lesson", ("A", "B")))
+        self.service.grader = ADAPTER.Grader(None)
+        view = ADAPTER.ReplyView(self.service, self.caller, reply)
+        self.addCleanup(view.stop)
+        first = interaction()
+        with self.assertLogs("buildanddo.discord", level="INFO") as events:
+            await view.answer(first, 1)
+        self.assertEqual(first.edit_original_response.await_args.kwargs["embed"].to_dict()["title"], "Grading unavailable")
+        self.assertFalse(view.session.answered)
+        self.assertFalse(any(item.disabled for item in view.children if isinstance(item, ADAPTER.discord.ui.Select)))
+        self.assertEqual(events.records[0].outcome, "unavailable")
+        self.assertNotIn("evidence-lesson", str(events.records[0].__dict__))
+        self.service.grader = self.grader
+        retry = interaction()
+        await view.answer(retry, 0)
+        self.assertIn("Not the expected answer.", retry.edit_original_response.await_args.kwargs["embed"].to_dict()["description"])
+        self.assertTrue(view.session.answered)
 
     async def test_selection_replaces_search_and_retires_queued_controls(self) -> None:
         reply = await self.service.execute("quiz", "", self.caller)
@@ -215,7 +251,7 @@ class AdapterTests(unittest.IsolatedAsyncioTestCase):
         self.assertTrue(owner.followup.send.await_args.kwargs["ephemeral"])
 
     async def test_lost_quiz_delivery_can_retry_the_same_answer(self) -> None:
-        reply = Reply((Page("Question", "Choose."),), quiz=Quiz(("A", "B"), 1, "B requires evidence."))
+        reply = Reply((Page("Question", "Choose."),), quiz=Quiz("evidence-lesson", ("A", "B")))
         view = ADAPTER.ReplyView(self.service, self.caller, reply)
         self.addCleanup(view.stop)
         lost = interaction()

@@ -1,10 +1,10 @@
 # ─── CGRF Header ───────────────────────────────────────────────
 # File:        scripts/discordbot/contracts.py
 # Stage:       07_BUILD
-# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-QUIZ-001
 # CAPS:        pending
 # CK:          pending
-# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-QUIZ-001
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-15
@@ -19,7 +19,7 @@
 from __future__ import annotations
 
 from collections import deque
-from collections.abc import Mapping
+from collections.abc import Awaitable, Callable, Mapping
 from dataclasses import dataclass
 from enum import Enum
 import math
@@ -152,11 +152,10 @@ class Option:
 
 @dataclass(frozen=True)
 class Quiz:
-    """Hold one authored knowledge check without saved progress."""
+    """Hold one authored knowledge check to ask; the server holds its answer."""
 
+    slug: str
     choices: tuple[str, ...]
-    answer: int
-    explanation: str
 
 
 @dataclass(frozen=True)
@@ -245,21 +244,21 @@ class PersonalSession:
         self.index = max(0, min(self.index + step, len(self.reply.pages) - 1))
         return self.reply.pages[self.index]
 
-    def answer(self, user: int, choice: int, now: float) -> Page:
-        """Explain one submitted answer without advancing a mission or lesson record."""
+    async def answer(
+        self, user: int, choice: int, now: float,
+        grade: Callable[[Quiz, int], Awaitable[tuple[Page, bool]]],
+    ) -> Page:
+        """Have the server grade one answer without advancing a mission or lesson record."""
         self.check(user, now)
         quiz = self.reply.quiz
         if self.answered and choice == self._answer_choice and self._answer_page is not None:
             return self._answer_page
         if self.answered or quiz is None or not 0 <= choice < len(quiz.choices):
             raise InteractionDenied("This knowledge check cannot accept another answer.")
-        self.answered = True
-        correct = choice == quiz.answer
-        body = (
-            ("Correct.\n\n" if correct else "Review the explanation.\n\n")
-            + "Answer: " + quiz.choices[quiz.answer] + "\n\n" + quiz.explanation
-            + "\n\nPractice only. Progress is saved through your signed-in BuildAndDo workspace."
-        )
-        self._answer_choice = choice
-        self._answer_page = Page("Knowledge check", body, SITE_ORIGIN + "/docs")
-        return self._answer_page
+        page, graded = await grade(quiz, choice)
+        # An ungraded attempt (grading unavailable or refused) leaves the check open for a retry.
+        if graded:
+            self.answered = True
+            self._answer_choice = choice
+            self._answer_page = page
+        return page

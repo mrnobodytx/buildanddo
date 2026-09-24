@@ -1,9 +1,10 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/src/components/workspace/PageBoundary.jsx
 // Stage:       07_BUILD
-// SRS:         SRS-BUILDANDDO-WORKSPACE-001
+// SRS:         SRS-BUILDANDDO-WORKSPACE-001, SRS-BUILDANDDO-UPGRADE-001
 // CAPS:        pending
 // CK:          pending
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-10
@@ -45,6 +46,7 @@ class PageBoundary extends React.Component {
         trackRenderError(error, {
             ...info,
             page: this.props.name,
+            section: this.props.section,
             componentStack: info && info.componentStack,
         });
     }

@@ -1,7 +1,11 @@
-// CGRF: SRS=SRS-BUILDANDDO-COMMUNITY-WEB-001 | CAPS=B | Seat=C-ONE
+// CGRF: SRS=SRS-BUILDANDDO-COMMUNITY-WEB-001, SRS-BUILDANDDO-PURPOSE-001 | CAPS=B | Seat=C-ONE
 import React from 'react';
 import { Link } from 'react-router-dom';
+import BrandMark from '@/components/brand/BrandMark';
+import Wordmark from '@/components/brand/Wordmark';
 import { PUBLIC_NAV } from '@/lib/publicPages';
+import { PURPOSE } from '@/lib/purpose';
+import { PUBLIC_ACTIONS, publicNavigationTarget, trackPublicAction } from '@/lib/publicActions';
 import {
     COMMUNITY_LINKS,
     GUILD_PATH,
@@ -10,7 +14,6 @@ import {
     communityLink,
 } from '@/lib/communityLinks';
 import {
-    Activity,
     AudioLines,
     BookOpen,
     Bot,
@@ -46,6 +49,10 @@ export default function Footer({
     earlyAccessHref = '/#early-access',
 }) {
     const year = new Date().getFullYear();
+    const clickNavigation = (href) => trackPublicAction(PUBLIC_ACTIONS.NAVIGATION, 'intent', 'navigation', undefined,
+        { placement: 'footer', target: publicNavigationTarget(href) });
+    const clickCta = () => trackPublicAction(PUBLIC_ACTIONS.CTA, 'intent', 'user_requested', undefined,
+        { placement: 'footer', target: publicNavigationTarget(earlyAccessHref) });
 
     return (
         <footer className="border-t border-border/60 bg-background">
@@ -54,20 +61,15 @@ export default function Footer({
                     <div>
                         <a
                             href="/"
+                            onClick={() => clickNavigation('/')}
                             className="flex items-center gap-2.5"
                             aria-label="BuildAndDo home"
                         >
-                            <span className="flex h-8 w-8 items-center justify-center rounded-md border border-primary/40 bg-primary/10 text-primary">
-                                <Activity className="h-4 w-4" strokeWidth={2.4} />
-                            </span>
-                            <span className="font-display text-base font-semibold tracking-tight">
-                                BuildAndDo
-                            </span>
+                            <BrandMark size={32} decorative />
+                            <Wordmark className="text-base" />
                         </a>
                         <p className="mt-4 max-w-sm text-sm leading-relaxed text-muted-foreground">
-                            Early-stage software that helps small-business owners notice changes,
-                            understand them in plain language, approve a bounded mission, and verify
-                            what happened.
+                            {PURPOSE.summary}
                         </p>
                     </div>
 
@@ -80,6 +82,7 @@ export default function Footer({
                                 <li key={link.href}>
                                     <Link
                                         to={link.href}
+                                        onClick={() => clickNavigation(link.href)}
                                         className="text-sm text-muted-foreground transition-colors hover:text-foreground"
                                     >
                                         {link.label}
@@ -97,6 +100,7 @@ export default function Footer({
                             <li>
                                 <a
                                     href={earlyAccessHref}
+                                    onClick={clickCta}
                                     className="text-sm font-medium text-primary transition-colors hover:brightness-125"
                                 >
                                     Join early access

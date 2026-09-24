@@ -1,0 +1,49 @@
+# Datadog Code Analysis (SAST) configuration.
+#
+# WHY THIS EXISTS. Measured 2026-09-22: this repository had Datadog RUM, CI Visibility and DORA
+# wiring, but NO code scanning of any kind - no `static-analysis.datadog.yml`, and the only
+# Datadog CI assets were GitHub Actions (`.github/workflows/datadog-dora.yml`) for a plane the
+# operator has since confirmed is the non-critical public mirror. The scanning that would catch
+# an injection, an unsafe deserialisation or a hardcoded credential before it reaches either
+# mirror was simply not running.
+#
+# SECURITY RULESETS FIRST, deliberately. Style and best-practice rulesets produce large volumes
+# on a mature repository, and a first run that reports thousands of findings gets muted - the
+# same failure that left 43 of 95 Datadog monitors in No Data. Start with the rules that
+# describe an exploitable defect; widen once the security set is clean.
+rulesets:
+  # Python: the CI gates, the deploy rail, the evidence services.
+  - python-security
+  - python-inclusive
+  # JavaScript/TypeScript: the SPA, the PocketBase hooks, the edge worker.
+  - javascript-security
+  - javascript-node-security
+  - javascript-browser-security
+  - typescript-security
+  # The PocketBase hooks run server-side JS with database access, so express/node rules apply
+  # to them even though they are not an express app.
+  - javascript-express-security
+  # Container and workflow definitions.
+  - docker-best-practices
+  - github-actions
+
+# Generated, vendored and fixture paths. Findings here are not actionable by this repo:
+# node_modules is upstream code, dist is build output, and the test fixtures contain
+# deliberately malformed inputs that exist precisely to exercise the failure paths.
+ignore:
+  - node_modules/**
+  - "**/node_modules/**"
+  - dist/**
+  - build/**
+  - .venv/**
+  - vault/**
+  - tools-cache/**
+  - "**/__pycache__/**"
+  - "**/*.min.js"
+  - reports/**
+  - state/**
+
+# Fail the job on these. Everything else is reported and visible in Datadog without blocking a
+# release - consistent with how this repo treats WARN-level disclosure findings: structure is a
+# decision a person makes, an exploitable defect is not.
+max_severity_for_failure: ERROR

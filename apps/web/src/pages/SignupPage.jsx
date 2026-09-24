@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useAuth } from '@/contexts/AuthContext';
 import { workspaceDestination } from '@/lib/navigationIntent';
+import { PUBLIC_ACTIONS, publicActionFailureReason, publicActionSection, trackPublicAction } from '@/lib/publicActions';
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -66,16 +67,22 @@ export default function SignupPage() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (status === 'submitting') return;
+        const section = publicActionSection(location.pathname);
         setServerError('');
-        if (!validate()) return;
+        if (!validate()) {
+            trackPublicAction(PUBLIC_ACTIONS.SIGNUP, 'failure', 'validation', undefined, { section });
+            return;
+        }
         setStatus('submitting');
         try {
             await signup(form.email.trim(), form.password, {
                 name: form.name.trim(),
             });
+            trackPublicAction(PUBLIC_ACTIONS.SIGNUP, 'success', 'confirmed', undefined, { section });
             // New accounts always go through onboarding first.
             navigate('/onboarding', { replace: true, state: { returnTo } });
         } catch (err) {
+            trackPublicAction(PUBLIC_ACTIONS.SIGNUP, 'failure', publicActionFailureReason(err), undefined, { section });
             const data = err?.response?.data;
             if (data?.email) {
                 setServerError(
@@ -96,7 +103,7 @@ export default function SignupPage() {
     return (
         <AuthLayout
             title="Create your BuildAndDo account"
-            subtitle="One account, one workspace to start. You’ll set up your business next."
+            subtitle="One account, one workspace to start. You’ll name your workspace next."
             footer={
                 <>
                     Already have an account?{' '}
@@ -136,7 +143,7 @@ export default function SignupPage() {
                         type="email"
                         value={form.email}
                         onChange={(e) => setField('email', e.target.value)}
-                        placeholder="you@business.com"
+                        placeholder="you@example.com"
                         autoComplete="email"
                         aria-invalid={Boolean(errors.email)}
                     />

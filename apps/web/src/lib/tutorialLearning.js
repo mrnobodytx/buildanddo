@@ -1,21 +1,21 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/src/lib/tutorialLearning.js
 // Stage:       07_BUILD
-// SRS:         SRS-BUILDANDDO-UPGRADE-001
+// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-TRUST-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-TRUST-001
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-19
-// Depends:     apps/web/src/lib/tutorialCurriculum.js, apps/pocketbase/pb_hooks/tutorial-learning.pb.js
+// Depends:     apps/web/src/lib/tutorialLearnerLesson.js, apps/pocketbase/pb_hooks/tutorial-learning.pb.js
 // EnumType:    Adapter
-// EnumEdges:   CONSUMES apps/web/src/lib/tutorialCurriculum.js; CONSUMES apps/pocketbase/pb_hooks/tutorial-learning.pb.js
+// EnumEdges:   CONSUMES apps/web/src/lib/tutorialLearnerLesson.js; CONSUMES apps/pocketbase/pb_hooks/tutorial-learning.pb.js
 // DAG Node:    none
 // Intent:      Recover personal learning saves without duplicate credit and export only a validated completion certificate.
 // ───────────────────────────────────────────────────────────────
 
-import { validLesson } from './tutorialCurriculum.js';
+import { validLearnerLesson } from './tutorialLearnerLesson.js';
 
 const id = (value) => typeof value === 'string' && /^[a-zA-Z0-9_-]{1,64}$/.test(value);
 const digest = (value) => typeof value === 'string' && /^[a-f0-9]{64}$/.test(value);
@@ -45,7 +45,7 @@ function detail(value, accountId, tutorialId) {
     const tutorial = value?.tutorial;
     if (value?.schema_version !== 1 || value.account_id !== accountId || tutorial?.id !== tutorialId ||
         !text(tutorial.title, 160) || typeof tutorial.summary !== 'string' || !text(tutorial.curriculum_version, 200) ||
-        !digest(tutorial.content_digest) || !validLesson(tutorial.lesson)) return false;
+        !digest(tutorial.content_digest) || !validLearnerLesson(tutorial.lesson)) return false;
     if (value.enrollment === null) return true;
     const saved = value.enrollment;
     const sections = tutorial.lesson.sections.length;
@@ -67,14 +67,14 @@ function summary(value, accountId, page) {
         (value.resume === null || id(value.resume?.tutorial) && text(value.resume.title, 160) && integer(value.resume.progress, 99));
 }
 
-/** @param {object} options Account-scoped native client and liveness guard. @returns {{read: Function, command: Function, retry: Function}} Recoverable personal learning operations. */
+/** @param {object} options Account-scoped native client and liveness guard. @returns {{read: Function, readStates: Function, command: Function, retry: Function}} Recoverable personal learning operations. */
 export function createTutorialLearningClient({ client, accountId, demo = false, isCurrent,
     observe = (_collection, _verb, operation) => operation() }) {
     let busy = false, pending = null;
     const current = () => Boolean(!demo && id(accountId) && isCurrent() && client.authStore.record?.id === accountId);
     const prefix = '/api/buildanddo/learning';
     const failure = (error, writing = false) => ({ ok: false,
-        reason: error?.status === 409 ? 'conflict' : [401, 403].includes(error?.status) ? 'forbidden' :
+        reason: error?.status === 409 ? 'conflict' : error?.status === 429 ? 'wait' : [401, 403].includes(error?.status) ? 'forbidden' :
             writing && (!error?.status || error.status >= 500) ? 'uncertain' : 'unavailable',
         error: error?.response?.message || (writing ? 'The save could not be confirmed. Retry this checkpoint to recover it.' :
             'Interactive learning is unavailable. You can still read the lessons. Try again later.') });
@@ -87,11 +87,14 @@ export function createTutorialLearningClient({ client, accountId, demo = false, 
                 const value = await client.send(`${prefix}/${encodeURIComponent(request.id)}`, { method: 'POST', body: request.body, requestKey: null, cache: 'no-store' });
                 if (!detail(value, accountId, request.id) || !value.enrollment || typeof value.replayed !== 'boolean' ||
                     value.tutorial.content_digest !== request.body.content_digest || !(value.feedback === null ||
-                        typeof value.feedback?.correct === 'boolean' && text(value.feedback.explanation))) throw new Error('Incomplete learning receipt');
+                        typeof value.feedback?.correct === 'boolean' && text(value.feedback.explanation) &&
+                        (value.feedback.retry_after === undefined || integer(value.feedback.retry_after, 3600)))) throw new Error('Incomplete learning receipt');
                 const { action, payload } = request.body;
+                // Grading stays on the server; a correct answer must arrive with its certificate.
                 if (action === 'section' && value.enrollment.next_section <= payload.index ||
                     action === 'practice' && !value.enrollment.practiced ||
-                    action === 'answer' && (value.feedback?.correct !== (payload.choice === value.tutorial.lesson.check.answer) ||
+                    action !== 'answer' && value.feedback !== null ||
+                    action === 'answer' && (!value.feedback || !value.enrollment.practiced ||
                         value.feedback.correct && !value.enrollment.certificate)) throw new Error('Unconfirmed learning checkpoint');
                 return value;
             });
@@ -106,6 +109,27 @@ export function createTutorialLearningClient({ client, accountId, demo = false, 
         } finally { busy = false; }
     };
     return {
+        async readStates() {
+            if (!current()) return stale();
+            const items = [], tutorials = new Set(), records = new Set();
+            try {
+                // Bound the full catalogue read; never present a truncated scan as authoritative.
+                for (let page = 1; page <= 100; page++) {
+                    if (!current()) return stale();
+                    const value = await client.send(`${prefix}/states`, { method: 'GET', query: { page }, requestKey: null, cache: 'no-store' });
+                    if (!current()) return stale();
+                    if (value?.schema_version !== 1 || value.account_id !== accountId || value.page !== page ||
+                        typeof value.has_more !== 'boolean' || !Array.isArray(value.items) || value.items.length > 20 ||
+                        value.has_more && value.items.length !== 20) return failure(null);
+                    for (const item of value.items) {
+                        if (!id(item?.tutorial) || !enrollment(item, accountId, item.tutorial) || tutorials.has(item.tutorial) || records.has(item.id)) return failure(null);
+                        tutorials.add(item.tutorial); records.add(item.id); items.push(item);
+                    }
+                    if (!value.has_more) return { ok: true, data: { account_id: accountId, items } };
+                }
+                return failure(null);
+            } catch (error) { return current() ? failure(error) : stale(); }
+        },
         async read(tutorialId = '', page = 1) {
             if (!current()) return stale();
             if (tutorialId && !id(tutorialId) || !integer(page, 9999) || page < 1) return failure(null);
@@ -142,6 +166,7 @@ export function certificateDocument(certificate) {
 <title>BuildAndDo certificate — ${escape(certificate.title)}</title>
 <style>body{font:18px/1.6 Georgia,serif;max-width:850px;margin:4rem auto;padding:2rem}main{border:3px double currentColor;padding:clamp(1rem,5vw,3rem)}h1{font-size:2.5rem;line-height:1.1}h2{font-size:1.8rem}.label{font:small-caps 1rem sans-serif;letter-spacing:.12em}p{overflow-wrap:anywhere}footer{font:14px/1.6 sans-serif;border-top:1px solid;margin-top:2rem;padding-top:1rem}@media print{body{margin:0;padding:0}main{break-inside:avoid}}</style>
 <main><p class="label">BuildAndDo · Learning journey</p><h1>Certificate of completion</h1>
+<p>open-book tutorial completion; practice self-reported. This is not independently verified mastery.</p>
 <p>Awarded to</p><h2>${escape(certificate.learner)}</h2><p>for completing</p><h2>${escape(certificate.title)}</h2>
 <p>${escape(certificate.achievement)}</p><p>Issued ${date} · ${certificate.learning_points} learning points</p>
 <footer><p>${escape(certificate.issuer)}</p><p>Certificate ${escape(certificate.id)} · Course ${escape(certificate.curriculum_version)}</p>

@@ -18,8 +18,10 @@
 import { researchFixture } from './research-fixture.mjs';
 import { plain } from './admin-fixture.mjs';
 
-export function knowledgeFixture() {
-    const f = researchFixture(); f.enable();
+export function knowledgeFixture({ now = () => '2026-09-18T14:00:00.000Z' } = {}) {
+    // Equal-relevance ranking uses update time, then source ID. Author the
+    // intended timestamp ties instead of relying on seed speed in this process.
+    const f = researchFixture({ now }); f.enable();
     f.seed('missions', { id: 'mission1', workspace: 'ws1', owner: 'owner', title: 'Reduce missed appointments',
         description: 'Test booking reminders and measure customer attendance.', status: 'running' });
     f.seed('evidence', { id: 'evidence1', workspace: 'ws1', owner: 'editor', mission: 'mission1', title: 'Reminder observation',

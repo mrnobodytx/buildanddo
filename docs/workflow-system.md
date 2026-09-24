@@ -153,7 +153,7 @@ step/revision conflicts, terminal outcomes and mission approval changes. These
 results do not establish native PocketBase SQL/JSVM behavior or UI acceptance.
 
 Before activation, the backend owner must validate on an isolated PocketBase
-0.28.4 instance using its normal migration and account provisioning process:
+0.39.8 instance using its normal migration and account provisioning process:
 
 - Apply the migration twice, validate the read back-relation for owner/admin/
   editor/viewer and removed members, and verify that direct run writes fail.

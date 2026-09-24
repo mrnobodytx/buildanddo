@@ -87,7 +87,7 @@ const LESSON_EVIDENCE = ['reference', 'digest'];
 // stops matching the file it cites, so an edit to the site cannot silently leave Buddi behind.
 const PURPOSE = {
     statement: 'Learn by doing real work. Lessons lead into missions, and a mission isn\'t finished until somebody has checked it.',
-    summary: 'Learn with people and AI, build something real, verify what happened and keep the evidence. A daily learning edition built from the sources you connect.',
+    summary: 'BuildAndDo is an educational collaboration platform. Learn with people and AI through real projects, verify what happened, and share what you learned.',
     owner: 'Citadel Nexus Inc.',
     framing: 'BuildAndDo is an educational, collaborative platform. It is not a service that sets up or runs a business on anyone\'s behalf.',
     source: 'README.md (statement); apps/web/src/lib/publicPages.js (summary)',
@@ -100,13 +100,13 @@ const COMMUNITY = {
     source: 'apps/web/src/lib/communityLinks.js',
 };
 const PAGES = [
-    { path: '/', label: 'Home', description: 'Learn with people and AI, build something real, verify what happened and keep the evidence. A daily learning edition built from the sources you connect.' },
+    { path: '/', label: 'Home', description: 'BuildAndDo is an educational collaboration platform. Learn with people and AI through real projects, verify what happened, and share what you learned.' },
     { path: '/practice', label: 'Practice', description: 'Community-audited methods for real objectives, with evidence, knowledge states and lessons from each attempt.' },
     { path: '/classrooms', label: 'Classrooms', description: 'Learn together in workspace classrooms with host-led Field Manual lessons, attendance and saved discussion.' },
     { path: '/docs', label: 'Docs', description: 'Get started with workspaces, signals, missions, workflows and the evidence ledger. Learn what each state means.' },
     { path: '/roadmap', label: 'Roadmap', description: 'Follow the BuildAndDo plan, its current state and the evidence needed to call work complete.' },
-    { path: '/pricing', label: 'Pricing', description: 'Explore BuildAndDo early access and discuss a team rollout. Public subscription pricing has not been announced.' },
-    { path: '/contact', label: 'Contact', description: 'Ask a product question, report an issue or discuss commercial licensing with Citadel Nexus Inc.' },
+    { path: '/pricing', label: 'Pricing', description: 'Discuss a managed paid pilot for one workspace and one approved operation, or explore early access and team rollouts.' },
+    { path: '/contact', label: 'Contact', description: 'Request a scoped paid pilot, discuss commercial licensing with Citadel Nexus Inc., or ask a product question.' },
 ];
 const OPERATING_MODEL = {
     flow: [
@@ -135,8 +135,8 @@ const BOUNDARIES = {
         'Start work, approve a mission or mark anything verified.',
         'Quote prices, dates or outcomes the platform has not published.',
     ],
-    pricing: 'Public subscription pricing has not been announced.',
-    source: 'apps/web/src/lib/publicPages.js (pricing); SRS-BUILDANDDO-BUDDI-002',
+    pricing: 'Government research is an approved membership tier; managed pilots are scoped separately.',
+    source: 'apps/web/src/pages/PricingPage.jsx (pricing); SRS-BUILDANDDO-BUDDI-002',
 };
 const SECTIONS = ['purpose', 'operating_model', 'capabilities', 'use_cases', 'curriculum', 'community', 'roadmap',
     'platform_health', 'boundaries'];

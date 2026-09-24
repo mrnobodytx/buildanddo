@@ -47,6 +47,7 @@ vi.mock('@/lib/observability/runtime', () => ({
     reportAction: vi.fn(),
     reportMetric: vi.fn(),
     trackAuthIdentity: vi.fn(),
+    readFailed: vi.fn(),
 }));
 vi.mock('@/lib/telemetry', () => ({ trackEvent: vi.fn() }));
 
@@ -123,56 +124,75 @@ describe('home workspace edition', () => {
         pb.__setRecords('signals', [createMockSignal()]);
         pb.__setRecords('missions', [createMockMission({ status: 'running' })]);
         pb.__setRecords('evidence', [createMockEvidence({ title: 'Reminder receipt' })]);
+        pb.__setRecords('challenge_submissions', [
+            { id: 'project', workspace: 'ws_test', problem: 'Build a shared project website', status: 'submitted', created: now() },
+        ]);
         pb.__setRecords('daily_editions', [
             {
                 id: 'draft',
+                workspace: 'ws_test',
                 status: 'draft',
                 title: 'Draft must stay off the front page',
                 created: now(),
+                workspace: 'ws_test',
             },
             {
                 id: 'edition',
+                workspace: 'ws_test',
                 status: 'published',
                 title: 'Friday appointment report',
                 summary: 'Measured reminders',
                 body: 'Source-backed report body.',
                 created: now(),
+                workspace: 'ws_test',
+                published_at: now(),
+                published_by: 'user_test',
+                claim_revision: 2,
             },
+            { id: 'legacy', status: 'published', title: 'Unbound historical edition', workspace: 'ws_test', created: now() },
         ]);
         pb.__setRecords('corrections', [
             {
                 id: 'c1',
+                workspace: 'ws_test',
                 status: 'verified',
                 prior_prediction: 'Expected four misses',
                 observed_result: 'Observed one miss',
                 created: now(),
+                workspace: 'ws_test',
             },
             {
                 id: 'c2',
+                workspace: 'ws_test',
                 status: 'pending',
                 prior_prediction: 'Pending prediction',
                 observed_result: 'Unverified result',
                 created: now(),
+                workspace: 'ws_test',
             },
         ]);
         pb.__setRecords('support_sources', [
             {
                 id: 'usd',
+                workspace: 'ws_test',
                 provider: 'patreon',
                 status: 'healthy',
                 last_sync: now(),
                 gross: 25,
                 currency: 'USD',
+                workspace: 'ws_test',
             },
             {
                 id: 'eur',
+                workspace: 'ws_test',
                 provider: 'kofi',
                 status: 'healthy',
                 last_sync: now(),
                 gross: 10,
                 currency: 'EUR',
+                workspace: 'ws_test',
             },
-            { id: 'pending', provider: 'gofundme', status: 'pending', gross: 900, currency: 'USD' },
+            { id: 'pending', workspace: 'ws_test', provider: 'gofundme', status: 'pending', gross: 900, currency: 'USD' },
         ]);
         renderWithProviders(<HomePage />);
         expect(
@@ -184,10 +204,15 @@ describe('home workspace edition', () => {
             }),
         ).toBeVisible();
         expect(screen.queryByText('Draft must stay off the front page')).not.toBeInTheDocument();
-        expect(section('corrections').getByText('Observed one miss')).toBeVisible();
+        expect(section('corrections').queryByText('Observed one miss')).not.toBeInTheDocument();
+        expect(screen.queryByText('Unbound historical edition')).not.toBeInTheDocument();
         expect(screen.queryByText('Unverified result')).not.toBeInTheDocument();
-        expect(section('support-revenue').getByText('USD 25.00')).toBeVisible();
-        expect(section('support-revenue').getByText('EUR 10.00')).toBeVisible();
+        const challengeMetric = section('glance').getByRole('heading', { name: 'Saved challenges' }).closest('.p-5');
+        expect(within(challengeMetric).getByText('1', { exact: true })).toBeVisible();
+        expect(within(challengeMetric).getByRole('link', { name: /Open desk/ })).toHaveAttribute('href', '#challenge-desk');
+        expect(section('support-revenue').queryByText('USD 25.00')).not.toBeInTheDocument();
+        expect(section('support-revenue').queryByText('EUR 10.00')).not.toBeInTheDocument();
+        expect(section('support-revenue').getAllByText(/No provider-confirmed revenue is available/)).toHaveLength(3);
         expect(screen.queryByText('USD 900.00')).not.toBeInTheDocument();
         for (const name of privateCollections) {
             expect(pb.__collection(name).getFullList).toHaveBeenCalledWith(

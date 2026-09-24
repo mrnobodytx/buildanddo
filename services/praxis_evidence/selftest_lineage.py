@@ -1,4 +1,19 @@
 #!/usr/bin/env python3
+# --- CGRF Header ------------------------------------------------
+# File: services/praxis_evidence/selftest_lineage.py
+# Stage: 08_TEST
+# SRS: SRS-BUILDANDDO-UPGRADE-001
+# CAPS: pending
+# CK: pending
+# Dispatch: VCC-BUILDANDDO-UPGRADE-001
+# Seat: BITS-CODEGEN
+# Owner: Citadel Nexus Inc.
+# Created: 2026-09-23
+# Depends: services/praxis_evidence/isolated_test.py
+# EnumType: Test
+# EnumEdges: CONSUMES services/praxis_evidence/isolated_test.py; VALIDATES services/praxis_evidence/source_lineage.py
+# Intent: Exercise source lineage using a current disposable native fixture only.
+# ----------------------------------------------------------------
 """selftest_lineage.py - proves source-lineage collapsing against the real live
 PocketBase: N copies of one origin must collapse to 1 independent lineage."""
 from __future__ import annotations
@@ -6,11 +21,11 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from client import PocketBaseClient  # noqa: E402
+from isolated_test import isolated_client  # noqa: E402
 from claims import create_source  # noqa: E402
 from source_lineage import record_lineage, independent_source_count  # noqa: E402
 
-client = PocketBaseClient()
+client = isolated_client()
 checks: list[tuple[str, bool]] = []
 created_ids: list[str] = []
 

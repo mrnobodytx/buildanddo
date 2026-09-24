@@ -20,6 +20,7 @@
 from __future__ import annotations
 
 from concurrent.futures import ThreadPoolExecutor
+from contextlib import closing
 import json
 import os
 from pathlib import Path
@@ -145,6 +146,7 @@ class NativeServer:
                 "dossier-vault.js",
                 "research-policy.js",
                 "workspace-access.js",
+                "government-access.js",
                 "workflow-policy.js",
             ]:
                 shutil.copyfile(ROOT / "apps/pocketbase/pb_hooks" / name, hooks / name)
@@ -217,8 +219,9 @@ class NativeServer:
             check=False,
             **NO_WINDOW,
         )
-        self.log.write(result.stdout or "")
-        self.log.write(result.stderr or "")
+        output = (result.stdout or "") + (result.stderr or "")
+        # The diagnostic servers log to an anonymous binary file; this base logs text.
+        self.log.write(output.encode("utf-8", "replace") if "b" in getattr(self.log, "mode", "") else output)
         self.log.flush()
         if result.returncode:
             raise AssertionError(
@@ -252,8 +255,30 @@ class NativeServer:
         self.reverted = []
         self.migrate("up")
 
+    def seed_superuser(self) -> None:
+        """Give the disposable instance a superuser BEFORE it serves.
+
+        Without one, PocketBase treats the first serve as an install: it prints a
+        /_/#/pbinstall/<token> URL and OPENS IT IN THE OPERATOR'S DEFAULT BROWSER. A suite that
+        starts a dozen fixtures therefore threw a dozen setup tabs at whoever was using the
+        machine, and the release pipeline's gate did it on every run. There is no serve flag to
+        suppress it on 0.39.8 - the only lever is to remove the condition, so the install never
+        triggers. Measured both ways: with this, the serve log carries no `pbinstall` line at all.
+
+        The credentials are throwaway and local to one temporary directory that the fixture
+        deletes; nothing here reaches a real instance.
+        """
+        subprocess.run(
+            [self.binary, "superuser", "upsert",
+             "fixture@localhost.invalid", "fixture-local-disposable-instance",
+             f"--dir={self.root / 'data'}"],
+            cwd=self.root, env=self.environment,
+            stdout=self.log, stderr=subprocess.STDOUT, check=False, **NO_WINDOW,
+        )
+
     def start(self) -> None:
         """Start only the disposable loopback instance and wait for native health."""
+        self.seed_superuser()
         self.process = subprocess.Popen(
             [
                 self.binary,
@@ -344,9 +369,9 @@ class NativeServer:
         """Inspect only ciphertext in the fixture database using a read-only connection."""
         if name not in {"dossier_entities", "dossier_events", "user_dossiers"}:
             raise ValueError("Choose a dossier fixture table.")
-        with sqlite3.connect(
+        with closing(sqlite3.connect(
             (self.root / "data/data.db").as_uri() + "?mode=ro", uri=True
-        ) as database:
+        )) as database:
             return database.execute(
                 f"select owner, key_id, sealed from {name}"
             ).fetchall()

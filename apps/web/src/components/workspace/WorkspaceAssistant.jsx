@@ -8,26 +8,32 @@
 // Seat:         BITS-CODEGEN
 // Owner:        Citadel Nexus Inc.
 // Created:      2026-09-20
-// Depends:      apps/web/src/lib/workspaceAssistant.js, apps/web/src/contexts/WorkspaceAccessContext.jsx
+// Depends:     apps/web/src/pages/workspace/JourneyPage.jsx, apps/web/src/lib/workspaceAssistant.js, apps/web/src/lib/workspaceControl.js, apps/web/src/contexts/WorkspaceAccessContext.jsx,
+//              apps/web/src/hooks/useFailureTelemetry.js
 // EnumType:     Widget
-// EnumEdges:    DEPENDS_ON apps/web/src/lib/workspaceAssistant.js; DEPENDS_ON apps/web/src/contexts/WorkspaceAccessContext.jsx
+// EnumEdges:    DEPENDS_ON apps/web/src/lib/workspaceAssistant.js; CONSUMES apps/web/src/lib/workspaceControl.js; DEPENDS_ON apps/web/src/contexts/WorkspaceAccessContext.jsx;
+//               CONSUMES apps/web/src/hooks/useFailureTelemetry.js
 // DAG Node:     none
 // Intent:       Offer a persistent account-scoped assistant with visible plans, form assistance, retryable outcomes and personal session history.
 // ───────────────────────────────────────────────────────────────
 
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { MessageCircle, X } from 'lucide-react';
+import { X } from 'lucide-react';
+import Buddi from '@/components/brand/Buddi';
 import { Button, Card } from '@/components/site/ui';
 import { Textarea } from '@/components/ui/textarea';
 import { useAuth } from '@/contexts/AuthContext';
 import { useWorkspace } from '@/contexts/WorkspaceContext';
 import { useDemoMode } from '@/hooks/useDemoMode';
 import { useWorkspaceAccess } from '@/contexts/WorkspaceAccessContext';
+import { useFailureTelemetry } from '@/hooks/useFailureTelemetry';
 import pb from '@/lib/pocketbaseClient';
+import { observeMutation } from '@/lib/observability/mutations';
 import { createAssistantClient, captureAssistantSurface, applyAssistantPlan } from '@/lib/workspaceAssistant';
+import { workspaceLifecycleKey } from '@/lib/workspaceControl';
 
-function AssistantDesk({ accountId, workspaceId, demo }) {
+function AssistantDesk({ accountId, workspaceId, demo, sessionEpoch, isSessionCurrent, scopeKey, currentScope }) {
     const location = useLocation(), navigate = useNavigate(), access = useWorkspaceAccess();
     const [open, setOpen] = useState(false), [session, setSession] = useState(''), [snapshot, setSnapshot] = useState(null);
     const [message, setMessage] = useState(''), [turn, setTurn] = useState(null), [error, setError] = useState(''), [busy, setBusy] = useState(false);
@@ -35,11 +41,31 @@ function AssistantDesk({ accountId, workspaceId, demo }) {
     const alive = useRef(true), lock = useRef(false), captured = useRef(null), pending = useRef(null), route = useRef(location.pathname);
     const startKey = useRef(globalThis.crypto.randomUUID()), startPayload = useRef(null), composer = useRef(null);
     const selectedSession = useRef(session), historyRequest = useRef(0);
+    const permission = useRef(access); permission.current = access;
+    const ready = !demo && !access.loading && !access.error && Boolean(access.data);
+    useFailureTelemetry(open && !demo && Boolean(error), 'control_feedback');
     selectedSession.current = session;
     route.current = location.pathname;
-    const current = () => alive.current && !demo && pb.authStore.record?.id === accountId;
-    const api = useMemo(() => createAssistantClient({ client: pb, workspaceId, accountId, isCurrent: () => alive.current && !demo }), [workspaceId, accountId, demo]);
-    useEffect(() => { alive.current = true; return () => { alive.current = false; }; }, []);
+    // The journey page hands over its compiled answers. Open the panel and fill an
+    // empty composer only; the person still decides whether to send it.
+    useEffect(() => {
+        const draft = (event) => {
+            const text = typeof event.detail?.message === 'string' ? event.detail.message.slice(0, 4000) : '';
+            setOpen(true);
+            if (text) setMessage((current) => (current.trim() ? current : text));
+        };
+        window.addEventListener('buildanddo:assistant-draft', draft);
+        return () => window.removeEventListener('buildanddo:assistant-draft', draft);
+    }, []);
+    const scoped = () => alive.current && !demo && currentScope.current === scopeKey &&
+        pb.authStore.record?.id === accountId && isSessionCurrent(sessionEpoch);
+    const current = () => scoped() && !permission.current.loading && !permission.current.error && Boolean(permission.current.data);
+    const api = useMemo(() => createAssistantClient({ client: pb, workspaceId, accountId,
+        isCurrent: () => !permission.current.loading && !permission.current.error && Boolean(permission.current.data),
+        isScopeCurrent: () => alive.current && !demo && isSessionCurrent(sessionEpoch) && currentScope.current === scopeKey,
+        observe: observeMutation,
+    }), [workspaceId, accountId, demo, isSessionCurrent, sessionEpoch, currentScope, scopeKey]);
+    useLayoutEffect(() => { alive.current = true; return () => { alive.current = false; }; }, []);
     useEffect(() => { if (turn?.plan?.route !== location.pathname) captured.current = null; }, [location.pathname, turn]);
     // A successful reload may only clear an error the reload itself reported. Starting a
     // new session changes `session`, which fires the reload effect; without this the
@@ -47,6 +73,7 @@ function AssistantDesk({ accountId, workspaceId, demo }) {
     // showing "Retry message" with no explanation of what went wrong.
     const loadFailed = useRef(false);
     const load = async (selected = selectedSession.current, paging = {}) => {
+        if (!current()) return;
         const ticket = ++historyRequest.current;
         const result = await api.snapshot(selected, paging.sessionPage || 1, paging.turnPage || 1);
         if (!current() || ticket !== historyRequest.current || selected !== selectedSession.current) return;
@@ -59,7 +86,8 @@ function AssistantDesk({ accountId, workspaceId, demo }) {
         }); if (loadFailed.current) { loadFailed.current = false; setError(''); } }
         else if (result.error) { loadFailed.current = true; setError(result.error); }
     };
-    useEffect(() => { if (open && !demo) { void load(); composer.current?.focus(); } }, [open, session]);
+    useEffect(() => { if (open && ready) void load(); }, [open, session, ready]);
+    useEffect(() => { if (open) composer.current?.focus(); }, [open]);
     const send = async (event) => {
         event.preventDefault();
         if (lock.current || !current() || !message.trim() || recordPending || closed) return;
@@ -69,10 +97,11 @@ function AssistantDesk({ accountId, workspaceId, demo }) {
             if (!activeSession) {
                 startPayload.current ||= { title: message.trim().slice(0, 160) };
                 const created = await api.command('session.start', startPayload.current, startKey.current);
-                if (!current()) return;
+                if (!scoped()) return;
                 if (!created.ok) { setError(created.error || 'Could not start this session.'); return; }
                 activeSession = created.data.id; selectedSession.current = activeSession; setSession(activeSession);
             }
+            if (!current()) return;
             if (!pending.current || pending.current.message !== message.trim() || pending.current.session !== activeSession) {
                 captured.current = captureAssistantSurface(document, route.current);
                 pending.current = { session: activeSession, request_key: globalThis.crypto.randomUUID(), message: message.trim(), surface: captured.current.public };
@@ -91,8 +120,8 @@ function AssistantDesk({ accountId, workspaceId, demo }) {
     };
     const retain = async (record) => {
         const response = await api.command('plan.record', { turn: record.turn, ...record.outcome }, record.key);
-        if (!current()) return;
-        if (response.ok) { setRecordPending(null); setTurn(null); captured.current = null; setNotice('Interaction recorded in your personal knowledge. Check the native desk for the saved business result.'); await load(); }
+        if (!scoped()) return;
+        if (response.ok) { setRecordPending(null); setTurn(null); captured.current = null; setError(''); setNotice('Interaction recorded in your personal knowledge. Check the native desk for the saved business result.'); await load(); }
         else { setRecordPending(record); setError(response.error || 'The interaction happened, but its session record needs retry.'); }
     };
     const apply = async (decline = false) => {
@@ -101,33 +130,36 @@ function AssistantDesk({ accountId, workspaceId, demo }) {
         try {
             const outcome = decline ? { outcome: 'declined', completed_steps: 0, observation: 'The user declined this inferred plan.' } :
                 await applyAssistantPlan({ plan: turn.plan, surface: captured.current, document, currentRoute: () => route.current,
-                    isCurrent: () => current() && (access.data?.can_write === true || turn.plan.steps.every((step) => step.kind === 'navigate')), navigate });
-            if (current()) await retain({ turn: turn.id, outcome, key: globalThis.crypto.randomUUID() });
+                    isCurrent: () => current() && (permission.current.data?.can_write === true || turn.plan.steps.every((step) => step.kind === 'navigate')), navigate });
+            if (!scoped()) return;
+            const record = { turn: turn.id, outcome, key: globalThis.crypto.randomUUID() };
+            setRecordPending(record);
+            if (current()) await retain(record);
         } finally { lock.current = false; if (alive.current) setBusy(false); }
     };
     const newSession = async () => {
-        if (lock.current || recordPending) return;
+        if (lock.current || recordPending || !current()) return;
         lock.current = true; setBusy(true);
         try {
             if (session) {
                 const closed = await api.command('session.close', { session }, globalThis.crypto.randomUUID());
-                if (!current()) return;
+                if (!scoped()) return;
                 if (!closed.ok) { setError(closed.error); return; }
             }
             selectedSession.current = ''; historyRequest.current++; setSession(''); setTurn(null); setMessage(''); pending.current = null; captured.current = null;
             setSnapshot((before) => before ? { ...before, turns: { items: [], page: 1, has_more: false } } : null);
-            startKey.current = globalThis.crypto.randomUUID(); startPayload.current = null; setForgetting(false); setNotice('A new session will begin with your next message.');
+            startKey.current = globalThis.crypto.randomUUID(); startPayload.current = null; setForgetting(false); setError(''); setNotice('A new session will begin with your next message.');
         } finally { lock.current = false; if (alive.current) setBusy(false); }
     };
     const forget = async () => {
-        if (lock.current || !session || recordPending) return;
+        if (lock.current || !session || recordPending || !current()) return;
         lock.current = true; setBusy(true);
         try {
             const result = await api.command('session.forget', { session }, globalThis.crypto.randomUUID());
-            if (!current()) return;
+            if (!scoped()) return;
             if (!result.ok) { setError(result.error); return; }
             selectedSession.current = ''; historyRequest.current++; setSession(''); setTurn(null); setMessage(''); setSnapshot(null); pending.current = null; captured.current = null;
-            startKey.current = globalThis.crypto.randomUUID(); startPayload.current = null; setForgetting(false);
+            startKey.current = globalThis.crypto.randomUUID(); startPayload.current = null; setForgetting(false); setError('');
             setNotice('This session and its personal patterns were removed. Business records remain in their native desks.');
             await load('');
         } finally { lock.current = false; if (alive.current) setBusy(false); }
@@ -136,26 +168,27 @@ function AssistantDesk({ accountId, workspaceId, demo }) {
     const closed = snapshot?.sessions?.items.find((item) => item.id === session)?.status === 'closed';
     return <div data-assistant-panel className="ph-no-capture" data-dd-privacy="mask">
         <Button type="button" size="sm" aria-expanded={open} aria-controls="workspace-assistant-panel"
-            className="fixed bottom-4 right-4 z-40 shadow-md" onClick={() => setOpen(!open)}><MessageCircle className="h-4 w-4" />Buddi</Button>
+            className="fixed bottom-4 right-4 z-40 shadow-md" onClick={() => setOpen(!open)}><Buddi pose="calm" size={18} decorative className="-ml-0.5" />Buddi</Button>
         {open && <Card id="workspace-assistant-panel" role="region" aria-label="Buddi"
             className="fixed bottom-16 right-2 z-40 flex max-h-[calc(100dvh-6rem)] w-[min(28rem,calc(100vw-1rem))] flex-col border border-border bg-background shadow-xl sm:right-4">
-            <div className="flex items-center justify-between border-b border-border p-3"><div><h2 className="font-display font-semibold">Buddi</h2><p className="text-xs text-muted-foreground">Your account · Current workspace</p></div>
+            <div className="flex items-center justify-between border-b border-border p-3"><div className="flex items-center gap-2.5"><Buddi pose="calm" size={36} decorative className="shrink-0" /><div><h2 className="font-display font-semibold">Buddi</h2><p className="text-xs text-muted-foreground">Your account · Current workspace</p></div></div>
                 <button type="button" aria-label="Close Buddi" onClick={() => setOpen(false)} className="p-2"><X className="h-4 w-4" /></button></div>
             <div className="space-y-3 overflow-y-auto p-3 text-sm">
                 {demo ? <p>Sign in to use saved Buddi sessions. Demo mode does not send workspace data or perform actions.</p> : <>
                     <p className="text-xs text-muted-foreground">Ask for help on any desk. Review the proposed steps before applying them. Approval, verification and destructive actions stay with you. Never enter passwords or keys.</p>
-                    <div className="flex flex-wrap gap-2"><Button type="button" size="sm" variant="secondary" disabled={busy || Boolean(recordPending)} onClick={newSession}>New session</Button>
-                        <Button type="button" size="sm" variant="ghost" disabled={busy} onClick={() => load()}>Reload history</Button><Link className="self-center text-xs underline" to="/app/knowledge">My knowledge</Link>
-                        {session && <Button type="button" size="sm" variant="ghost" disabled={busy || Boolean(recordPending)} onClick={() => setForgetting(!forgetting)}>Forget session</Button>}</div>
+                    {!ready && <p role="status">Checking workspace access…</p>}
+                    <div className="flex flex-wrap gap-2"><Button type="button" size="sm" variant="secondary" disabled={!ready || busy || Boolean(recordPending)} onClick={newSession}>New session</Button>
+                        <Button type="button" size="sm" variant="ghost" disabled={!ready || busy} onClick={() => load()}>Reload history</Button><Link className="self-center text-xs underline" to="/app/knowledge">My knowledge</Link>
+                        {session && <Button type="button" size="sm" variant="ghost" disabled={!ready || busy || Boolean(recordPending)} onClick={() => setForgetting(!forgetting)}>Forget session</Button>}</div>
                     {forgetting && <div className="space-y-2 border border-border p-2"><p>Remove this conversation and its personal patterns? Saved business records are separate.</p>
-                        <Button size="sm" disabled={busy} onClick={forget}>Confirm forget</Button><Button size="sm" variant="ghost" onClick={() => setForgetting(false)}>Keep session</Button></div>}
-                    <label className="block text-xs">Resume a session<select className="mt-1 w-full border border-border bg-background p-2" value={session} disabled={busy || Boolean(recordPending)}
+                        <Button size="sm" disabled={!ready || busy} onClick={forget}>Confirm forget</Button><Button size="sm" variant="ghost" onClick={() => setForgetting(false)}>Keep session</Button></div>}
+                    <label className="block text-xs">Resume a session<select className="mt-1 w-full border border-border bg-background p-2" value={session} disabled={!ready || busy || Boolean(recordPending)}
                         onChange={(event) => { selectedSession.current = event.target.value; historyRequest.current++; setSession(event.target.value); setTurn(null); setMessage(''); setForgetting(false); pending.current = null; captured.current = null;
                             setSnapshot((before) => before ? { ...before, turns: { items: [], page: 1, has_more: false } } : null);
                             startKey.current = globalThis.crypto.randomUUID(); startPayload.current = null; }}>
                         <option value="">New conversation</option>{snapshot?.sessions?.items.map((item) => <option key={item.id} value={item.id}>{item.title} · {item.status}</option>)}
                     </select></label>
-                    {snapshot?.sessions?.has_more && <Button type="button" size="sm" variant="ghost" onClick={() => load(session, { sessionPage: snapshot.sessions.page + 1, append: 'sessions' })}>Load earlier sessions</Button>}
+                    {snapshot?.sessions?.has_more && <Button type="button" size="sm" variant="ghost" disabled={!ready || busy} onClick={() => load(session, { sessionPage: snapshot.sessions.page + 1, append: 'sessions' })}>Load earlier sessions</Button>}
                     {snapshot?.inference_configured === false && <p role="status" className="border border-border p-2">Buddi isn't connected yet. Your workspace operator must bind the existing agent endpoint.</p>}
                     <ol className="space-y-3" aria-label="Conversation">{history.map((item) => <li key={item.id} className="space-y-2 border-b border-border pb-3">
                         <p className="whitespace-pre-wrap"><strong>You:</strong> {item.message}</p><p className="whitespace-pre-wrap"><strong>Buddi:</strong> {item.reply || 'Response pending…'}</p>
@@ -165,30 +198,37 @@ function AssistantDesk({ accountId, workspaceId, demo }) {
                             <ul>{item.plan.context.citations.map((source) => <li key={source.citation}>{source.title} · {source.updated_at || 'Date unavailable'}</li>)}</ul>
                             {!item.plan.context.citations.length && <p>No matching workspace sources were included.</p>}
                         </details>}</li>)}</ol>
-                    {snapshot?.turns?.has_more && <Button type="button" size="sm" variant="ghost" onClick={() => load(session, { turnPage: snapshot.turns.page + 1, append: 'turns' })}>Load earlier messages</Button>}
+                    {snapshot?.turns?.has_more && <Button type="button" size="sm" variant="ghost" disabled={!ready || busy} onClick={() => load(session, { turnPage: snapshot.turns.page + 1, append: 'turns' })}>Load earlier messages</Button>}
                     {turn?.status === 'ready' && turn.plan?.steps.length > 0 && <section className="space-y-2 border border-border p-3" aria-label="Proposed actions">
                         <h3 className="font-semibold">Review proposed steps</h3><ol className="list-inside list-decimal space-y-1">{turn.plan.steps.map((step, i) => <li key={i}>
                             {step.kind === 'navigate' ? `Open ${step.path}` : step.kind === 'fill' ? `Fill ${step.label}: ${String(step.value)}` : `Activate ${step.label}`}</li>)}</ol>
                         {!captured.current && <p>This page changed. Send another message to inspect its current controls.</p>}
-                        <div className="flex gap-2"><Button size="sm" disabled={busy || !captured.current || Boolean(recordPending)} onClick={() => apply()}>Apply reviewed steps</Button>
-                            <Button size="sm" variant="ghost" disabled={busy || Boolean(recordPending)} onClick={() => apply(true)}>Decline</Button></div>
+                        <div className="flex gap-2"><Button size="sm" disabled={!ready || busy || !captured.current || Boolean(recordPending)} onClick={() => apply()}>Apply reviewed steps</Button>
+                            <Button size="sm" variant="ghost" disabled={!ready || busy || Boolean(recordPending)} onClick={() => apply(true)}>Decline</Button></div>
                     </section>}
                     {notice && <p role="status">{notice}</p>}{error && <p role="alert" className="text-destructive">{error}</p>}
-                    {recordPending && <Button size="sm" disabled={busy} onClick={async () => {
-                        if (lock.current) return; lock.current = true; setBusy(true);
+                    {recordPending && <Button size="sm" disabled={!ready || busy} onClick={async () => {
+                        if (lock.current || !current()) return; lock.current = true; setBusy(true);
                         try { await retain(recordPending); } finally { lock.current = false; if (alive.current) setBusy(false); }
                     }}>Retry saving interaction record</Button>}
                     {closed && <p>This session is retained for reading. Start a new session to continue.</p>}
                     <form onSubmit={send} className="space-y-2"><label htmlFor="assistant-message" className="font-medium">What would you like to do?</label>
-                        <Textarea ref={composer} id="assistant-message" value={message} onChange={(event) => { setMessage(event.target.value); }} maxLength={4000} rows={3} disabled={busy || closed || Boolean(recordPending)} />
-                        <Button type="submit" size="sm" disabled={busy || closed || !message.trim() || Boolean(recordPending)}>{busy ? 'Working…' : pending.current ? 'Retry message' : 'Ask Buddi'}</Button></form>
+                        <Textarea ref={composer} id="assistant-message" value={message} onChange={(event) => { setMessage(event.target.value); }} maxLength={4000} rows={3} disabled={!ready || busy || closed || Boolean(recordPending)} />
+                        <Button type="submit" size="sm" disabled={!ready || busy || closed || !message.trim() || Boolean(recordPending)}>{busy ? 'Working…' : pending.current ? 'Retry message' : 'Ask Buddi'}</Button></form>
                 </>}
             </div>
         </Card>}
     </div>;
 }
 export default function WorkspaceAssistant() {
-    const { user } = useAuth(), { active } = useWorkspace(), { demo } = useDemoMode();
-    if (!user?.id || !active?.id) return null;
-    return <AssistantDesk key={`${user.id}:${active.id}:${demo}`} accountId={user.id} workspaceId={active.id} demo={demo} />;
+    const { user, isAuthed, sessionEpoch, isSessionCurrent } = useAuth(), { active } = useWorkspace(), { demo } = useDemoMode();
+    const access = useWorkspaceAccess();
+    const scopeKey = workspaceLifecycleKey({ accountId: user?.id, workspaceId: active?.id, demo, sessionEpoch, access });
+    const currentScope = useRef(scopeKey); currentScope.current = scopeKey;
+    // Access is a settled hidden-state signal; controls owns read-attempt reporting.
+    useFailureTelemetry(Boolean(isAuthed && user?.id && active?.id && !demo && !access.loading && access.error),
+        'access', access.readFailure?.reason, access.readFailure?.status);
+    if (!isAuthed || !user?.id || !active?.id || !demo && (access.error || !access.data)) return null;
+    return <AssistantDesk key={scopeKey} scopeKey={scopeKey} currentScope={currentScope}
+        accountId={user.id} workspaceId={active.id} demo={demo} sessionEpoch={sessionEpoch} isSessionCurrent={isSessionCurrent} />;
 }

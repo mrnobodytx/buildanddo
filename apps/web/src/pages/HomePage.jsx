@@ -1,16 +1,16 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/src/pages/HomePage.jsx
 // Stage:       07_BUILD
-// SRS:         SRS-BUILDANDDO-UPGRADE-001
+// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-BUDDI-003
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
-// Seat:        BITS-CODEGEN
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-BUDDI-003
+// Seat:        BITS-CODEGEN, C-ONE (Talk to Buddi)
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-15
-// Depends:     apps/web/src/hooks/useWorkspaceRecords.js, apps/web/src/components/workspace/TutorialCatalog.jsx, apps/web/src/lib/workspaceSummary.js, apps/web/src/components/editorial/EditorialFrontPage.jsx, apps/web/src/hooks/useMissionResearch.js
+// Depends:     apps/web/src/hooks/useWorkspaceRecords.js, apps/web/src/components/workspace/TutorialCatalog.jsx, apps/web/src/lib/workspaceSummary.js, apps/web/src/components/editorial/EditorialFrontPage.jsx, apps/web/src/hooks/useMissionResearch.js, apps/web/src/components/voice/TalkToBuddi.jsx, apps/web/src/components/site/Faq.jsx, apps/web/src/components/site/Footer.jsx, apps/web/src/components/site/EarlyAccess.jsx
 // EnumType:    Widget
-// EnumEdges:   CONSUMES apps/web/src/hooks/useWorkspaceRecords.js; CONSUMES apps/web/src/components/workspace/TutorialCatalog.jsx; CONSUMES apps/web/src/lib/workspaceSummary.js; CONSUMES apps/web/src/components/editorial/EditorialFrontPage.jsx; CONSUMES apps/web/src/hooks/useMissionResearch.js
+// EnumEdges:   CONSUMES apps/web/src/hooks/useWorkspaceRecords.js; CONSUMES apps/web/src/components/workspace/TutorialCatalog.jsx; CONSUMES apps/web/src/lib/workspaceSummary.js; CONSUMES apps/web/src/components/editorial/EditorialFrontPage.jsx; CONSUMES apps/web/src/hooks/useMissionResearch.js; CONSUMES apps/web/src/components/voice/TalkToBuddi.jsx; CONSUMES apps/web/src/components/site/Faq.jsx; CONSUMES apps/web/src/components/site/Footer.jsx; CONSUMES apps/web/src/components/site/EarlyAccess.jsx
 // DAG Node:    none
 // Intent:      Project authenticated workspace records onto the front page with provenance, recoverable intake and no anonymous private reads.
 // ───────────────────────────────────────────────────────────────
@@ -40,6 +40,7 @@ import EditorialStory from '@/components/motion/EditorialStory';
 import EditorialFrontPage from '@/components/editorial/EditorialFrontPage';
 import ReadingProgress from '@/components/motion/ReadingProgress';
 import TutorialCatalog from '@/components/workspace/TutorialCatalog';
+import TalkToBuddi from '@/components/voice/TalkToBuddi';
 import {
     DemoModeBanner,
     DegradedNotice,
@@ -73,7 +74,7 @@ import {
 } from '@/components/site/ui';
 
 const DESCRIPTION =
-    'Learn with people and AI. Build something real. Read researched ideas, explore the platform, and follow your daily workspace highlights with their sources and evidence.';
+    'BuildAndDo is an educational collaboration platform. Learn with people and AI through real projects, verify what happened, and share what you learned.';
 
 const structuredData = [
     {
@@ -178,7 +179,7 @@ function GlanceMetric({ icon: Icon, label, source, count, href }) {
     );
 }
 
-function BusinessAtAGlance({ sources }) {
+function WorkspaceAtAGlance({ sources }) {
     return (
         <Section id="glance" className="border-t border-foreground/80 py-12 sm:py-16">
             <SectionLabel icon={Gauge}>Your Workspace at a Glance</SectionLabel>
@@ -211,19 +212,16 @@ function BusinessAtAGlance({ sources }) {
                     href="/app/evidence"
                 />
                 <GlanceMetric
-                    icon={Gauge}
-                    label="Revenue sources reporting"
-                    source={sources.support}
-                    count={
-                        sources.support?.records.filter((record) => hasReportedRevenue(record))
-                            .length
-                    }
-                    href="/app/support"
+                    icon={Send}
+                    label="Saved challenges"
+                    source={sources.challenges}
+                    count={sources.challenges?.records.length}
+                    href="#challenge-desk"
                 />
             </div>
             <p className="mt-5 text-xs text-muted-foreground">
-                Today uses your local date. Revenue is listed separately below by source and
-                currency; a pending connection is never counted as a payment.
+                Today uses your local date. These counts describe recorded work and evidence;
+                they do not measure learning or award a capability.
             </p>
         </Section>
     );
@@ -274,7 +272,7 @@ function ChallengeForm({ challenges }) {
                 maxLength={2000}
                 required
                 disabled={challenges.saving || challenges.demo}
-                placeholder="e.g. Friday appointment no-shows are rising and I don't know why."
+                placeholder="e.g. Build a shared project website and test whether classmates can use it."
                 className="w-full resize-y border border-border bg-background px-3 py-2 text-base text-foreground"
             />
             <div className="flex flex-wrap items-center justify-between gap-3">
@@ -328,7 +326,8 @@ function ChallengeDesk({ challenges }) {
                         Bring a real problem to learn on.
                     </h2>
                     <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-                        Save an input to your active workspace and follow its recorded status here.
+                        Choose something to learn, build or accomplish. Save it to your active
+                        workspace and follow its recorded status here.
                         Submitting a challenge does not start an automation or create a verified
                         result.
                     </p>
@@ -530,7 +529,7 @@ function DailyEdition({ editions }) {
                     <div className="flex flex-wrap items-center gap-3">
                         <StatePill state={edition.status} />
                         <span className="text-xs text-muted-foreground">
-                            {recordTimestamp(edition.edition_date || edition.created)}
+                            {recordTimestamp(edition.published_at)}
                         </span>
                     </div>
                     <h3 className="font-display text-2xl font-semibold">{edition.title}</h3>
@@ -555,8 +554,8 @@ function SupportRevenue({ support }) {
     return (
         <PreviewSection
             id="support-revenue"
-            label="Support & Revenue"
-            title="Reported amounts, source by source."
+            label="Business projects · Support & Revenue"
+            title="Support requests and historical reports."
             icon={Gauge}
             href="/app/support"
             source={support}
@@ -570,7 +569,7 @@ function SupportRevenue({ support }) {
                                 <h3 className="font-display text-xl font-semibold">
                                     {record.provider}
                                 </h3>
-                                <StatePill state={record.status} />
+                                <StatePill state="reported" />
                             </div>
                             {hasReportedRevenue(record) ? (
                                 <>
@@ -615,8 +614,8 @@ function SupportRevenue({ support }) {
                                 </>
                             ) : (
                                 <p className="text-sm text-muted-foreground">
-                                    No synced amount is available. A connection request is not a
-                                    payment record.
+                                    No provider-confirmed revenue is available. Historical amounts and
+                                    health labels remain self-reported, not metrics. A request is not a payment.
                                 </p>
                             )}
                         </Card>
@@ -638,7 +637,11 @@ function FieldManual() {
                 Read the catalogue and update your saved progress here, in Docs, or in your
                 workspace.
             </p>
-            <div className="mb-6 flex flex-wrap items-center gap-4"><Button href="/classrooms" variant="secondary">Learn together in Classrooms</Button><p className="text-sm text-muted-foreground">Shared lessons, questions and workspace sessions.</p></div>
+            <div className="mb-6 flex flex-wrap items-center gap-4">
+                <Button href="/classrooms" variant="secondary">Learn together in Classrooms</Button>
+                <Button href="/practice" variant="secondary">Explore shared practices</Button>
+                <p className="text-sm text-muted-foreground">Bring a lesson or method into your next project.</p>
+            </div>
             <TutorialCatalog limit={4} />
         </Section>
     );
@@ -648,13 +651,14 @@ function EditionContent({ sources = {}, workspaceControls, workspaceId = '' }) {
     return (
         <>
             <EditorialFrontPage sources={sources} workspaceControls={workspaceControls} workspaceId={workspaceId} />
-            <BusinessAtAGlance sources={sources} />
+            <TalkToBuddi />
+            <FieldManual />
+            <WorkspaceAtAGlance sources={sources} />
             <ChallengeDesk challenges={sources.challenges} />
             <EvidenceLedger evidence={sources.evidence} />
             <Corrections corrections={sources.corrections} />
             <DailyEdition editions={sources.editions} />
             <SupportRevenue support={sources.support} />
-            <FieldManual />
         </>
     );
 }

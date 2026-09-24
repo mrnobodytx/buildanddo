@@ -1,9 +1,10 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/src/test/utils.jsx
 // Stage:       08_TEST
-// SRS:         SRS-BUILDANDDO-TEST-001
+// SRS:         SRS-BUILDANDDO-TEST-001, SRS-BUILDANDDO-UPGRADE-001
 // CAPS:        pending
 // CK:          pending
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-10
@@ -187,14 +188,17 @@ export function createMockEvidence(overrides = {}) {
  * @returns {object} The value for `AuthContext.Provider`.
  */
 export function createAuthValue(overrides = {}) {
-    return {
+    const value = {
         user: createMockUser(),
         isAuthed: true,
+        sessionEpoch: 0,
         login: vi.fn(() => Promise.resolve({ token: 'test-token', record: createMockUser() })),
         signup: vi.fn(() => Promise.resolve({ token: 'test-token', record: createMockUser() })),
         logout: vi.fn(),
         ...overrides,
     };
+    value.isSessionCurrent ||= vi.fn((epoch) => value.isAuthed && Boolean(value.user?.id) && epoch === value.sessionEpoch);
+    return value;
 }
 
 /**

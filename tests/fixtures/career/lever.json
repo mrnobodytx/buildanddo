@@ -1,0 +1,11 @@
+[
+  {"id": "lev-1", "text": "Senior Platform Engineer", "categories": {"location": "Remote", "team": "Infra", "commitment": "Full-time"},
+   "hostedUrl": "https://jobs.example.invalid/lev-1", "applyUrl": "https://jobs.example.invalid/lev-1/apply", "createdAt": 1789900000000,
+   "descriptionPlain": "We run a large platform.",
+   "lists": [
+     {"text": "Requirements", "content": "<li>Distributed systems in production</li><li>CI/CD with GitLab</li><li>5+ years of backend experience</li>"},
+     {"text": "Nice to have", "content": "<li>Kubernetes</li>"}
+   ]},
+  {"id": "lev-2", "text": "Office Manager", "categories": {"location": "NYC"}, "createdAt": 1789900000000,
+   "descriptionPlain": "Keep the office running.", "lists": []}
+]

@@ -1,18 +1,19 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/src/pages/workspace/FleetPage.jsx
 // Stage:       07_BUILD
-// SRS:         SRS-BUILDANDDO-WORKSPACE-001
+// SRS:         SRS-BUILDANDDO-WORKSPACE-001, SRS-BUILDANDDO-UPGRADE-001
 // CAPS:        pending
 // CK:          pending
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-11
 // Depends:     scripts/ci/fleet_report.py,
 //              apps/web/src/components/workspace/workspaceHelpers.jsx,
-//              apps/web/src/components/site/ui.jsx
+//              apps/web/src/components/site/ui.jsx, apps/web/src/lib/observability/runtime.js, apps/web/src/lib/navigationIntent.js
 // EnumType:    Widget
 // EnumEdges:   CONSUMES apps/web/public/fleet-status.json;
-//              DEPENDS_ON scripts/ci/fleet_report.py
+//              DEPENDS_ON scripts/ci/fleet_report.py; CONSUMES apps/web/src/lib/observability/runtime.js; CONSUMES apps/web/src/lib/navigationIntent.js
 // Intent:      Show the Citadel NNC as three planes of hosts with what actually
 //              runs on each, and label the reading as a recorded observation
 //              rather than dressing a transcription up as a live gauge.
@@ -44,6 +45,8 @@ import { DegradedNotice, ListSkeleton } from '@/components/workspace/WorkspaceNo
 import { formatDate } from '@/lib/format';
 import { cn } from '@/lib/utils';
 import pocketbaseClient from '@/lib/pocketbaseClient';
+import { readFailed } from '@/lib/observability/runtime';
+import { telemetrySection } from '@/lib/navigationIntent';
 
 // The fleet snapshot is no longer a public file: the backend answers this route only to master seats (estate.pb.js).
 const REPORT_ROUTE = '/api/buildanddo/estate/fleet-status';
@@ -230,17 +233,32 @@ export default function FleetPage() {
 
     useEffect(() => {
         let cancelled = false;
+        let received = false;
+        const accountId = pocketbaseClient.authStore.record?.id;
+        const pathname = globalThis.window?.location?.pathname;
+        const section = telemetrySection(pathname);
         setLoading(true);
         setFailed(false);
         pocketbaseClient
             .send(REPORT_ROUTE, { method: 'GET', requestKey: null })
             .then((data) => {
                 if (cancelled) return;
+                received = true;
+                if (!data || typeof data !== 'object' || Array.isArray(data) || data.state !== 'UNMEASURED' &&
+                    (!Array.isArray(data.hosts) || !Array.isArray(data.planes) || !data.totals || !Array.isArray(data.totals.agent_versions) ||
+                        data.hosts.some((host) => !host || !Array.isArray(host.containers)) || data.planes.some((plane) => !plane) ||
+                        data.alerts !== undefined && !Array.isArray(data.alerts))) throw new Error('Unexpected fleet response');
+                if (data.state === 'UNMEASURED' && accountId === pocketbaseClient.authStore.record?.id && pathname === globalThis.window?.location?.pathname)
+                    readFailed(section, 'estate', 'unmeasured', 200);
                 setReport(data);
                 setLoading(false);
             })
-            .catch(() => {
+            .catch((error) => {
                 if (cancelled) return;
+                const aborted = error?.isAbort || error?.name === 'AbortError' || error?.originalError?.name === 'AbortError';
+                const malformed = received || error?.name === 'SyntaxError' || error?.originalError?.name === 'SyntaxError';
+                if (!aborted && accountId === pocketbaseClient.authStore.record?.id && pathname === globalThis.window?.location?.pathname)
+                    readFailed(section, 'estate', malformed ? 'invalid_response' : 'unavailable', received ? 200 : malformed && error?.status === 0 ? undefined : error?.status);
                 setFailed(true);
                 setLoading(false);
             });
@@ -289,11 +307,18 @@ export default function FleetPage() {
 
     const observedLabel = report?.observed_at ? formatDate(report.observed_at) : null;
 
+    // The host count used to be spelled out in prose, so it was true only for as long as the
+    // fleet did not change - and it went on claiming seven hosts across three planes even when
+    // the report carried no hosts at all. It is read from the measurement, or it is not made.
+    const fleetDescription = totals
+        ? `The Citadel NNC as it was last recorded: ${totals.hosts} hosts across ${planes.length} planes, and what runs on each. These figures are a transcribed Datadog reading projected at build time, not a live gauge — the observation date is stated below.`
+        : 'The Citadel NNC as it was last recorded, and what runs on each host. These figures are a transcribed reading projected at build time, not a live gauge. Nothing is shown until a measurement is available.';
+
     return (
         <div className="space-y-8">
             <PageHeader
                 title="Fleet"
-                description="The Citadel NNC as it was last recorded: seven hosts across three planes, and what runs on each. These figures are a transcribed Datadog reading projected at build time, not a live gauge — the observation date is stated below."
+                description={fleetDescription}
                 actions={
                     report ? (
                         <ProvenanceTag
@@ -307,6 +332,18 @@ export default function FleetPage() {
 
             {failed && (
                 <DegradedNotice message={MISSING_REPORT} onRetry={() => setAttempt((n) => n + 1)} />
+            )}
+
+            {/* THE REPORT CAN SUCCEED AND STILL CARRY NO MEASUREMENT. estate.pb.js answers HTTP
+                200 with {state:'UNMEASURED', reason} and no totals, so `failed` stays false, the
+                spinner stops, and the body below - gated on `totals` - renders nothing at all.
+                The page showed a title, a provenance tag and empty space, with no error and no
+                retry. An unmeasured fleet is a state worth saying out loud, not a blank. */}
+            {!loading && !failed && report && !totals && (
+                <DegradedNotice
+                    message={report.reason || 'The fleet report answered but carried no measurement, so there is nothing to show yet.'}
+                    onRetry={() => setAttempt((n) => n + 1)}
+                />
             )}
 
             {loading && <ListSkeleton rows={4} />}

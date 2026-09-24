@@ -8,14 +8,15 @@
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-16
-// Depends:     apps/pocketbase/pb_hooks/workspace-access.js, apps/pocketbase/pb_migrations/1790400000_classroom_rooms.js
+// Depends:     apps/pocketbase/pb_hooks/workspace-access.js, apps/pocketbase/pb_migrations/1790400000_classroom_rooms.js, apps/pocketbase/pb_hooks/government-access.js
 // EnumType:    Service
-// EnumEdges:   DEPENDS_ON apps/pocketbase/pb_hooks/workspace-access.js; DEPENDS_ON apps/pocketbase/pb_migrations/1790400000_classroom_rooms.js
+// EnumEdges:   DEPENDS_ON apps/pocketbase/pb_hooks/workspace-access.js; DEPENDS_ON apps/pocketbase/pb_migrations/1790400000_classroom_rooms.js; CONSUMES apps/pocketbase/pb_hooks/government-access.js
 // DAG Node:    none
 // Intent:      Make shared lessons, host lifecycle and expiring classroom presence authoritative to the current workspace account.
 // ───────────────────────────────────────────────────────────────
 
 const access = require(`${__hooks}/workspace-access.js`);
+const government = require(`${__hooks}/government-access.js`);
 const TTL = 75000;
 const CAPACITY = 100;
 const WRITERS = ['owner', 'admin', 'editor'];
@@ -75,7 +76,7 @@ function lessonBody(record) {
 }
 function lessonFor(app, id, info) {
     const lesson = access.find(app, 'tutorials', access.id(id));
-    access.readable(app, lesson, info);
+    if (!government.lesson(app, info.auth, lesson)) access.readable(app, lesson, info);
     const body = lessonBody(lesson);
     if (!body)
         access.invalid('Choose an installed lesson with a supported lesson body.');
@@ -84,8 +85,22 @@ function lessonFor(app, id, info) {
 }
 function lessons(app, info) {
     const rows = app.findRecordsByFilter('tutorials', 'id != ""', 'order,id', 201, 0);
-    return { items: rows.slice(0, 200).filter((row) => app.canAccessRecord(row, info, row.collection().viewRule) && lessonBody(row))
+    return { items: rows.slice(0, 200).filter((row) => {
+        if (row.getString('category') === 'Government submissions') {
+            if (!government.status(app, info.auth).allowed) return false;
+            government.lesson(app, info.auth, row);
+            return Boolean(lessonBody(row));
+        }
+        return app.canAccessRecord(row, info, row.collection().viewRule) && lessonBody(row);
+    })
         .map((row) => ({ id: row.id, title: row.getString('title'), category: row.getString('category') })), has_more: rows.length > 200 };
+}
+function roomMembership(app, auth, room) {
+    // A chatroom carries no lesson, so no lesson category can gate it. Without this, the lookup
+    // below answers 404 for every chatroom: the list hides them and join, detail and heartbeat fail.
+    if (!room.getString('tutorial')) return;
+    const tutorial = access.find(app, 'tutorials', room.getString('tutorial'));
+    if (tutorial.getString('category') === 'Government submissions') government.requireMember(app, auth);
 }
 function memberFor(app, workspace, room, owner) {
     const rows = app.findRecordsByFilter('classroom_members', 'workspace = {:workspace} && room = {:room} && owner = {:owner}',
@@ -97,11 +112,37 @@ function fresh(member) {
     const age = member ? Date.now() - Date.parse(member.getString('last_seen').replace(' ', 'T')) : NaN;
     return Boolean(member?.getBool('active') && age >= 0 && age < TTL);
 }
+/** Resolve current classroom participation for the signalling and presence owners. */
+function mediaAccess(app, auth, id) {
+    access.authenticated({ auth });
+    const current = access.find(app, 'users', auth.id);
+    const room = access.find(app, 'classroom_rooms', access.id(id));
+    const workspace = room.getString('workspace');
+    const scope = scopeFor(app, { auth: current }, workspace);
+    roomMembership(app, current, room);
+    const member = memberFor(app, workspace, room.id, current.id);
+    if (room.getString('status') !== 'live' || !fresh(member))
+        throw new ForbiddenError('Join the live classroom before using media.');
+    return { room, workspace, member, auth: current, can_manage: canManage(scope, current, room),
+        basis: room.getString('host') === current.id ? 'host' : 'member' };
+}
 function members(app, workspace, room) {
     return app.findRecordsByFilter('classroom_members', 'workspace = {:workspace} && room = {:room} && active = {:active}',
         '-last_seen,-id', CAPACITY + 1, 0, { workspace, room, active: true }).filter(fresh);
 }
 function assign(record, values) { Object.entries(values).forEach(([key, value]) => record.set(key, value)); return record; }
+// Attendance history is written in the command's own transaction, so a replayed
+// receipt never writes twice. A backend without the attendance migration keeps
+// working exactly as before; its class record reports the history as absent.
+function attendanceCollection(app) {
+    try { return app.findCollectionByNameOrId('classroom_attendance'); }
+    catch (error) { if (String(error.message).includes('no rows in result set')) return null; throw error; }
+}
+function attend(app, room, owner, event) {
+    const collection = attendanceCollection(app);
+    if (!collection) return;
+    app.save(assign(new Record(collection), { workspace: room.getString('workspace'), room: room.id, owner, event, at: new Date().toISOString() }));
+}
 function present(app, e, room, joining) {
     const workspace = room.getString('workspace');
     let member = memberFor(app, workspace, room.id, e.auth.id);
@@ -118,6 +159,7 @@ function present(app, e, room, joining) {
         assign(member, { active: false, revision: Number(member.get('revision')) + 1 });
     }
     app.save(member);
+    attend(app, room, e.auth.id, joining ? 'join' : 'leave');
 }
 function draft(app, body, e) {
     const { title, description, tutorial, starts_at } = body.payload;
@@ -167,6 +209,8 @@ function command(e) {
         if (!participation && !WRITERS.includes(scope.role)) throw new ForbiddenError('An editor or host must make this change.');
         if (room && !participation && body.action !== 'room.message' && !canManage(scope, e.auth, room))
             throw new ForbiddenError('Only this room\'s host or a workspace administrator may manage the class.');
+        if (room) roomMembership(app, e.auth, room);
+        if (body.payload.tutorial) lessonFor(app, body.payload.tutorial, e.requestInfo());
         result = receipt(app, e, workspace, body, () => {
             if (creating) {
                 if (body.revision !== 0) access.invalid('A new room starts at revision zero.');
@@ -204,9 +248,11 @@ function command(e) {
                     if (status !== 'scheduled') access.conflict('This class has already started.');
                     lessonFor(app, room.getString('tutorial'), e.requestInfo());
                     assign(room, { status: 'live', started_at: new Date().toISOString() });
+                    attend(app, room, e.auth.id, 'start');
                     present(app, e, room, true);
                 } else if (body.action === 'room.end') {
                     assign(room, { status: 'ended', ended_at: new Date().toISOString() });
+                    attend(app, room, e.auth.id, 'end');
                 } else {
                     if (status !== 'live') access.conflict('Start the class before changing the shared lesson.');
                     const lesson = lessonFor(app, body.payload.tutorial, e.requestInfo());
@@ -231,8 +277,29 @@ function list(e) {
     if (!['all', 'scheduled', 'live', 'ended'].includes(status)) access.invalid('Choose a listed classroom state.');
     const result = access.list(e.app, 'classroom_rooms', 'workspace = {:workspace}' + (status === 'all' ? '' : ' && status = {:status}'),
         { workspace, status }, access.page(e));
-    return { workspace, role: scope.role, can_host: WRITERS.includes(scope.role), items: result.rows.map((row) => output(row, scope, e.auth)),
+    return { workspace, role: scope.role, can_host: WRITERS.includes(scope.role), items: result.rows.filter((row) => {
+        try { roomMembership(e.app, e.auth, row); return true; }
+        catch (error) { if ([403, 404].includes(error.status)) return false; throw error; }
+    }).map((row) => output(row, scope, e.auth)),
         page: result.page, has_more: result.has_more, lessons: lessons(e.app, e.requestInfo()) };
+}
+
+/**
+ * Whether live voice and video can be offered in this room. It reads the same
+ * configuration the /api/classroom signalling routes use and returns no value
+ * from it: availability is a fact about this server, never a credential.
+ * @param {boolean} live Room is in session.
+ * @returns {{available: boolean, reason?: string}}
+ */
+function mediaStatus(live, app) {
+    if (!live) return { available: false };
+    let config;
+    try {
+        require(`${__hooks}/classroom-media.js`).schema(app);
+        config = require(`${__hooks}/classroom-realtime-lib.js`).realtimeConfig();
+    }
+    catch (_) { config = { reason: 'unreadable' }; }
+    return config && !config.reason ? { available: true } : { available: false, reason: 'not configured on this server' };
 }
 
 /** @param {object} e Authenticated native request. @returns {object} Current shared lesson, presence and discussion. */
@@ -241,6 +308,7 @@ function detail(e) {
     const workspace = access.workspaceId(e);
     const scope = scopeFor(e.app, e, workspace);
     const room = roomFor(e.app, workspace, e.request.pathValue('id'));
+    roomMembership(e.app, e.auth, room);
     const mine = memberFor(e.app, workspace, room.id, e.auth.id);
     const live = room.getString('status') === 'live';
     const discussion = access.list(e.app, 'classroom_messages', 'workspace = {:workspace} && room = {:room}',
@@ -253,7 +321,7 @@ function detail(e) {
         participants: live ? members(e.app, workspace, room.id).map((row) => ({ id: row.id, name: row.getString('name'), is_host: row.getString('owner') === room.getString('host') })) : [],
         messages: { items: discussion.rows.map((row) => ({ id: row.id, room: room.id, name: row.getString('name'), body: row.getString('body'),
             own: row.getString('owner') === e.auth.id, created: row.getString('created') })), page: discussion.page, has_more: discussion.has_more },
-        media: { available: false } };
+        media: mediaStatus(live, e.app) };
 }
 
 /** @param {object} e Authenticated native request. @returns {object} Confirmation for the current attendance generation. */
@@ -265,6 +333,7 @@ function heartbeat(e) {
     e.app.runInTransaction((app) => {
         scopeFor(app, e, workspace);
         const room = roomFor(app, workspace, e.request.pathValue('id'));
+        roomMembership(app, e.auth, room);
         const member = memberFor(app, workspace, room.id, e.auth.id);
         if (room.getString('status') !== 'live' || member?.id !== body.membership || Number(member?.get('revision')) !== body.revision || !fresh(member))
             access.conflict('Your classroom connection ended. Rejoin the class to continue.');
@@ -274,4 +343,57 @@ function heartbeat(e) {
     return result;
 }
 
-module.exports = { command, list, detail, heartbeat };
+const HOUR = 3600000;
+const RECORD_HOURS = 48;
+const RECORD_ROWS = 5000;
+function stamp(value) {
+    const ms = Date.parse(String(value || '').replace(' ', 'T'));
+    return Number.isFinite(ms) ? ms : 0;
+}
+
+/**
+ * The host's aggregate class record: attendees, minutes and people present per
+ * hour. It returns counts only; who attended stays in the live attendance list.
+ * @param {object} e Authenticated native request.
+ * @returns {object} Aggregate attendance for one room.
+ */
+function record(e) {
+    access.authenticated(e);
+    const workspace = access.workspaceId(e);
+    const scope = scopeFor(e.app, e, workspace);
+    const room = roomFor(e.app, workspace, e.request.pathValue('id'));
+    roomMembership(e.app, e.auth, room);
+    if (!canManage(scope, e.auth, room)) throw new ForbiddenError('Only this room\'s host or a workspace administrator may read its class record.');
+    const base = { room: room.id, status: room.getString('status'), started_at: room.getString('started_at'), ended_at: room.getString('ended_at') };
+    if (!attendanceCollection(e.app)) return { ...base, installed: false };
+    const started = stamp(base.started_at);
+    if (!started) return { ...base, installed: true, attendees: 0, minutes: 0, hours: [], truncated: false };
+    const stop = stamp(base.ended_at) || Date.now();
+    const rows = e.app.findRecordsByFilter('classroom_attendance', 'workspace = {:workspace} && room = {:room}', 'at,id',
+        RECORD_ROWS + 1, 0, { workspace, room: room.id });
+    const truncated = rows.length > RECORD_ROWS;
+    const open = {}, intervals = [];
+    for (const row of rows.slice(0, RECORD_ROWS)) {
+        const owner = row.getString('owner'), at = Math.min(stamp(row.getString('at')), stop), event = row.getString('event');
+        if (event === 'join' && open[owner] === undefined) open[owner] = at;
+        else if (event === 'leave' && open[owner] !== undefined) { intervals.push([owner, open[owner], at]); delete open[owner]; }
+    }
+    // Someone still marked present ends at their last heartbeat, or now while still fresh.
+    for (const [owner, from] of Object.entries(open)) {
+        const member = memberFor(e.app, workspace, room.id, owner);
+        const until = fresh(member) ? stop : Math.min(stop, Math.max(from, stamp(member?.getString('last_seen'))));
+        intervals.push([owner, from, until]);
+    }
+    const first = Math.max(Math.floor(started / HOUR) * HOUR, Math.floor(stop / HOUR) * HOUR - (RECORD_HOURS - 1) * HOUR);
+    const hours = [];
+    for (let t = first; t <= stop; t += HOUR) {
+        const present = new Set(intervals.filter(([, from, until]) => from < t + HOUR && until >= t).map(([owner]) => owner));
+        hours.push({ t: new Date(t).toISOString(), people: present.size });
+    }
+    return { ...base, installed: true, truncated,
+        attendees: new Set(intervals.map(([owner]) => owner)).size,
+        minutes: Math.round(intervals.reduce((total, [, from, until]) => total + Math.max(0, until - from), 0) / 60000),
+        hours };
+}
+
+module.exports = { command, list, detail, heartbeat, record, mediaAccess };

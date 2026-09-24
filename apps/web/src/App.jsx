@@ -1,20 +1,38 @@
-// CGRF: SRS=SRS-BUILDANDDO-COMMUNITY-WEB-001 | CAPS=B | Seat=C-ONE
-import React, { lazy, Suspense } from 'react';
+// ─── CGRF Header ───────────────────────────────────────────────
+// File:        apps/web/src/App.jsx
+// Stage:       07_BUILD
+// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-COMMUNITY-WEB-001
+// CAPS:        pending
+// CK:          pending
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+// Seat:        BITS-CODEGEN, C-ONE
+// Owner:       Citadel Nexus Inc.
+// Created:     2026-09-21
+// Depends:     apps/web/src/contexts/AuthContext.jsx, apps/web/src/components/ProtectedRoute.jsx, apps/web/src/pages/workspace/GovernmentPage.jsx, apps/web/src/pages/workspace/CareerPage.jsx, apps/web/src/hooks/useFailureTelemetry.js, apps/web/src/components/workspace/PageBoundary.jsx
+// EnumType:    Widget
+// EnumEdges:   CONSUMES apps/web/src/contexts/AuthContext.jsx; CONSUMES apps/web/src/components/ProtectedRoute.jsx; CONSUMES apps/web/src/pages/workspace/GovernmentPage.jsx; CONSUMES apps/web/src/pages/workspace/CareerPage.jsx; CONSUMES apps/web/src/hooks/useFailureTelemetry.js; CONSUMES apps/web/src/components/workspace/PageBoundary.jsx
+// Intent:      Route public and workspace views only after native session validation.
+// ───────────────────────────────────────────────────────────────
+
+import React, { lazy, Suspense, useEffect, useRef } from 'react';
 import { MotionProvider } from '@/contexts/MotionContext';
 import { MotionEntrance } from '@/components/motion/MotionPrimitives';
 import { ThemeProvider } from 'next-themes';
 import RouteLoading from '@/components/RouteLoading';
 import SkipNavigation from '@/components/SkipNavigation';
-import { Route, Routes, BrowserRouter as Router, Navigate, useLocation } from 'react-router-dom';
+import { Route, Routes, BrowserRouter as Router, Navigate, Outlet, useLocation } from 'react-router-dom';
 import ScrollToTop from './components/ScrollToTop';
 import RouteTelemetry from './components/observability/RouteTelemetry';
 import TelemetryBoundary from './components/observability/TelemetryBoundary';
 import { AuthProvider, useAuth } from '@/contexts/AuthContext';
+import { CareerProfileProvider } from '@/contexts/CareerProfileContext';
 import { WorkspaceProvider, useWorkspace } from '@/contexts/WorkspaceContext';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import PageBoundary from '@/components/workspace/PageBoundary';
 import { workspaceDestination } from '@/lib/navigationIntent';
 import { isMasterSeat } from '@/lib/estateAccess';
+import { trackUnknownRoute } from '@/lib/observability/runtime';
+import { useFailureTelemetry } from '@/hooks/useFailureTelemetry';
 
 const HomePage = lazy(() => import('./pages/HomePage'));
 const HostingerChallengePage = lazy(() => import('./pages/HostingerChallengePage'));
@@ -24,6 +42,7 @@ const PlatformPage = lazy(() => import('./pages/PlatformPage'));
 const LoginPage = lazy(() => import('./pages/LoginPage'));
 const SignupPage = lazy(() => import('./pages/SignupPage'));
 const ForgotPasswordPage = lazy(() => import('./pages/ForgotPasswordPage'));
+const ResetPasswordPage = lazy(() => import('./pages/ResetPasswordPage'));
 const OnboardingPage = lazy(() => import('./pages/OnboardingPage'));
 const WorkspaceLayout = lazy(() => import('./components/workspace/WorkspaceLayout'));
 const OverviewPage = lazy(() => import('./pages/workspace/OverviewPage'));
@@ -44,6 +63,7 @@ const BlueprintPage = lazy(() => import('./pages/workspace/BlueprintPage'));
 const PolicyPage = lazy(() => import('./pages/workspace/PolicyPage'));
 const OperatorPage = lazy(() => import('./pages/workspace/OperatorPage'));
 const SuitePage = lazy(() => import('./pages/workspace/SuitePage'));
+const GovernmentPage = lazy(() => import('./pages/workspace/GovernmentPage'));
 const DossierPage = lazy(() => import('./pages/workspace/DossierPage'));
 const DailyEditionPage = lazy(() => import('./pages/workspace/DailyEditionPage'));
 // Capability Passport viewer; file path retained from the former desks page so
@@ -51,6 +71,8 @@ const DailyEditionPage = lazy(() => import('./pages/workspace/DailyEditionPage')
 const SpecialistWorkPage = lazy(() => import('./pages/workspace/SpecialistWorkPage'));
 const ExecutionReplayPage = lazy(() => import('./pages/workspace/ExecutionReplayPage'));
 const CapabilityPassportPage = lazy(() => import('./pages/workspace/SpecialistDeskPage'));
+const CareerPage = lazy(() => import('./pages/workspace/CareerPage'));
+const JourneyPage = lazy(() => import('./pages/workspace/JourneyPage'));
 const CorrectionsPage = lazy(() => import('./pages/workspace/CorrectionsPage'));
 const SupportRevenuePage = lazy(() => import('./pages/workspace/SupportRevenuePage'));
 const CommunitySocialPage = lazy(() => import('./pages/workspace/CommunitySocialPage'));
@@ -76,8 +98,8 @@ const LiveExperimentRoomPage = lazy(() => import('./pages/workspace/LiveExperime
 // TelemetryBoundary still catches everything, but a root catch replaces the
 // whole screen — one broken page would take the navigation with it and leave
 // the operator with nothing but a reload.
-// Estate surfaces (Fleet) exist only for a signed-in master-level CNWB seat. Anyone else is sent to the workspace front
-// page: not a 403 page, because the surface should not exist for them at all. The level is backend-owned.
+// Estate surfaces (Fleet, Platform Health) exist only for a signed-in master-level CNWB seat. Anyone else is sent to the
+// workspace front page: not a 403 page, because the surface should not exist for them at all. The level is backend-owned.
 function EstateOnly({ enabled, children }) {
     const { user } = useAuth();
     if (enabled && !isMasterSeat(user)) return <Navigate to="/app" replace />;
@@ -86,6 +108,7 @@ function EstateOnly({ enabled, children }) {
 
 const WORKSPACE_ROUTES = [
     { index: true, label: 'Front Page', element: OverviewPage },
+    { path: 'journey', label: 'Start a journey', element: JourneyPage },
     { path: 'operator', label: 'Operator cockpit', element: OperatorPage },
     { path: 'signals', label: 'Signals', element: SignalsPage },
     { path: 'missions', label: 'Challenge Desk', element: MissionsPage },
@@ -96,18 +119,23 @@ const WORKSPACE_ROUTES = [
     { path: 'erp', label: 'ERP', element: ErpPage },
     { path: 'operations', label: 'Operations', element: OperationsPage },
     { path: 'fleet', label: 'Fleet', element: FleetPage, estate: true },
-    { path: 'platforms', label: 'Platform Health', element: PlatformHealthPage },
+    // Platform Health reads the same operating-company estate data as Fleet - whose vendor accounts
+    // are connected, and what is switched off inside them - so it carries the same flag. Without it
+    // the surface rendered to every authenticated workspace user.
+    { path: 'platforms', label: 'Platform Health', element: PlatformHealthPage, estate: true },
     { path: 'evidence', label: 'Evidence Ledger', element: EvidencePage },
     { path: 'research', label: 'Mission research', element: ResearchPage },
     { path: 'knowledge', label: 'Knowledge & context', element: KnowledgePage },
     { path: 'blueprints', label: 'Blueprints', element: BlueprintPage },
     { path: 'policy', label: 'Policy intelligence', element: PolicyPage },
     { path: 'suite', label: 'Mission suite', element: SuitePage },
+    { path: 'government', label: 'Government research', element: GovernmentPage },
     { path: 'dossier', label: 'My dossier', element: DossierPage },
     { path: 'edition', label: 'Daily Edition', element: DailyEditionPage },
     { path: 'desks', label: 'Specialist desks', element: SpecialistWorkPage },
     { path: 'replay', label: 'Execution replay', element: ExecutionReplayPage },
     { path: 'passport', label: 'Capability Passport', element: CapabilityPassportPage },
+    { path: 'career', label: 'Career Passport', element: CareerPage },
     { path: 'corrections', label: 'Corrections', element: CorrectionsPage },
     { path: 'support', label: 'Support & Revenue', element: SupportRevenuePage },
     { path: 'community', label: 'Community & Social', element: CommunitySocialPage },
@@ -124,8 +152,9 @@ const WORKSPACE_ROUTES = [
 
 // Redirect already-authenticated users away from the auth screens.
 function RedirectIfAuthed({ children }) {
-    const { isAuthed } = useAuth();
+    const { isAuthed, loading } = useAuth();
     const location = useLocation();
+    if (loading) return <RouteLoading fullPage />;
     if (isAuthed) return <Navigate to={workspaceDestination(location.state?.returnTo)} replace />;
     return children;
 }
@@ -134,6 +163,7 @@ function RedirectIfAuthed({ children }) {
 function WorkspaceGate({ children }) {
     const { loading, hasWorkspaces, error, refresh } = useWorkspace();
     const location = useLocation();
+    useFailureTelemetry(!loading && Boolean(error), 'workspace_gate', 'unavailable', undefined, location.pathname);
     if (loading) {
         return <RouteLoading fullPage />;
     }
@@ -152,10 +182,24 @@ function WorkspaceGate({ children }) {
     return children;
 }
 
+function PublicPageBoundary() {
+    const { pathname } = useLocation();
+    return <PageBoundary key={pathname} name="Page" section={pathname}><Outlet /></PageBoundary>;
+}
+
+function UnknownRoute() {
+    const reported = useRef(false);
+    useEffect(() => {
+        if (!reported.current) { reported.current = true; trackUnknownRoute(); }
+    }, []);
+    return <Navigate to="/" replace />;
+}
+
 export function AppRoutes() {
     return (
         <Suspense fallback={<RouteLoading fullPage />}>
             <Routes>
+                <Route element={<PublicPageBoundary />}>
                 {/* Public marketing site */}
                 <Route path="/" element={<HomePage />} />
                 <Route path="/hostinger-challenge" element={<HostingerChallengePage />} />
@@ -190,6 +234,7 @@ export function AppRoutes() {
                     }
                 />
                 <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+                <Route path="/reset-password/:token?" element={<ResetPasswordPage />} />
 
                 {/* Onboarding (protected) */}
                 <Route
@@ -200,16 +245,19 @@ export function AppRoutes() {
                         </ProtectedRoute>
                     }
                 />
+                </Route>
 
                 {/* Authenticated workspace */}
                 <Route
                     path="/app"
                     element={
+                        <PageBoundary name="Workspace shell" section="/app">
                         <ProtectedRoute>
                             <WorkspaceGate>
                                 <WorkspaceLayout />
                             </WorkspaceGate>
                         </ProtectedRoute>
+                        </PageBoundary>
                     }
                 >
                     {WORKSPACE_ROUTES.map(({ path, index, label, element: Element, estate }) => (
@@ -218,7 +266,7 @@ export function AppRoutes() {
                             index={index}
                             path={path}
                             element={
-                                <PageBoundary key={path || 'index'} name={label}>
+                                <PageBoundary key={path || 'index'} name={label} section={path ? `/app/${path}` : '/app'}>
                                     <Suspense fallback={<RouteLoading />}>
                                         <EstateOnly enabled={estate}>
                                             <MotionEntrance><Element /></MotionEntrance>
@@ -230,7 +278,7 @@ export function AppRoutes() {
                     ))}
                 </Route>
 
-                <Route path="*" element={<Navigate to="/" replace />} />
+                <Route path="*" element={<UnknownRoute />} />
             </Routes>
         </Suspense>
     );
@@ -249,11 +297,13 @@ function App() {
                     <Router>
                         <SkipNavigation />
                         <AuthProvider>
-                            <WorkspaceProvider>
-                                <ScrollToTop />
-                                <RouteTelemetry />
-                                <AppRoutes />
-                            </WorkspaceProvider>
+                            <CareerProfileProvider>
+                                <WorkspaceProvider>
+                                    <ScrollToTop />
+                                    <RouteTelemetry />
+                                    <AppRoutes />
+                                </WorkspaceProvider>
+                            </CareerProfileProvider>
                         </AuthProvider>
                     </Router>
                 </TelemetryBoundary>

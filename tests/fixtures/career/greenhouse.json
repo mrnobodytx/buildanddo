@@ -1,0 +1,7 @@
+{"jobs": [
+  {"id": 101, "title": "AI Systems Architect", "updated_at": "2026-09-20T12:00:00-04:00", "location": {"name": "Remote"},
+   "absolute_url": "https://boards.example.invalid/101",
+   "content": "&lt;p&gt;About the team.&lt;/p&gt;&lt;h3&gt;What you&amp;#39;ll do&lt;/h3&gt;&lt;ul&gt;&lt;li&gt;Design agent runtimes&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;strong&gt;Qualifications&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt;AI agents and LLM systems&lt;/li&gt;&lt;li&gt;System architecture&lt;/li&gt;&lt;/ul&gt;&lt;h3&gt;Preferred&lt;/h3&gt;&lt;ul&gt;&lt;li&gt;Python&lt;/li&gt;&lt;/ul&gt;"},
+  {"id": 101, "title": "AI Systems Architect", "updated_at": "2026-09-20T12:00:00-04:00", "location": {"name": "Remote"},
+   "content": "&lt;h3&gt;Qualifications&lt;/h3&gt;&lt;ul&gt;&lt;li&gt;Python&lt;/li&gt;&lt;/ul&gt;"}
+]}

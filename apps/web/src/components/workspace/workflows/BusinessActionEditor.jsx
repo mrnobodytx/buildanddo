@@ -1,18 +1,18 @@
 // ─── CGRF Header ───────────────────────────────────────────────
-// File:         apps/web/src/components/workspace/workflows/BusinessActionEditor.jsx
-// Stage:        07_BUILD
-// SRS:          SRS-BUILDANDDO-UPGRADE-001
-// CAPS:         pending
-// CK:           pending
-// Dispatch:     VCC-BUILDANDDO-UPGRADE-001
-// Seat:         BITS-CODEGEN
-// Owner:        Citadel Nexus Inc.
-// Created:      2026-09-20
-// Depends:      apps/web/src/lib/businessExecution.js
-// EnumType:     Widget
-// EnumEdges:    DEPENDS_ON apps/web/src/lib/businessExecution.js
-// DAG Node:     none
-// Intent:       Let operators define reviewable ERP, source-capture and registered workflow effects without client-side endpoints.
+// File:        apps/web/src/components/workspace/workflows/BusinessActionEditor.jsx
+// Stage:       07_BUILD
+// SRS:         SRS-BUILDANDDO-UPGRADE-001
+// CAPS:        pending
+// CK:          pending
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+// Seat:        BITS-CODEGEN
+// Owner:       Citadel Nexus Inc.
+// Created:     2026-09-20
+// Depends:     apps/web/src/lib/businessExecution.js, apps/web/src/components/workspace/ConnectorBinding.jsx
+// EnumType:    Widget
+// EnumEdges:   DEPENDS_ON apps/web/src/lib/businessExecution.js; CONSUMES apps/web/src/components/workspace/ConnectorBinding.jsx
+// DAG Node:    none
+// Intent:      Let operators define reviewable ERP, source-capture and registered workflow effects without client-side endpoints.
 // ───────────────────────────────────────────────────────────────
 
 import React, { useState } from 'react';
@@ -20,6 +20,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useWorkspaceRecords } from '@/hooks/useWorkspaceRecords';
 import { defaultBusinessAction } from '@/lib/businessExecution';
+import ConnectorBinding from '@/components/workspace/ConnectorBinding';
 const selectClass = 'w-full border border-border bg-background p-2 text-sm';
 /** Edit only supported business effects; endpoints and credentials stay with registered bindings. */
 export default function BusinessActionEditor({ value, onChange }) {
@@ -41,7 +42,7 @@ export default function BusinessActionEditor({ value, onChange }) {
             <label className="block text-sm">Priority<select className={selectClass} value={p.priority} onChange={(event) => field('priority', event.target.value)}>{['low', 'normal', 'high'].map((name) => <option key={name}>{name}</option>)}</select></label>
             <label className="block text-sm">Due date<Input type="date" value={p.due_date} onChange={(event) => field('due_date', event.target.value)} /></label>
         </> : <>
-            <label className="block text-sm">Registered binding<Input value={action.binding} maxLength={64} onChange={(event) => onChange({ ...action, binding: event.target.value })} /></label>
+            <ConnectorBinding provider={action.provider} value={action.binding} onChange={(binding) => onChange({ ...action, binding })} />
             {action.provider === 'firecrawl' ? <label className="block text-sm">Public HTTPS source<Input type="url" value={p.url} maxLength={2048} onChange={(event) => field('url', event.target.value)} /></label> : <>
                 <label className="block text-sm">Registered operation<Input value={p.operation} maxLength={64} onChange={(event) => field('operation', event.target.value)} /></label>
                 <label className="block text-sm">Operation input (JSON)<Textarea value={json} maxLength={4000} onChange={(event) => { setJson(event.target.value); try {

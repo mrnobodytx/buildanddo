@@ -1,13 +1,16 @@
 import MotionToggle from '@/components/motion/MotionToggle';
 import { useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
-import { Activity, Menu } from 'lucide-react';
+import {Menu} from 'lucide-react';
+import BrandMark from '@/components/brand/BrandMark';
+import Wordmark from '@/components/brand/Wordmark';
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from '@/components/ui/sheet';
 import { Button } from '@/components/site/ui';
 import { ThemeToggle } from '@/components/ThemeControls';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRoomsLive } from '@/hooks/useRoomsLive';
 import { PUBLIC_NAV, PUBLIC_NAV_PRIMARY, PUBLIC_NAV_SECONDARY } from '@/lib/publicPages';
+import { PUBLIC_ACTIONS, publicNavigationTarget, trackPublicAction } from '@/lib/publicActions';
 
 const primaryLinkClass = ({ isActive }) =>
     `motion-link inline-flex h-9 items-center rounded-sm px-3 text-sm transition-colors hover:bg-secondary/60 hover:text-foreground ${
@@ -27,24 +30,33 @@ export default function Header({
     const [open, setOpen] = useState(false);
     const { isAuthed } = useAuth();
     const roomsLive = useRoomsLive();
+    const clickNavigation = (href, mobile = false) => {
+        trackPublicAction(PUBLIC_ACTIONS.NAVIGATION, 'intent', 'navigation', undefined,
+            { placement: mobile ? 'header_mobile' : 'header', target: publicNavigationTarget(href) });
+        if (mobile) setOpen(false);
+    };
+    const clickCta = (href, mobile = false) => {
+        trackPublicAction(PUBLIC_ACTIONS.CTA, 'intent', 'user_requested', undefined,
+            { placement: mobile ? 'header_mobile' : 'header', target: publicNavigationTarget(href) });
+        if (mobile) setOpen(false);
+    };
     return (
         <header className="fixed inset-x-0 top-0 z-50 border-b border-border/70 bg-background/95 backdrop-blur-md">
             <div className="mx-auto flex h-14 max-w-7xl items-center justify-between gap-6 px-4 sm:px-6 2xl:max-w-[88rem]">
                 <Link
                     to="/"
+                    onClick={() => clickNavigation('/')}
                     className="flex shrink-0 items-center gap-2"
                     aria-label="BuildAndDo home"
                 >
-                    <Activity className="h-5 w-5 text-primary" aria-hidden="true" />
-                    <span className="font-display text-lg font-semibold tracking-tight">
-                        BuildAndDo
-                    </span>
+                    <BrandMark size={32} decorative />
+                    <Wordmark className="text-lg" />
                 </Link>
                 <nav className="hidden min-w-0 flex-1 items-center justify-center xl:flex" aria-label="Primary">
                     <ul className="flex items-center gap-0.5">
                         {PUBLIC_NAV_PRIMARY.map((page) => (
                             <li key={page.path}>
-                                <NavLink to={page.path} className={primaryLinkClass}>
+                                <NavLink to={page.path} onClick={() => clickNavigation(page.path)} className={primaryLinkClass}>
                                     {page.label}
                                 </NavLink>
                             </li>
@@ -54,7 +66,7 @@ export default function Header({
                     <ul className="hidden items-center gap-0.5 2xl:flex" aria-label="Company">
                         {PUBLIC_NAV_SECONDARY.map((page) => (
                             <li key={page.path}>
-                                <NavLink to={page.path} className={secondaryLinkClass}>
+                                <NavLink to={page.path} onClick={() => clickNavigation(page.path)} className={secondaryLinkClass}>
                                     {page.label}
                                 </NavLink>
                             </li>
@@ -65,6 +77,7 @@ export default function Header({
                     {roomsLive && (
                         <Link
                             to="/app/rooms"
+                            onClick={() => clickNavigation('/app/rooms')}
                             className="hidden items-center gap-1.5 border border-primary/40 px-2.5 py-1 font-evidence text-[10px] uppercase tracking-widest text-primary transition-colors hover:bg-primary/10 lg:inline-flex"
                             aria-label="Living Rooms are live"
                         >
@@ -78,18 +91,19 @@ export default function Header({
                     <ThemeToggle />
                     <MotionToggle />
                     {isAuthed ? (
-                        <Button href="/app" size="sm" className="hidden sm:inline-flex">
+                        <Button href="/app" onClick={() => clickCta('/app')} size="sm" className="hidden sm:inline-flex">
                             Open workspace
                         </Button>
                     ) : (
                         <>
                             <Link
                                 to="/login"
+                                onClick={() => clickCta('/login')}
                                 className="hidden py-3 text-sm text-muted-foreground hover:text-foreground sm:inline-flex"
                             >
                                 Sign in
                             </Link>
-                            <Button href={ctaHref} size="sm" className="hidden sm:inline-flex">
+                            <Button href={ctaHref} onClick={() => clickCta(ctaHref)} size="sm" className="hidden sm:inline-flex">
                                 {ctaLabel}
                             </Button>
                         </>
@@ -112,7 +126,7 @@ export default function Header({
                                     <NavLink
                                         key={page.path}
                                         to={page.path}
-                                        onClick={() => setOpen(false)}
+                                        onClick={() => clickNavigation(page.path, true)}
                                         className={({ isActive }) =>
                                             `px-3 py-3 text-base hover:bg-secondary ${isActive ? 'font-semibold text-primary' : 'text-muted-foreground'}`
                                         }
@@ -142,7 +156,7 @@ export default function Header({
                                 {isAuthed ? (
                                     <Button
                                         href="/app"
-                                        onClick={() => setOpen(false)}
+                                        onClick={() => clickCta('/app', true)}
                                         className="w-full"
                                     >
                                         Open workspace
@@ -151,14 +165,14 @@ export default function Header({
                                     <>
                                         <Link
                                             to="/login"
-                                            onClick={() => setOpen(false)}
+                                            onClick={() => clickCta('/login', true)}
                                             className="block px-3 py-3 text-muted-foreground"
                                         >
                                             Sign in
                                         </Link>
                                         <Button
                                             href={ctaHref}
-                                            onClick={() => setOpen(false)}
+                                            onClick={() => clickCta(ctaHref, true)}
                                             className="w-full"
                                         >
                                             {ctaLabel}

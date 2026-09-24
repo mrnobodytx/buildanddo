@@ -1,23 +1,26 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/pocketbase/pb_hooks/tutorial-learning.js
 // Stage:       07_BUILD
-// SRS:         SRS-BUILDANDDO-UPGRADE-001
+// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-TRUST-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-TRUST-001
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-19
-// Depends:     apps/pocketbase/pb_hooks/workspace-access.js, apps/pocketbase/pb_migrations/1790600000_tutorial_learning.js
+// Depends:     apps/pocketbase/pb_hooks/workspace-access.js, apps/pocketbase/pb_migrations/1790600000_tutorial_learning.js, apps/pocketbase/pb_migrations/1791500100_tutorial_answer_wait.js, apps/pocketbase/pb_hooks/government-access.js
 // EnumType:    Service
-// EnumEdges:   DEPENDS_ON apps/pocketbase/pb_hooks/workspace-access.js; CONSUMES apps/pocketbase/pb_migrations/1790600000_tutorial_learning.js
+// EnumEdges:   DEPENDS_ON apps/pocketbase/pb_hooks/workspace-access.js; CONSUMES apps/pocketbase/pb_migrations/1790600000_tutorial_learning.js; CONSUMES apps/pocketbase/pb_migrations/1791500100_tutorial_answer_wait.js; CONSUMES apps/pocketbase/pb_hooks/government-access.js
 // DAG Node:    none
-// Intent:      Award durable learning credit only after ordered checkpoints, recorded practice and a server-checked answer.
+// Intent:      Keep canonical checkpoints and full grading snapshots private while serving keyless lessons with bounded answer retries.
 // ───────────────────────────────────────────────────────────────
 
 const access = require(`${__hooks}/workspace-access.js`);
-const FIELDS = ['owner', 'tutorial', 'snapshot', 'content_digest', 'next_section', 'practiced', 'completed_at', 'certificate', 'protocol_version'];
+const government = require(`${__hooks}/government-access.js`);
+const FIELDS = ['owner', 'tutorial', 'snapshot', 'content_digest', 'next_section', 'practiced', 'completed_at', 'certificate', 'protocol_version', 'answer_retry_at'];
 const POINTS = 100;
+// A wrong answer pauses further answers for this enrollment; longer stored waits are ignored so nobody is locked out.
+const RETRY_SECONDS = 30;
 
 function schema(app) {
     let collection;
@@ -29,7 +32,9 @@ function schema(app) {
     if (FIELDS.some((key) => !collection.fields.getByName(key))) throw new ApiError(503, 'The interactive learning upgrade is not installed.');
     if (['listRule', 'viewRule', 'createRule', 'updateRule', 'deleteRule'].some((key) => collection[key] !== null))
         throw new ApiError(503, 'Learning records need an operator review before they can be used.');
-    if (!collection.indexes.includes('create unique index idx_tutorial_learning_identity on tutorial_learning (owner, tutorial)'))
+    const shape = (index) => String(index).toLowerCase().replace(/[`"[\]]/g, '')
+        .replace(/\s+/g, ' ').replace(/\s*([(),])\s*/g, '$1').trim();
+    if (!(collection.indexes || []).map(shape).includes(shape('create unique index idx_tutorial_learning_identity on tutorial_learning (owner, tutorial)')))
         throw new ApiError(503, 'Learning identity constraints need an operator review.');
     return collection;
 }
@@ -67,9 +72,10 @@ function snapshot(record) {
     return result;
 }
 function lessonFor(app, e, record) {
-    const tutorial = access.find(app, 'tutorials', access.id(e.request.pathValue('id')));
-    access.readable(app, tutorial, e.requestInfo());
+    const tutorial = access.find(app, 'tutorials', access.id(record ? record.getString('tutorial') : e.request.pathValue('id')));
+    if (!government.lesson(app, e.auth, tutorial)) access.readable(app, tutorial, e.requestInfo());
     const body = record ? access.json(record, 'snapshot') : snapshot(tutorial);
+    if (body?.category === 'Government submissions') government.requireMember(app, e.auth);
     const digest = $security.sha256(access.canonical(body));
     if (!supported(body?.lesson) || record && record.getString('content_digest') !== digest)
         throw new ApiError(503, 'The saved lesson needs an operator review.');
@@ -91,20 +97,23 @@ function output(record) {
         completed_at: record.getString('completed_at'), certificate, points: completed ? POINTS : 0,
         status: completed ? 'completed' : 'in_progress', progress: completed ? 100 : Math.floor((next + (practiced ? 1 : 0)) * 100 / (sections + 2)) };
 }
-function projectProgress(app, record) {
-    const collection = access.schema(app, 'tutorial_progress', ['owner', 'tutorial', 'status', 'progress']);
-    const owner = record.getString('owner'), tutorial = record.getString('tutorial');
-    const rows = app.findRecordsByFilter('tutorial_progress', 'owner = {:owner} && tutorial = {:tutorial}', '-updated,id', 101, 0, { owner, tutorial });
-    if (rows.length > 100) throw new ApiError(503, 'Learning history needs an operator review.');
-    const progress = rows.find((row) => row.getString('status') === 'completed') || rows[0] || new Record(collection);
-    const state = output(record);
-    progress.set('owner', owner); progress.set('tutorial', tutorial);
-    const complete = progress.getString('status') === 'completed' || state.status === 'completed';
-    progress.set('status', complete ? 'completed' : 'in_progress');
-    progress.set('progress', complete ? 100 : Math.max(Number(progress.get('progress') || 0), state.progress));
-    app.save(progress);
+function detailResult(owner, tutorial, record) {
+    const lesson = tutorial.lesson;
+    // Project only at the response boundary; the enrolled snapshot and its digest remain full.
+    return { schema_version: 1, account_id: owner, enrollment: output(record), tutorial: { ...tutorial, lesson: {
+        schema_version: lesson.schema_version, outcomes: lesson.outcomes, why: lesson.why, preparation: lesson.preparation,
+        sections: lesson.sections.map((section) => ({ heading: section.heading,
+            ...(section.paragraphs === undefined ? {} : { paragraphs: section.paragraphs }),
+            ...(section.steps === undefined ? {} : { steps: section.steps }) })),
+        exercise: { prompt: lesson.exercise.prompt, checklist: lesson.exercise.checklist },
+        check: { question: lesson.check.question, choices: lesson.check.choices },
+        references: lesson.references.map(({ label, url }) => ({ label, url })),
+    } } };
 }
-function detailResult(owner, tutorial, record) { return { schema_version: 1, account_id: owner, tutorial, enrollment: output(record) }; }
+function retryWait(record) {
+    const wait = Math.ceil((Date.parse(record.getString('answer_retry_at').replace(' ', 'T')) - Date.now()) / 1000);
+    return wait > 0 && wait <= RETRY_SECONDS ? wait : 0;
+}
 
 /** @param {object} e Native authenticated request. @returns {object} Current versioned lesson and personal checkpoints. */
 function detail(e) {
@@ -156,8 +165,14 @@ function command(e) {
             if (!Number.isSafeInteger(body.payload.choice) || body.payload.choice < 0 || body.payload.choice >= tutorial.lesson.check.choices.length)
                 access.invalid('Choose a listed answer.');
             if (!state.practiced) access.conflict('Complete the sections and practice before the final check.');
+            const wait = state.completed_at ? 0 : retryWait(record);
+            if (wait) throw new ApiError(429, `Review the lesson, then try the knowledge check again in ${wait} second${wait === 1 ? '' : 's'}.`);
             const correct = body.payload.choice === tutorial.lesson.check.answer;
-            feedback = { correct, explanation: tutorial.lesson.check.explanation };
+            feedback = correct || state.completed_at ? { correct, explanation: tutorial.lesson.check.explanation } :
+                { correct, explanation: 'Not the expected answer. Review the lesson sections, then try again.', retry_after: RETRY_SECONDS };
+            if (!correct && !state.completed_at) {
+                record.set('answer_retry_at', new Date(Date.now() + RETRY_SECONDS * 1000).toISOString()); changed = true;
+            }
             if (correct && !state.completed_at) {
                 const issued = new Date().toISOString();
                 record.set('completed_at', issued);
@@ -165,15 +180,23 @@ function command(e) {
                     issuer: 'BuildAndDo · Citadel Nexus Inc.', learner: user.getString('name').trim().slice(0, 120) || 'BuildAndDo learner',
                     title: tutorial.title, tutorial: id, curriculum_version: tutorial.curriculum_version, content_digest: tutorial.content_digest,
                     issued_at: issued, learning_points: POINTS,
-                    achievement: 'Completed lesson sections, recorded the practice checklist and passed the knowledge check.',
-                    scope: 'Course completion. No external accreditation or professional qualification.' });
+                    achievement: 'Completed lesson checkpoints, self-reported practice and answered the open-book tutorial question.',
+                    scope: 'open-book tutorial completion; practice self-reported. Not independently verified mastery, external accreditation or professional qualification.' });
                 changed = true;
             }
         }
-        if (changed) { app.save(record); projectProgress(app, record); }
+        if (changed) app.save(record);
         result = { ...detailResult(user.id, tutorial, record), feedback, replayed: !changed };
     });
     return result;
+}
+
+/** @param {object} e Native authenticated request. @returns {object} Bounded canonical states, never legacy reading claims. */
+function states(e) {
+    const user = account(e.app, e), number = access.page(e);
+    const rows = e.app.findRecordsByFilter('tutorial_learning', 'owner = {:owner}', 'tutorial,id', 21, (number - 1) * 20, { owner: user.id });
+    return { schema_version: 1, account_id: user.id, page: number, has_more: rows.length > 20,
+        items: rows.slice(0, 20).map((record) => { lessonFor(e.app, e, record); return output(record); }) };
 }
 
 /** @param {object} e Native authenticated request. @returns {object} Persistent personal growth and paginated completion certificates. */
@@ -193,6 +216,7 @@ function list(e) {
     const number = access.page(e);
     const rows = e.app.findRecordsByFilter('tutorial_learning', filter, '-completed_at,-id', 6, (number - 1) * 5, params);
     const active = e.app.findRecordsByFilter('tutorial_learning', 'owner = {:owner} && completed_at = ""', '-updated,-id', 1, 0, params)[0];
+    for (const record of [...rows.slice(0, 5), ...(active ? [active] : [])]) lessonFor(e.app, e, record);
     const levels = [
         { number: 1, name: 'Explorer', floor: 0, next: 100 },
         { number: 2, name: 'Practitioner', floor: 100, next: 500 },
@@ -208,4 +232,29 @@ function list(e) {
         resume: active ? { tutorial: active.getString('tutorial'), title: access.json(active, 'snapshot').title, progress: output(active).progress } : null };
 }
 
-module.exports = { detail, command, list };
+/** @param {object} tutorial Catalogue record. @returns {boolean} Whether its lesson is served with a server-checked answer. */
+function interactive(tutorial) {
+    const raw = tutorial.getString('lesson');
+    if (!raw || raw === 'null') return false;
+    try { return Boolean(supported(JSON.parse(raw))); } catch { return false; }
+}
+
+/** @param {object} app Native app. @param {string} owner Account. @param {string} tutorial Lesson. @returns {boolean} Whether a server-issued certificate exists. */
+function certified(app, owner, tutorial) {
+    try { schema(app); } catch { return false; }
+    return app.findRecordsByFilter('tutorial_learning', 'owner = {:owner} && tutorial = {:tutorial}', '', 2, 0, { owner, tutorial })
+        .some((row) => Boolean(row.getString('completed_at')) && Boolean(access.json(row, 'certificate')));
+}
+
+/** @param {object} e Native record enrichment. Hides earned-only lesson fields from every client read of the catalogue. */
+function enrich(e) {
+    const auth = e.requestInfo && e.requestInfo.auth;
+    if (auth && auth.isSuperuser()) return;
+    const raw = e.record.getString('lesson');
+    if (!raw || raw === 'null') return;
+    let lesson;
+    try { lesson = JSON.parse(raw); } catch { e.record.set('lesson', null); return; }
+    e.record.set('lesson', access.publicLesson(lesson));
+}
+
+module.exports = { detail, command, list, states, interactive, certified, enrich };

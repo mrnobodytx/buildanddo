@@ -8,12 +8,14 @@
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-15
-// Depends:     apps/pocketbase/pb_hooks/administration.pb.js
+// Depends:     apps/pocketbase/pb_hooks/administration.pb.js, apps/pocketbase/pb_hooks/government.pb.js, apps/web/src/lib/workspaceClaims.js
 // EnumType:    Adapter
-// EnumEdges:   CONSUMES apps/pocketbase/pb_hooks/administration.pb.js
+// EnumEdges:   CONSUMES apps/pocketbase/pb_hooks/administration.pb.js; CONSUMES apps/pocketbase/pb_hooks/government.pb.js; CONSUMES apps/web/src/lib/workspaceClaims.js
 // DAG Node:    none
 // Intent:      Keep administration and community requests bound to one account/workspace with stable recovery after uncertain saves.
 // ───────────────────────────────────────────────────────────────
+
+import { CLAIM_ACTIONS } from './workspaceClaims.js';
 
 const ROLES = ['owner', 'admin', 'editor', 'viewer'];
 const ACTIONS = ['settings.save', 'member.set', 'member.remove', 'integration.save', 'integration.check',
@@ -25,6 +27,37 @@ const revision = (value, min = 0) => Number.isSafeInteger(value) && value >= min
 const strings = (value, names) => names.every((name) => typeof value?.[name] === 'string');
 const page = (value) => Array.isArray(value?.items) && value.items.length <= 20 && revision(value.page, 1) && typeof value.has_more === 'boolean';
 const PROVIDERS = ['discord', 'reddit', 'datadog', 'posthog', 'firecrawl', 'n8n', 'supabase', 'mautic', 'twenty'];
+
+/** Key private UI work by identity and granted capabilities, not polling activity.
+ * This is a retention boundary, never permission to read or write while loading.
+ * @param {object} scope Current identity, session lifetime and optional workspace access.
+ * @returns {string} React lifecycle key.
+ */
+export function workspaceLifecycleKey({ accountId = '', workspaceId = '', demo = false, sessionEpoch = 0, access } = {}) {
+    const data = access?.error ? null : access?.data;
+    return JSON.stringify([accountId, workspaceId, demo, sessionEpoch, access ? [access.accessEpoch || 0, Boolean(data), data?.role || '',
+        data?.can_write === true, data?.can_admin === true, data?.can_grant_admin === true, data?.government?.allowed === true] : null]);
+}
+
+/** Coalesce access reads through publication, so a later poll cannot hide a denial.
+ * @returns {{load: Function, invalidate: Function}} One flight per current scope.
+ */
+export function createWorkspaceAccessLoader() {
+    let pending = null;
+    return {
+        load(key, operation) {
+            if (pending?.key === key) return pending.promise;
+            const job = { key, promise: null };
+            pending = job;
+            job.promise = (async () => {
+                try { return await operation(); }
+                finally { if (pending === job) pending = null; }
+            })();
+            return job.promise;
+        },
+        invalidate() { pending = null; },
+    };
+}
 
 function contribution(item, workspace, kind) {
     return item && validId(item.id) && item.workspace === workspace && validId(item.owner) && revision(item.revision, 1) &&
@@ -54,9 +87,14 @@ function readShape(value, workspace, section) {
     const admin = ['owner', 'admin'].includes(value.role);
     if (section === 'admin') return admin && strings(value, ['name']) && validId(value.owner) && page(value.members) && page(value.audit) &&
         value.members.items.every((item) => validId(item.id) && validId(item.user) && ROLES.includes(item.role) && strings(item, ['invited_by', 'created'])) &&
-        value.audit.items.every((item) => validId(item.id) && validId(item.actor) && validId(item.target) && ACTIONS.includes(item.action) && revision(item.revision, 1) && strings(item, ['created']));
+        value.audit.items.every((item) => validId(item.id) && validId(item.actor) && validId(item.target) &&
+            (ACTIONS.includes(item.action) || CLAIM_ACTIONS.includes(item.action)) && revision(item.revision, 1) && strings(item, ['created']));
     if (value.can_admin !== admin || value.can_write !== (value.role !== 'viewer') || value.can_grant_admin !== (value.role === 'owner')) return false;
     if (section === 'access') return true;
+    if (section === 'government') return value.government?.allowed === true && value.government?.tier === 'government' &&
+        value.plan?.schema_version === 'buildanddo.research-sprint/v1' && Array.isArray(value.plan.lanes) && Array.isArray(value.plan.days) &&
+        Array.isArray(value.lessons) && value.lessons.every((item) => validId(item.id) && item.category === 'Government submissions') &&
+        Boolean(value.starter?.mission_plan);
     if (section === 'integrations') return Array.isArray(value.items) && value.items.length === PROVIDERS.length &&
         new Set(value.items.map((item) => item?.provider)).size === PROVIDERS.length && value.items.every(integration);
     if (!page(value)) return false;
@@ -68,6 +106,7 @@ function readShape(value, workspace, section) {
 }
 
 /** Create scoped operations for the authenticated PocketBase command endpoints.
+ * Read-only readFailure metadata is diagnostic, separate from command outcomes and permissions.
  * @param {object} options Client, account/workspace, demo/liveness and telemetry adapter.
  * @returns {{read: Function, command: Function, retry: Function}} Bounded operations.
  */
@@ -76,28 +115,37 @@ export function createWorkspaceControlClient({ client, workspaceId, accountId, d
     let busy = false;
     let pending = null;
     const current = () => Boolean(!demo && validId(workspaceId) && accountId && isCurrent() && client.authStore.record?.id === accountId);
+    const observeCommand = (action, payload, operation) => observe(
+        typeof action === 'string' && action.startsWith('wiki.') ? 'wiki_pages' : typeof action === 'string' && action.startsWith('forum.')
+            ? action === 'forum.reply' || payload?.kind === 'reply' ? 'forum_replies' : 'forum_topics' : 'workspace_controls', action, operation);
     const prefix = `/api/buildanddo/workspaces/${encodeURIComponent(workspaceId)}`;
     const message = (error, writing = false) => ({ ok: false,
         reason: error?.status === 409 ? 'conflict' : error?.status === 403 ? 'forbidden' : writing && (!error?.status || error.status >= 500) ? 'uncertain' : 'unavailable',
         error: error?.response?.message || (writing ? 'Could not confirm the save. Retry the previous save to recover its result.' :
             'Workspace controls are unavailable. The backend upgrade may not be installed. Retry or contact the workspace operator.') });
     const send = async (body) => {
-        if (!current()) return stale();
-        if (busy) return { ok: false, reason: 'busy', error: '' };
+        if (!current()) return observeCommand(body.action, body.payload, stale);
+        if (busy) return observeCommand(body.action, body.payload, () => ({ ok: false, reason: 'busy', error: '' }));
         busy = true;
         try {
             const section = body.action.startsWith('wiki.') || body.action.startsWith('forum.') ? 'community' : 'admin';
-            const name = section === 'admin' ? 'workspace_controls' : body.action.startsWith('wiki.') ? 'wiki_pages' : body.action === 'forum.reply' || body.payload.kind === 'reply' ? 'forum_replies' : 'forum_topics';
-            const result = await observe(name, 'update', async () => {
-                const value = await client.send(`${prefix}/${section}`, { method: 'POST', body, requestKey: null, cache: 'no-store' });
-                if (!value || value.workspace !== workspaceId || value.action !== body.action || !validId(value.id) ||
-                    !Number.isSafeInteger(value.revision) || value.revision < 1 || typeof value.replayed !== 'boolean')
-                    throw new Error('Incomplete command response');
-                return value;
+            const response = await observeCommand(body.action, body.payload, async () => {
+                try {
+                    const value = await client.send(`${prefix}/${section}`, { method: 'POST', body, requestKey: null, cache: 'no-store' });
+                    if (!current()) return stale();
+                    if (!value || value.workspace !== workspaceId || value.action !== body.action || !validId(value.id) ||
+                        !Number.isSafeInteger(value.revision) || value.revision < 1 || typeof value.replayed !== 'boolean')
+                        throw Object.assign(new Error('Incomplete command response'), { reason: 'invalid_receipt' });
+                    return { ok: true, result: value };
+                } catch (error) {
+                    if (!current()) return stale();
+                    throw error;
+                }
             });
             if (!current()) return stale();
+            if (!response.ok) return response;
             pending = null;
-            return { ok: true, result };
+            return response;
         } catch (error) {
             if (!current()) return stale();
             const failure = message(error, true);
@@ -108,30 +156,40 @@ export function createWorkspaceControlClient({ client, workspaceId, accountId, d
     return {
         async read(section, query = {}) {
             if (!current()) return stale();
-            if (!['access', 'admin', 'integrations', 'wiki', 'forums'].includes(section) &&
+            if (!['access', 'admin', 'integrations', 'wiki', 'forums', 'government'].includes(section) &&
                 !(section.startsWith('forums/') && validId(section.slice(7)))) return { ok: false, reason: 'invalid', error: 'Choose a supported workspace view.' };
+            let received = false;
             try {
                 const data = await client.send(`${prefix}/${section}`, { method: 'GET', query, requestKey: null, cache: 'no-store' });
                 if (!current()) return stale();
-                return readShape(data, workspaceId, section) ? { ok: true, data } : message(null);
-            } catch (error) { return current() ? message(error) : stale(); }
+                received = true;
+                return readShape(data, workspaceId, section) && (section !== 'government' || data.account_id === accountId) ? { ok: true, data } :
+                    { ...message(null), readFailure: { reason: 'invalid_response', status: 200 } };
+            } catch (error) {
+                if (!current()) return stale();
+                const cancelled = error?.isAbort || error?.name === 'AbortError' || error?.originalError?.name === 'AbortError';
+                const malformed = received || error?.name === 'SyntaxError' || error?.originalError?.name === 'SyntaxError';
+                const status = received ? 200 : Number.isInteger(error?.status) && (error.status === 0 || error.status >= 100 && error.status < 600) &&
+                    !(malformed && error.status === 0) ? error.status : undefined;
+                return { ...message(error), readFailure: { reason: cancelled ? 'cancelled' : malformed ? 'invalid_response' : 'unavailable', status } };
+            }
         },
         async command(action, payload, revision) {
-            if (!current()) return stale();
+            if (!current()) return observeCommand(action, payload, stale);
             if (!ACTIONS.includes(action) || !Number.isSafeInteger(revision) || revision < 0 || !payload || typeof payload !== 'object' || Array.isArray(payload))
-                return { ok: false, reason: 'invalid', error: 'Reload the current record before saving.' };
+                return observeCommand(action, payload, () => ({ ok: false, reason: 'invalid', error: 'Reload the current record before saving.' }));
             // Payloads are flat except integration configuration. Normalize both
             // levels so field rendering order cannot change retry identity.
             const signature = JSON.stringify([action, revision, stable({ ...payload, ...(payload.configuration ? { configuration: stable(payload.configuration) } : {}) })]);
             if (pending && signature !== pending.signature)
-                return { ok: false, reason: 'uncertain', error: 'Retry the previous save before starting a different change.' };
+                return observeCommand(action, payload, () => ({ ok: false, reason: 'uncertain', error: 'Retry the previous save before starting a different change.' }));
             if (!pending) {
                 try {
                     const requestKey = keyFactory();
                     if (typeof requestKey !== 'string' || !/^[a-zA-Z0-9_-]{16,80}$/.test(requestKey)) throw new Error('Invalid retry key');
                     pending = { signature, body: { action, payload: JSON.parse(JSON.stringify(payload)), revision, request_key: requestKey } };
                 } catch {
-                    return { ok: false, reason: 'unavailable', error: 'A secure retry identifier is unavailable. Reload this page from the secure site before saving.' };
+                    return observeCommand(action, payload, () => ({ ok: false, reason: 'unavailable', error: 'A secure retry identifier is unavailable. Reload this page from the secure site before saving.' }));
                 }
             }
             return send(pending.body);

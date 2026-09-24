@@ -88,6 +88,14 @@ An old planned record must return to draft and receive a saved review. Browser
 responses missing required receipt fields are reported as incomplete, not as
 successful approval or publication.
 
+The current claim-authority migration locks raw editorial and report writes.
+Existing buttons use `/api/buildanddo/workspaces/{workspace}/claims` with native
+account attribution, saved revisions and stable retry identities. Authors edit
+their own drafts; current administrators may manage them and record publication.
+Another editor cannot rewrite the draft or reset its review. Approval/publication
+continues to use the existing content validator, not merely a new status label.
+See `docs/claim-authority.md` for the seven-collection boundary and retained history.
+
 ## The first 25 tutorials
 
 The shared, versioned source is
@@ -107,22 +115,22 @@ records or claims of production outcomes.
 
 Lessons are the default tab at `/app/tutorials`, also shared with Docs and Home.
 Readers can search by topic, choose a learning path and open a focus-managed
-reader. Wrong answers show feedback and permit another attempt. Mark complete
-requires the exercise confirmation and correct knowledge check in the UI.
-Ordinary reader completion is an account's self-recorded learning activity.
-The **Interactive tutorial** path adds saved checkpoints, server-checked answers,
+reader. The reader previews the question without its answer or explanation;
+grading belongs to the server. The ordinary reader offers no manual completion save. The
+**Interactive tutorial** path owns saved checkpoints, server-checked answers,
 completion certificates and persistent learning growth; see
 [Interactive Field Manual](interactive-learning.md). Its completion certificate
-does not establish professional qualification or a verified business outcome.
-Reviewing a completed lesson keeps completion; the server rejects a downgrade.
+describes open-book completion with self-reported practice, not professional
+qualification, independently verified mastery or a verified business outcome.
+Existing certificates and reading history are preserved, not retroactively graded.
 
 Anonymous and demo readers can preview the authored curriculum without any
 PocketBase request. Signed-in readers combine the bundled curriculum with
-the saved catalogue; a failed catalogue/progress read stays visible. Saving
-requires a real saved tutorial ID and available account-owned progress. Merely
-displaying a bundled lesson never fabricates a backend identity. A lost create
-response triggers a progress reload before a retry; duplicate historical rows
-are read using the most advanced status without counting them twice.
+the saved catalogue; a failed catalogue/progress read stays visible. Guided saving
+requires a real saved tutorial ID and current server authorization. Merely
+displaying a bundled lesson never fabricates a backend identity. Catalogue
+completion comes from canonical guided states; duplicate legacy reading rows do
+not influence that count or earn credit. Failed aggregate reads remain unknown.
 
 ## Migration and retention
 
@@ -159,11 +167,12 @@ npm --prefix apps/web run build
 
 Node tests execute production helpers, hooks and migration code with storage
 contracts. They are not native PocketBase or React execution. On an isolated
-PocketBase 0.28.4 instance, test original six-row upgrade, empty/custom catalogue,
+PocketBase 0.39.8 instance, test original six-row upgrade, empty/custom catalogue,
 repeated migration, seed asset availability, role removal, foreign relations,
 review tampering, publication receipt attribution and down/up retention.
-Check simultaneous editorial requests against the same saved copy; the ordinary
-record hooks do not provide workflow-command revision/idempotency semantics.
+Check simultaneous editorial commands against the same saved revision and retain
+the exact retry key after uncertain responses. The matching command-backed client
+and locked migration must ship together; ordinary raw record writes are denied.
 
 After installing the declared frontend dependencies, run the component suites
 and coverage gates. Exercise ERP edits, draft recovery and lesson completion at

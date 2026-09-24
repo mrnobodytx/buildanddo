@@ -53,6 +53,8 @@ from typing import Any
 
 REPO = Path(__file__).resolve().parents[2]
 FLEET = REPO.parent.parent / "config" / "master_citadel.fleet.json"
+# sites/buildanddo — scripts/ci/<this file> -> scripts -> buildanddo
+ROOT = Path(__file__).resolve().parents[2]
 ENVS = {"staging": "https://staging.buildanddo.com", "production": "https://buildanddo.com"}
 BACKEND = "/hcgi/platform"
 CBF = "/opt/citadel/cbf"
@@ -60,7 +62,9 @@ SCHEMA = "buildanddo.ocn-feature-sweep/v1"
 SSH_KEYS = {"mesh-control": "citadel_test_droplet", "mesh-memory": "citadel_test_droplet",
             "ray-tor1-1": "citadel_helper", "ray-tor1-2": "citadel_helper",
             "ray-tor1-3": "citadel_helper", "ray-tor1-4": "citadel_helper"}
-# Each seat's own workspace, created by that seat (measured 2026-09-20).
+# Each seat's own workspace ON STAGING, created by that seat (measured 2026-09-20). This is no
+# longer substituted into probes - it is DECLARED, and every run reports whether the workspace the
+# box actually signed into matches it. See plan_for for why.
 WORKSPACES = {"ray-tor1-1": "v11x7qfj0mg64j7", "ray-tor1-2": "gsxc0bp3qkzvvu0",
               "ray-tor1-3": "4pkak04shs913un", "ray-tor1-4": "bdqc0ltj81t5u7d",
               "mesh-memory": "4eijifip8xhorbs", "mesh-control": "56o8prujj51dmu2"}
@@ -122,7 +126,7 @@ PROBES: list[tuple[str, str, str, Any, tuple[int, ...]]] = [
     ("ocn.health", "GET", "/api/ocn/health", None, (200,)),
 ]
 
-STATE = {404: "ROUTE_ABSENT", 503: "DEPENDENCY_MISSING", 401: "NEEDS_AUTH",
+STATE = {-1: "UNMEASURABLE", 404: "ROUTE_ABSENT", 503: "DEPENDENCY_MISSING", 401: "NEEDS_AUTH",
          403: "REFUSED_BY_POLICY", 400: "REJECTED_PAYLOAD", 200: "OK", 201: "OK",
          0: "TRANSPORT_FAULT"}
 
@@ -139,9 +143,23 @@ if [ "$LCODE" != "200" ]; then echo "FATAL login $LCODE"; exit 0; fi
 TOKEN=$(python3 -c "import json;print(json.load(open('/tmp/bdo_login.json')).get('token',''))")
 echo "UID $(python3 -c "import json;print((json.load(open('/tmp/bdo_login.json')).get('record') or {}).get('id',''))")"
 echo "IP $(curl -s -m 10 https://api.ipify.org || echo unknown)"
+WS=$(curl -s -m 30 -A "Mozilla/5.0" -H "Authorization: $TOKEN" "%(base)s/api/collections/workspaces/records?perPage=1&sort=created" | python3 -c "
+import json,sys
+try: d=json.load(sys.stdin)
+except Exception: print('')
+else: print(((d.get('items') or [{}])[0] or {}).get('id',''))
+")
+echo "WS $WS"
 printf "%%s" "%(plan)s" | base64 -d > /tmp/bdo_plan.txt
 while IFS='|' read -r IDX METHOD PATHV BODY AUTH; do
   [ -z "$IDX" ] && continue
+  case "$PATHV" in
+    */W/*)
+      # No workspace to read means this probe was never run. Emitting a real HTTP code here
+      # would turn "we could not look" into "we looked and it was missing".
+      if [ -z "$WS" ]; then echo "R $IDX -1"; continue; fi
+      PATHV=$(printf "%%s" "$PATHV" | sed "s#/W/#/$WS/#") ;;
+  esac
   if [ -n "$BODY" ]; then
     printf "%%s" "$BODY" | base64 -d > /tmp/bdo_body.json
     if [ "$AUTH" = "1" ]; then
@@ -175,13 +193,22 @@ def fleet() -> dict[str, dict]:
 
 
 def plan_for(box: str) -> list[tuple[int, str, str, Any, bool]]:
-    """Substitute this box's own workspace and mark which probes carry the session."""
-    workspace = WORKSPACES.get(box, "")
-    rows = []
-    for index, (name, method, path, body, _expect) in enumerate(PROBES):
-        rows.append((index, method, path.replace("/W/", "/%s/" % workspace), body,
-                     name != "control.unauthenticated"))
-    return rows
+    """Mark which probes carry the session. `/W/` is left for the BOX to fill in.
+
+    WHY THE WORKSPACE IS NOT SUBSTITUTED HERE. A workspace id belongs to one environment. The
+    record this seat owns on staging does not exist on production, so substituting one constant
+    into both made every workspace probe on production ask for a STAGING record. Measured
+    2026-09-23: this seat reads 13 workspaces on staging and 1 on production, and they share no
+    id. The run reported 20 features RECORD_MISSING - a defect in this tool wearing a defect in
+    the product's clothes, and a repair list pointing at provisioning that was not missing.
+
+    The box now reads the workspace out of its own authenticated session, so the sweep measures
+    the environment it was pointed at. The table above stays as a DECLARED value the run is
+    checked against, because a seat that suddenly signs into a different workspace than the one
+    it owns is itself worth seeing.
+    """
+    return [(index, method, path, body, name != "control.unauthenticated")
+            for index, (name, method, path, body, _expect) in enumerate(PROBES)]
 
 
 def encode_plan(rows) -> str:
@@ -192,8 +219,27 @@ def encode_plan(rows) -> str:
     return base64.b64encode(("\n".join(lines) + "\n").encode()).decode()
 
 
-def classify(code: int, expect: tuple[int, ...]) -> tuple[str, bool]:
-    """Returns (state, alive). `alive` is whether this feature functions for this seat."""
+# PocketBase's own router emits this when nothing is registered for a path. An application
+# handler that ran and then could not find a RECORD says something else entirely.
+_ROUTER_404 = "file not found"
+
+
+def classify(code: int, expect: tuple[int, ...], body: str = "") -> tuple[str, bool]:
+    """Returns (state, alive). `alive` is whether this feature functions for this seat.
+
+    A 404 HAS TWO CAUSES AND THEY NEED OPPOSITE REPAIRS. Measured against production
+    2026-09-21 (seat VCC): this function mapped every 404 to ROUTE_ABSENT from the status code
+    alone, and reported 18 features as missing hooks. They were not missing. Probed
+    unauthenticated, 12 of 13 answered 401 "requires valid record authorization token" -- the
+    hook is registered and enforcing auth. The authenticated 404 body said "The requested
+    workspace record is unavailable": the ROUTE exists, the seat's WORKSPACE does not.
+
+    One data gap read as eighteen deployment gaps, and the repair list it produced pointed at a
+    code deploy that could not have fixed any of them. So the body is now read: PocketBase's
+    router 404 is ROUTE_ABSENT, and a handled 404 is RECORD_MISSING.
+    """
+    if code == 404 and body and _ROUTER_404 not in body.lower():
+        return "RECORD_MISSING", code in expect
     return STATE.get(code, "HTTP_%d" % code), code in expect
 
 
@@ -223,6 +269,8 @@ def on_box(box: str, ip: str, base: str, rows) -> dict[str, Any]:
                 except Exception:  # noqa: BLE001
                     body = ""
             answer["results"][int(parts[1])] = (int(parts[2]), body)
+        elif parts[0] == "WS":
+            answer["workspace"] = parts[1] if len(parts) > 1 else ""
         elif parts[0] in ("UID", "IP") and len(parts) > 1:
             answer[parts[0].lower()] = parts[1]
         elif parts[0] == "FATAL":
@@ -249,10 +297,21 @@ def sweep(box: str, env: str) -> dict[str, Any]:
         return out
     out["seat_uid"] = answer.get("uid", "")
     out["measured_from_ip"] = answer.get("ip", "")
+    out["workspace_measured"] = answer.get("workspace", "")
+    out["workspace_declared"] = WORKSPACES.get(box, "")
+    if not out["workspace_measured"]:
+        # Every /W/ probe below will read UNMEASURABLE. Say why once, here, rather than leaving a
+        # reader to infer it from twenty rows.
+        out["workspace_note"] = ("this seat can read NO workspace on %s, so no workspace feature "
+                                 "could be measured" % env)
+    elif out["workspace_measured"] != out["workspace_declared"]:
+        out["workspace_note"] = ("measured against %s, which is not the declared %s - expected "
+                                 "across environments, since a workspace id belongs to one"
+                                 % (out["workspace_measured"], out["workspace_declared"]))
     controls = {}
     for index, (name, method, path, _body, expect) in enumerate(PROBES):
         code, body = answer["results"].get(index, (0, ""))
-        state, alive = classify(code, expect)
+        state, alive = classify(code, expect, body)
         row = {"feature": name, "method": method, "path": path.replace("/W/", "/<workspace>/"),
                "http": code, "state": state, "alive": alive, "expected": list(expect)}
         if not alive and body:
@@ -277,9 +336,19 @@ def sweep(box: str, env: str) -> dict[str, Any]:
             continue
         if row["state"] == "ROUTE_ABSENT":
             out["broken"].append(row["feature"])
+        elif row["state"] == "UNMEASURABLE":
+            out.setdefault("unmeasurable", []).append(row["feature"])
+        elif row["state"] == "RECORD_MISSING":
+            # Not a deploy defect: the route answered. This seat has no record to read.
+            out.setdefault("record_missing", []).append(row["feature"])
         else:
             out["degraded"].append(row["feature"])
-    out["state"] = "PASS" if not out["broken"] and not out["degraded"] else "REPAIR_NEEDED"
+    if out.get("unmeasurable"):
+        # Absence of measurement is not health and it is not breakage either.
+        out["state"] = "PARTIAL"
+    else:
+        out["state"] = ("PASS" if not out["broken"] and not out["degraded"]
+                        and not out.get("record_missing") else "REPAIR_NEEDED")
     return out
 
 
@@ -289,6 +358,17 @@ def table(result: dict[str, Any]) -> str:
     if result.get("measured_from_ip"):
         lines.append("  measured from %s as seat %s"
                      % (result["measured_from_ip"], result.get("seat_uid", "")))
+    if result.get("workspace_measured"):
+        lines.append("  workspace measured: %s (declared %s)"
+                     % (result["workspace_measured"], result.get("workspace_declared") or "none"))
+    if result.get("workspace_note"):
+        lines.append("  " + result["workspace_note"])
+    if result.get("unmeasurable"):
+        lines.append("  NOT MEASURED (no workspace to read; this is not a pass): "
+                     + ", ".join(result["unmeasurable"]))
+    if result.get("record_missing"):
+        lines.append("  RECORD MISSING (route answered; this seat has no such record - a "
+                     "PROVISIONING fix, not a deploy): " + ", ".join(result["record_missing"]))
     if result.get("reason"):
         lines.append("  " + result["reason"])
     for row in result.get("checks", []):
@@ -313,12 +393,25 @@ def selftest() -> dict[str, Any]:
     record("both controls are present",
            {"control.absent-route", "control.unauthenticated"} <= {p[0] for p in PROBES})
     record("404 where 200 was required reads as absent", classify(404, (200,))[0] == "ROUTE_ABSENT")
+    record("a router 404 is still ROUTE_ABSENT",
+           classify(404, (200,), '{"message":"File not found.","status":404}')[0] == "ROUTE_ABSENT")
+    record("a HANDLED 404 is RECORD_MISSING, not a missing route",
+           classify(404, (200,), '{"message":"The requested workspace record is unavailable."}')[0]
+           == "RECORD_MISSING")
+    record("and a body-less 404 stays ROUTE_ABSENT rather than guessing",
+           classify(404, (200,), "")[0] == "ROUTE_ABSENT")
+    record("the distinction does not change aliveness",
+           classify(404, (404,), '{"message":"workspace record is unavailable."}')[1] is True)
     record("403 is working software, not a break", classify(403, (200, 403))[1] is True)
     record("a 200 where 404 was required fails", classify(200, (404,))[1] is False)
     record("503 separates from 404", classify(503, (200,))[0] == "DEPENDENCY_MISSING")
+    record("a probe that could not be run is UNMEASURABLE, not absent",
+           classify(-1, (200,))[0] == "UNMEASURABLE")
+    record("and UNMEASURABLE is never alive", classify(-1, (200,))[1] is False)
     rows = plan_for("mesh-control")
-    record("workspace is substituted into the path",
-           all("/W/" not in r[2] for r in rows) and any("56o8prujj51dmu2" in r[2] for r in rows))
+    record("the workspace is left for the box to fill in, not baked in here",
+           any("/W/" in r[2] for r in rows)
+           and not any("56o8prujj51dmu2" in r[2] for r in rows))
     record("the unauthenticated control carries no session", not [r for r in rows if r[0] == 1][0][4])
     record("every other probe carries the session", all(r[4] for r in rows if r[0] != 1))
     decoded = base64.b64decode(encode_plan(rows)).decode().strip().splitlines()
@@ -338,6 +431,8 @@ def main() -> int:
     sw.add_argument("--box", default="mesh-control", choices=sorted(SSH_KEYS))
     sw.add_argument("--env", default="staging", choices=sorted(ENVS))
     sw.add_argument("--json", action="store_true")
+    sw.add_argument("--write", action="store_true",
+                    help="persist the receipt so other tools can CITE this sweep")
     sub.add_parser("routes")
     sub.add_parser("selftest")
     args = ap.parse_args()
@@ -351,6 +446,13 @@ def main() -> int:
         print(json.dumps(result, indent=2))
         return 0 if result["state"] == "PASS" else 1
     result = sweep(args.box, args.env)
+    if getattr(args, "write", False) and result.get("env"):
+        # A sweep that only prints cannot be cited. The known-gaps synthesizer needs a receipt
+        # on disk naming the environment, the box it was measured FROM, and the seat it ran as.
+        dest = ROOT / "state" / "ocn_feature_sweep" / ("%s.latest.json" % result["env"])
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        dest.write_text(json.dumps(result, indent=2) + chr(10), encoding="utf-8")
+        print("RECEIPT  %s" % dest)
     print(json.dumps(result, indent=2) if args.json else table(result))
     return 0 if result.get("state") == "PASS" else 1
 

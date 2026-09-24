@@ -1,0 +1,253 @@
+# ─── CGRF Header ───────────────────────────────────────────────
+# File:        .bits/handoffs/2026-09-22-bits-codegen-cmax-b-day21-activation.md
+# Stage:       11_COMMIT
+# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# CAPS:        pending
+# CK:          pending
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+# Seat:        BITS-CODEGEN
+# Owner:       Citadel Nexus Inc.
+# Created:     2026-09-22
+# Depends:     docs/sprint-user-journey.md, docs/submission-guide.md, .gitlab/ci/day21-submission.yml, docs/business-execution.md, docs/workspace-assistant.md, apps/web/src/pages/PricingPage.jsx, apps/web/src/pages/ContactPage.jsx, .bits/handoffs/2026-09-18-bits-codegen-cmax-b-operator-plane.md, docs/development-loop.md, docs/operator-plane.md
+# EnumType:    Doc
+# EnumEdges:   CONSUMES docs/sprint-user-journey.md; CONSUMES docs/submission-guide.md; CONSUMES .gitlab/ci/day21-submission.yml; CONSUMES docs/business-execution.md; CONSUMES docs/workspace-assistant.md; CONSUMES apps/web/src/pages/PricingPage.jsx; CONSUMES apps/web/src/pages/ContactPage.jsx; CONSUMES .bits/handoffs/2026-09-18-bits-codegen-cmax-b-operator-plane.md; CONSUMES docs/development-loop.md; CONSUMES docs/operator-plane.md
+# Intent:      Define the receiving evidence and verified rollback postconditions that separate source onboarding completion from a deployed Day-21 outcome.
+# ───────────────────────────────────────────────────────────────
+
+# Day-21 activation receiving work
+
+To: CMAX-B, IDE1, the GitLab/release owner, and an independent verifier.
+This file records requested work. No external notification, provider binding,
+reviewer assignment or deployment occurred in the public coding session.
+Continue the existing lanes; do not create another verifier or release system.
+
+## Current evidence gap — 2026-09-23
+
+The GitHub annotation for PR 74's check run `106999882933` states that the job
+did not start because the account is locked for billing. The failed name is
+`Resolve reviewed candidate`, but none of its steps executed. The account owner
+must remove that provider block; no source repair can certify the skipped jobs.
+Cloudflare check `107000042333` separately reports a failed build with no error
+annotation. Its owner must supply that build's diagnostic. Neither observation
+establishes GitLab runner status.
+
+The source continuation keeps the existing eighteen-profile gate and adds the
+four portable behavior suites to its source selection. Required GitLab
+`source_behavior_coverage` runs career, Knowledge Unit, integrity and world-twin
+coverage on Python 3.11 and 3.12; submission depends on that matrix too. Retain
+each matrix artifact independently, including failed outputs.
+
+The public/browser capture helpers now require all three expected identities
+and read the actual deployed candidate from `/version.json`. Their complete
+commands are in `docs/day21/DAY21_SUBMISSION_RUNBOOK.md`. They retain the response,
+console and screenshot bytes expected by the existing validators. Matching a
+version file proves only that readback; source and artifact digests still need
+the receiving controller's actual artifact and release evidence.
+
+The frontend fixes connect the existing Journey to the assistant policy, keep a
+draft through a lesson visit without browser persistence, and invalidate late
+career-profile responses. The home page separates recorded evidence from
+reviewed outcomes and links to the existing operator proof view. Validate these
+on the final accepted candidate, including account A -> B -> A, logout/login,
+demo mode, uncertain saves and a lesson-return route.
+
+The local locked frontend installation failed offline with ENOTCACHED; Vitest
+cannot start. Both native PocketBase runtimes and Playwright acceptance still
+require the receiving runner. Do not convert source-double tests into rendered,
+native, hosted, Citadel or deployment acceptance.
+
+The public change supplies objective-first onboarding: six explicit choices,
+one saved ERP objective, optional context and an existing starting lesson.
+The source is based on the owner's audited public revision `5077a96`.
+The candidate and local results are retained in the objective-closure report
+under `.bits/out/VCC-BUILDANDDO-UPGRADE-001/`.
+
+## 1. Execute the existing GitLab acceptance lane
+
+Use the exact reviewed candidate, Node from `.nvmrc`, isolated declared Python
+dependencies, the root npm lock and both disposable PocketBase profiles. Run
+`day21_governance`, the existing source-validation jobs and
+`day21_full_acceptance` from `.gitlab/ci/day21-submission.yml`. The latter invokes:
+
+```bash
+state/day21/venv/bin/python tools/day21/day21_acceptance.py --repo . --install-deps --evidence-dir reports/day21/acceptance --summary-output state/day21/evidence/acceptance-summary.json
+```
+
+Retain every receipt, log, JUnit result and original build path, even on failure.
+Supply the real job/pipeline identities and same-candidate public review status.
+A local invocation of that runner is not hosted GitLab evidence. This session's
+source-control provider is read-only and scoped to the public GitHub repository;
+it cannot start a private GitLab pipeline or publish its statuses. The hosting
+owner must also supply the separate Cloudflare failure diagnostic.
+
+## 2. Bind exactly three integrations and record one real journey
+
+Require the receiving human dispatch, workspace/data scope and current binding
+revision before activation. Keep credentials in the receiving secret store.
+
+| Integration | Actual observation required |
+|---|---|
+| Firecrawl | Registered capture of an allowed source, exact retained text/digest, lost-response recovery, deduplication, and exactly one proposed mission. |
+| n8n | Observed current health, one approved bounded effect, failure/uncertain-response reconciliation, and proof that retry did not duplicate the effect. |
+| Assistant/inference | Approved existing endpoint/model and data handling, real scoped response, visible reviewed form action, native save, account/workspace denial, and retained personal-session behavior. |
+
+Use real accounts for signup → intent → objective → workspace → first lesson →
+live signal → mission → approval → ERP or n8n effect → evidence → different
+verifier → capability → replay. Preserve revoked-session, password-recovery,
+workspace-recovery and both native-runtime checks. The producer cannot author
+the independent verification, and reading a lesson cannot grant a capability.
+No authenticated workspace, approved runtime bindings, independent verifier or
+live replay was supplied to this coding session.
+
+### First paid-pilot lane
+
+The public Pricing CTA now opens `/contact?interest=pilot#commercial-enquiry`.
+It prepares a customer-reviewed email containing the recurring problem, desired
+result and optional restrictions. It neither sends mail nor creates a billing
+account, entitlement, approval or mission. Manual invoicing remains an operator
+process after a written scope. A prepared enquiry is not a customer, payment,
+booked pilot or accepted outcome.
+
+Receiving owners: CMAX-B/IDE1 for registered runtimes; the commercial operator
+for scope/payment/support/data terms; a separate native reviewer for acceptance.
+The owner previously supplied VCC-BUILDANDDO-OPERATOR-RUNTIME-001 and
+SRS-CN-BUILDANDDO-OPERATOR-RUNTIME-001 for discovery and one bounded staging loop,
+as retained in the 2026-09-18 operator-plane handoff. Their private registration,
+status and scope remain unmeasured; carry those identifiers forward when the
+receiving owner confirms coverage for this pilot. The target workspace, actual
+runtime access and independent verifier are still missing. No n8n, Firecrawl or
+inference management tool is attached to this public coding session. Resolve
+these inputs in the receiving plane; do not put tokens, private endpoints or
+customer records in this handoff.
+
+Use one workspace, one existing registered n8n operation and one bounded mission:
+
+1. Agree the customer's actual recurring task, successful result, allowed
+   input/output, duration, run ceiling and approval owner. Record the support
+   contact/hours/response target, cancellation/refund terms, permitted data and
+   providers, access, retention and deletion before accepting live inputs.
+   A fee is quoted and invoiced manually. Run ceilings are agreed and enforced
+   by the operator; this change adds no subscription or usage-limit mechanism.
+2. Bind that workspace/worker/operation using the existing contract in
+   `docs/business-execution.md`. Retain the approved operation alias, binding
+   revision and observed health. Confirm the n8n endpoint durably deduplicates
+   `effect_key` and that its reconciliation GET can only read an existing
+   receipt. A general webhook URL or a configured service name is insufficient.
+3. Capture the permitted real public source through registered Firecrawl.
+   Retain its exact text/digest and receipt. Recover the same capture after an
+   authorized response-loss test, and propose exactly one mission from it.
+4. Bind the existing inference endpoint under `docs/workspace-assistant.md`'s
+   data contract. Demonstrate a real scoped response, reviewed form action and
+   native save. Check the second account cannot read the first account's
+   personal conversation. The assistant cannot approve or verify the mission.
+5. Have the authorized person approve the bounded action and the existing
+   workflow run. Execute the registered worker once. Retain the mission, run,
+   job, effect key, provider execution ID, original reported-result digest and
+   actual business readback. An HTTP success alone does not prove the outcome.
+6. Exercise the approved uncertain-response case through the existing HOLD and
+   reconciliation path. Re-read that same effect; never reissue it to recover
+   a lost response. Preserve failed/uncertain results and the provider's
+   deduplication observation, rather than replacing them with a success fixture.
+7. A different authorized verifier inspects the original result and actual
+   outcome, then records the existing native review. Export the complete
+   mission at `/app/replay`. Recheck the exported result digest against native
+   evidence and retain the candidate/release identities. The producer's export
+   is not itself independent review or a capability grant.
+
+Keep customer/provider evidence in its authorized receiving store. Return
+sanitized receipt references, identities/digests and explicit PASS/FAIL/HOLD
+outcomes to the existing Day-21 evidence process. Run its original GitLab,
+browser/native and release checks; the commercial CTA changes none of them.
+Do not advertise this lane as live until its real result and independent replay
+exist. Official submission and the six materials still depend on sections 3–4.
+
+## 3. Make rollback a verified release postcondition
+
+Source inspection confirms that `scripts/deploy/ship.py:main` stops after a
+failed production sync/probe without restoring a previous artifact. The existing
+`tools/buildanddo_release.py:rollback_environment` restores a backup and records
+`ROLLED_BACK_UNVERIFIED`; it does not prove the backup was a previously verified
+release or perform the required restored-version external readback. These
+functions were inspected as text, not imported or executed with credentials.
+
+Extend the existing private receiving release path with these bounded checks:
+
+1. Before any production mutation, retain the previous **verified** release's
+   source SHA, manifest, artifact digest, successful external identity/health
+   receipt and bounded restore target/command. Refuse promotion if the target
+   is missing, tampered with, outside the registered root or not tied to that
+   verification. A backup directory by itself is insufficient.
+2. Stage and verify the candidate; promote those exact bytes. Bind source,
+   GitLab pipeline, manifest and artifact identity to every phase.
+3. On production sync or verification failure, preserve the failed candidate
+   receipt, restore only that admitted prior artifact, and probe the external
+   origin for health plus the prior SHA/manifest/digest. A generic SPA 200 or
+   mismatching `_version` is a failed readback, not recovery.
+4. Write a rollback receipt with the attempted/previous identities, failure,
+   restore result and actual external observations. Failed or ambiguous restore
+   remains HOLD/UNVERIFIED and stops further promotion; it cannot be marked a
+   successful candidate deployment.
+5. Exercise missing prior verification, wrong/tampered digest, partial sync,
+   failed/ambiguous restore, stale external content and a successful restore in
+   the receiving lane. Only then perform the governed staging recovery drill.
+
+Capture `_version`, manifest/artifact hash, actual HTTP proof and observed
+Datadog RUM/deploy/DORA acknowledgment for the accepted candidate. Missing
+Datadog configuration may remain fail-soft at runtime but cannot satisfy this
+acceptance obligation. Deployment-control changes and live actions belong to
+the private release owner under AGENTS.md and the registered dispatch boundary.
+
+## 4. Derive the submission from that accepted replay
+
+Use the existing Day-21 capture/index/bundle commands in
+`docs/submission-guide.md`. Supply candidate-bound acceptance, browser evidence,
+product proofs, a complete non-synthetic replay, and independent owner review.
+Capture and review actual organizer eligibility, deadline/time zone, hosting
+and submission terms; internal policy does not establish official rules.
+
+The six dated materials are `product_summary`, `evaluator_journey`,
+`walkthrough`, `license_and_attribution`, `privacy_and_permissions`, and
+`rollback_and_support`. Write the walkthrough and recovery claims from the
+observations above. Keep the final bundle HOLD while required evidence is
+missing. Private fleet/NXC, voice/video, automated social publishing and live
+policy delivery remain outside the active demo promise.
+
+## 5. Observe developmental progression and business value
+
+Use the same accepted mission and receipts from section 2 to validate the
+Owner, Operator and Reviewer lenses at `/app/operator`. Source contracts are
+in `docs/operator-plane.md`; the blueprint and capture/query APIs are in
+`docs/development-loop.md`. These additions create no second mission registry,
+verification service or provider binding.
+
+1. Run the authored rendered OperatorPage cases and native operator acceptance
+   on the reviewed candidate with the unchanged lock and disposable backend.
+   The public session lacks Vitest/Vite, the locked lint plugin and PocketBase;
+   fixture/source tests cannot substitute for these checks.
+2. Trace one real reviewed mission through its readable frozen evidence,
+   distinct reviewer, workflow/action, provider result digest and declared
+   release. Confirm changed/unreadable evidence cannot contribute to verified
+   counts, and revoked access immediately removes the old view. Page bounds,
+   the current UTC month and the independently reviewed subset must be visible.
+3. Supply canonical owner mappings through the existing identity mechanism.
+   Record unresolved/conflicting mappings explicitly and enforce tenant/data
+   visibility before providing any capture. Keep private records and tokens in
+   their receiving stores. No canonical resolver or authenticated feed was
+   supplied to this public session.
+4. Reference the actual owner of the development-level model and its exact
+   prerequisites. Keep required authority, current grants and authority ceiling
+   separate. A satisfied local prerequisite set is only a review candidate;
+   any promotion still needs existing independent review and governance.
+5. Retain at least two real, scoped captures from existing event/observation
+   transport. Compare state, evidence and invitation changes, including an
+   approved regression or stale observation. Do not backdate present files or
+   treat graph dependency/correlation as causal proof.
+6. Agree the business measurement owner, currency/window, attributable cost or
+   revenue, comparable effort baseline and complete eligible-work denominator.
+   Until actual evidence supplies them, keep value, hours, prevented risk,
+   automation rate, coverage and ROI unmeasured. An example number, provider
+   success, HOLD or subscription payment cannot establish those measurements.
+
+Receiving status remains unmeasured. The continuous Twin lane can be accepted
+only from these observed identity, history, scope, review and economic inputs;
+local source completion does not mean the ecosystem feed is operational.
