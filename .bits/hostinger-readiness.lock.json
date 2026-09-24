@@ -324,7 +324,7 @@
     "apps/web/plugins/visual-editor/vite-plugin-react-inline-editor.js": "552145b156ebddb06b6f6283f0079a332900b10cdda79360b8f928de974e6a69",
     "apps/web/plugins/vite-plugin-iframe-route-restoration.js": "8b291a297b3772564b1e3b793021e3b3011e0e9022e1309c9f40ccc47c7a7db3",
     "apps/web/plugins/vite-plugin-pocketbase-auth.js": "534a878cedfdf043cc8f1cec274dae8400a921e22f636f17edf43b6c6e308719",
-    "apps/web/plugins/vite-plugin-public-lessons.js": "890dd8d7be88ace36affcc7453b4c439c519e2eeab6c0b12c241d376ac56e19a",
+    "apps/web/plugins/vite-plugin-public-lessons.js": "5efac45d19d55a57a44cee6e23edbd81881b43c1563aca8333302e72e8c506a4",
     "apps/web/plugins/vite-plugin-site-pages.js": "ef9f7af8d586af1541356f25078ca833cf66cdf4d1945d5d04e7b056ebaed750",
     "apps/web/postcss.config.js": "3cd98fcde31211e29ddf977a2566c34a52790819fa43f84cea1a7684f2c53ca7",
     "apps/web/public/activity-status.json": "eec22b90b62b9614ef2fc56d21bb3b09271bc39ce92977d514e67553cd3d785b",
