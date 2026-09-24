@@ -8,7 +8,7 @@
 // Seat:        BITS-CODEGEN, C-ONE (status link kept on the domain)
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-16
-// Depends:     apps/web/src/hooks/useClassrooms.js, apps/web/src/lib/classrooms.js, apps/web/src/components/broadcast/LiveBroadcast.jsx
+// Depends:     apps/web/src/hooks/useClassrooms.js, apps/web/src/hooks/useOpenClasses.js, apps/web/src/lib/classrooms.js, apps/web/src/components/broadcast/LiveBroadcast.jsx
 // EnumType:    Widget
 // EnumEdges:   CONSUMES apps/web/src/hooks/useClassrooms.js; CONSUMES apps/web/src/lib/classrooms.js; CONSUMES apps/web/src/components/broadcast/LiveBroadcast.jsx
 // DAG Node:    none
@@ -27,6 +27,7 @@ import AgentActivity from '@/components/broadcast/AgentActivity';
 import { PageControls, controlInput, dateLabel } from '@/components/workspace/ControlPrimitives';
 import { useWorkspace } from '@/contexts/WorkspaceContext';
 import { useClassrooms } from '@/hooks/useClassrooms';
+import { useOpenClasses } from '@/hooks/useOpenClasses';
 import { classroomHref } from '@/lib/classrooms';
 import { STATUS_PATH } from '@/lib/communityLinks';
 
@@ -85,6 +86,28 @@ function RoomEditor({ control, room, onClose }) {
     </form>;
 }
 
+// A person should not have to know which workspace a class lives in. Measured 2026-09-24: every
+// guildmaster class sat in a workspace the operator had just been seated in, while the desk showed
+// only the active workspace and said "No classes here yet". This lists live and scheduled classes
+// from the account's OTHER readable workspaces; opening one switches the workspace through the same
+// link the desk already uses, so no new access path is created.
+function OpenClasses({ activeId }) {
+    const open = useOpenClasses();
+    const items = open.items.filter((entry) => entry.workspace.id !== activeId);
+    if (!items.length && !open.unavailable.length) return null;
+    return <section aria-labelledby="open-classes-heading" className="space-y-3" data-testid="open-classes">
+        <div><h2 id="open-classes-heading" className="font-display text-xl font-semibold">Classes you can join</h2>
+            <p className="text-sm text-muted-foreground">Live and scheduled classes in your other workspaces. Opening one switches your workspace.</p></div>
+        {items.length > 0 && <ul className="grid gap-4 md:grid-cols-2">{items.map(({ workspace, room }) => <li key={`${workspace.id}:${room.id}`} className="min-w-0"><Card className="flex h-full flex-col gap-2 p-5">
+            <div className="flex flex-wrap justify-between gap-2"><span className="text-xs font-semibold uppercase tracking-wide text-primary">{statusLabel[room.status]}</span><span className="text-xs text-muted-foreground">{workspace.name}</span></div>
+            <h3 className="break-words font-display text-lg font-semibold">{room.title}</h3>
+            <p className="text-xs text-muted-foreground">Hosted by {room.host_name}{room.status === 'scheduled' && room.starts_at ? ` · Planned for ${dateLabel(room.starts_at)}` : ''}</p>
+            <Button href={classroomHref(room.id, workspace.id)} variant="secondary" className="mt-auto self-start" aria-label={`Open ${room.title}`}>Open classroom</Button>
+        </Card></li>)}</ul>}
+        {open.unavailable.length > 0 && <p role="status" className="text-xs text-muted-foreground">Could not read classes in {open.unavailable.map((workspace) => workspace.name || workspace.id).join(', ')}.</p>}
+    </section>;
+}
+
 function ClassroomList({ control, onPage, status, onStatus }) {
     const [creating, setCreating] = useState(false);
     const navigate = useNavigate(); const { data } = control;
@@ -92,6 +115,7 @@ function ClassroomList({ control, onPage, status, onStatus }) {
         if (control.saved?.action === 'room.create') navigate(classroomHref(control.saved.id, data.workspace));
     }, [control.saved, navigate, data.workspace]);
     return <div className="space-y-5">
+        <OpenClasses activeId={data.workspace} />
         <div className="flex flex-wrap items-end justify-between gap-4">
             <div><label htmlFor="class-filter" className="mb-1 block text-sm">Show classes</label><select id="class-filter" className={controlInput} value={status} disabled={frozen(control)} onChange={(event) => onStatus(event.target.value)}>
                 <option value="all">All classes</option><option value="scheduled">Scheduled</option><option value="live">Live now</option><option value="ended">Ended</option></select></div>
