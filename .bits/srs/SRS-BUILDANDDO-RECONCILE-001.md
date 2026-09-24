@@ -41,10 +41,11 @@ line's wording plus main's additions".
    retired phrases. Main's additions around it stay too: Buddi, the brand mark, the career passport links and
    the submission scrub. Where main's text brings back a retired phrase, the staging wording replaces it.
 3. **R3 - live classroom.** The staging line took main's live classroom as a cherry-pick (`069ca74`, from
-   `62b8859` and `14edddb`). Those files merge against `14edddb`, not the older common ancestor, so each side's
-   real change is visible:
+   `62b8859` and `14edddb`). Those files merge against `62b8859`, not the older common ancestor, so each side's
+   real change is visible. `14edddb`, the seat-name follow-up, never reached main, so it counts as the staging
+   line's own change:
    - main's later security repair (`2778730`) is kept;
-   - the staging line's own later changes are kept.
+   - the staging line's own later changes are kept, the seat names included.
 
    One adaptation goes away. The class record route dropped main's government membership check only because its
    helper was missing on this line; the merge brings the helper, so the check comes back.
@@ -68,6 +69,31 @@ line's wording plus main's additions".
    - After the operator merges the pull request, a staging-only deploy (web and backend) shows the combined site.
    - A second pull request then takes the staging line into `main`. It must merge without conflicts, and it
      waits for the operator.
+
+## Found while merging (2026-09-24)
+
+Running each line's suites on the merged tree, natively on the release workstation, turned up four more
+requirements. Each is shown by a test that fails without its change.
+
+9. **R9 - a chatroom stays usable behind the government gate.** main's `roomMembership()` looks up the room's
+   lesson, and a chatroom has none. Without a guard, every chatroom answered 404: hidden from the list, and join,
+   detail and heartbeat failing. A room without a lesson skips the lesson-category check.
+10. **R10 - migrations re-apply after a rollback on native PocketBase.** A Go-bound field exposes `type` as a
+    method. Four migrations compared raw values, so re-applying one after a rollback refused every field, and one
+    failing migration aborts startup. They now read values through the `norm()` the older classroom migrations
+    use.
+11. **R11 - the native suites run on Windows.** main's newer suites are kept, with fixes so that they run on
+    Windows:
+    - `SystemRoot` for Winsock;
+    - no console window;
+    - a log tail without `os.pread`;
+    - database readers that close their connection;
+    - `revert()` paired with `restore()`;
+    - fixture migrations that sort before the migration under test;
+    - every hook a copied module requires.
+12. **R12 - recorded evidence is re-run, never relabeled.** main's broadcast lesson carries a dated source
+    regression run bound to a digest of the files it covered. After the merge changed those files, the command
+    is re-run on the final merged sources, and that run is what is recorded.
 
 ## Out of scope
 
