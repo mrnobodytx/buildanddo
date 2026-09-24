@@ -467,7 +467,7 @@
       "wired_into_ci": true
     }
   ],
-  "generated_at": "2026-09-24T00:23:31.337956+00:00",
+  "generated_at": "2026-09-24T02:21:39.494979+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -669,6 +669,13 @@
         "spec": ".bits/srs/SRS-BUILDANDDO-PLATFORM-001.md",
         "status": "in_progress",
         "title": "MetaFunction Fabric platform page - VFX, architecture visuals, and capability dashboard"
+      },
+      {
+        "code": "SRS-BUILDANDDO-QUIZ-001",
+        "risk": "A2",
+        "spec": ".bits/srs/SRS-BUILDANDDO-QUIZ-001.md",
+        "status": "in_progress",
+        "title": "Server-graded community quiz; no answers in the public catalogue"
       },
       {
         "code": "SRS-BUILDANDDO-RELEASE-TAG-001",
@@ -1016,7 +1023,7 @@
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 1577,
+    "tracked_files": 1583,
     "web_source_files": 385
   },
   "schema_version": 1,
@@ -1097,8 +1104,8 @@
     "findings": 24,
     "findings_high": 24,
     "pipelines": 10,
-    "srs_open": 36,
-    "srs_total": 40,
+    "srs_open": 37,
+    "srs_total": 41,
     "unwired_gates": 22
   },
   "tests": {
