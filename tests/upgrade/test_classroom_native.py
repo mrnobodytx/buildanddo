@@ -1124,9 +1124,11 @@ class NativeClassroomTests(unittest.TestCase):
         session = self.media_session(room)
         before = self.server.stored("classroom_media_sessions")[0]
         self.server.stop()
-        # The additive lesson is last; the media migration is immediately before it. revert()
-        # moves them aside too, because serve re-applies a pending migration on 0.39.8.
-        self.server.revert("2")
+        # Roll back through the media migration: every migration listed after it goes first. Counted from
+        # the list, because main added the authority lesson after the broadcast one and a fixed "2" then
+        # stopped short of media. revert() moves them aside too, because serve re-applies a pending
+        # migration on 0.39.8.
+        self.server.revert(str(len(MIGRATIONS) - MIGRATIONS.index("1791400000_classroom_media_sessions.js")))
         self.assertNotIn(
             "protocol_version",
             {
