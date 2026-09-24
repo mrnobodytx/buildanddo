@@ -1063,7 +1063,7 @@
     "scripts/ci/evidence_epoch.py": "b523975390bfbd0204e4b8cb8f84ca28825044e2cfdee917a15487676bb00243",
     "scripts/ci/fleet_report.py": "32a7c231c3a4ab561a939675ecd9e2fa454967882c50f38eba71ee54703fe660",
     "scripts/ci/gitlab_ci.py": "f9ec17baf4b81a07d4005ff4fe79a7324420b325943442fb2b0a1ac9ba0adb72",
-    "scripts/ci/hostinger_checks.py": "71ed87afa7a97693ea98cb19e0c15c5bcb02a649cb499ac03a61a419b88b3cdd",
+    "scripts/ci/hostinger_checks.py": "5408939274a822683d36fab32ff14706d2aa74dc4ca8a0c1732df8d3fcba29bf",
     "scripts/ci/hostinger_readiness.py": "d5b81a6aa7c130f6fda2185a8c53e0b24de5bbe12508c3ca9091c2e6db9bdf60",
     "scripts/ci/hostinger_replay.py": "18158249d91763552c89eefb5036067ff9b56422593d4e9ce42e7034fe956def",
     "scripts/ci/integrity_regression_check.py": "0f452526234d6caeb961e30b151f56ab5727c9da1e9b3313a3a31e04f7141a17",

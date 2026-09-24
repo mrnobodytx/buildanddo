@@ -129,7 +129,7 @@ CHECKS = {
         "unittest",
     ),
     # The OCN detector's OFFLINE half. `sweep` needs ssh keys to a fleet box and so cannot be a
-    # gate - a check that only passes on rig1 is a false red everywhere else. What is gated here is
+    # gate - a check that only passes on the release workstation is a false red everywhere else. What is gated here is
     # the part that decides what a status MEANS: that 403 reads as working software, that a 404
     # where 200 was required reads as absent, and that both controls are present. If that logic
     # rots, an operator running `sweep` gets confident nonsense, which is worse than no detector.
