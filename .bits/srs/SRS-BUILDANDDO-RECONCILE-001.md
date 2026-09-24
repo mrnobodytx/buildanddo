@@ -108,6 +108,23 @@ Scanning every line the merge adds, with the private fleet map, turned up one mo
     One family match stays: a hosting plan's product key in recorded evidence. The staging line's generator
     already carries the same key, and changing the record would relabel it (R12).
 
+## Two reconciliations (2026-09-24)
+
+#106 took main into the staging line at 22:31 CDT on 2026-09-23. Two minutes later #105
+(`SRS-BUILDANDDO-RECONCILE-002`, another session) took the staging line into main. The two resolved the same
+conflicts differently, so the lines still differed in 52 files.
+
+14. **R14 - converge on #106's resolutions.** Operator decision, 2026-09-24. main at `4c60b79` is merged into the
+    staging line, and:
+    - where #106 and #105 resolved the same conflict differently, #106's form stays;
+    - everything main gained beyond #105's resolutions stays, meaning #103's career evidence and #105's
+      follow-ups, handoffs and ported tests;
+    - where #105 kept something from either side that #106 had lost, it comes back, because losing it was never
+      a choice;
+    - recorded evidence is re-run on the converged sources (R12), and the locks are regenerated.
+
+    Afterwards main is an ancestor of the staging line, so the pull request into main merges without conflicts.
+
 ## Out of scope
 
 - Production, and any server change other than the staging-only deploy in R8.

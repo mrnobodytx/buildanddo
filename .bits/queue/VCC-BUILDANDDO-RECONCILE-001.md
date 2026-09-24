@@ -33,9 +33,10 @@
 | 3 | Regenerate the readiness and context locks on the merged tree, LF | `hostinger_readiness.py --check`, `agent_context.py --check`, also in a fresh LF checkout | done |
 | 4 | Run the three suites on the merged tree | `npx vitest run` in `apps/web`; `node --test tests/upgrade/*.test.mjs`; the Python native suites | done: see Evidence |
 | 5 | Repository gates | `submission_readiness.py --check`, `verify_public_boundary.py` | done |
-| 6 | Pull request to the staging line, merged only on the operator's OK | the gates again on a trial merge into the current head | pending |
-| 7 | Staging-only deploy of web and backend | readback from staging | pending |
-| 8 | Pull request taking the staging line into `main`, merged only on the operator's OK | GitHub reports it mergeable without conflicts | pending |
+| 6 | Pull request to the staging line, merged only on the operator's OK | the gates again on a trial merge into the current head | done: #106, merged as `ea97e3b` |
+| 7 | Staging-only deploy of web and backend | readback from staging | done: staging serves `ea97e3b`; backend at 109 migrations |
+| 8 | Converge main after #105 by R14, as a pull request to the staging line | `git merge-base --is-ancestor origin/main HEAD`; the suites and gates again | in progress |
+| 9 | Pull request taking the staging line into `main`, merged only on the operator's OK | GitHub reports it mergeable without conflicts | pending |
 
 ## Evidence (2026-09-24, release workstation, Windows, LF checkout)
 
@@ -108,6 +109,20 @@ commit ids.
 **Found, not changed here.** `1790000000_workspace_administration.js` still compares a field's `type` directly,
 the defect R10 fixed elsewhere. It is the same on both lines and latent: it fires only if that migration is rolled
 back and re-applied, and then the server does not start. It needs its own fix and a native re-apply test.
+
+## Staging deploy of #106 (2026-09-24, staging only)
+
+- **Rehearsal.** The seven migrations new to staging ran against an online-backup copy of staging's database,
+  with staging's own binary: all applied (102 to 109), every classroom collection's rules stayed null, and the 12
+  existing classes became workspace classes. The copy was deleted.
+- **Configuration.** `BUILDANDDO_APP_URL` was set to staging's own address before the sync, with the operator's
+  approval, because main's password-reset migration applies once. The env file was backed up first.
+- **Backend.** The database was backed up (integrity ok), then the hooks and migrations were synced and the
+  service restarted: active, health 200, no error lines in the journal. On the live database, reset links now
+  open staging's own page.
+- **Control.** Two routes that only the merged code serves answered 404 before the sync and 401 after it.
+- **Web.** Build, lint and the integrity gate passed. Staging's `/_version` reads back `ea97e3b`, and
+  production's `/_version` was the same before and after.
 
 ## Constraints
 
