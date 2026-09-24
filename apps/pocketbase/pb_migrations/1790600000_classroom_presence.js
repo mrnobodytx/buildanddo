@@ -111,7 +111,7 @@ migrate((app) => {
             if (actual[key] !== definition[key]) throw new Error(`Review custom ${definition.name}.${key}.`);
         for (const field of definition.fields) {
             const saved = actual.fields.getByName(field.name);
-            if (!saved || Object.keys(field).some((key) => JSON.stringify(saved[key]) !== JSON.stringify(field[key])))
+            if (!saved || Object.keys(field).some((key) => JSON.stringify(typeof saved[key] === 'function' ? saved[key]() : saved[key]) !== JSON.stringify(field[key])))
                 throw new Error(`Review custom ${definition.name}.${field.name}.`);
         }
         // PocketBase stores an index as normalized, backticked DDL, so comparing

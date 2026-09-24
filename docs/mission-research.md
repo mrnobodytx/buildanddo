@@ -242,7 +242,7 @@ worker, file extraction and website review clients. Their PocketBase storage and
 Discord transport doubles are explicit; they do not establish native auth/rule,
 database concurrency, file-storage transaction or live gateway acceptance.
 
-The receiver must verify native PocketBase 0.28.4 migration up/replay/down/re-up,
+The receiver must verify native PocketBase 0.39.8 migration up/replay/down/re-up,
 OAuth linking to an existing account, ordinary-write denial, protected file
 downloads, revoked membership, duplicate simultaneous retries and evidence/audit
 rollback. Exercise the rendered web flow in both themes, on mobile and with a

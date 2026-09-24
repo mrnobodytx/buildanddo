@@ -85,7 +85,7 @@ the production build, repository lint, or browser acceptance.
 
 ## Native and browser acceptance before activation
 
-Use an isolated PocketBase 0.28.4 acceptance environment and its existing test
+Use an isolated PocketBase 0.39.8 acceptance environment and its existing test
 account procedure. Apply the complete migration sequence with the new evidence
 hooks. The public sandbox did not mutate a shared backend.
 
