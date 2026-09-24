@@ -18,7 +18,7 @@
     },
     {
       "area": "ci",
-      "evidence": "referenced by: nothing in this repo",
+      "evidence": "referenced by: tests/upgrade/test_readme_check.py",
       "severity": "high",
       "srs": "",
       "statement": "scripts/ci/changelog_gen.py is not configured in reachable GitLab jobs"
@@ -193,7 +193,7 @@
     },
     {
       "area": "ci",
-      "evidence": "referenced by: scripts/ci/hostinger_replay.py, scripts/deploy/roadmap_status.py, tools/day21_closure.py, tools/evidence_verify.py",
+      "evidence": "referenced by: scripts/ci/hostinger_replay.py, scripts/deploy/roadmap_status.py, tests/upgrade/test_readme_check.py, tools/day21_closure.py, tools/evidence_verify.py",
       "severity": "high",
       "srs": "",
       "statement": "scripts/ci/sprint_cycle.py is not configured in reachable GitLab jobs"
@@ -282,7 +282,9 @@
         "github"
       ],
       "path": "scripts/ci/changelog_gen.py",
-      "referenced_by": [],
+      "referenced_by": [
+        "tests/upgrade/test_readme_check.py"
+      ],
       "wired_into_ci": false
     },
     {
@@ -524,6 +526,17 @@
     },
     {
       "configured_providers": [
+        "gitlab",
+        "github"
+      ],
+      "path": "scripts/ci/readme_check.py",
+      "referenced_by": [
+        "tests/upgrade/test_readme_check.py"
+      ],
+      "wired_into_ci": true
+    },
+    {
+      "configured_providers": [
         "gitlab"
       ],
       "path": "scripts/ci/selftest_sprint_replay.py",
@@ -536,6 +549,7 @@
       "referenced_by": [
         "scripts/ci/hostinger_replay.py",
         "scripts/deploy/roadmap_status.py",
+        "tests/upgrade/test_readme_check.py",
         "tools/day21_closure.py",
         "tools/evidence_verify.py"
       ],
@@ -643,7 +657,7 @@
       "wired_into_ci": true
     }
   ],
-  "generated_at": "2026-09-24T19:43:13.310826+00:00",
+  "generated_at": "2026-09-24T19:51:25.678363+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -1276,11 +1290,11 @@
       "scripts/deploy/staging-readback.sh"
     ],
     "migrations": 75,
-    "python_files": 439,
+    "python_files": 441,
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 1790,
+    "tracked_files": 1794,
     "web_source_files": 416
   },
   "schema_version": 1,
@@ -1360,7 +1374,7 @@
         "why": "Competition readiness requires an evidence-backed learning-through-work journey, a reproducible replay and actual submission criteria."
       }
     ],
-    "source_sha256": "0b0d3b7581ff61bb967a85e1d5e1cd6b56c48464623bfd1ed1161b29673d47c0",
+    "source_sha256": "a447ae423d762834222b80835e319bd927490cebe8de4d051bd31e9d1f473b5c",
     "state": "PASS"
   },
   "summary": {

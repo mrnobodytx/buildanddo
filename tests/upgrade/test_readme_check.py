@@ -83,7 +83,8 @@ class ReadmeFixture:
             """
         )
         block = f"{readme_check.ROADMAP_BEGIN}\n{readme_check.render_roadmap(milestones)}\n{readme_check.ROADMAP_END}"
-        self.readme = template.replace("@ROADMAP@", block)
+        catalogue = f"{readme_check.CATALOGUE_BEGIN}\n\n{readme_check.CATALOGUE_END}"
+        self.readme = template.replace("@ROADMAP@", block + "\n\n" + catalogue)
         self.write(self.readme)
 
     def write(self, text: str) -> None:
@@ -146,6 +147,41 @@ class ReadmeCheckTests(unittest.TestCase):
         self.assertTrue(readme_check.write(self.repo.dir))
         self.assertEqual(self.repo.result()["status"], "PASS")
         self.assertFalse(readme_check.write(self.repo.dir), "a second write must be a no-op")
+
+    def test_control_an_uncatalogued_readme_fails_and_write_adds_it(self) -> None:
+        readme = self.repo.dir / "apps/web/README.md"
+        readme.write_text(
+            "# ─── CGRF Header ───\n# File:        apps/web/README.md\n"
+            "# Intent:      Explain the web app\n#              to a new contributor.\n"
+            "# ─────────────────────\n\n# Web app\n\nIgnored: the Intent wins.\n",
+            encoding="utf-8",
+        )
+        self.assertFailsWith("catalogue: the generated block does not match")
+        self.assertTrue(readme_check.write(self.repo.dir))
+        text = (self.repo.dir / "README.md").read_text(encoding="utf-8")
+        self.assertIn("| [Web app](./apps/web/README.md) | `apps/web` | Explain the web app to a new contributor. |", text)
+        self.assertEqual(self.repo.result()["status"], "PASS")
+        self.assertEqual(self.repo.result()["readmes_catalogued"], 1)
+
+    def test_an_untitled_readme_is_named_by_its_folder(self) -> None:
+        folder = self.repo.dir / "services/praxis_evidence"
+        (folder / "README.md").write_text("Evidence fabric | with a pipe.\n\n## Details\n", encoding="utf-8")
+        title, summary = readme_check.describe_readme(folder / "README.md")
+        self.assertEqual(title, "Praxis evidence")
+        self.assertEqual(summary, "Evidence fabric \\| with a pipe.")
+
+    def test_tool_caches_are_not_catalogued(self) -> None:
+        (self.repo.dir / ".pytest_cache").mkdir()
+        (self.repo.dir / ".pytest_cache/README.md").write_text("# cache\n", encoding="utf-8")
+        (self.repo.dir / ".bits").mkdir()
+        (self.repo.dir / ".bits/README.md").write_text("# Bits\n", encoding="utf-8")
+        self.assertEqual(readme_check.find_readmes(self.repo.dir), [".bits/README.md"])
+
+    def test_long_summaries_are_cut_on_a_word_without_breaking_code(self) -> None:
+        cut = readme_check.shorten("word " * 29 + "`a code span that runs past the limit` tail")
+        self.assertTrue(cut.endswith("…"))
+        self.assertLessEqual(len(cut), readme_check.SUMMARY_MAX + 1)
+        self.assertEqual(cut.count("`") % 2, 0)
 
     def test_missing_markers_fail(self) -> None:
         self.repo.write(self.repo.readme.replace(readme_check.ROADMAP_END, ""))

@@ -42,6 +42,7 @@ from __future__ import annotations
 import argparse
 import importlib.util
 import json
+import os
 import re
 import sys
 import unicodedata
@@ -52,6 +53,8 @@ README = "README.md"
 
 ROADMAP_BEGIN = "<!-- readme:roadmap:begin -->"
 ROADMAP_END = "<!-- readme:roadmap:end -->"
+CATALOGUE_BEGIN = "<!-- readme:catalogue:begin -->"
+CATALOGUE_END = "<!-- readme:catalogue:end -->"
 
 # Directories whose every child must be named in the README. A child counts as
 # named when its repo-relative path (e.g. `apps/web`) appears anywhere in the
@@ -201,20 +204,162 @@ def render_roadmap(milestones: list[dict]) -> str:
     return "\n".join(lines)
 
 
+# ── README catalogue ───────────────────────────────────────────────────────────────────────
+# Every README in the tree, grouped by area, so the root README is the index to all of them.
+# Generated, so a README added anywhere fails the check until the catalogue carries it.
+CATALOGUE_SKIP_DIRS = {"node_modules", "dist", "state", "reports", "__pycache__", "venv"}
+# Hidden directories are tool caches (.pytest_cache, .venv, .git) except these two, which are source.
+CATALOGUE_HIDDEN_ALLOWED = {".bits", ".github"}
+CATALOGUE_GROUPS = (
+    # (path prefix, label). First match wins; order matters.
+    (".bits/", "Governance and agent context"),
+    ("apps/", "Applications"),
+    ("services/", "Services"),
+    ("libs/", "Libraries"),
+    ("design/broadcast-classroom/components/", "Broadcast-classroom components"),
+    ("design/", "Design system"),
+    ("docs/", "Documentation"),
+    ("foundry/lanes/", "Foundry research lanes"),
+    ("foundry/", "Foundry"),
+    ("", "Other"),
+)
+SUMMARY_MAX = 150
+CGRF_START = re.compile(r"^\s*(?:#|<!--)\s*─+\s*CGRF Header")
+CGRF_RULE = re.compile(r"^\s*(?:#\s*)?─{8,}\s*(?:-->)?\s*$")
+CGRF_FIELD = re.compile(r"^\s*#?\s*([A-Za-z ]+):\s*(.*)$")
+CGRF_CONTINUATION = re.compile(r"^\s*#?\s{2,}(\S.*)$")
+
+
+def find_readmes(root: Path) -> list[str]:
+    """Every README.md under the root except the root README itself, as sorted posix paths."""
+    found: list[str] = []
+    for current, dirs, files in os.walk(root):
+        dirs[:] = sorted(
+            d for d in dirs
+            if d not in CATALOGUE_SKIP_DIRS and (not d.startswith(".") or d in CATALOGUE_HIDDEN_ALLOWED)
+        )
+        for name in files:
+            if name.lower() == "readme.md":
+                rel = (Path(current) / name).relative_to(root).as_posix()
+                if rel != README:
+                    found.append(rel)
+    return sorted(found)
+
+
+def describe_readme(path: Path) -> tuple[str, str]:
+    """Return (title, summary). The CGRF Intent is the summary when present: the author wrote it
+    as exactly that. Otherwise the first prose paragraph after the title."""
+    lines = path.read_text(encoding="utf-8", errors="replace").splitlines()
+    intent: list[str] = []
+    body_start = 0
+    if lines and CGRF_START.match(lines[0]):
+        in_intent = False
+        for index, line in enumerate(lines[1:], start=1):
+            if CGRF_RULE.match(line):
+                body_start = index + 1
+                break
+            field = CGRF_FIELD.match(line)
+            continuation = CGRF_CONTINUATION.match(line)
+            if field and not continuation:
+                in_intent = field.group(1).strip().lower() == "intent"
+                if in_intent:
+                    intent.append(field.group(2).strip())
+            elif in_intent and continuation:
+                intent.append(continuation.group(1).strip())
+    title, paragraph, fenced = "", [], False
+    for line in lines[body_start:]:
+        if FENCE.match(line):
+            fenced = not fenced
+            continue
+        if fenced or line.strip().startswith("<!--"):
+            continue
+        heading = HEADING.match(line)
+        if heading and not title:
+            title = heading.group(2).strip()
+            continue
+        if not title:
+            if not line.strip() or line.strip().startswith(("<", "!", "[")):
+                continue
+            # Prose before any heading: the README is untitled, so its folder names it.
+            title = path.parent.name.replace("-", " ").replace("_", " ").capitalize()
+        if heading or (not line.strip() and paragraph):
+            if paragraph:
+                break
+            continue
+        stripped = line.strip()
+        if stripped and not stripped.startswith(("|", "<", "!", "---", "- ", "* ", ">")):
+            paragraph.append(stripped)
+    summary = " ".join(intent) if intent else " ".join(paragraph)
+    return title or path.parent.name, shorten(summary)
+
+
+def shorten(text: str) -> str:
+    text = re.sub(r"\s+", " ", text).strip().replace("|", "\\|")
+    if len(text) <= SUMMARY_MAX:
+        return text
+    cut = text[:SUMMARY_MAX].rsplit(" ", 1)[0].rstrip(",;:—-")
+    # Never leave an unbalanced code span behind a cut.
+    if cut.count("`") % 2:
+        cut = cut.rsplit("`", 1)[0].rstrip()
+    return cut + "…"
+
+
+def render_catalogue(root: Path) -> str:
+    groups: dict[str, list[str]] = {}
+    for rel in find_readmes(root):
+        label = next(name for prefix, name in CATALOGUE_GROUPS if rel.startswith(prefix))
+        title, summary = describe_readme(root / rel)
+        where = rel.rsplit("/", 1)[0] if "/" in rel else "."
+        title = title.replace("|", "\\|")
+        groups.setdefault(label, []).append(f"| [{title}](./{rel}) | `{where}` | {summary} |")
+    out: list[str] = []
+    for _, label in CATALOGUE_GROUPS:
+        rows = groups.get(label)
+        if not rows:
+            continue
+        out += [
+            "<details>",
+            f"<summary><strong>{label}</strong> · {len(rows)}</summary>",
+            "",
+            "| README | Location | What it covers |",
+            "|---|---|---|",
+            *rows,
+            "",
+            "</details>",
+            "",
+        ]
+    return "\n".join(out).rstrip("\n")
+
+
+# ── generated blocks ───────────────────────────────────────────────────────────────────────
+# (name, begin marker, end marker, renderer). Each block is a pure function of the tree, so
+# --check is exact and --write is idempotent.
+BLOCKS = (
+    ("roadmap", ROADMAP_BEGIN, ROADMAP_END,
+     lambda root: render_roadmap(load_milestones(root)), "scripts/ci/sprint_cycle.py MILESTONES"),
+    ("catalogue", CATALOGUE_BEGIN, CATALOGUE_END, render_catalogue, "the README files in the tree"),
+)
+
+
 def split_block(text: str, begin: str, end: str) -> tuple[str, str, str] | None:
-    if text.count(begin) != 1 or text.count(end) != 1:
+    if text.count(begin) != 1 or text.count(end) != 1 or text.index(begin) > text.index(end):
         return None
     head, _, rest = text.partition(begin)
     body, _, tail = rest.partition(end)
     return head, body, tail
 
 
-def expected_readme(text: str, milestones: list[dict]) -> str | None:
-    parts = split_block(text, ROADMAP_BEGIN, ROADMAP_END)
-    if parts is None:
-        return None
-    head, _, tail = parts
-    return f"{head}{ROADMAP_BEGIN}\n{render_roadmap(milestones)}\n{ROADMAP_END}{tail}"
+def regenerate(root: Path, text: str) -> tuple[str, list[str]]:
+    """Return the README with every generated block rebuilt, and the marker problems found."""
+    problems: list[str] = []
+    for name, begin, end, render, _ in BLOCKS:
+        parts = split_block(text, begin, end)
+        if parts is None:
+            problems.append(f"markers: {README} must contain {begin} before {end}, exactly once each")
+            continue
+        head, _, tail = parts
+        text = f"{head}{begin}\n{render(root)}\n{end}{tail}"
+    return text, problems
 
 
 def check(root: Path) -> dict:
@@ -223,32 +368,32 @@ def check(root: Path) -> dict:
         raise ReadmeError(f"{path} is missing")
     text = path.read_text(encoding="utf-8")
     problems = check_links(root, text) + check_coverage(root, text)
-    expected = expected_readme(text, load_milestones(root))
-    if expected is None:
-        problems.append(
-            f"markers: {README} must contain {ROADMAP_BEGIN} and {ROADMAP_END} exactly once each"
-        )
-    elif expected != text:
-        problems.append(
-            "roadmap: the generated block does not match scripts/ci/sprint_cycle.py MILESTONES; "
-            "run `python scripts/ci/readme_check.py --write`"
-        )
+    expected, marker_problems = regenerate(root, text)
+    problems += marker_problems
+    for name, begin, end, _, source in BLOCKS:
+        want, have = split_block(expected, begin, end), split_block(text, begin, end)
+        if want and have and want[1] != have[1]:
+            problems.append(
+                f"{name}: the generated block does not match {source}; "
+                "run `python scripts/ci/readme_check.py --write`"
+            )
     return {
         "readme": README,
         "links_checked": len(link_targets(text)),
         "names_required": len(required_names(root)),
+        "readmes_catalogued": len(find_readmes(root)),
         "problems": problems,
         "status": "PASS" if not problems else "FAIL",
     }
 
 
 def write(root: Path) -> bool:
-    """Regenerate the roadmap block in place. Return True when the file changed."""
+    """Regenerate every generated block in place. Return True when the file changed."""
     path = root / README
     text = path.read_text(encoding="utf-8")
-    expected = expected_readme(text, load_milestones(root))
-    if expected is None:
-        raise ReadmeError(f"{README} must contain {ROADMAP_BEGIN} and {ROADMAP_END} exactly once each")
+    expected, problems = regenerate(root, text)
+    if problems:
+        raise ReadmeError("; ".join(problems))
     if expected == text:
         return False
     path.write_text(expected, encoding="utf-8", newline="\n")
@@ -260,13 +405,13 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--root", type=Path, default=ROOT)
     mode = parser.add_mutually_exclusive_group()
     mode.add_argument("--check", action="store_true", help="fail when the README has drifted (default)")
-    mode.add_argument("--write", action="store_true", help="regenerate the roadmap block, then check")
+    mode.add_argument("--write", action="store_true", help="regenerate the generated blocks, then check")
     parser.add_argument("--json", action="store_true", help="print the result as JSON")
     args = parser.parse_args(argv)
     root = args.root.resolve()
     try:
         if args.write and write(root):
-            print(f"readme: regenerated the roadmap block in {README}")
+            print(f"readme: regenerated the generated blocks in {README}")
         result = check(root)
     except ReadmeError as exc:
         print(f"FAIL: readme: {exc}", file=sys.stderr)
@@ -279,7 +424,7 @@ def main(argv: list[str] | None = None) -> int:
         print(
             f"{result['status']}: {README} - {result['links_checked']} link(s) resolved, "
             f"{result['names_required']} system path(s) required, "
-            f"{len(result['problems'])} problem(s)"
+            f"{result['readmes_catalogued']} README(s) catalogued, {len(result['problems'])} problem(s)"
         )
     return 0 if result["status"] == "PASS" else 1
 

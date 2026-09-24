@@ -77,6 +77,9 @@ non-merge commits had landed on `main`. Nothing failed.
 - `.github/workflows/changelog.yml`: on every push to `main`, regenerate `CHANGELOG.md` and commit
   it back, following `evidence-epoch.yml`'s precedent. Its commit carries a `Changelog: skip`
   trailer, which `changelog_gen.py` honours, so the file is not stale by its own refresh.
+- A generated README catalogue: every `README.md` in the tree (49 at the time of writing), grouped
+  by area, titled by its first heading and summarised by its CGRF `Intent:` line or opening
+  paragraph. A README added anywhere fails `readme_check.py` until the catalogue carries it.
 
 ## Out of scope
 
