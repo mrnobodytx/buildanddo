@@ -1351,9 +1351,9 @@ class FailureTests(Harness):
         for failure in ((500, "server error", None), TimeoutError("slow")):
             with self.subTest(failure=type(failure).__name__):
                 ledger = self.dir / ("ledger-" + type(failure).__name__)
+                failed: list[str] = []
 
-                def send(method, url, body, headers, timeout, calls=[], failed=[]):
-                    calls.append(url)
+                def send(method, url, body, headers, timeout, failure=failure, failed=failed):
                     if url == t.DD_LOGS and not failed:
                         failed.append(url)
                         if isinstance(failure, BaseException):
