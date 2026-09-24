@@ -49,7 +49,8 @@ Built offline in a worktree from the staging line at `def2bfb`. Nothing was sent
 or anything else: every test and the selftest ran with sockets refused.
 
 - **Unit tests:** `python -m unittest tests.upgrade.test_ocn_telemetry tests.upgrade.test_ocn_seat_session
-  tests.upgrade.test_datadog_metrics` ran 120 of 120 (88, 23 and 9), with the environment cleared.
+  tests.upgrade.test_datadog_metrics` ran 137 of 137 (105, 23 and 9), with the environment cleared. Each
+  of the 17 adapters has its own named test, on a receipt shaped like that probe's real output.
 - **Controls on the tests.** Thirteen mutations of the guarded behaviour were each caught by the test
   that guards it, and none of those tests fails on the clean code. The mutations were:
   - a leak gate or tag gate that passes everything;
@@ -71,11 +72,12 @@ or anything else: every test and the selftest ran with sockets refused.
   base64 is 27,648 characters, from 30,296.
 - **AEGIS:** `ocn_telemetry.py`, `ocn_seat_session.py`, `hostinger_checks.py` and both test files audit
   clean=1, dead_code=0, logic=0.
-- **Locks:** regenerated and converted to LF. `hostinger_readiness.py --check` passes (12 milestones).
+- **Locks:** regenerated and converted to LF. Before the refresh, `hostinger_readiness.py --check` failed
+  on the stale lock (exit 1), which is its control; afterwards it passes (12 milestones).
   `agent_context.py --check` passes with 35 findings and 32 unwired gates, the same counts as before this
   work, and records `scripts/ci/ocn_telemetry.py` as configured in GitLab.
 - **Gates:** `submission_readiness.py --check` passes. `verify_public_boundary.py` passes with 1,788
-  files and 0 failures.
+  files and 0 failures. All four gates also pass in a fresh LF clone of the branch.
 - **Names and addresses:** `public_redaction.py scan docs/observability` passes with the private fleet
   map. The added-line sweep finds nothing in any added line of any file type, `.py` included. The branch
   sweep finds nothing in any commit message. It reads one inherited name in `hostinger_checks.py`: a

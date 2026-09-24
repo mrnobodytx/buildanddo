@@ -1281,7 +1281,7 @@
     "tests/upgrade/test_mission_suite.py": "01c88760128180249cc41d464130f5b8835c0f9af51848d3c1574d852104c33b",
     "tests/upgrade/test_native_fixture_contracts.py": "50a370e29d693e56344b39a8a5eb5a131221b63c514f6978bbb507d76f04a455",
     "tests/upgrade/test_ocn_seat_session.py": "f69c9a13226a09d1334634230c50b6d69a401b6d575ab7d9f3795c3a562e6472",
-    "tests/upgrade/test_ocn_telemetry.py": "d51c103c3ac9c942fe2ce1eaa192da3e2f5eaf69a2c81c5da2af7331d1ab2155",
+    "tests/upgrade/test_ocn_telemetry.py": "fb045a217610ff052ffb18a1f65ae78ac6c9738d758bc58e7f1291a21c9897b4",
     "tests/upgrade/test_operator_compiler.py": "95ab0ca96f9462d42530fecffa5e5db18ea043ec76f29a7b9d29774ef2bcdf2f",
     "tests/upgrade/test_policy_intelligence.py": "babc8abed252fd685d576bc76517a509525385f4865c82b7a9af529841bb341e",
     "tests/upgrade/test_praxis_isolation.py": "a86446d809b3e9d5d27a941207edfddef879ee9c27d59df22e47395d268f3a24",
