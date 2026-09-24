@@ -1,5 +1,5 @@
 # ─── CGRF Header ───────────────────────────────────────────────
-# File:        .bits/handoffs/2026-09-23-c-one-rig1-broadcast-staging-candidate.md
+# File:        .bits/handoffs/2026-09-23-c-one-broadcast-staging-candidate.md
 # Stage:       11_COMMIT
 # SRS:         SRS-BUILDANDDO-UPGRADE-001
 # CAPS:        pending
@@ -8,9 +8,9 @@
 # Seat:        C-ONE
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-23
-# Depends:     .bits/handoffs/2026-09-23-bits-codegen-rig1-broadcast-classroom.md
+# Depends:     .bits/handoffs/2026-09-23-bits-codegen-c-one-broadcast-classroom.md
 # EnumType:    Doc
-# EnumEdges:   TRIGGERS operator release; CONSUMES .bits/handoffs/2026-09-23-bits-codegen-rig1-broadcast-classroom.md
+# EnumEdges:   TRIGGERS operator release; CONSUMES .bits/handoffs/2026-09-23-bits-codegen-c-one-broadcast-classroom.md
 # Intent:      Hand the operator a built, gated release candidate for the broadcast classroom and the exact staging and production steps this seat was not permitted to run.
 # ───────────────────────────────────────────────────────────────
 
