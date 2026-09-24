@@ -17,6 +17,7 @@
 """selftest_reputation.py - proves real self-audit rejection (by actual
 authorship, not caller-honesty) and XP/TP settlement against the live PocketBase."""
 from __future__ import annotations
+import secrets
 import sys
 from pathlib import Path
 
@@ -34,7 +35,8 @@ def _user(email: str) -> str:
     existing = client.list("users", filter_expr=f'email="{email}"')
     if existing:
         return existing[0]["id"]
-    rec = client.create("users", {"email": email, "password": "RepTest123!", "passwordConfirm": "RepTest123!"})
+    password = secrets.token_urlsafe(24)  # throwaway user; never reused or printed
+    rec = client.create("users", {"email": email, "password": password, "passwordConfirm": password})
     return rec["id"]
 
 

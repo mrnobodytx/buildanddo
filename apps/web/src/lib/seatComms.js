@@ -1,7 +1,7 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/src/lib/seatComms.js
 // Stage:       07_BUILD
-// SRS:         SRS-BUILDANDDO-COMMUNITY-001, SRS-BUILDANDDO-UPGRADE-001
+// SRS:         SRS-BUILDANDDO-COMMUNITY-001, SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-TRUST-001
 // CAPS:        pending
 // CK:          pending
 // Dispatch:    VCC-BUILDANDDO-UPGRADE-001
@@ -190,22 +190,11 @@ export function isSeatCommsConnected() {
 }
 
 /**
- * Best-effort seat label for the signed-in actor.
+ * Publishes a seat event as the signed-in human account.
  *
- * The optional configured label is a claim, not authenticated agent identity.
- * The native command separately stamps the actual submitting account.
- *
- * @returns {string} Seat label, never empty.
- */
-function currentSeat() {
-    const configured = import.meta.env.VITE_BUILDANDDO_SEAT;
-    if (configured) return String(configured);
-    const record = pb.authStore.record;
-    return record?.username || record?.email || 'unknown-seat';
-}
-
-/**
- * Publishes a seat event.
+ * The server binds a browser-originated event to `actor_type: 'human'` and
+ * `seat` = the authenticated account id, and refuses anything else
+ * through the native claim command. Agent seats publish through the server.
  *
  * Reconciles an unresolved prior report using its original key before sending
  * a different report. Workspace visits retain unresolved keys within the current
@@ -215,8 +204,6 @@ function currentSeat() {
  * @param {string} input.event One of `joined`, `progress`, `completed`, `blocked`, `handoff`.
  * @param {string} input.workspaceId Workspace record id.
  * @param {string} input.summary One-line human description; required.
- * @param {string} [input.seat] Seat label; defaults to `currentSeat()`.
- * @param {('human'|'agent'|'mixed')} [input.actorType] Defaults to `human`.
  * @param {string} [input.subjectType] `mission`, `workflow`, `page`, `issue`, `pull_request`, `other`.
  * @param {string} [input.subject] Record id or repository path the event is about.
  * @param {object} [input.detail] Arbitrary structured detail.
@@ -228,8 +215,6 @@ export async function publishSeatEvent({
     event,
     workspaceId,
     summary,
-    seat,
-    actorType = 'human',
     subjectType,
     subject,
     detail,
@@ -244,8 +229,8 @@ export async function publishSeatEvent({
 
     const payload = {
         event,
-        seat: seat || currentSeat(),
-        actor_type: actorType,
+        seat: pb.authStore.record.id,
+        actor_type: 'human',
         summary,
     };
     if (subjectType) payload.subject_type = subjectType;
@@ -301,7 +286,7 @@ export async function publishSeatEvent({
             current.pending = false;
             reportAction(SEAT_EVENTS[event], {
                 seat: payload.seat,
-                actor_type: actorType,
+                actor_type: payload.actor_type,
                 subject_type: subjectType || 'none',
             });
             return result.record;

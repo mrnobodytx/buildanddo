@@ -115,8 +115,8 @@ records or claims of production outcomes.
 
 Lessons are the default tab at `/app/tutorials`, also shared with Docs and Home.
 Readers can search by topic, choose a learning path and open a focus-managed
-reader. Wrong answers show local practice feedback and permit another attempt.
-The ordinary reader no longer offers a manual completion save. The
+reader. The reader previews the question without its answer or explanation;
+grading belongs to the server. The ordinary reader offers no manual completion save. The
 **Interactive tutorial** path owns saved checkpoints, server-checked answers,
 completion certificates and persistent learning growth; see
 [Interactive Field Manual](interactive-learning.md). Its completion certificate

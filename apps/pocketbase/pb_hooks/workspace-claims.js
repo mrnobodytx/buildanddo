@@ -65,6 +65,9 @@ function command(e) {
     let result;
     e.app.runInTransaction((app) => {
         const scope = access.requireRole(app, e.auth, workspace, adminOnly ? ADMINS : [...ADMINS, 'editor']);
+        if (name === 'seat_events' && ((Object.hasOwn(values, 'seat') && values.seat !== e.auth.id) ||
+            (Object.hasOwn(values, 'actor_type') && values.actor_type !== 'human')))
+            access.invalid('Post seat events as your own human account. Agent seats publish through the server.');
         const stamps = name === 'daily_editions' ? ['published_by', 'published_at'] :
             ['support_sources', 'social_channels'].includes(name) ? ['requested_by', 'requested_at'] : [];
         const collection = access.schema(app, name, ['owner', 'workspace', 'claim_commands', 'claim_revision', ...Object.keys(TEXT[name]), ...jsonFields, ...stamps]);
@@ -125,8 +128,8 @@ function command(e) {
                     requestInfo: () => e.requestInfo(), next: () => {} }, creating);
             } else {
                 choice(record.getString('event'), ['joined', 'progress', 'completed', 'blocked', 'handoff']);
-                choice(record.getString('actor_type'), ['human', 'agent', 'mixed']);
-                access.bounded(record.getString('seat'), 80); access.bounded(record.getString('summary'), 400);
+                record.set('seat', e.auth.id); record.set('actor_type', 'human');
+                access.bounded(record.getString('summary'), 400);
                 const kind = record.getString('subject_type'), subject = record.getString('subject');
                 choice(kind, ['', 'mission', 'workflow', 'page', 'issue', 'pull_request', 'other']);
                 if (['mission', 'workflow'].includes(kind)) {
@@ -136,7 +139,7 @@ function command(e) {
                 }
                 const link = record.getString('pr_url');
                 if (link && !/^https:\/\/[^\s/@]+(?:[/?#][^\s]*)?$/.test(link)) access.invalid('Use an HTTPS reference without credentials.');
-                // seat and actor_type remain reports, never authenticated grants.
+                // Account attribution does not independently verify the report.
             }
             record.set('claim_revision', revision + 1); app.save(record);
             const saved = { id: record.id, claim_revision: revision + 1 };

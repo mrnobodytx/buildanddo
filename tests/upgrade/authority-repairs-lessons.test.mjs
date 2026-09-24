@@ -17,8 +17,9 @@
 
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
+import { execFileSync } from 'node:child_process';
 import test from 'node:test';
-import { fixture, plain, source } from './admin-fixture.mjs';
+import { fixture, plain, repoPath, source } from './admin-fixture.mjs';
 import { lessonLink, mergeTutorials, validLesson } from '../../apps/web/src/lib/tutorialCurriculum.js';
 
 const DATA = 'apps/pocketbase/pb_migrations/data/authority-repairs-lessons.json';
@@ -41,6 +42,7 @@ function installed(data = bundle) {
     f.migration('apps/pocketbase/pb_migrations/1789700000_expand_business_learning.js').up();
     f.migration('apps/pocketbase/pb_migrations/1790600000_tutorial_learning.js').up();
     f.migration(BROADCAST_MIGRATION).up();
+    f.migration('apps/pocketbase/pb_migrations/1791500100_tutorial_answer_wait.js').up();
     f.app.countRecords = (name, filter, params) => f.app.findRecordsByFilter(name, filter, '', 0, 0, params).length;
     return f;
 }
@@ -102,12 +104,16 @@ test('the lesson distinguishes claim authorities and binds only the recorded sou
     assert.equal(observation.counts.fail, 0); assert.equal(observation.counts.skipped, 0);
     assert.deepEqual(observation.source_files, [...new Set(observation.source_files)].sort());
     const digest = createHash('sha256');
+    const revision = evidence.source_revision;
+    assert.match(revision, /^[a-f0-9]{40}$/);
     for (const path of observation.source_files) {
         assert.ok(path === '.gitlab-ci.yml' || /^(apps|services|tests)\/[a-zA-Z0-9/_.-]+$/.test(path));
         assert.equal(path.includes('..'), false);
-        digest.update(path + '\0').update(createHash('sha256').update(source(path)).digest());
+        const capturedSource = execFileSync('git', ['show', `${revision}:${path}`], { cwd: repoPath('.'),
+            env: { ...process.env, GIT_NO_LAZY_FETCH: '1', GIT_NO_REPLACE_OBJECTS: '1' } });
+        digest.update(path + '\0').update(createHash('sha256').update(capturedSource).digest());
     }
-    assert.equal(digest.digest('hex'), observation.source_sha256, 'A changed source scope requires a new executed observation.');
+    assert.equal(digest.digest('hex'), observation.source_sha256, 'Historical results bind their recorded revision, never newer source.');
     assert.equal(evidence.artifact.url, '/authority-repairs-recovery-source.txt');
     const capture = source('apps/web/public' + evidence.artifact.url);
     assert.equal(createHash('sha256').update(capture).digest('hex'), evidence.artifact.sha256);

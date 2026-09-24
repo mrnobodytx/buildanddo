@@ -65,6 +65,8 @@ daily editions, specialist desks, social content/channels and seat events. It
 accepts only explicit actions with `revision`, `request_key` and bounded `payload`.
 Current native users/roles and author/admin constraints precede receipt replay.
 Provider fields and verification labels cannot be supplied as editable values.
+New browser seat reports use the authenticated account ID and `actor_type: human`;
+the native command rejects alternate identities before replaying a receipt.
 See `docs/claim-authority.md` for actions, installation and retention semantics.
 
 ### Classroom media

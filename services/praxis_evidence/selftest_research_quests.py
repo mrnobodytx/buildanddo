@@ -17,6 +17,7 @@
 """selftest_research_quests.py - proves the auto-compiler against real data:
 a disputed claim gets a real quest, re-running doesn't duplicate it."""
 from __future__ import annotations
+import secrets
 import sys
 from pathlib import Path
 
@@ -34,7 +35,8 @@ def _user(email: str) -> str:
     existing = client.list("users", filter_expr=f'email="{email}"')
     if existing:
         return existing[0]["id"]
-    return client.create("users", {"email": email, "password": "RqTest123!", "passwordConfirm": "RqTest123!"})["id"]
+    password = secrets.token_urlsafe(24)  # throwaway user; never reused or printed
+    return client.create("users", {"email": email, "password": password, "passwordConfirm": password})["id"]
 
 
 auditor = _user("selftest-rq-auditor@buildanddo.internal")

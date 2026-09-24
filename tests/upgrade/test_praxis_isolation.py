@@ -236,12 +236,14 @@ sys.addaudithook(guard)
 runpy.run_path(sys.argv[1], run_name='__main__')
 """
         for suite in sorted(SERVICE.glob("selftest*.py")):
-            with self.subTest(suite=suite.name):
-                result = subprocess.run([sys.executable, "-c", script, str(suite)], cwd=SERVICE, capture_output=True, text=True,
-                                        env={"PB_API_URL": "https://shared.fixture.invalid"}, timeout=15, check=False)
-                self.assertNotEqual(result.returncode, 0)
-                self.assertIn("an isolated fixture is required", result.stderr)
-                self.assertNotIn("AssertionError", result.stderr)
+            for target in ("", "https://buildanddo.com/hcgi/platform", "http://45.82.75.40:8090",
+                           "https://shared.fixture.invalid", "https://staging.buildanddo.com/hcgi/platform", "http://127.0.0.1:18945"):
+                with self.subTest(suite=suite.name, target=target or "unset"):
+                    result = subprocess.run([sys.executable, "-c", script, str(suite)], cwd=SERVICE, capture_output=True, text=True,
+                                            env={"PB_API_URL": target}, timeout=15, check=False)
+                    self.assertNotEqual(result.returncode, 0)
+                    self.assertIn("an isolated fixture is required", result.stderr)
+                    self.assertNotIn("AssertionError", result.stderr)
 
     def test_runner_assembles_only_public_schema_and_disposes_each_suite(self) -> None:
         runner = load("run_all_tests")
@@ -268,10 +270,13 @@ runpy.run_path(sys.argv[1], run_name='__main__')
         with (
             patch.object(runner.PraxisServer, "migrate"), patch.object(runner.PraxisServer, "start", start),
             patch.object(runner.PraxisServer, "stop"), patch("subprocess.run", side_effect=execute),
+            patch.object(runner, "require_test_target", wraps=runner.require_test_target) as screen,
             patch.dict("os.environ", {"PB_API_URL": "https://shared.fixture.invalid", "PB_SUPERUSER_PASSWORD": "unrelated-private-setting", "HTTPS_PROXY": "https://proxy.invalid"}),
             redirect_stdout(io.StringIO()),
         ):
             self.assertEqual(runner.run_suites(Path("/fixture-binary"), ["selftest.py", "selftest_logic.py"]), 0)
+            self.assertEqual(screen.call_count, 2)
+            self.assertTrue(all(call.args[0].startswith("http://127.0.0.1:") for call in screen.call_args_list))
         self.assertEqual(len(seen), 2)
         self.assertTrue(all(not root.exists() for root in seen))
 

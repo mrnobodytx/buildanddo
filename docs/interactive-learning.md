@@ -26,8 +26,9 @@ and personal growth display are shared with Docs and the home Field Manual.
    checkpoint and resume it after signing back in, including from another device.
 3. Work through the practice example and check each exercise item. The checklist
    is a recorded learner assertion; it does not run a business operation.
-4. Submit the final knowledge check. Wrong answers return an explanation and can
-   be retried. The server checks the saved lesson's answer before completion.
+4. Submit the final knowledge check. Wrong answers return a generic prompt to
+   review the lesson and a 30-second retry wait, not the authored explanation.
+   The server checks the saved lesson's answer before completion.
 5. Receive a **BuildAndDo certificate of completion** and 100 learning points.
    Download the certificate or find it later under **My certificates**. Its HTML
    opens offline and can be printed or saved as a PDF using the browser.
@@ -37,9 +38,10 @@ content fingerprint, issue time and stable receipt ID. It certifies completion
 of this open-book educational tutorial with self-reported practice. It is not a
 signed W3C credential, independently verified mastery, TEVV result, professional
 qualification or external accreditation. Guided responses contain only the
-question and choices; feedback follows an answer command. Full authored grading
-keys remain in public source and open-book previews. Hiding an API field cannot
-make those questions a secret or proctored examination.
+question and choices; feedback follows an answer command. Browser previews,
+catalogue reads and public feeds omit grading keys and pre-answer explanations.
+The authored keys remain in public repository source; removing them from the
+browser does not make these questions a secret or proctored examination.
 
 ## Persistent growth
 
@@ -104,11 +106,14 @@ catalogue migrations must already be installed. This source change does not
 apply migrations or change a shared backend.
 
 The claim-authority continuation also requires
-`1791500000_learning_progress_authority.js` with the keyless-response backend and
-matching client. It locks legacy progress writes without awarding or deleting
+`1791500000_learning_progress_authority.js` and
+`1791500100_tutorial_answer_wait.js` with the keyless-response backend and matching
+client. The first locks legacy progress writes without awarding or deleting
 anything. Its down path keeps that security lock and all owner-readable history;
-do not restore owner-writable completion as a rollback. Public reading and local
-quiz practice remain available without saving progress.
+do not restore owner-writable completion as a rollback. The second stores the
+answer wait; removing it disables guided commands until the matching schema is
+restored. Public reading and question previews remain available without saving
+progress or locally grading answers.
 
 The migration is idempotent and rejects incompatible custom definitions. Its
 explicit down path removes the protocol marker to disable new learning commands

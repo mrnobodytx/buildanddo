@@ -61,7 +61,7 @@ An absent backend command means unavailable, never a fallback to raw writes.
 | `specialist_desks` | Author/admin operator bookkeeping, not evidence that an agent executed or received authority. |
 | `social_content` | Author/admin draft edits with the existing separate administrator approval/publication policy and exact review fields. |
 | `social_channels` | Administrator connection requests, not provider delivery or health facts. |
-| `seat_events` | Append-only reports stamped with the actual submitting account. Seat and actor-type labels remain claims. |
+| `seat_events` | Append-only reports with `seat` set to the submitting account and `actor_type` set to `human`. Browser-supplied alternate identities are rejected. |
 
 The POST command body contains `action`, `revision`, `request_key` and `payload`.
 Supported actions are `support.request`, `correction.save`, `edition.save`,
@@ -104,7 +104,9 @@ does not fabricate a backend identity or save learner progress.
 workspace evidence rows. Actual dated source results and their limited scopes
 belong there; no test artifact grants XP, certificates, payment provenance or
 independent verification. The earlier broadcast capture keeps its original
-bytes/digests and is validated against its historical source revision.
+bytes/digests and is validated against its historical source revision. The
+authority-repair captures likewise remain pinned to their original source rather
+than being relabeled as evidence for the integrated branch.
 
 ## Corrected findings and follow-ups
 

@@ -16,6 +16,10 @@
 
 # Test isolation and claim authority report
 
+Sections 1-7 retain the pre-merge repair observations. The final integration
+section records the subsequent PR 103 conflict resolution and its separate
+validation limits; historical captures are not results for the newer source.
+
 ## Section 1: Summary
 
 Status: PARTIAL for acceptance; the bounded CA source repair is implemented.
@@ -174,3 +178,65 @@ progression model. They were not all reproduced or repaired in this bounded pass
 A verified mission status must not manufacture new independently verified evidence.
 
 Handoff: `.bits/handoffs/2026-09-24-bits-codegen-ide1-claim-authority.md`.
+
+## PR 103 integration - 2026-09-24
+
+The current review is PR 103; PR 93 was already merged. The owner requested
+command-line conflict resolution, so `origin/main` at
+`a8a96b992a6dd24fd85f1cbedfc717ba043523f8` was integrated with the original repair
+candidate `be857104b1954f90dcdaddce8602a24e26bd3756`. All 34 conflicted paths are
+resolved, including the nine additional test/selftest conflicts found locally.
+The two generated locks are rebuilt from reviewed source, not selected from
+either parent's stale hashes. Buddi, logo assets and their integration remain
+unchanged from incoming main.
+
+The joint contract preserves canonical guided completion, keyless public and
+guided lessons, private authored snapshots, bounded answer waits, locked raw
+claim writes, native current-role commands and all seat-report recovery fences.
+The seat command now stamps the authenticated human identity rather than accepting
+an alternate browser label. A targeted identity test failed before that correction
+and all 71 claim/TRUST controls pass afterward. The answer-wait migration's
+native method-valued field replay likewise failed before normalization and passed
+afterward. Both are source-double results, not native execution.
+
+The recorded authority capture's 35-file fingerprint was checked against
+`be857104b1954f90dcdaddce8602a24e26bd3756` before adding that historical pin. Its
+lesson, original observations and all three output artifacts retain their bytes.
+No older passing test result was relabeled as current integration acceptance.
+
+| Integrated-source check | Observed result |
+|---|---|
+| Existing `source_node` check on Node 22.17.0 | 874 passed, no failures/skips |
+| Existing `source_python` check on Python 3.12.13 | 1,210 cases: 1,204 passed, six dependency skips, no failures; HOLD |
+| Claim commands, TRUST controls and publisher recovery | 71 passed |
+| Guided/client, both lesson cases and public projection | 78 passed |
+| Praxis safety, target screening and native-fixture contracts | 43 passed on each declared Python version, 3.11.15 and 3.12.13 |
+| Incoming deployment swap regression suite with isolated filesystem/transport fixtures | 12 passed; no deployment performed |
+| Existing frontend source diagnostic | 380 modules parsed, zero static errors; not repository lint or rendered tests |
+| Dependency lock and public boundary | PASS |
+
+Reproduce the broad runs with
+`python scripts/ci/hostinger_readiness.py --run source_node` and
+`python scripts/ci/hostinger_readiness.py --run source_python`; select Node 22
+from the declared toolchain. The first Node run reported a missing diagnostic
+ESLint under the selected Node prefix. Pointing `npm_config_prefix` to the already
+installed local tool prefix allowed the unchanged source suite to run; no package,
+test or gate was replaced. This does not provide the missing locked frontend
+dependencies.
+
+The retained local diagnostic logs and receipts are in
+`/tmp/opencode/pr103-merge-checks`. They describe the in-progress merge tree, not
+a clean release candidate. The three frontend checks fail before useful execution:
+`eslint-plugin-import`, Vitest and `concurrently` are absent. Workspace and learning
+native checks are BLOCKED for both declared PocketBase versions, 0.39.8 and 0.28.4.
+The isolated Praxis attempts also run no native tests without those binaries.
+The full eighteen-profile release matrix was not rerun for this conflict-only
+continuation; the earlier 4 PASS / 1 HOLD / 3 FAIL / 10 BLOCKED result remains
+historical, not an acceptance claim for the integrated branch.
+
+Independent semantic review found no new scoped merge regression. It identified
+an inherited assurance-fixture mismatch, retained in the receiving handoff:
+the full-assurance runtime omits the answer-wait migration and its tests still
+read withheld answer keys. Those files are not changed here. Fix the fixture in
+its own scope, not the production response contract. No remote issue/comment,
+hosted CI, provider operation or deployment was performed during integration.

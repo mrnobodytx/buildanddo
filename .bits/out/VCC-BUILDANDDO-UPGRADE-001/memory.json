@@ -10,7 +10,7 @@
       "enum_type": "ConfigDoc",
       "functions": [],
       "dependencies": [],
-      "lines": 1095,
+      "lines": 1111,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Keep the registered mission research continuation and measured repository inventory reviewable while retaining earlier runtime and governance findings.",
@@ -539,7 +539,7 @@
       "dependencies": [
         ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md"
       ],
-      "lines": 59722,
+      "lines": 60025,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Describe the public memory payload that carries this dispatch into the post-merge ingest flow.",
@@ -676,7 +676,7 @@
       "dependencies": [
         ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md"
       ],
-      "lines": 1713,
+      "lines": 1725,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Track the authorized eight-area implementation and its verification gates.",
@@ -1003,7 +1003,7 @@
       "dependencies": [
         ".bits/srs_registry.yml"
       ],
-      "lines": 2348,
+      "lines": 2363,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Define acceptance evidence for the eight owner-authorized BuildAndDo upgrades.",
@@ -1043,7 +1043,7 @@
         ".bits/context.md",
         "scripts/ci/agent_context.py"
       ],
-      "lines": 285,
+      "lines": 298,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Name every SRS code a branch may claim, and where its spec lives.",
@@ -2299,7 +2299,8 @@
       "file_path": "apps/pocketbase/pb_hooks/business-policy.js",
       "cket_stage": "07_BUILD",
       "srs_codes": [
-        "SRS-BUILDANDDO-UPGRADE-001"
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "SRS-BUILDANDDO-TRUST-001"
       ],
       "enum_type": "Service",
       "functions": [
@@ -2312,8 +2313,7 @@
         "progress"
       ],
       "dependencies": [
-        "apps/pocketbase/pb_hooks/workflow-policy.js",
-        "apps/pocketbase/pb_hooks/government-access.js"
+        "apps/pocketbase/pb_hooks/workflow-policy.js"
       ],
       "lines": 152,
       "caps_grade": "pending",
@@ -2445,7 +2445,7 @@
       "dependencies": [
         "apps/pocketbase/pb_hooks/classrooms.js"
       ],
-      "lines": 37,
+      "lines": 40,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Bind classroom reads and commands to native users authentication with private noncached responses.",
@@ -3174,7 +3174,7 @@
       "dependencies": [
         "apps/pocketbase/pb_migrations/1789600000_create_workflow_runs.js"
       ],
-      "lines": 134,
+      "lines": 140,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Enforce workspace roles and bounded saved workflow definitions before a run can record evidence.",
@@ -3467,7 +3467,8 @@
       "file_path": "apps/pocketbase/pb_hooks/workspace-record-policy.js",
       "cket_stage": "07_BUILD",
       "srs_codes": [
-        "SRS-BUILDANDDO-UPGRADE-001"
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "SRS-BUILDANDDO-TRUST-001"
       ],
       "enum_type": "Service",
       "functions": [
@@ -3477,10 +3478,10 @@
       "dependencies": [
         "apps/pocketbase/pb_hooks/workspace-access.js"
       ],
-      "lines": 90,
+      "lines": 113,
       "caps_grade": "pending",
       "ck_stamp": "pending",
-      "intent_statement": "Reject stale membership, reassigned records and foreign relations at the native workspace write boundary.",
+      "intent_statement": "Reject stale membership, reassigned records, foreign relations and browser-asserted review, revenue or seat identity at the native workspace write boundary.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
       "outcome": "success",
       "supersedes": false,
@@ -4708,7 +4709,7 @@
         "apps/web/src/pages/workspace/GovernmentPage.jsx",
         "apps/web/src/pages/workspace/CareerPage.jsx"
       ],
-      "lines": 284,
+      "lines": 286,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Route public and workspace views only after native session validation.",
@@ -5734,7 +5735,7 @@
         "react",
         "react-router-dom"
       ],
-      "lines": 175,
+      "lines": 176,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Expose public sections, mobile navigation and a persistent theme control.",
@@ -6713,7 +6714,8 @@
       "file_path": "apps/web/src/components/workspace/TutorialCatalog.jsx",
       "cket_stage": "07_BUILD",
       "srs_codes": [
-        "SRS-BUILDANDDO-UPGRADE-001"
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "SRS-BUILDANDDO-TRUST-001"
       ],
       "enum_type": "Widget",
       "functions": [
@@ -6753,7 +6755,8 @@
       "file_path": "apps/web/src/components/workspace/TutorialReader.jsx",
       "cket_stage": "07_BUILD",
       "srs_codes": [
-        "SRS-BUILDANDDO-UPGRADE-001"
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "SRS-BUILDANDDO-TRUST-001"
       ],
       "enum_type": "Widget",
       "functions": [],
@@ -6761,10 +6764,10 @@
         "apps/web/src/lib/tutorialCurriculum.js",
         "apps/web/src/components/ui/dialog.jsx"
       ],
-      "lines": 114,
+      "lines": 99,
       "caps_grade": "pending",
       "ck_stamp": "pending",
-      "intent_statement": "Keep public reading and local quiz practice separate from saved guided learning completion.",
+      "intent_statement": "Keep read-only lessons and keyless question previews separate from saved guided learning completion.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
       "outcome": "partial",
       "supersedes": false,
@@ -6803,7 +6806,7 @@
         "apps/web/src/pages/workspace/CareerPage.jsx",
         "apps/web/src/lib/workspaceControl.js"
       ],
-      "lines": 374,
+      "lines": 373,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Keep workspace navigation tied to observed account and government membership while preserving ordinary work areas.",
@@ -6903,14 +6906,15 @@
       "file_path": "apps/web/src/components/workspace/__tests__/TutorialCatalog.test.jsx",
       "cket_stage": "08_TEST",
       "srs_codes": [
-        "SRS-BUILDANDDO-UPGRADE-001"
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "SRS-BUILDANDDO-TRUST-001"
       ],
       "enum_type": "Test",
       "functions": [],
       "dependencies": [
         "apps/web/src/components/workspace/TutorialCatalog.jsx"
       ],
-      "lines": 350,
+      "lines": 377,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Exercise shared lesson progress across pages without anonymous reads, demo writes or duplicate retries.",
@@ -8257,7 +8261,7 @@
         "apps/web/src/lib/observability/network.js",
         "apps/web/src/lib/observability/report.js"
       ],
-      "lines": 191,
+      "lines": 196,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Own the Datadog browser SDK configuration for buildanddo.tech - sampling, trace propagation into the PocketBase backend, and the scrubbing rules applied before any event leaves the browser.",
@@ -8539,7 +8543,7 @@
       "dependencies": [
         "apps/web/src/components/ProtectedRoute.jsx"
       ],
-      "lines": 58,
+      "lines": 60,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Preserve local classroom links through sign-in and keep classroom and personal learning identifiers out of browser telemetry.",
@@ -8815,7 +8819,7 @@
       "dependencies": [
         "apps/pocketbase/pb_migrations/data/starter-tutorials.json"
       ],
-      "lines": 77,
+      "lines": 90,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Merge authored lesson previews with persistent catalogue identities without claiming unsaved or unreadable progress.",
@@ -9921,7 +9925,8 @@
       "cket_stage": "07_BUILD",
       "srs_codes": [
         "SRS-BUILDANDDO-WORKSPACE-001",
-        "SRS-BUILDANDDO-UPGRADE-001"
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "SRS-BUILDANDDO-TRUST-001"
       ],
       "enum_type": "Widget",
       "functions": [
@@ -10035,7 +10040,8 @@
       "cket_stage": "07_BUILD",
       "srs_codes": [
         "SRS-BUILDANDDO-WORKSPACE-001",
-        "SRS-BUILDANDDO-UPGRADE-001"
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "SRS-BUILDANDDO-TRUST-001"
       ],
       "enum_type": "Widget",
       "functions": [
@@ -10238,7 +10244,7 @@
         "apps/web/src/components/workspace/NextWorkspaceActions.jsx",
         "apps/web/src/lib/onboarding.js"
       ],
-      "lines": 515,
+      "lines": 518,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Answer \"what is happening in this workspace\" in one screen — one merged activity feed, counts that mean something, and an honest statement when the data layer cannot be read.",
@@ -11171,7 +11177,7 @@
         "node:child_process",
         "node:url"
       ],
-      "lines": 51,
+      "lines": 60,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Stamp one release into the bundle and produce route-specific crawler heads after Vite succeeds.",
@@ -11276,7 +11282,7 @@
         "apps/web/vite.config.js",
         "apps/web/src/test/setup.js"
       ],
-      "lines": 108,
+      "lines": 110,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Run the web test suite on the existing Vite transform, resolving the same \"@\" alias the app builds with.",
@@ -11310,7 +11316,7 @@
         "apps/pocketbase/pb_migrations",
         "apps/web/src/contexts/AuthContext.jsx"
       ],
-      "lines": 574,
+      "lines": 576,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Write down the API surface that already exists, extracted from the",
@@ -17665,7 +17671,8 @@
       "file_path": "tests/upgrade/business-learning.test.mjs",
       "cket_stage": "08_TEST",
       "srs_codes": [
-        "SRS-BUILDANDDO-UPGRADE-001"
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "SRS-BUILDANDDO-TRUST-001"
       ],
       "enum_type": "Test",
       "functions": [
@@ -17680,7 +17687,7 @@
         "apps/web/src/lib/businessPlanning.js",
         "apps/web/src/lib/tutorialCurriculum.js"
       ],
-      "lines": 413,
+      "lines": 457,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Exercise authored lesson structure, migration retention and replay, ERP isolation and content approval against the production source contracts.",
@@ -18004,7 +18011,7 @@
         "tests/upgrade/classroom-fixture.mjs",
         "apps/pocketbase/pb_hooks/classrooms.pb.js"
       ],
-      "lines": 395,
+      "lines": 400,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Exercise classroom lifecycle and isolation through production commands including retries, stale presence and schema rollback.",
@@ -37896,7 +37903,8 @@
       "file_path": "apps/pocketbase/pb_hooks/tutorial-learning.js",
       "cket_stage": "07_BUILD",
       "srs_codes": [
-        "SRS-BUILDANDDO-UPGRADE-001"
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "SRS-BUILDANDDO-TRUST-001"
       ],
       "enum_type": "Service",
       "functions": [
@@ -37909,20 +37917,25 @@
         "lessonFor",
         "output",
         "detailResult",
+        "retryWait",
         "detail",
         "command",
         "states",
-        "list"
+        "list",
+        "interactive",
+        "certified",
+        "enrich"
       ],
       "dependencies": [
         "apps/pocketbase/pb_hooks/workspace-access.js",
         "apps/pocketbase/pb_migrations/1790600000_tutorial_learning.js",
+        "apps/pocketbase/pb_migrations/1791500100_tutorial_answer_wait.js",
         "apps/pocketbase/pb_hooks/government-access.js"
       ],
-      "lines": 215,
+      "lines": 252,
       "caps_grade": "pending",
       "ck_stamp": "pending",
-      "intent_statement": "Award durable learning credit only after ordered checkpoints, recorded practice and a server-checked answer.",
+      "intent_statement": "Keep canonical checkpoints and full grading snapshots private while serving keyless lessons with bounded answer retries.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
       "outcome": "stored",
       "supersedes": false,
@@ -37946,17 +37959,18 @@
       "file_path": "apps/pocketbase/pb_hooks/tutorial-learning.pb.js",
       "cket_stage": "07_BUILD",
       "srs_codes": [
-        "SRS-BUILDANDDO-UPGRADE-001"
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "SRS-BUILDANDDO-TRUST-001"
       ],
       "enum_type": "Route",
       "functions": [],
       "dependencies": [
         "apps/pocketbase/pb_hooks/tutorial-learning.js"
       ],
-      "lines": 33,
+      "lines": 38,
       "caps_grade": "pending",
       "ck_stamp": "pending",
-      "intent_statement": "Keep personal learning commands authenticated, bounded and uncached through native PocketBase auth.",
+      "intent_statement": "Keep personal learning commands authenticated, bounded and uncached, and keep answers out of catalogue reads.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
       "outcome": "partial",
       "supersedes": false,
@@ -38010,7 +38024,8 @@
       "file_path": "apps/web/src/components/workspace/InteractiveTutorial.jsx",
       "cket_stage": "07_BUILD",
       "srs_codes": [
-        "SRS-BUILDANDDO-UPGRADE-001"
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "SRS-BUILDANDDO-TRUST-001"
       ],
       "enum_type": "Widget",
       "functions": [
@@ -38021,7 +38036,7 @@
         "apps/web/src/components/workspace/TutorialGrowth.jsx",
         "apps/web/src/components/ui/dialog.jsx"
       ],
-      "lines": 130,
+      "lines": 131,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Guide learners through recoverable checkpoints and practice before revealing their saved completion certificate.",
@@ -38082,7 +38097,8 @@
       "file_path": "apps/web/src/components/workspace/__tests__/InteractiveTutorial.test.jsx",
       "cket_stage": "08_TEST",
       "srs_codes": [
-        "SRS-BUILDANDDO-UPGRADE-001"
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "SRS-BUILDANDDO-TRUST-001"
       ],
       "enum_type": "Test",
       "functions": [
@@ -38095,7 +38111,7 @@
         "apps/web/src/components/workspace/TutorialGrowth.jsx",
         "tests/upgrade/tutorial-learning-fixture.mjs"
       ],
-      "lines": 304,
+      "lines": 334,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Exercise guided learning, recovery, certificate export and account switches through rendered production components.",
@@ -38120,7 +38136,8 @@
       "file_path": "apps/web/src/lib/tutorialLearning.js",
       "cket_stage": "07_BUILD",
       "srs_codes": [
-        "SRS-BUILDANDDO-UPGRADE-001"
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "SRS-BUILDANDDO-TRUST-001"
       ],
       "enum_type": "Adapter",
       "functions": [
@@ -38135,7 +38152,7 @@
         "apps/web/src/lib/tutorialLearnerLesson.js",
         "apps/pocketbase/pb_hooks/tutorial-learning.pb.js"
       ],
-      "lines": 172,
+      "lines": 174,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Recover personal learning saves without duplicate credit and export only a validated completion certificate.",
@@ -38170,7 +38187,7 @@
         "apps/web/src/components/workspace/InteractiveTutorial.jsx",
         "apps/web/src/components/workspace/TutorialGrowth.jsx"
       ],
-      "lines": 142,
+      "lines": 147,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Explain persistent guided learning and the exact completion, growth and certificate guarantees an installed backend must verify.",
@@ -38195,7 +38212,8 @@
       "file_path": "tests/upgrade/test_tutorial_learning_native.py",
       "cket_stage": "08_TEST",
       "srs_codes": [
-        "SRS-BUILDANDDO-UPGRADE-001"
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "SRS-BUILDANDDO-TRUST-001"
       ],
       "enum_type": "Test",
       "functions": [],
@@ -38204,9 +38222,10 @@
         "apps/pocketbase/pb_hooks/tutorial-learning.js",
         "apps/pocketbase/pb_migrations/1790600000_tutorial_learning.js",
         "apps/pocketbase/pb_migrations/1791400001_broadcast_classroom_lessons.js",
-        "apps/pocketbase/pb_migrations/1791500000_learning_progress_authority.js"
+        "apps/pocketbase/pb_migrations/1791500000_learning_progress_authority.js",
+        "apps/pocketbase/pb_migrations/1791500100_tutorial_answer_wait.js"
       ],
-      "lines": 607,
+      "lines": 645,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Require real PocketBase auth, concurrent completion and migration retention before accepting installed interactive learning.",
@@ -38233,7 +38252,8 @@
       "file_path": "tests/upgrade/tutorial-learning-client.test.mjs",
       "cket_stage": "08_TEST",
       "srs_codes": [
-        "SRS-BUILDANDDO-UPGRADE-001"
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "SRS-BUILDANDDO-TRUST-001"
       ],
       "enum_type": "Test",
       "functions": [
@@ -38243,9 +38263,10 @@
         "tests/upgrade/tutorial-learning-fixture.mjs",
         "apps/web/src/lib/tutorialLearning.js",
         "apps/web/src/lib/tutorialLearnerLesson.js",
-        "apps/web/src/lib/navigationIntent.js"
+        "apps/web/src/lib/navigationIntent.js",
+        "apps/web/src/lib/buddi.js"
       ],
-      "lines": 351,
+      "lines": 396,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Verify lost-response recovery, account isolation and safe certificate exports through the real client and command source.",
@@ -38270,7 +38291,8 @@
       "file_path": "tests/upgrade/tutorial-learning-fixture.mjs",
       "cket_stage": "08_TEST",
       "srs_codes": [
-        "SRS-BUILDANDDO-UPGRADE-001"
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "SRS-BUILDANDDO-TRUST-001"
       ],
       "enum_type": "Test",
       "functions": [
@@ -38279,9 +38301,10 @@
       "dependencies": [
         "tests/upgrade/admin-fixture.mjs",
         "apps/pocketbase/pb_hooks/tutorial-learning.js",
-        "apps/pocketbase/pb_migrations/1791500000_learning_progress_authority.js"
+        "apps/pocketbase/pb_migrations/1791500000_learning_progress_authority.js",
+        "apps/pocketbase/pb_migrations/1791500100_tutorial_answer_wait.js"
       ],
-      "lines": 47,
+      "lines": 53,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Exercise actual learning commands against the existing explicit transactional storage double.",
@@ -38306,7 +38329,8 @@
       "file_path": "tests/upgrade/tutorial-learning-system.test.mjs",
       "cket_stage": "08_TEST",
       "srs_codes": [
-        "SRS-BUILDANDDO-UPGRADE-001"
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "SRS-BUILDANDDO-TRUST-001"
       ],
       "enum_type": "Test",
       "functions": [
@@ -38316,9 +38340,10 @@
         "tests/upgrade/tutorial-learning-fixture.mjs",
         "apps/pocketbase/pb_hooks/tutorial-learning.pb.js",
         "apps/pocketbase/pb_migrations/1790600000_tutorial_learning.js",
-        "apps/pocketbase/pb_migrations/1791500000_learning_progress_authority.js"
+        "apps/pocketbase/pb_migrations/1791500000_learning_progress_authority.js",
+        "apps/pocketbase/pb_migrations/1791500100_tutorial_answer_wait.js"
       ],
-      "lines": 484,
+      "lines": 629,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Prevent unearned certificates, duplicate credit, cross-account reads and partial completion receipts.",
@@ -38810,7 +38835,7 @@
       "dependencies": [
         ".bits/hostinger-readiness.lock.json"
       ],
-      "lines": 1241,
+      "lines": 1261,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Distinguish reviewed source fingerprints from execution or deployment evidence.",
@@ -39329,7 +39354,7 @@
         "apps/pocketbase/pb_hooks/workspace-claims.js",
         "apps/pocketbase/pb_migrations/1791500001_workspace_claim_authority.js"
       ],
-      "lines": 1245,
+      "lines": 1248,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Require real auth, production migrations and a connected signal-to-independent-review journey before declaring workspace acceptance.",
@@ -41054,7 +41079,8 @@
       "file_path": "apps/web/src/pages/workspace/SpecialistWorkPage.jsx",
       "cket_stage": "07_BUILD",
       "srs_codes": [
-        "SRS-BUILDANDDO-UPGRADE-001"
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "SRS-BUILDANDDO-TRUST-001"
       ],
       "enum_type": "Widget",
       "functions": [
@@ -45043,7 +45069,7 @@
         "apps/web/src/lib/workspaceJourney.js",
         "apps/web/src/hooks/useWorkspaceRecords.js"
       ],
-      "lines": 43,
+      "lines": 45,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Put the next inspectable action beside the workspace overview's activity feed.",
@@ -49437,7 +49463,7 @@
         "tests/upgrade/suite-fixture.mjs",
         "apps/pocketbase/pb_hooks/government-desk.js"
       ],
-      "lines": 127,
+      "lines": 129,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Prove role and payment spoofing, expiry, revocation, cache replay and worker completion cannot bypass government membership.",
@@ -49887,16 +49913,6 @@
       "edge_type": "CONSUMES",
       "weight": 1.0,
       "description": "apps/federal_foundry/sprint.py consumes apps/pocketbase/pb_migrations/data/research-sprint.json.",
-      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "created_by": "BITS-CODEGEN"
-    },
-    {
-      "type": "B",
-      "source": "apps/pocketbase/pb_hooks/business-policy.js",
-      "target": "apps/pocketbase/pb_hooks/government-access.js",
-      "edge_type": "CONSUMES",
-      "weight": 1.0,
-      "description": "apps/pocketbase/pb_hooks/business-policy.js consumes apps/pocketbase/pb_hooks/government-access.js.",
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "created_by": "BITS-CODEGEN"
     },
@@ -56393,7 +56409,8 @@
       "file_path": "tests/upgrade/broadcast-lessons.test.mjs",
       "cket_stage": "08_TEST",
       "srs_codes": [
-        "SRS-BUILDANDDO-UPGRADE-001"
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "SRS-BUILDANDDO-TRUST-001"
       ],
       "enum_type": "Test",
       "functions": [
@@ -56406,7 +56423,7 @@
         "apps/pocketbase/pb_migrations/data/broadcast-classroom-lessons.json",
         "apps/web/src/lib/tutorialCurriculum.js"
       ],
-      "lines": 238,
+      "lines": 262,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Exercise real lesson creation and native learning source validation without fabricating evidence or replacing history.",
@@ -57455,7 +57472,7 @@
         "docs/interactive-learning.md",
         ".gitlab-ci.yml"
       ],
-      "lines": 80,
+      "lines": 99,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Hand off actual native, rendered and production-configuration checks without granting operational authority from passing source tests.",
@@ -57492,7 +57509,7 @@
         "apps/web/public/authority-repairs-final-source.txt",
         "apps/web/public/authority-repairs-recovery-source.txt"
       ],
-      "lines": 176,
+      "lines": 242,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Retain the first safety and authority repair batch, measured source checks and the unresolved native and operational boundaries.",
@@ -57561,7 +57578,7 @@
         "apps/pocketbase/pb_hooks/business-policy.js",
         "apps/pocketbase/pb_migrations/1791500001_workspace_claim_authority.js"
       ],
-      "lines": 152,
+      "lines": 155,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Bind bounded workspace reports and editorial changes to native accounts, current roles and saved revisions without inventing verification.",
@@ -57719,7 +57736,7 @@
       "dependencies": [
         "apps/pocketbase/pb_migrations/data/authority-repairs-lessons.json"
       ],
-      "lines": 260,
+      "lines": 261,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Describe one public authority-repair lesson with bounded source evidence and no fabricated outcomes.",
@@ -57809,7 +57826,8 @@
       "cket_stage": "07_BUILD",
       "srs_codes": [
         "SRS-BUILDANDDO-COMMUNITY-001",
-        "SRS-BUILDANDDO-UPGRADE-001"
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "SRS-BUILDANDDO-TRUST-001"
       ],
       "enum_type": "Adapter",
       "functions": [
@@ -57820,14 +57838,13 @@
         "connectSeatComms",
         "disconnectSeatComms",
         "isSeatCommsConnected",
-        "currentSeat",
         "publishSeatEvent",
         "recentSeatEvents"
       ],
       "dependencies": [
         "apps/web/src/lib/pocketbaseClient.js"
       ],
-      "lines": 337,
+      "lines": 322,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Let several seats working one workspace see each other's work instead of colliding.",
@@ -57959,7 +57976,7 @@
         "apps/pocketbase/pb_hooks/tutorial-learning.js",
         "services/praxis_evidence/run_all_tests.py"
       ],
-      "lines": 127,
+      "lines": 129,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Describe the repaired test and claim authority boundaries without manufacturing provider evidence, mastery or production acceptance.",
@@ -57986,11 +58003,14 @@
         "SRS-BUILDANDDO-UPGRADE-001"
       ],
       "enum_type": "Service",
-      "functions": [],
+      "functions": [
+        "require_target",
+        "require_test_target"
+      ],
       "dependencies": [
         "none"
       ],
-      "lines": 119,
+      "lines": 151,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Require explicit service configuration without reading deployment secrets or selecting a public write target on import.",
@@ -58094,7 +58114,7 @@
       "dependencies": [
         "services/praxis_evidence/isolated_test.py"
       ],
-      "lines": 92,
+      "lines": 94,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Exercise real claim transitions only inside the runner-owned disposable backend.",
@@ -58189,7 +58209,7 @@
       "dependencies": [
         "services/praxis_evidence/isolated_test.py"
       ],
-      "lines": 80,
+      "lines": 82,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Exercise knowledge health against isolated native records without inheriting deployment targets.",
@@ -58317,7 +58337,7 @@
       "dependencies": [
         "services/praxis_evidence/isolated_test.py"
       ],
-      "lines": 93,
+      "lines": 95,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Test attribution and reputation without introducing fixture accounts or awards into production.",
@@ -58350,7 +58370,7 @@
       "dependencies": [
         "services/praxis_evidence/isolated_test.py"
       ],
-      "lines": 79,
+      "lines": 81,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Exercise quest compilation in a fresh local database without permanent live test records.",
@@ -58418,7 +58438,7 @@
         "apps/pocketbase/pb_migrations/data/authority-repairs-lessons.json",
         "apps/web/src/lib/tutorialCurriculum.js"
       ],
-      "lines": 237,
+      "lines": 243,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Validate one source-only lesson and additive migration while preserving prior lessons, snapshots and evidence.",
@@ -58453,7 +58473,7 @@
         "services/praxis_evidence/client.py",
         "services/praxis_evidence/run_all_tests.py"
       ],
-      "lines": 425,
+      "lines": 430,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Reject unsafe Praxis test targets before credentials, deployment files or network writes can be used.",
@@ -58497,7 +58517,7 @@
         "apps/web/src/lib/workspaceControl.js",
         "apps/web/src/lib/seatComms.js"
       ],
-      "lines": 683,
+      "lines": 686,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Reject raw claim fabrication and exercise current native authority without treating storage doubles as native acceptance.",
@@ -59705,12 +59725,295 @@
       "timestamp": "2026-09-24T01:12:29.341599+00:00",
       "commit_sha": null,
       "smoke_result": "125/125 governance regressions; three scoped typed modules; native profiles BLOCKED"
+    },
+    {
+      "type": "A",
+      "file_path": "apps/pocketbase/pb_migrations/1791500100_tutorial_answer_wait.js",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-TRUST-001",
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Migration",
+      "functions": [],
+      "dependencies": [
+        "apps/pocketbase/pb_migrations/1790600000_tutorial_learning.js"
+      ],
+      "lines": 35,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Record when a learner may answer again after a wrong knowledge check, without touching checkpoints or certificates.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "test-isolation-and-claim-authority"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/praxis_evidence/test_target_guard.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-TRUST-001",
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "_no_network"
+      ],
+      "dependencies": [
+        "services/praxis_evidence/client.py",
+        "services/praxis_evidence/run_all_tests.py"
+      ],
+      "lines": 112,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Prove the evidence suites refuse a missing or production PocketBase target before any network call.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "test-isolation-and-claim-authority"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/trust-shared-records.test.mjs",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-TRUST-001",
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "native",
+        "claimsFixture"
+      ],
+      "dependencies": [
+        "tests/upgrade/admin-fixture.mjs",
+        "apps/pocketbase/pb_hooks/workspace-record-policy.js",
+        "apps/pocketbase/pb_hooks/workspace-claims.js",
+        "apps/pocketbase/pb_migrations/1791500001_workspace_claim_authority.js",
+        "apps/web/src/pages/workspace/EvidencePage.jsx",
+        "apps/web/plugins/vite-plugin-public-lessons.js"
+      ],
+      "lines": 228,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Prove review, publication, revenue and seat identity cannot be asserted from a browser write.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "test-isolation-and-claim-authority"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_hooks/classrooms.pb.js",
+      "target": "apps/pocketbase/pb_hooks/workflow-policy.js",
+      "edge_type": "CONSUMES",
+      "weight": 0.8,
+      "description": "apps/pocketbase/pb_hooks/classrooms.pb.js CONSUMES apps/pocketbase/pb_hooks/workflow-policy.js",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_hooks/tutorial-learning.js",
+      "target": "apps/pocketbase/pb_migrations/1791500100_tutorial_answer_wait.js",
+      "edge_type": "CONSUMES",
+      "weight": 0.8,
+      "description": "apps/pocketbase/pb_hooks/tutorial-learning.js CONSUMES apps/pocketbase/pb_migrations/1791500100_tutorial_answer_wait.js",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_migrations/1791500100_tutorial_answer_wait.js",
+      "target": "apps/pocketbase/pb_migrations/1790600000_tutorial_learning.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 0.8,
+      "description": "apps/pocketbase/pb_migrations/1791500100_tutorial_answer_wait.js DEPENDS_ON apps/pocketbase/pb_migrations/1790600000_tutorial_learning.js",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/praxis_evidence/test_target_guard.py",
+      "target": "services/praxis_evidence/client.py",
+      "edge_type": "VALIDATES",
+      "weight": 0.8,
+      "description": "tests/praxis_evidence/test_target_guard.py VALIDATES services/praxis_evidence/client.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/praxis_evidence/test_target_guard.py",
+      "target": "services/praxis_evidence/run_all_tests.py",
+      "edge_type": "VALIDATES",
+      "weight": 0.8,
+      "description": "tests/praxis_evidence/test_target_guard.py VALIDATES services/praxis_evidence/run_all_tests.py",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_tutorial_learning_native.py",
+      "target": "apps/pocketbase/pb_migrations/1791500100_tutorial_answer_wait.js",
+      "edge_type": "VALIDATES",
+      "weight": 0.8,
+      "description": "tests/upgrade/test_tutorial_learning_native.py VALIDATES apps/pocketbase/pb_migrations/1791500100_tutorial_answer_wait.js",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/trust-shared-records.test.mjs",
+      "target": "apps/web/plugins/vite-plugin-public-lessons.js",
+      "edge_type": "CONSUMES",
+      "weight": 0.8,
+      "description": "tests/upgrade/trust-shared-records.test.mjs CONSUMES apps/web/plugins/vite-plugin-public-lessons.js",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/trust-shared-records.test.mjs",
+      "target": "tests/upgrade/admin-fixture.mjs",
+      "edge_type": "DEPENDS_ON",
+      "weight": 0.8,
+      "description": "tests/upgrade/trust-shared-records.test.mjs DEPENDS_ON tests/upgrade/admin-fixture.mjs",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/trust-shared-records.test.mjs",
+      "target": "apps/pocketbase/pb_hooks/workspace-claims.js",
+      "edge_type": "VALIDATES",
+      "weight": 0.8,
+      "description": "tests/upgrade/trust-shared-records.test.mjs VALIDATES apps/pocketbase/pb_hooks/workspace-claims.js",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/trust-shared-records.test.mjs",
+      "target": "apps/pocketbase/pb_hooks/workspace-record-policy.js",
+      "edge_type": "VALIDATES",
+      "weight": 0.8,
+      "description": "tests/upgrade/trust-shared-records.test.mjs VALIDATES apps/pocketbase/pb_hooks/workspace-record-policy.js",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/trust-shared-records.test.mjs",
+      "target": "apps/pocketbase/pb_migrations/1791500001_workspace_claim_authority.js",
+      "edge_type": "VALIDATES",
+      "weight": 0.8,
+      "description": "tests/upgrade/trust-shared-records.test.mjs VALIDATES apps/pocketbase/pb_migrations/1791500001_workspace_claim_authority.js",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/trust-shared-records.test.mjs",
+      "target": "apps/web/src/pages/workspace/EvidencePage.jsx",
+      "edge_type": "VALIDATES",
+      "weight": 0.8,
+      "description": "tests/upgrade/trust-shared-records.test.mjs VALIDATES apps/web/src/pages/workspace/EvidencePage.jsx",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/tutorial-learning-client.test.mjs",
+      "target": "apps/web/src/lib/buddi.js",
+      "edge_type": "CONSUMES",
+      "weight": 0.8,
+      "description": "tests/upgrade/tutorial-learning-client.test.mjs CONSUMES apps/web/src/lib/buddi.js",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/tutorial-learning-fixture.mjs",
+      "target": "apps/pocketbase/pb_migrations/1791500100_tutorial_answer_wait.js",
+      "edge_type": "CONSUMES",
+      "weight": 0.8,
+      "description": "tests/upgrade/tutorial-learning-fixture.mjs CONSUMES apps/pocketbase/pb_migrations/1791500100_tutorial_answer_wait.js",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/tutorial-learning-system.test.mjs",
+      "target": "apps/pocketbase/pb_migrations/1791500100_tutorial_answer_wait.js",
+      "edge_type": "VALIDATES",
+      "weight": 0.8,
+      "description": "tests/upgrade/tutorial-learning-system.test.mjs VALIDATES apps/pocketbase/pb_migrations/1791500100_tutorial_answer_wait.js",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "C",
+      "event_type": "test_pass",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/claim-authority-report.md",
+      "description": "PR 103 main integration resolves 34 conflict paths while retaining Buddi, keyless public and guided lessons, canonical completion, isolated Praxis tests and scoped claim commands. Red controls reproduced native seat-identity and answer-wait field-replay mismatches before correction. The integrated source passes 874 Node cases and 1204 of 1210 Python cases with six dependency skips, plus 43 Praxis safety/fixture checks on each declared Python version. Original public captures remain unchanged and the authority capture is pinned to its verified historical source revision.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-24T02:57:16.054536+00:00",
+      "commit_sha": null,
+      "smoke_result": "874/874 Node; 1204/1210 Python with six skips; 71/71 claims; 78/78 learning; 43/43 Praxis per Python version"
+    },
+    {
+      "type": "C",
+      "event_type": "failure",
+      "file_path": ".bits/handoffs/2026-09-24-bits-codegen-ide1-claim-authority.md",
+      "description": "Integration checks retain missing locked frontend packages and both absent PocketBase runtimes as non-passing. The initial source diagnostic could not locate an already installed ESLint under the selected Node prefix; rerunning with its local prefix passed without changing gates. Independent semantic review found no new scoped merge regression and retained an inherited full-assurance fixture mismatch: missing answer-wait migration and tests reading withheld learner keys. No native/rendered acceptance, remote issue, provider effect or deployment is asserted.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-24T02:57:16.054604+00:00",
+      "commit_sha": null,
+      "smoke_result": "Three frontend prerequisites failed; four workspace/learning native profiles BLOCKED; full release matrix not rerun"
     }
   ],
   "summary": {
-    "type_a_count": 944,
-    "type_b_count": 2295,
-    "type_c_count": 235,
+    "type_a_count": 947,
+    "type_b_count": 2309,
+    "type_c_count": 237,
     "ioo_compliance": true,
     "dkg_orphans": 0,
     "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",

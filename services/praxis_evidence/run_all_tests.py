@@ -40,7 +40,7 @@ if str(ROOT) not in sys.path:
 
 from scripts.ci.hostinger_checks import runtime_version  # noqa: E402
 from services.praxis_evidence.isolated_test import CONTEXT, EMAIL, PASSWORD  # noqa: E402
-from services.praxis_evidence.client import NoRedirect  # noqa: E402
+from services.praxis_evidence.client import NoRedirect, require_test_target  # noqa: E402
 from tests.upgrade.test_classroom_native import DiagnosticNativeServer, sanitize_diagnostics  # noqa: E402
 from tools.day21.day21_acceptance import extract_binary  # noqa: E402
 
@@ -85,7 +85,7 @@ class PraxisServer(DiagnosticNativeServer):
             with socket.socket() as reservation:
                 reservation.bind(("127.0.0.1", 0))
                 self.port = reservation.getsockname()[1]
-            self.base = f"http://127.0.0.1:{self.port}"
+            self.base = require_test_target(f"http://127.0.0.1:{self.port}")
             self.migrate()
             self.start()
             assert self.process is not None

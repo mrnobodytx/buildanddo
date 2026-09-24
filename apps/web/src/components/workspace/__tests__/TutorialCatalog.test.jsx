@@ -1,10 +1,10 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/src/components/workspace/__tests__/TutorialCatalog.test.jsx
 // Stage:       08_TEST
-// SRS:         SRS-BUILDANDDO-UPGRADE-001
+// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-TRUST-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-TRUST-001
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-15
@@ -24,6 +24,9 @@ import authorityCurriculum from '../../../../../pocketbase/pb_migrations/data/au
 import { learningFixture } from '../../../../../../tests/upgrade/tutorial-learning-fixture.mjs';
 import { installGovernment } from '../../../../../../tests/upgrade/government-fixture.mjs';
 import { plain } from '../../../../../../tests/upgrade/admin-fixture.mjs';
+import publicStarter from '../../../../../pocketbase/pb_migrations/data/starter-tutorials.json?public-lessons';
+import publicBroadcast from '../../../../../pocketbase/pb_migrations/data/broadcast-classroom-lessons.json?public-lessons';
+import publicAuthority from '../../../../../pocketbase/pb_migrations/data/authority-repairs-lessons.json?public-lessons';
 import TutorialCatalog from '@/components/workspace/TutorialCatalog';
 import TutorialsPage from '@/pages/workspace/TutorialsPage';
 import DocsPage from '@/pages/DocsPage';
@@ -68,8 +71,10 @@ beforeEach(() => {
         if (id === 'states' && transport.failStatePage === request.query.page)
             throw { status: 503, response: { message: 'Guided progress page unavailable.' } };
         const event = backend.event(pb.authStore.record.id, request.body || {}, { id, query: request.query || {} });
-        const result = plain(request.method === 'POST' ? backend.service.command(event) :
-            id === 'states' ? backend.service.states(event) : id ? backend.service.detail(event) : backend.service.list(event));
+        let result;
+        try { result = plain(request.method === 'POST' ? backend.service.command(event) :
+            id === 'states' ? backend.service.states(event) : id ? backend.service.detail(event) : backend.service.list(event)); }
+        catch (error) { throw error.status ? { status: error.status, response: { message: error.message } } : error; }
         if (id === 'states' && transport.wait) await transport.wait;
         return result;
     });
@@ -83,6 +88,15 @@ const read = async (prefix = 'Read') => {
 };
 
 describe('complete Field Manual lessons', () => {
+    it('bundles the curriculum the catalogue imports without any knowledge-check answer or explanation', () => {
+        const shipped = [...publicStarter.lessons, ...publicBroadcast.lessons, ...publicAuthority.lessons];
+        expect(shipped).toHaveLength(publicLessonCount);
+        for (const item of shipped) {
+            expect(Object.keys(item.lesson.check).sort()).toEqual(['choices', 'question']);
+            expect(JSON.stringify(item)).not.toMatch(/"answer"|"explanation"/);
+        }
+    });
+
     it('withholds government lessons from public and demo previews', async () => {
         renderWithProviders(<TutorialCatalog />, { auth: { isAuthed: false, user: null } });
         expect(screen.getByText(`${publicLessonCount} lessons to explore`)).toBeVisible();
@@ -108,6 +122,8 @@ describe('complete Field Manual lessons', () => {
         expect(screen.getByText(`${publicLessonCount} lessons to explore`)).toBeVisible();
         const { reader, user } = await read();
         expect(reader.queryByRole('button', { name: 'Save reading progress' })).not.toBeInTheDocument();
+        expect(reader.getByText('Sign in and open the interactive tutorial to answer this knowledge check.')).toBeVisible();
+        expect(JSON.stringify(screen.getByRole('dialog').textContent)).not.toContain(lesson.lesson.check.explanation);
         await user.click(reader.getByRole('button', { name: 'Close lesson' }));
         expect(pb.collection).not.toHaveBeenCalled();
         view.unmount(); setDemoMode(true);
@@ -142,22 +158,28 @@ describe('complete Field Manual lessons', () => {
         expect(screen.getByText(`1 of ${publicLessonCount} guided tutorials completed`)).toBeVisible();
     });
 
-    it('shares canonical progress between Docs and the Field Manual while the public quiz stays local practice', async () => {
+    it('shares canonical progress between Docs and the Field Manual while the public quiz stays read-only', async () => {
         backend.command('start', {}, { actor: 'user_test' });
         const docs = renderWithProviders(<DocsPage />, { route: '/docs' });
         await read('Continue');
         docs.unmount();
         renderWithProviders(<TutorialsPage />, { route: '/app/tutorials' });
-        const { reader, user } = await read('Continue');
+        const { reader } = await read('Continue');
+        // Completion of an interactive lesson belongs to its server-issued certificate.
         expect(reader.queryByRole('button', { name: 'Mark lesson complete' })).not.toBeInTheDocument();
-        await user.click(reader.getByRole('radio', { name: lesson.lesson.check.choices[0] }));
-        await user.click(reader.getByRole('button', { name: 'Check answer' }));
-        expect(reader.getByText('Try another answer.')).toBeVisible();
-        await user.click(reader.getByRole('radio', { name: lesson.lesson.check.choices[lesson.lesson.check.answer] }));
-        await user.click(reader.getByRole('button', { name: 'Check answer' }));
-        expect(reader.getByText('That’s right.')).toBeVisible();
-        await user.click(reader.getByRole('checkbox', { name: /I worked through the exercise/ }));
-        expect(reader.getByText(/Open-book reading and local quiz practice/)).toBeVisible();
+        expect(reader.getByRole('button', { name: 'Start interactive tutorial' })).toBeEnabled();
+        // The reader previews the question; grading happens only in the interactive tutorial.
+        const check = within(reader.getByRole('region', { name: 'Knowledge check' }));
+        expect(check.getByText(lesson.lesson.check.question)).toBeVisible();
+        for (const choice of lesson.lesson.check.choices) expect(check.getByText(choice)).toBeVisible();
+        expect(reader.queryByRole('radio')).not.toBeInTheDocument();
+        expect(reader.queryByRole('button', { name: 'Check answer' })).not.toBeInTheDocument();
+        expect(reader.queryByText(lesson.lesson.check.explanation)).not.toBeInTheDocument();
+        expect(check.getByText('Answer this knowledge check in the interactive tutorial.')).toBeVisible();
+        expect(reader.getByText(/Finish the interactive tutorial to complete this lesson/)).toBeVisible();
+        expect(reader.queryByRole('button', { name: 'Save reading progress' })).not.toBeInTheDocument();
+        expect(reader.queryByRole('checkbox')).not.toBeInTheDocument();
+        expect(reader.getByText(/Open-book reading and practice preview only/)).toBeVisible();
         expect(pb.__collection('tutorial_progress').create).not.toHaveBeenCalled();
         expect(pb.__collection('tutorial_progress').update).not.toHaveBeenCalled();
         expect(pb.send.mock.calls.every(([, request]) => request.method === 'GET')).toBe(true);
@@ -255,7 +277,9 @@ describe('complete Field Manual lessons', () => {
         const reader = within(await screen.findByRole('dialog'));
         expect(reader.getByRole('heading', { name: sourceLesson.title })).toBeVisible();
         expect(reader.getByRole('heading', { name: 'Practice' })).toBeVisible();
-        expect(reader.getByRole('group', { name: 'Check your understanding' })).toBeVisible();
+        expect(reader.getByRole('region', { name: 'Knowledge check' })).toBeVisible();
+        expect(reader.getByRole('heading', { name: 'Check your understanding' })).toBeVisible();
+        expect(reader.queryByText(sourceLesson.lesson.check.explanation)).not.toBeInTheDocument();
         expect(reader.getByText(sourceCase.source_evidence.boundary)).toBeVisible();
         expect(reader.getByRole('link', { name: /Open Evidence and its separate Source case studies panel/ })).toHaveAttribute('href', '/app/evidence');
         expect(reader.queryByRole('button', { name: 'Save reading progress' })).not.toBeInTheDocument();
@@ -289,7 +313,7 @@ describe('complete Field Manual lessons', () => {
         expect(await screen.findByText(`0 of ${publicLessonCount} guided tutorials completed`)).toBeVisible();
     });
 
-    it('keeps authority-case quiz practice local and source-case search limited to both authored lessons', async () => {
+    it('keeps the authority-case quiz read-only and source-case search limited to both authored lessons', async () => {
         renderWithProviders(<TutorialCatalog initialCategory="Source case studies" />);
         const user = setupUser();
         expect(await screen.findByRole('heading', { name: authorityLesson.title })).toBeVisible();
@@ -300,10 +324,13 @@ describe('complete Field Manual lessons', () => {
         await user.click(screen.getByRole('button', { name: `Read ${authorityLesson.title}` }));
         const reader = within(screen.getByRole('dialog'));
         expect(reader.getByRole('heading', { name: 'Guided progress is canonical, not a secure exam' })).toBeVisible();
-        await user.click(reader.getByRole('radio', { name: authorityLesson.lesson.check.choices[authorityLesson.lesson.check.answer] }));
-        await user.click(reader.getByRole('button', { name: 'Check answer' }));
-        expect(reader.getByText(authorityLesson.lesson.check.explanation)).toBeVisible();
-        await user.click(reader.getByRole('checkbox', { name: /I worked through the exercise/ }));
+        const check = within(reader.getByRole('region', { name: 'Knowledge check' }));
+        expect(check.getByText(authorityLesson.lesson.check.question)).toBeVisible();
+        for (const choice of authorityLesson.lesson.check.choices) expect(check.getByText(choice)).toBeVisible();
+        expect(reader.queryByRole('radio')).not.toBeInTheDocument();
+        expect(reader.queryByRole('checkbox')).not.toBeInTheDocument();
+        expect(reader.queryByRole('button', { name: 'Check answer' })).not.toBeInTheDocument();
+        expect(reader.queryByText(authorityLesson.lesson.check.explanation)).not.toBeInTheDocument();
         for (const name of ['tutorial_progress', 'tutorial_learning', 'evidence'])
             for (const method of ['create', 'update', 'delete']) expect(pb.__collection(name)[method]).not.toHaveBeenCalled();
         expect(pb.send.mock.calls.every(([, request]) => request.method === 'GET')).toBe(true);

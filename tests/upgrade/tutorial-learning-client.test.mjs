@@ -1,16 +1,16 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        tests/upgrade/tutorial-learning-client.test.mjs
 // Stage:       08_TEST
-// SRS:         SRS-BUILDANDDO-UPGRADE-001
+// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-TRUST-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-TRUST-001
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-19
-// Depends:     tests/upgrade/tutorial-learning-fixture.mjs, apps/web/src/lib/tutorialLearning.js, apps/web/src/lib/tutorialLearnerLesson.js, apps/web/src/lib/navigationIntent.js
+// Depends:     tests/upgrade/tutorial-learning-fixture.mjs, apps/web/src/lib/tutorialLearning.js, apps/web/src/lib/tutorialLearnerLesson.js, apps/web/src/lib/navigationIntent.js, apps/web/src/lib/buddi.js
 // EnumType:    Test
-// EnumEdges:   CONSUMES tests/upgrade/tutorial-learning-fixture.mjs; VALIDATES apps/web/src/lib/tutorialLearning.js; VALIDATES apps/web/src/lib/tutorialLearnerLesson.js; VALIDATES apps/web/src/lib/navigationIntent.js
+// EnumEdges:   CONSUMES tests/upgrade/tutorial-learning-fixture.mjs; VALIDATES apps/web/src/lib/tutorialLearning.js; VALIDATES apps/web/src/lib/tutorialLearnerLesson.js; VALIDATES apps/web/src/lib/navigationIntent.js; CONSUMES apps/web/src/lib/buddi.js
 // DAG Node:    none
 // Intent:      Verify lost-response recovery, account isolation and safe certificate exports through the real client and command source.
 // ───────────────────────────────────────────────────────────────
@@ -24,6 +24,7 @@ import { classroomTelemetryLocation, scrubClassroomProperties } from '../../apps
 import { validLesson } from '../../apps/web/src/lib/tutorialCurriculum.js';
 import { validLearnerLesson } from '../../apps/web/src/lib/tutorialLearnerLesson.js';
 import { installGovernment } from './government-fixture.mjs';
+import { buddiAchievements } from '../../apps/web/src/lib/buddi.js';
 
 function setup(options = {}) {
     const f = learningFixture();
@@ -34,7 +35,11 @@ function setup(options = {}) {
         if (state.error) throw state.error;
         const id = path.replace('/api/buildanddo/learning', '').slice(1);
         const event = f.event(sdk.authStore.record.id, request.body || {}, { id, query: request.query || {} });
-        const value = plain(request.method === 'POST' ? f.service.command(event) : id === 'states' ? f.service.states(event) : id ? f.service.detail(event) : f.service.list(event));
+        let value;
+        // Native hook errors reach the SDK as a status with a response message.
+        try { value = plain(request.method === 'POST' ? f.service.command(event) :
+            id === 'states' ? f.service.states(event) : id ? f.service.detail(event) : f.service.list(event)); }
+        catch (error) { throw error.status ? { status: error.status, response: { message: error.message } } : error; }
         if (state.lose) { state.lose = false; throw new Error('response lost'); }
         return state.mutate(value);
     } };
@@ -76,7 +81,7 @@ test('a dropped committed response keeps the exact retry and refuses a new chang
     assert.deepEqual(state.requests[0].body, state.requests[1].body);
     f.finish();
     state.lose = true;
-    assert.equal((await act('answer', { choice: f.lessons[0].lesson.check.answer })).reason, 'uncertain');
+    assert.equal((await act('answer', { choice: f.answerFor() })).reason, 'uncertain');
     assert.equal((await client.retry()).data.enrollment.points, 100);
     assert.equal(f.list().points, 100);
 });
@@ -135,21 +140,36 @@ test('incomplete or cross-account responses never mint browser progress or credi
     ]) { state.mutate = mutate; assert.equal((await client.read()).ok, false); }
 });
 
-test('wrong answers retain their feedback and cannot claim completion', async () => {
-    const { f, client, tutorial, act } = setup();
+test('wrong answers retain their feedback, wait on the server and cannot claim completion', async () => {
+    const { client, tutorial, act, f, state } = setup();
+    const answer = f.answerFor();
+    assert.equal(tutorial.lesson.check.answer, undefined, 'the client validates lessons without the answer');
     await act('start');
     for (let index = 0; index < tutorial.lesson.sections.length; index++) await act('section', { index });
     await act('practice', { checks: tutorial.lesson.exercise.checklist.map(() => true) });
-    const answer = f.lessons[0].lesson.check.answer;
     const wrong = await act('answer', { choice: (answer + 1) % tutorial.lesson.check.choices.length });
     assert.equal(wrong.ok, true);
     assert.equal(wrong.data.feedback.correct, false);
+    assert.equal(wrong.data.feedback.retry_after, 30);
     assert.equal(wrong.data.enrollment.certificate, null);
     assert.equal((await client.read()).data.points, 0);
-    assert.equal((await act('answer', { choice: answer })).data.enrollment.points, 100);
+    const waiting = await act('answer', { choice: answer });
+    assert.equal(waiting.reason, 'wait');
+    assert.match(waiting.error, /try the knowledge check again in \d+ seconds/);
+    f.expire();
+    const passed = await act('answer', { choice: answer });
+    assert.equal(passed.data.enrollment.points, 100);
+    assert.equal(passed.data.tutorial.lesson.check.answer, undefined);
+    assert.equal((await client.read(tutorial.id)).data.tutorial.lesson.check.answer, undefined, 'earned lessons remain keyless');
+    for (const mutate of [(value) => ({ ...value, feedback: { ...value.feedback, correct: true } }),
+        (value) => ({ ...value, feedback: null }), (value) => ({ ...value, feedback: { ...value.feedback, retry_after: -1 } })]) {
+        state.mutate = (value) => mutate({ ...value, enrollment: { ...value.enrollment, status: 'in_progress', points: 0, progress: 80, completed_at: '', certificate: null } });
+        assert.equal((await act('answer', { choice: answer })).reason, 'uncertain', 'an unconfirmed grade never displays as a pass');
+        state.mutate = (value) => value; await client.retry();
+    }
 });
 
-test('the guided client accepts only keyless lessons, uses server feedback, and leaves authored validation strict', async () => {
+test('the guided client requires keyless lessons while public rendering accepts stripped previews and server grading requires full source', async () => {
     const { f, state, client, tutorial, act } = setup();
     const check = f.lessons[0].lesson.check;
     const learner = (value) => {
@@ -158,13 +178,17 @@ test('the guided client accepts only keyless lessons, uses server feedback, and 
     };
     state.mutate = learner;
     assert.equal((await client.read(tutorial.id)).ok, true);
-    assert.equal(validLesson(learner(plain({ tutorial })).tutorial.lesson), false, 'classroom and public authored lessons still require full grading fields');
+    assert.equal(validLesson(learner(plain({ tutorial })).tutorial.lesson), true, 'public rendering supports stripped previews');
     assert.equal(validLesson(f.lessons[0].lesson), true);
+    const other = learningFixture();
+    other.data.tutorials.find((row) => row.id === tutorial.id).lesson.check = plain(tutorial.lesson.check);
+    assert.throws(() => other.detail(), /supported lesson/, 'the server never grades a stripped authored lesson');
     assert.equal((await act('start')).ok, true);
     for (let index = 0; index < tutorial.lesson.sections.length; index++) assert.equal((await act('section', { index })).ok, true);
     assert.equal((await act('practice', { checks: tutorial.lesson.exercise.checklist.map(() => true) })).ok, true);
     const wrong = await act('answer', { choice: (check.answer + 1) % check.choices.length });
     assert.equal(wrong.ok, true); assert.equal(wrong.data.feedback.correct, false);
+    f.expire();
     const right = await act('answer', { choice: check.answer });
     assert.equal(right.ok, true); assert.equal(right.data.feedback.correct, true);
     assert.equal(right.data.enrollment.points, 100);
@@ -192,12 +216,13 @@ test('learner validation rejects malformed content, unsafe references and every 
         { ...body, references: [{ label: false, url: '/docs' }] },
     ]) assert.equal(validLearnerLesson(invalid), false);
     assert.equal(validLearnerLesson({ ...body, sections: [{ heading: 'Steps only', steps: ['Read'] }] }), true);
-    assert.equal(validLesson({ ...f.lessons[0].lesson, check: body.check }), false);
+    assert.equal(validLesson({ ...f.lessons[0].lesson, check: body.check }), true);
 });
 
 test('answer feedback must be present, typed, and backed by saved practice and a certificate when correct', async () => {
     const { f, state, act, client } = setup(); f.finish();
-    for (const feedback of [null, {}, { correct: 'true', explanation: 'No' }, { correct: true, explanation: '' }]) {
+    for (const feedback of [null, {}, { correct: 'true', explanation: 'No' }, { correct: true, explanation: '' },
+        ...[-1, 0.5, 3601, '30'].map((retry_after) => ({ correct: false, explanation: 'Wait', retry_after }))]) {
         state.mutate = (value) => ({ ...value, feedback });
         assert.equal((await act('answer', { choice: f.lessons[0].lesson.check.answer })).reason, 'uncertain');
     }
@@ -212,8 +237,10 @@ test('answer feedback must be present, typed, and backed by saved practice and a
     assert.equal((await another.act('answer', { choice: wrong })).reason, 'uncertain');
     another.state.mutate = (value) => ({ ...value, enrollment: { ...value.enrollment, practiced: false,
         progress: Math.floor(lesson.sections.length * 100 / (lesson.sections.length + 2)) } });
+    another.f.expire();
     assert.equal((await another.client.retry()).reason, 'uncertain');
     another.state.mutate = (value) => value;
+    another.f.expire();
     assert.equal((await another.client.retry()).ok, true);
 });
 
@@ -228,6 +255,24 @@ test('canonical state reads traverse every bounded page without relying on the f
     assert.equal(result.data.items.filter((row) => row.status === 'completed').length, 6);
     assert.equal(result.data.items.find((row) => row.tutorial === f.lessons[6].id).status, 'in_progress');
     assert.deepEqual(state.requests.filter((r) => r.path.endsWith('/states')).map((r) => r.query.page), [1, 2]);
+});
+
+test('Buddi keeps the server summary contract separate from canonical catalogue pages and historical reading', async () => {
+    const { f, client, state } = setup();
+    f.seed('tutorial_progress', { owner: 'owner', tutorial: f.lessons[0].id, status: 'completed', progress: 100 });
+    const milestones = (result) => buddiAchievements({ learning: { data: result.ok ? result.data : null, loading: false } })
+        .filter((item) => item.source === 'learning');
+    assert.ok(milestones(await client.read('', 1)).every((item) => item.state === 'open'));
+    for (const lesson of f.lessons.slice(0, 6)) f.finish({ id: lesson.id });
+    const summary = await client.read('', 1);
+    assert.equal(summary.data.certificates.items.length, 5);
+    assert.equal(summary.data.certificates.has_more, true);
+    assert.deepEqual(milestones(summary).map((item) => [item.id, item.state]),
+        [['learning:first', 'earned'], ['learning:five', 'earned'], ['learning:ten', 'open']]);
+    assert.equal((await client.readStates()).data.items.length, 6);
+    assert.deepEqual(milestones(await client.read('', 1)), milestones(summary));
+    state.error = { status: 403 };
+    assert.equal(milestones(await client.read('', 1))[0].state, 'unmeasured');
 });
 
 test('a revoked restricted enrollment keeps aggregate progress unknown without blocking authorized public detail or commands', async () => {

@@ -20,6 +20,18 @@
 **SRS:** SRS-BUILDANDDO-UPGRADE-001 **Risk:** A2 **Seat:** BITS-CODEGEN
 **Status:** in_progress **Actor:** actor:agent
 
+## PR 103 main integration - 2026-09-24
+
+The owner requests resolving this branch's conflicts using the command line.
+PR 93 is already merged; PR 103 is the current conflicting review. Preserve both
+parents' safeguards and historical evidence under this existing A2 dispatch.
+
+| Phase | Task | Gate | Status |
+|---|---|---|---|
+| MI-1 | Reconcile tutorial, claim, Praxis and CI contracts with main | Connected source regressions and semantic review | source PASS: all 34 conflicts resolved; authenticated seat identity and answer-wait replay regressions pass; Buddi retained |
+| MI-2 | Rebind governance and verify the integrated candidate | Focused and broad source checks, native/rendered attempts | source PASS: 874 Node checks; 1,204 Python passes and six dependency skips; native/rendered checks remain unavailable |
+| MI-3 | Retain limits and prepare the current review update | Dispatch report, memory and reviewed merge resolution | source handoff prepared; original 235 memory events retained, two integration observations added; remote synchronization remains the owner's UI action |
+
 ## Test isolation and claim authority continuation - 2026-09-23
 
 Continue the owner-requested repairs and site lessons against the reported safety

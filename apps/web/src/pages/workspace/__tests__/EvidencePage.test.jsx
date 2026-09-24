@@ -17,8 +17,8 @@
 
 import React from 'react';
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
-import broadcastCurriculum from '../../../../../pocketbase/pb_migrations/data/broadcast-classroom-lessons.json';
-import authorityCurriculum from '../../../../../pocketbase/pb_migrations/data/authority-repairs-lessons.json';
+import broadcastCurriculum from '../../../../../pocketbase/pb_migrations/data/broadcast-classroom-lessons.json?public-lessons';
+import authorityCurriculum from '../../../../../pocketbase/pb_migrations/data/authority-repairs-lessons.json?public-lessons';
 import EvidencePage from '@/pages/workspace/EvidencePage';
 import pb from '@/lib/pocketbaseClient';
 import { setDemoMode } from '@/lib/demoWorkspace';

@@ -1,16 +1,16 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        tests/upgrade/tutorial-learning-fixture.mjs
 // Stage:       08_TEST
-// SRS:         SRS-BUILDANDDO-UPGRADE-001
+// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-TRUST-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-TRUST-001
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-19
-// Depends:     tests/upgrade/admin-fixture.mjs, apps/pocketbase/pb_hooks/tutorial-learning.js, apps/pocketbase/pb_migrations/1791500000_learning_progress_authority.js
+// Depends:     tests/upgrade/admin-fixture.mjs, apps/pocketbase/pb_hooks/tutorial-learning.js, apps/pocketbase/pb_migrations/1791500000_learning_progress_authority.js, apps/pocketbase/pb_migrations/1791500100_tutorial_answer_wait.js
 // EnumType:    Test
-// EnumEdges:   CONSUMES tests/upgrade/admin-fixture.mjs; VALIDATES apps/pocketbase/pb_hooks/tutorial-learning.js; CONSUMES apps/pocketbase/pb_migrations/1791500000_learning_progress_authority.js
+// EnumEdges:   CONSUMES tests/upgrade/admin-fixture.mjs; VALIDATES apps/pocketbase/pb_hooks/tutorial-learning.js; CONSUMES apps/pocketbase/pb_migrations/1791500000_learning_progress_authority.js; CONSUMES apps/pocketbase/pb_migrations/1791500100_tutorial_answer_wait.js
 // DAG Node:    none
 // Intent:      Exercise actual learning commands against the existing explicit transactional storage double.
 // ───────────────────────────────────────────────────────────────
@@ -20,6 +20,7 @@ import { fixture, plain, source } from './admin-fixture.mjs';
 
 export const MIGRATION = 'apps/pocketbase/pb_migrations/1790600000_tutorial_learning.js';
 export const PROGRESS_MIGRATION = 'apps/pocketbase/pb_migrations/1791500000_learning_progress_authority.js';
+export const WAIT_MIGRATION = 'apps/pocketbase/pb_migrations/1791500100_tutorial_answer_wait.js';
 
 export function learningFixture({ progressAuthority = true } = {}) {
     const f = fixture({ runtime: { $security: { sha256: (text) => createHash('sha256').update(text).digest('hex') } } });
@@ -31,11 +32,14 @@ export function learningFixture({ progressAuthority = true } = {}) {
     f.app.countRecords = (name, filter, params) => f.app.findRecordsByFilter(name, filter, '', 0, 0, params).length;
     f.migration(MIGRATION).up();
     if (progressAuthority) f.migration(PROGRESS_MIGRATION).up();
+    f.migration(WAIT_MIGRATION).up();
     const service = f.load('tutorial-learning.js');
     const detail = (id = lessons[0].id, actor = 'owner') => plain(service.detail(f.event(actor, {}, { id })));
     const list = (actor = 'owner', query = {}) => plain(service.list(f.event(actor, {}, { query })));
     const command = (action, payload = {}, { id = lessons[0].id, actor = 'owner', digest } = {}) =>
         plain(service.command(f.event(actor, { action, payload, content_digest: digest ?? detail(id, actor).tutorial.content_digest }, { id })));
+    // Responses withhold the answer, so tests grade from the authored source.
+    const answerFor = (id = lessons[0].id) => lessons.find((lesson) => lesson.id === id).lesson.check.answer;
     const finish = (options = {}) => {
         const started = command('start', {}, options);
         for (let index = 0; index < started.tutorial.lesson.sections.length; index++) command('section', { index }, options);
@@ -43,5 +47,7 @@ export function learningFixture({ progressAuthority = true } = {}) {
         const saved = f.data.tutorial_learning.find((row) => row.id === started.enrollment.id);
         return command('answer', { choice: saved.snapshot.lesson.check.answer }, options);
     };
-    return { ...f, get data() { return f.data; }, lessons, service, detail, list, command, finish };
+    // Ends a pending wrong-answer wait as if it had elapsed.
+    const expire = () => { for (const row of f.data.tutorial_learning) row.answer_retry_at = ''; };
+    return { ...f, get data() { return f.data; }, lessons, service, detail, list, command, finish, answerFor, expire };
 }

@@ -12,6 +12,7 @@ import { fileURLToPath } from 'node:url';
 import { resolveBuildRelease } from '../../../scripts/ci/release.mjs';
 import { generatePublicAssets, generatePageHeads } from './generate-seo.mjs';
 import { generateCommunityCatalogue } from './generate-community.mjs';
+import { findLessonAnswers } from './check-public-lessons.mjs';
 
 // Container build contexts deliberately exclude .git. The staging image passes
 // the exact candidate SHA instead, keeping the release stamped into RUM and the
@@ -40,12 +41,20 @@ const buildEnvironment = {
     VITE_BUILD_SHA: release.commit_sha,
     VITE_DD_ENV: process.env.VITE_DD_ENV || '',
 };
-const vite = spawnSync('vite', ['build', '--outDir', '../../dist/apps/web'], {
+// The output sits outside the app root, so Vite keeps old bundles unless told to
+// empty it; a stale chunk could still carry lesson answers. Vite writes first.
+const vite = spawnSync('vite', ['build', '--outDir', '../../dist/apps/web', '--emptyOutDir'], {
     stdio: 'inherit',
     env: buildEnvironment,
     shell: process.platform === 'win32', // Windows needs shell:true to resolve vite.cmd; POSIX doesn't
 });
 if (vite.error) console.error('Unable to start Vite:', vite.error.message);
 if (vite.status !== 0) process.exit(vite.status ?? 1);
+// Interactive lessons are graded on the server; a shipped explanation would give the answer away.
+const leaks = findLessonAnswers(output);
+if (leaks.length) {
+    for (const leak of leaks) console.error(`Lesson ${leak.slug} explanation is in assets/${leak.file}; import curricula with ?public-lessons.`);
+    process.exit(1);
+}
 generatePageHeads(output, release);
 generateCommunityCatalogue(output, release);

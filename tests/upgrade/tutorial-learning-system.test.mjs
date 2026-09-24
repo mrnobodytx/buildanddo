@@ -1,16 +1,16 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        tests/upgrade/tutorial-learning-system.test.mjs
 // Stage:       08_TEST
-// SRS:         SRS-BUILDANDDO-UPGRADE-001
+// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-TRUST-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-TRUST-001
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-19
-// Depends:     tests/upgrade/tutorial-learning-fixture.mjs, apps/pocketbase/pb_hooks/tutorial-learning.pb.js, apps/pocketbase/pb_migrations/1790600000_tutorial_learning.js, apps/pocketbase/pb_migrations/1791500000_learning_progress_authority.js
+// Depends:     tests/upgrade/tutorial-learning-fixture.mjs, apps/pocketbase/pb_hooks/tutorial-learning.pb.js, apps/pocketbase/pb_migrations/1790600000_tutorial_learning.js, apps/pocketbase/pb_migrations/1791500000_learning_progress_authority.js, apps/pocketbase/pb_migrations/1791500100_tutorial_answer_wait.js
 // EnumType:    Test
-// EnumEdges:   CONSUMES tests/upgrade/tutorial-learning-fixture.mjs; VALIDATES apps/pocketbase/pb_hooks/tutorial-learning.pb.js; VALIDATES apps/pocketbase/pb_migrations/1790600000_tutorial_learning.js; VALIDATES apps/pocketbase/pb_migrations/1791500000_learning_progress_authority.js
+// EnumEdges:   CONSUMES tests/upgrade/tutorial-learning-fixture.mjs; VALIDATES apps/pocketbase/pb_hooks/tutorial-learning.pb.js; VALIDATES apps/pocketbase/pb_migrations/1790600000_tutorial_learning.js; VALIDATES apps/pocketbase/pb_migrations/1791500000_learning_progress_authority.js; VALIDATES apps/pocketbase/pb_migrations/1791500100_tutorial_answer_wait.js
 // DAG Node:    none
 // Intent:      Prevent unearned certificates, duplicate credit, cross-account reads and partial completion receipts.
 // ───────────────────────────────────────────────────────────────
@@ -19,7 +19,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import vm from 'node:vm';
 import { plain, source } from './admin-fixture.mjs';
-import { learningFixture, MIGRATION, PROGRESS_MIGRATION } from './tutorial-learning-fixture.mjs';
+import { learningFixture, MIGRATION, PROGRESS_MIGRATION, WAIT_MIGRATION } from './tutorial-learning-fixture.mjs';
 
 function nativeProgressShape(f, { rules = true, fields = true } = {}) {
     const collection = f.collections.tutorial_progress;
@@ -78,7 +78,143 @@ test('cannot skip sections, practice, or the server-checked answer', () => {
     assert.equal(wrong.enrollment.points, 0);
     assert.equal(f.data.tutorial_progress.length, 0);
     assert.equal(f.list().completed, 0);
+    f.expire();
     assert.equal(f.command('answer', { choice: f.lessons[0].lesson.check.answer }).feedback.correct, true);
+});
+
+test('learner lessons stay keyless after completion and only earned feedback explains the answer', () => {
+    const f = learningFixture(), lesson = f.lessons[0];
+    const hidden = (result) => !['answer', 'explanation'].some((key) => Object.prototype.hasOwnProperty.call(result.tutorial.lesson.check, key));
+    const before = f.detail();
+    assert.ok(hidden(before));
+    assert.deepEqual(before.tutorial.lesson.check.choices, lesson.lesson.check.choices);
+    assert.ok(hidden(f.command('start')));
+    for (let index = 0; index < lesson.lesson.sections.length; index++) assert.ok(hidden(f.command('section', { index })));
+    assert.ok(hidden(f.command('practice', { checks: lesson.lesson.exercise.checklist.map(() => true) })));
+    const wrong = f.command('answer', { choice: (lesson.lesson.check.answer + 1) % 3 });
+    assert.ok(hidden(wrong)); assert.ok(hidden(f.detail()));
+    assert.equal(wrong.feedback.explanation.includes(lesson.lesson.check.explanation), false, 'a wrong attempt does not explain the right choice');
+    assert.equal(wrong.feedback.retry_after, 30);
+    assert.equal(f.detail().tutorial.content_digest, before.tutorial.content_digest, 'the digest still covers the full stored lesson');
+    assert.equal(f.detail(undefined, 'otherowner').tutorial.lesson.check.answer, undefined);
+    f.expire();
+    const passed = f.command('answer', { choice: lesson.lesson.check.answer });
+    assert.ok(hidden(passed), 'completed receipts still use the keyless learner contract');
+    assert.equal(passed.feedback.explanation, lesson.lesson.check.explanation);
+    assert.equal(f.detail().tutorial.lesson.check.answer, undefined);
+    assert.equal(f.detail().tutorial.lesson.check.explanation, undefined);
+    assert.equal(f.detail(undefined, 'otherowner').tutorial.lesson.check.answer, undefined, 'another account has not earned it');
+    assert.equal(f.data.tutorial_learning[0].snapshot.lesson.check.answer, lesson.lesson.check.answer, 'the stored snapshot is unchanged');
+});
+
+test('a wrong answer pauses further answers on the server, then allows a retry without a lockout', () => {
+    const f = learningFixture(), lesson = f.lessons[0], right = lesson.lesson.check.answer;
+    f.command('start');
+    for (let index = 0; index < lesson.lesson.sections.length; index++) f.command('section', { index });
+    f.command('practice', { checks: lesson.lesson.exercise.checklist.map(() => true) });
+    const wrong = f.command('answer', { choice: (right + 1) % 3 });
+    assert.equal(wrong.replayed, false);
+    const stamp = f.data.tutorial_learning[0].answer_retry_at;
+    assert.ok(Date.parse(stamp) - Date.now() > 25000 && Date.parse(stamp) - Date.now() <= 30000);
+    for (const choice of [right, (right + 2) % 3])
+        assert.throws(() => f.command('answer', { choice }), (error) => error.status === 429 && /again in (30|29|28) seconds/.test(error.message));
+    assert.equal(f.data.tutorial_learning[0].answer_retry_at, stamp, 'refused attempts do not extend the wait');
+    assert.equal(f.data.tutorial_learning[0].completed_at, undefined);
+    assert.equal(f.list().points, 0);
+    // Only the knowledge check waits; ordinary checkpoints still replay.
+    assert.equal(f.command('section', { index: 0 }).replayed, true);
+    f.data.tutorial_learning[0].answer_retry_at = new Date(Date.now() - 1000).toISOString().replace('T', ' ');
+    assert.equal(f.command('answer', { choice: (right + 1) % 3 }).feedback.correct, false);
+    f.data.tutorial_learning[0].answer_retry_at = new Date(Date.now() + 86400000).toISOString();
+    assert.equal(f.command('answer', { choice: right }).enrollment.points, 100, 'a wait beyond the bound is never a lockout');
+    const review = f.command('answer', { choice: (right + 1) % 3 });
+    assert.equal(review.feedback.correct, false);
+    assert.equal(review.feedback.retry_after, undefined, 'completed learners review without waiting');
+    assert.equal(review.replayed, true);
+    assert.equal(f.command('answer', { choice: right }).feedback.correct, true);
+});
+
+test('the answer-wait migration replays, refuses a changed field and its down disables commands without losing credit', () => {
+    const f = learningFixture();
+    f.finish();
+    const before = plain(f.data.tutorial_learning);
+    f.migration(WAIT_MIGRATION).up();
+    assert.equal(f.collections.tutorial_learning.fields.filter((field) => field.name === 'answer_retry_at').length, 1);
+    f.migration(WAIT_MIGRATION).down();
+    assert.throws(() => f.detail(), /upgrade is not installed/);
+    assert.deepEqual(f.data.tutorial_learning, before);
+    f.migration(WAIT_MIGRATION).up();
+    assert.equal(f.list().points, 100);
+    f.collections.tutorial_learning.fields.getByName('answer_retry_at').type = 'text';
+    assert.throws(() => f.migration(WAIT_MIGRATION).up(), /Review custom/);
+});
+
+test('answer-wait migration normalizes native field types without accepting schema drift', () => {
+    for (const expectedType of ['date', 'text']) for (const representation of ['method', 'boxed-method', 'boxed']) {
+        const f = learningFixture(); f.finish();
+        const field = f.collections.tutorial_learning.fields.getByName('answer_retry_at');
+        field.type = representation === 'boxed' ? new String(expectedType) : function () {
+            assert.equal(this, field, 'native field methods keep their receiver');
+            return representation === 'boxed-method' ? new String(expectedType) : expectedType;
+        };
+        const type = field.type, before = plain(f.data);
+        let saves = 0; const save = f.app.save;
+        f.app.save = (value) => { saves++; return save.call(f.app, value); };
+        const migration = f.migration(WAIT_MIGRATION);
+        if (expectedType === 'date') {
+            migration.up(); migration.up();
+            assert.equal(f.collections.tutorial_learning.fields.getByName('answer_retry_at').type, type);
+            assert.equal(f.list().points, 100);
+        } else {
+            assert.throws(() => migration.up(), /Review custom tutorial_learning\.answer_retry_at/);
+        }
+        assert.equal(saves, 0, `${representation}: replay and drift rejection do not write`);
+        assert.equal(f.collections.tutorial_learning.fields.filter((item) => item.name === 'answer_retry_at').length, 1);
+        assert.deepEqual(f.data, before, 'snapshots, checkpoints, certificates and historical records stay unchanged');
+    }
+});
+
+test('progress authority and answer waits install together and replay without changing snapshots or historical reading', () => {
+    const f = learningFixture({ progressAuthority: false });
+    f.migration(WAIT_MIGRATION).down();
+    assert.throws(() => f.command('start'), /upgrade is not installed/);
+    f.seed('tutorial_progress', { owner: 'owner', tutorial: f.lessons[0].id, status: 'completed', progress: 100 });
+    const before = plain(f.data);
+    for (const path of [MIGRATION, PROGRESS_MIGRATION, WAIT_MIGRATION]) f.migration(path).up();
+    assert.deepEqual(f.data, before, 'installing both contracts creates no enrollment or award');
+    assert.equal(f.list().points, 0);
+    const completed = f.finish();
+    const saved = plain(f.data);
+    for (const path of [MIGRATION, PROGRESS_MIGRATION, WAIT_MIGRATION]) f.migration(path).up();
+    assert.deepEqual(f.data, saved);
+    assert.equal(f.collections.tutorial_learning.fields.filter((field) => field.name === 'answer_retry_at').length, 1);
+    for (const path of [WAIT_MIGRATION, PROGRESS_MIGRATION, MIGRATION]) f.migration(path).down();
+    assert.throws(() => f.list(), /upgrade is not installed/);
+    for (const key of ['createRule', 'updateRule', 'deleteRule']) assert.equal(f.collections.tutorial_progress[key], null);
+    for (const path of [MIGRATION, PROGRESS_MIGRATION, WAIT_MIGRATION]) f.migration(path).up();
+    assert.deepEqual(f.data, saved);
+    assert.deepEqual(f.detail().enrollment.certificate, completed.enrollment.certificate);
+});
+
+test('catalogue reads hide the answer and explanation from every client but superusers', () => {
+    const f = learningFixture(), lesson = f.lessons[0];
+    const read = (auth, value = lesson.lesson) => {
+        const record = f.record('tutorials', { id: lesson.id, title: lesson.title, lesson: value });
+        f.service.enrich({ record, requestInfo: auth === undefined ? undefined : { auth } });
+        return plain(record.get('lesson'));
+    };
+    const user = { isSuperuser: () => false }, superuser = { isSuperuser: () => true };
+    for (const viewer of [user, null, undefined]) {
+        const shown = read(viewer);
+        assert.equal(shown.check.answer, undefined); assert.equal(shown.check.explanation, undefined);
+        assert.deepEqual(shown.check.choices, lesson.lesson.check.choices);
+        assert.deepEqual(shown.sections, lesson.lesson.sections);
+    }
+    assert.deepEqual(read(superuser), lesson.lesson, 'operators keep the full authored lesson');
+    assert.equal(read(user, null), null);
+    assert.equal(read(user, '{broken'), null, 'an unreadable body is not passed through');
+    assert.deepEqual(read(user, { schema_version: 1 }), { schema_version: 1 });
+    assert.equal(f.data.tutorials.find((row) => row.id === lesson.id).lesson.check.answer, lesson.lesson.check.answer, 'stored lessons are unchanged');
 });
 
 test('retries, replay after completion and repeated enrollment cannot farm points or replace a certificate', () => {
@@ -102,6 +238,8 @@ test('enrollment freezes content and records the original version even if the ca
     assert.equal(f.detail().tutorial.title, first.tutorial.title);
     assert.deepEqual(f.detail().tutorial.lesson.check, first.tutorial.lesson.check);
     assert.equal(f.data.tutorial_learning[0].snapshot.lesson.check.answer, f.lessons[0].lesson.check.answer);
+    assert.equal(f.detail().tutorial.lesson.check.answer, undefined);
+    assert.equal(f.data.tutorial_learning[0].snapshot.lesson.check.answer, f.answerFor(), 'grading uses the enrolled answer');
     assert.equal(f.finish().enrollment.certificate.curriculum_version, first.tutorial.curriculum_version);
     assert.equal(f.list().certificates.items[0].certificate.title, first.tutorial.title);
 });
@@ -196,7 +334,9 @@ test('learner detail and command responses are keyless while frozen snapshots an
     for (let index = 0; index < f.lessons[0].lesson.sections.length; index++) keyless(f.command('section', { index }));
     keyless(f.command('practice', { checks: f.lessons[0].lesson.exercise.checklist.map(() => true) }));
     const wrong = f.command('answer', { choice: (check.answer + 1) % check.choices.length }); keyless(wrong);
-    assert.deepEqual(wrong.feedback, { correct: false, explanation: check.explanation });
+    assert.deepEqual(wrong.feedback, { correct: false,
+        explanation: 'Not the expected answer. Review the lesson sections, then try again.', retry_after: 30 });
+    f.expire();
     const finished = f.command('answer', { choice: check.answer }); keyless(finished); keyless(f.detail());
     assert.deepEqual(finished.feedback, { correct: true, explanation: check.explanation });
     assert.match(finished.enrollment.certificate.scope, /open-book tutorial completion; practice self-reported/);
@@ -464,16 +604,21 @@ test('missing installation, identity constraints and corrupt checkpoints fail cl
 });
 
 test('routes require native users auth and keep responses uncached with bounded command bodies', () => {
-    const routes = [];
+    const routes = [], enrichers = [];
     const auth = { native: 'users' };
+    let enriched = 0;
     vm.runInNewContext(source('apps/pocketbase/pb_hooks/tutorial-learning.pb.js'), {
-        __hooks: '/hooks', routerAdd: (...args) => routes.push(args),
+        __hooks: '/hooks', routerAdd: (...args) => routes.push(args), onRecordEnrich: (...args) => enrichers.push(args),
         $apis: { requireAuth: (collection) => { assert.equal(collection, 'users'); return auth; }, bodyLimit: (bytes) => ({ bytes }) },
-        require: () => ({ list: () => 'list', states: () => 'states', detail: () => 'detail', command: () => 'command' }),
+        require: () => ({ list: () => 'list', states: () => 'states', detail: () => 'detail', command: () => 'command', enrich: () => { enriched++; } }),
     }, { filename: new URL('../../apps/pocketbase/pb_hooks/tutorial-learning.pb.js', import.meta.url).href });
     assert.equal(routes.length, 4);
     assert.ok(routes.findIndex((row) => row[1] === '/api/buildanddo/learning/states') <
         routes.findIndex((row) => row[1] === '/api/buildanddo/learning/{id}'));
+    assert.equal(enrichers.length, 1);
+    assert.deepEqual(enrichers[0].slice(1), ['tutorials']);
+    assert.equal(enrichers[0][0]({ next: () => 'next' }), 'next');
+    assert.equal(enriched, 1);
     for (const [verb, path, handler, middleware, limit] of routes) {
         assert.equal(middleware, auth); assert.match(path, /^\/api\/buildanddo\/learning/);
         const headers = {};

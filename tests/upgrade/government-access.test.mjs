@@ -1,10 +1,10 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        tests/upgrade/government-access.test.mjs
 // Stage:       08_TEST
-// SRS:         SRS-BUILDANDDO-UPGRADE-001
+// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-TRUST-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-TRUST-001
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-22
@@ -90,9 +90,11 @@ test('government catalogue requires membership and native workspace membership b
     const desk = f.load('government-desk.js');
     assert.throws(() => desk.read(f.event('owner')), { status: 403 }); assert.equal(reads, 0);
     assert.throws(() => desk.read(f.event('otherowner')), { status: 403 }); assert.equal(reads, 0);
-    const row = f.seed('tutorials', { id: 'govlesson', title: 'Restricted lesson', category: 'Government submissions', lesson: { schema_version: 1 } });
+    const row = f.seed('tutorials', { id: 'govlesson', title: 'Restricted lesson', category: 'Government submissions',
+        lesson: { schema_version: 1, check: { question: 'Which?', choices: ['A', 'B'], answer: 1, explanation: 'B, because.' } } });
     const result = plain(desk.read(f.event('editor')));
     assert.equal(result.account_id, 'editor'); assert.equal(result.lessons[0].id, row.id);
+    assert.deepEqual(result.lessons[0].lesson.check, { question: 'Which?', choices: ['A', 'B'] }, 'members read lessons without the graded answer');
     assert.equal(result.plan.lanes.length, 3);
     f.data.government_memberships.find((r) => r.user === 'editor').status = 'revoked';
     assert.throws(() => desk.read(f.event('editor')), { status: 403 });

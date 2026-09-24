@@ -1,7 +1,7 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/src/pages/workspace/DailyEditionPage.jsx
 // Stage:       07_BUILD
-// SRS:         SRS-BUILDANDDO-WORKSPACE-001, SRS-BUILDANDDO-UPGRADE-001
+// SRS:         SRS-BUILDANDDO-WORKSPACE-001, SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-TRUST-001
 // CAPS:        pending
 // CK:          pending
 // Dispatch:    VCC-BUILDANDDO-UPGRADE-001
@@ -103,8 +103,8 @@ function DailyEditionDesk() {
     const access = useWorkspaceAccess();
     const canWrite = !demo && !access.loading && !access.error && access.data?.can_write === true;
     const canCreate = canWrite && !loading && !degraded;
+    // Publishing needs an owner or admin; the server enforces it, this hides the controls.
     const canPublish = canCreate && access.data?.can_admin === true;
-
     const missions = useWorkspaceRecords('missions', { sort: '-created' });
     const signals = useWorkspaceRecords('signals', { sort: '-created' });
 
@@ -368,7 +368,7 @@ function DailyEditionDesk() {
                                         source={edition.published_by ? `Published by account ${edition.published_by}` : 'Authored workspace record'}
                                         timestamp={fmtDate(edition.published_at || edition.edition_date || edition.created)}
                                     />
-                                    {edition.status === 'draft' && (
+                                    {canPublish && edition.status === 'draft' && (
                                         <Button
                                             variant="secondary"
                                             size="sm"

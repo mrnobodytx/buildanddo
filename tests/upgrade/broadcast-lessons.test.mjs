@@ -1,10 +1,10 @@
 // --- CGRF Header ------------------------------------------------
 // File:        tests/upgrade/broadcast-lessons.test.mjs
 // Stage:       08_TEST
-// SRS:         SRS-BUILDANDDO-UPGRADE-001
+// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-TRUST-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-TRUST-001
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-23
@@ -21,12 +21,35 @@ import { execFileSync } from 'node:child_process';
 import test from 'node:test';
 import { fixture, plain, repoPath, source } from './admin-fixture.mjs';
 import { lessonLink, mergeTutorials, validLesson } from '../../apps/web/src/lib/tutorialCurriculum.js';
+import publicLessonsPlugin from '../../apps/web/plugins/vite-plugin-public-lessons.js';
 
 const DATA = 'apps/pocketbase/pb_migrations/data/broadcast-classroom-lessons.json';
 const MIGRATION = 'apps/pocketbase/pb_migrations/1791400001_broadcast_classroom_lessons.js';
 const bundle = JSON.parse(source(DATA));
 const seed = bundle.lessons[0];
 const starter = JSON.parse(source('apps/pocketbase/pb_migrations/data/starter-tutorials.json'));
+
+test('both source-case catalogue imports strip grading fields without losing their human-readable evidence limits', () => {
+    const catalog = 'apps/web/src/components/workspace/TutorialCatalog.jsx';
+    const plugin = publicLessonsPlugin();
+    for (const name of ['broadcast-classroom-lessons.json', 'authority-repairs-lessons.json']) {
+        const specifier = `../../../../pocketbase/pb_migrations/data/${name}?public-lessons`;
+        assert.ok(source(catalog).includes(`from '${specifier}'`));
+        const authored = JSON.parse(source(`apps/pocketbase/pb_migrations/data/${name}`));
+        const id = plugin.resolveId(specifier, repoPath(catalog));
+        const code = plugin.load.call({ addWatchFile() {} }, id);
+        const shipped = JSON.parse(code.slice('export default '.length).trim().replace(/;$/, ''));
+        assert.equal(shipped.lessons.length, authored.lessons.length);
+        assert.deepEqual(shipped.source_evidence, authored.source_evidence, 'historical captures stay unchanged');
+        for (const [index, record] of shipped.lessons.entries()) {
+            assert.equal(validLesson(record.lesson), true);
+            assert.deepEqual(Object.keys(record.lesson.check).sort(), ['choices', 'question']);
+            assert.deepEqual(record.lesson.sections, authored.lessons[index].lesson.sections);
+            assert.ok(record.lesson.sections.some((section) => section.paragraphs?.includes(authored.source_evidence.boundary)));
+            assert.equal(JSON.stringify(record).includes(authored.lessons[index].lesson.check.explanation), false);
+        }
+    }
+});
 
 function installed(data = bundle) {
     const f = fixture({ runtime: {
@@ -40,6 +63,7 @@ function installed(data = bundle) {
     } });
     f.migration('apps/pocketbase/pb_migrations/1789700000_expand_business_learning.js').up();
     f.migration('apps/pocketbase/pb_migrations/1790600000_tutorial_learning.js').up();
+    f.migration('apps/pocketbase/pb_migrations/1791500100_tutorial_answer_wait.js').up();
     f.app.countRecords = (name, filter, params) => f.app.findRecordsByFilter(name, filter, '', 0, 0, params).length;
     return f;
 }

@@ -17,6 +17,7 @@
 """selftest.py - proves the claim/evidence/audit vertical slice against the REAL
 live PocketBase, not a mock. Creates real records, asserts real state transitions."""
 from __future__ import annotations
+import secrets
 import sys
 from pathlib import Path
 
@@ -33,7 +34,8 @@ def _ensure_user(email: str) -> str:
     existing = client.list("users", filter_expr=f'email="{email}"')
     if existing:
         return existing[0]["id"]
-    rec = client.create("users", {"email": email, "password": "Sel3fT3stPassw0rd!", "passwordConfirm": "Sel3fT3stPassw0rd!",
+    password = secrets.token_urlsafe(24)  # throwaway user; never reused or printed
+    rec = client.create("users", {"email": email, "password": password, "passwordConfirm": password,
                                     "name": email.split("@")[0], "emailVisibility": False, "verified": True})
     return rec["id"]
 

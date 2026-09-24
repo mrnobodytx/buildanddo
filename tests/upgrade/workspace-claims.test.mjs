@@ -297,14 +297,17 @@ test('normalized approval retries require current admin authority and implicit r
     denied(() => f.claim('content.save', { review_note: 'Checked again' }, { id: draft.id, revision: 3, key: 'implicit_approval_retry_001' }));
 });
 
-test('seat reports retain claimed labels separately from native owner, validate scope, and are append-only', () => {
+test('seat reports bind the human account, reject claimed identities, validate scope, and are append-only', () => {
     const f = claimsFixture();
     f.seed('users', { id: 'editor', seat: 'Different server profile label' });
-    const values = { event: 'completed', seat: 'Claimed agent', actor_type: 'agent', summary: 'Self-reported completion', detail: { verified: true } };
+    const values = { event: 'completed', summary: 'Self-reported completion', detail: { verified: true } };
     for (const actor of [null, 'viewer', 'outsider']) denied(() => f.claim('seat.report', values, { actor }));
     denied(() => f.claim('seat.report', { ...values, owner: 'admin' }), 400);
+    for (const identity of [{ seat: 'Claimed agent' }, { seat: 'admin' }, { actor_type: 'agent' }, { actor_type: 'mixed' }])
+        denied(() => f.claim('seat.report', { ...values, ...identity }), 400);
     const result = f.claim('seat.report', values, { key: 'seat_retry_synthetic_001' });
-    assert.equal(result.record.owner, 'editor'); assert.equal(result.record.seat, 'Claimed agent'); assert.equal(result.record.actor_type, 'agent');
+    assert.equal(result.record.owner, 'editor'); assert.equal(result.record.seat, 'editor'); assert.equal(result.record.actor_type, 'human');
+    assert.deepEqual(result.record.detail, values.detail);
     assert.equal(f.claim('seat.report', values, { key: 'seat_retry_synthetic_001' }).id, result.id);
     denied(() => f.claim('seat.report', values, { id: result.id, revision: 1 }), 400);
     f.seed('missions', { id: 'foreignmission', workspace: 'ws2', owner: 'otherowner', title: 'Foreign' });
@@ -317,7 +320,7 @@ test('bounded commands reject nested or oversized payloads and roll back on miss
     const f = claimsFixture(), values = drafts['edition.save'][1];
     denied(() => f.claim('edition.save', { ...values, body: 'x'.repeat(10001) }), 400);
     denied(() => f.claim('edition.save', { ...values, body: '\u6f22'.repeat(10000) }), 400);
-    denied(() => f.claim('seat.report', { event: 'progress', seat: 'Reported', actor_type: 'agent', summary: 'Synthetic', detail: { a: { b: { c: { d: { e: { f: {} } } } } } } }), 400);
+    denied(() => f.claim('seat.report', { event: 'progress', summary: 'Synthetic', detail: { a: { b: { c: { d: { e: { f: {} } } } } } } }), 400);
     const before = plain(f.data); f.config.failAudit = true;
     assert.throws(() => f.claim('edition.save', values), /audit storage unavailable/);
     assert.deepEqual(f.data, before);
@@ -431,7 +434,7 @@ for (const [collection, actor, values, action] of [
     ['corrections', 'editor', { ...drafts['correction.save'][1], status: 'pending' }, 'correction.save'],
     ['specialist_desks', 'editor', drafts['desk.save'][1], 'desk.save'],
     ['social_content', 'editor', drafts['content.save'][1], 'content.save'],
-    ['seat_events', 'editor', { event: 'completed', summary: 'Reported only', actor_type: 'agent', seat: 'Claimed seat' }, 'seat.report'],
+    ['seat_events', 'editor', { event: 'completed', summary: 'Reported only', actor_type: 'human', seat: 'editor' }, 'seat.report'],
 ]) test(`${collection} compatibility wrapper reaches its explicit native command`, async () => {
     const f = clientFixture(collection, actor);
     const result = await f.api.write('create', '', values);
@@ -459,8 +462,7 @@ function publisherFixture() {
     f.client.authStore.onChange = (listener) => { authListeners.add(listener); return () => authListeners.delete(listener); };
     const table = f.client.collection;
     f.client.collection = (name) => ({ ...table(name), getList: async () => ({ items: plain(f.f.data[name]) }) });
-    const code = source('apps/web/src/lib/seatComms.js').replace(/^import .+;$/gm, '').replace(/\bexport /g, '')
-        .replace('import.meta.env.VITE_BUILDANDDO_SEAT', "'configured-reported-seat'");
+    const code = source('apps/web/src/lib/seatComms.js').replace(/^import .+;$/gm, '').replace(/\bexport /g, '');
     vm.runInNewContext(`${code}\nmodule.exports = { publishSeatEvent, recentSeatEvents };`, {
         module, pb: f.client, createWorkspaceClaimClient, reportAction: (...args) => actions.push(args), console: { error() {} },
     }, { filename: repoPath('apps/web/src/lib/seatComms.js') });
@@ -468,19 +470,20 @@ function publisherFixture() {
         authenticate(record) { f.client.authStore.record = record; authListeners.forEach((listener) => listener()); } };
 }
 
-test('the existing seat publisher retries one native report and exposes its account separately from claimed labels', async () => {
+test('the existing seat publisher retries one native human report without adopting a caller agent label', async () => {
     const f = publisherFixture();
     const input = { event: 'completed', workspaceId: 'ws1', summary: 'A self-reported event', actorType: 'agent', detail: { verified: true } };
     f.lose(); assert.equal(await f.publish(input), null);
     const report = await f.publish(input);
-    assert.equal(report.owner, 'editor'); assert.equal(report.seat, 'configured-reported-seat');
+    assert.equal(report.owner, 'editor'); assert.equal(report.seat, 'editor'); assert.equal(report.actor_type, 'human');
     assert.equal(f.f.data.seat_events.length, 1); assert.deepEqual(f.calls[0], f.calls[1]);
     const events = await f.recent('ws1');
-    assert.equal(events[0].owner, 'editor'); assert.equal(events[0].actorType, 'agent'); assert.equal(events[0].attribution, 'reported');
+    assert.equal(events[0].owner, 'editor'); assert.equal(events[0].actorType, 'human'); assert.equal(events[0].attribution, 'reported');
     assert.equal(f.actions.length, 1);
+    assert.equal(f.actions[0][1].actor_type, 'human');
 });
 
-const seatInput = (event, workspaceId = 'ws1') => ({ event, workspaceId, summary: `Reported ${event}`, actorType: 'agent' });
+const seatInput = (event, workspaceId = 'ws1') => ({ event, workspaceId, summary: `Reported ${event}` });
 const tick = () => new Promise((resolve) => setImmediate(resolve));
 const deferred = () => { let resolve; const promise = new Promise((done) => { resolve = done; }); return { promise, resolve }; };
 

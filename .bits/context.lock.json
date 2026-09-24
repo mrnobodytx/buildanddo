@@ -451,6 +451,7 @@
       "path": "services/praxis_evidence/run_all_tests.py",
       "referenced_by": [
         "services/praxis_evidence/isolated_test.py",
+        "tests/praxis_evidence/test_target_guard.py",
         "tests/upgrade/test_praxis_isolation.py"
       ],
       "wired_into_ci": true
@@ -468,7 +469,7 @@
       "wired_into_ci": true
     }
   ],
-  "generated_at": "2026-09-24T01:12:26.908575+00:00",
+  "generated_at": "2026-09-24T02:58:58.110764+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -495,6 +496,13 @@
         "spec": "",
         "status": "delivered",
         "title": "Machine-facing governance bootstrap"
+      },
+      {
+        "code": "SRS-BUILDANDDO-BUDDI-001",
+        "risk": "A1",
+        "spec": ".bits/srs/SRS-BUILDANDDO-BUDDI-001.md",
+        "status": "in_progress",
+        "title": "Brand mark and the Buddi mascot with server-confirmed achievements"
       },
       {
         "code": "SRS-BUILDANDDO-CAPABILITY-TOKEN-001",
@@ -719,6 +727,13 @@
         "spec": ".bits/srs/SRS-BUILDANDDO-TEST-001.md",
         "status": "in_progress",
         "title": "Web test runner emitting JUnit, with workspace component suites"
+      },
+      {
+        "code": "SRS-BUILDANDDO-TRUST-001",
+        "risk": "A2",
+        "spec": ".bits/srs/SRS-BUILDANDDO-TRUST-001.md",
+        "status": "in_progress",
+        "title": "Trust hardening before the website-to-credential loop"
       },
       {
         "code": "SRS-BUILDANDDO-UPGRADE-001",
@@ -980,6 +995,7 @@
     ],
     "build_scripts": [
       "apps/web/tools/build.mjs",
+      "apps/web/tools/check-public-lessons.mjs",
       "apps/web/tools/generate-community.mjs",
       "apps/web/tools/generate-llms.js",
       "apps/web/tools/generate-seo.mjs",
@@ -990,13 +1006,13 @@
       "scripts/deploy/ship.py",
       "scripts/deploy/staging-readback.sh"
     ],
-    "migrations": 61,
-    "python_files": 413,
+    "migrations": 63,
+    "python_files": 415,
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 1569,
-    "web_source_files": 376
+    "tracked_files": 1595,
+    "web_source_files": 388
   },
   "schema_version": 1,
   "sprint_readiness": {
@@ -1069,22 +1085,22 @@
         "why": "Competition readiness requires an evidence-backed learning-through-work journey, a reproducible replay and actual submission criteria."
       }
     ],
-    "source_sha256": "23f34933c54e2e0dec1d977299d2801f4724d6c52b591adbc047a3d147aee613",
+    "source_sha256": "ed3cf12793be256aefc7588f5a6d4e18305221a3f38afccb78857dac8f10abb1",
     "state": "PASS"
   },
   "summary": {
     "findings": 24,
     "findings_high": 24,
     "pipelines": 10,
-    "srs_open": 33,
-    "srs_total": 37,
+    "srs_open": 35,
+    "srs_total": 39,
     "unwired_gates": 22
   },
   "tests": {
     "js_runners": [
       "vitest"
     ],
-    "js_test_files": 75,
+    "js_test_files": 78,
     "js_test_script": true,
     "junit_configured": true,
     "python_suite_entrypoints": [

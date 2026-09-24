@@ -148,6 +148,7 @@ class WorkspaceServer(DiagnosticNativeServer):
                 "evidence-policy.js",
                 "evidence.pb.js",
                 "business-policy.js",
+                "tutorial-learning.js",
                 "business.pb.js",
                 "workspace-access.js",
                 "government-access.js",
@@ -1169,15 +1170,17 @@ class NativeWorkspaceTests(unittest.TestCase):
         self.assertEqual(self.claim("channel.request", {"platform": "x"}, token=self.bravo)[0], 200)
 
     def test_seat_reports_stamp_native_account_and_cannot_be_rewritten(self) -> None:
-        values = {"event": "completed", "seat": "Claimed agent label", "actor_type": "agent", "summary": "Synthetic self-report", "detail": {"verified": True}}
+        values = {"event": "completed", "summary": "Synthetic self-report", "detail": {"verified": True}}
         for token in ("", self.viewer, self.other):
             self.assertIn(self.claim("seat.report", values, token=token)[0], (401, 403, 404))
         self.assertEqual(self.claim("seat.report", {**values, "owner": BRAVO})[0], 400)
+        for identity in ({"seat": "Claimed agent label"}, {"seat": BRAVO}, {"actor_type": "agent"}, {"actor_type": "mixed"}):
+            self.assertEqual(self.claim("seat.report", {**values, **identity})[0], 400)
         code, created = self.claim("seat.report", values, key="native_seat_report_retry_1")
         self.assertEqual(code, 200)
         self.assertEqual(created["record"]["owner"], ALICE)
-        self.assertEqual(created["record"]["seat"], values["seat"])
-        self.assertEqual(created["record"]["actor_type"], "agent")
+        self.assertEqual(created["record"]["seat"], ALICE)
+        self.assertEqual(created["record"]["actor_type"], "human")
         self.assertEqual(self.claim("seat.report", values, key="native_seat_report_retry_1")[1]["id"], created["id"])
         self.assertEqual(self.claim("seat.report", values, identity=created["id"], revision=1, token=self.bravo)[0], 400)
         self.assertIn(self.patch("seat_events", created["id"], {"summary": "Rewrite"}, self.bravo)[0], (403, 404))

@@ -20,6 +20,21 @@
 **Status:** in_progress **Risk:** A2 **Seat:** BITS-CODEGEN
 **Dispatch:** VCC-BUILDANDDO-UPGRADE-001 **Actor:** actor:agent
 
+## PR 103 main integration - 2026-09-24
+
+The owner requests command-line conflict resolution against main. Retain the
+existing claim-authority and isolation repairs together with main's merged Buddi,
+public-lesson, retry-wait and record-trust changes. This is source integration,
+not permission to publish, activate providers or deploy.
+
+Acceptance: preserve both native runtime profiles and all required gates; keep
+guided and public lesson responses keyless while retaining canonical completion
+and private grading snapshots; bind new browser seat reports to the authenticated
+human account without losing uncertain-request identity or visit fences. Retain
+legacy records and original source captures, pinned to their tested revisions.
+Exercise connected source regressions, regenerate reviewed bindings, and report
+missing rendered/native prerequisites without treating them as passing checks.
+
 ## Test isolation and claim authority - 2026-09-23
 
 Continue the owner's repair-and-learning request against the newly supplied

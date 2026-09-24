@@ -1,10 +1,10 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/src/components/workspace/__tests__/InteractiveTutorial.test.jsx
 // Stage:       08_TEST
-// SRS:         SRS-BUILDANDDO-UPGRADE-001
+// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-TRUST-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-TRUST-001
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-19
@@ -50,8 +50,10 @@ beforeEach(() => {
         if (!id && request.query?.page === transport.deniedGrowthPage)
             throw { status: 403, response: { message: 'Certificate page access denied.' } };
         const event = backend.event(pb.authStore.record.id, request.body || {}, { id, query: request.query || {} });
-        const result = plain(request.method === 'POST' ? backend.service.command(event) :
-            id === 'states' ? backend.service.states(event) : id ? backend.service.detail(event) : backend.service.list(event));
+        let result;
+        try { result = plain(request.method === 'POST' ? backend.service.command(event) :
+            id === 'states' ? backend.service.states(event) : id ? backend.service.detail(event) : backend.service.list(event)); }
+        catch (error) { throw error.status ? { status: error.status, response: { message: error.message } } : error; }
         if (transport.loseNext && request.method === 'POST') { transport.loseNext = false; throw new Error('Response lost'); }
         if (transport.wait && request.method === 'POST') await transport.wait;
         if (!id && transport.growthWait) await transport.growthWait;
@@ -104,12 +106,18 @@ it('requires practice and the right answer, then displays a persistent certifica
     await throughPractice(user, reader);
     expect(reader.queryByText(lesson.lesson.check.explanation)).not.toBeInTheDocument();
     expect(reader.getByRole('button', { name: 'Check answer and finish' })).toBeDisabled();
-    await user.click(reader.getByRole('radio', { name: lesson.lesson.check.choices[0] }));
+    const wrong = lesson.lesson.check.choices.findIndex((_choice, index) => index !== lesson.lesson.check.answer);
+    await user.click(reader.getByRole('radio', { name: lesson.lesson.check.choices[wrong] }));
     await user.click(reader.getByRole('button', { name: 'Check answer and finish' }));
     expect(await reader.findByText('Not quite. Read the feedback and try again.')).toBeVisible();
-    expect(reader.getByText(lesson.lesson.check.explanation)).toBeVisible();
+    expect(reader.getByText('You can answer again in 30 seconds.')).toBeVisible();
+    expect(reader.queryByText(lesson.lesson.check.explanation)).not.toBeInTheDocument();
     expect(backend.list('user_test').points).toBe(0);
     await user.click(reader.getByRole('radio', { name: lesson.lesson.check.choices[lesson.lesson.check.answer] }));
+    await user.click(reader.getByRole('button', { name: 'Check answer and finish' }));
+    expect(await reader.findByRole('alert')).toHaveTextContent(/try the knowledge check again in \d+ seconds/);
+    expect(reader.queryByRole('button', { name: 'Reload saved tutorial' })).not.toBeInTheDocument();
+    backend.expire();
     await user.click(reader.getByRole('button', { name: 'Check answer and finish' }));
     expect(await reader.findByRole('heading', { name: 'Certificate of completion' })).toBeVisible();
     expect(reader.getByText('Test Owner')).toBeVisible();
@@ -182,6 +190,28 @@ it('clears private guided content when a pending checkpoint is denied after less
     expect(reader.queryByRole('button', { name: 'Save checkpoint and continue' })).not.toBeInTheDocument();
     expect(reader.queryByText(lesson.lesson.sections[0].paragraphs[0])).not.toBeInTheDocument();
     expect(backend.data.tutorial_learning[0].next_section).toBe(0);
+});
+
+it('keeps the knowledge check usable during a server wait but clears it immediately on a subsequent access denial', async () => {
+    const user = setupUser(); renderWithProviders(<TutorialCatalog />);
+    const { reader } = await openTutorial(user);
+    await throughPractice(user, reader);
+    const check = lesson.lesson.check;
+    await user.click(reader.getByRole('radio', { name: check.choices[(check.answer + 1) % check.choices.length] }));
+    await user.click(reader.getByRole('button', { name: 'Check answer and finish' }));
+    await reader.findByText('You can answer again in 30 seconds.');
+    await user.click(reader.getByRole('radio', { name: check.choices[check.answer] }));
+    await user.click(reader.getByRole('button', { name: 'Check answer and finish' }));
+    expect(await reader.findByRole('alert')).toHaveTextContent(/try the knowledge check again/);
+    expect(reader.getByRole('button', { name: 'Check answer and finish' })).toBeEnabled();
+    expect(reader.queryByText(check.explanation)).not.toBeInTheDocument();
+    backend.denied.add(lesson.id);
+    await user.click(reader.getByRole('button', { name: 'Check answer and finish' }));
+    expect(await reader.findByRole('button', { name: 'Reload saved tutorial' })).toBeVisible();
+    expect(reader.queryByRole('heading', { name: lesson.title })).not.toBeInTheDocument();
+    expect(reader.queryByRole('radio')).not.toBeInTheDocument();
+    expect(reader.queryByText(check.question)).not.toBeInTheDocument();
+    expect(backend.data.tutorial_learning[0].completed_at).toBeUndefined();
 });
 
 it('does not read or write personal learning in preview or demo mode', async () => {

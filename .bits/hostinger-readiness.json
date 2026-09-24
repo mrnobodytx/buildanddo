@@ -155,7 +155,7 @@
         "Collection queries group extra predicates under the workspace filter. Foreign targets and stale account/workspace read or write results cannot appear current.",
         "Government membership records deny ordinary raw CRUD; down/up migrations preserve receipts and keep restricted lessons fenced.",
         "Media sessions bind native account, workspace, live room and attendance revision. Signalling/presence reject stale, revoked, foreign, unbound or closed sessions and unknown tracks; publishing additionally requires room management plus the configured allowlist. Both native profiles load media, attendance, usage and learning migrations rather than the old classroom subset.",
-        "Raw writes to legacy tutorial progress and the seven claim/editorial collections stay locked even without request hooks. Current native commands own guided completion, author/admin draft changes, publication stamps and submitting-account attribution; retained legacy data acquires no fabricated provenance."
+        "Raw writes to legacy tutorial progress and the seven claim/editorial collections stay locked even without request hooks. Current native commands own guided completion, author/admin draft changes, publication stamps and submitting-account attribution. New browser seat reports bind seat to the authenticated account and actor_type to human; retained legacy data acquires no fabricated provenance."
       ],
       "next_step": "Execute both expanded native runtime profiles, including media-session and lesson installation, typed track responses, ownership/revocation and rollback. Have the release owner install matching backend migrations/hooks before the frontend and measure actual provider delivery and stream revocation on staging."
     },

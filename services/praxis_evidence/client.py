@@ -30,6 +30,9 @@ import urllib.parse
 import urllib.request
 from typing import Any
 
+# Screening known production names is additional to mandatory test isolation.
+PRODUCTION_HOSTS = frozenset({"buildanddo.com", "www.buildanddo.com", "45.82.75.40"})
+
 
 class PocketBaseError(RuntimeError):
     pass
@@ -42,6 +45,40 @@ class NoRedirect(urllib.request.HTTPRedirectHandler):
         raise PocketBaseError("PocketBase redirects are not allowed")
 
 
+class UnsafeTargetError(PocketBaseError):
+    """The configured PocketBase target is missing, malformed or production."""
+
+
+def require_target(url: str | None = None) -> str:
+    """Validate explicit configuration or the current OS environment, never deployment files."""
+    target = url if url is not None else os.environ.get("PB_API_URL", "")
+    if not target:
+        raise UnsafeTargetError("PB_API_URL is not set; refusing to guess a PocketBase target.")
+    try:
+        parts = urllib.parse.urlsplit(target)
+        if parts.scheme not in ("http", "https") or not parts.hostname or parts.username is not None \
+                or parts.password is not None or parts.query or parts.fragment or parts.port == 0 \
+                or any(char.isspace() for char in target) or "\\" in target:
+            raise ValueError("Invalid target")
+    except ValueError:
+        raise UnsafeTargetError("PB_API_URL must explicitly name a credential-free backend URL") from None
+    return target.rstrip("/")
+
+
+def require_test_target(url: str | None = None) -> str:
+    """Reject known production targets; passing this check does not authorize a selftest.
+
+    Selftests still require isolated_client's current runner-owned fixture proof.
+    """
+    url = require_target(url)
+    host = (urllib.parse.urlsplit(url).hostname or "").rstrip(".").lower()
+    if host in PRODUCTION_HOSTS:
+        raise UnsafeTargetError(
+            "PB_API_URL points at production; the evidence suites create users and records "
+            "and only run against a runner-owned disposable PocketBase.")
+    return url
+
+
 class PocketBaseClient:
     """Authenticates once per process as the PocketBase superuser. This is an
     internal service credential (never exposed to end users/browsers) - the
@@ -50,12 +87,7 @@ class PocketBaseClient:
 
     def __init__(self, base_url: str | None = None, *, email: str | None = None,
                  password: str | None = None, opener: urllib.request.OpenerDirector | None = None) -> None:
-        target = base_url if base_url is not None else os.environ.get("PB_API_URL", "")
-        parts = urllib.parse.urlsplit(target)
-        if not target or parts.scheme not in ("http", "https") or not parts.hostname or parts.username is not None \
-                or parts.password is not None or parts.query or parts.fragment or any(char.isspace() for char in target) or "\\" in target:
-            raise PocketBaseError("PB_API_URL must explicitly name a credential-free backend URL")
-        self.base_url = target.rstrip("/")
+        self.base_url = require_target(base_url)
         self._email = email if email is not None else os.environ.get("PB_SUPERUSER_EMAIL")
         self._password = password if password is not None else os.environ.get("PB_SUPERUSER_PASSWORD")
         self._opener = opener or urllib.request.build_opener(NoRedirect())

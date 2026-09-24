@@ -17,6 +17,7 @@
 """selftest_knowledge_health.py - proves the scorecard reflects REAL per-
 dimension differences, never one averaged number, against live data."""
 from __future__ import annotations
+import secrets
 import sys
 from pathlib import Path
 
@@ -35,7 +36,8 @@ def _user(email: str) -> str:
     existing = client.list("users", filter_expr=f'email="{email}"')
     if existing:
         return existing[0]["id"]
-    return client.create("users", {"email": email, "password": "KhTest123!", "passwordConfirm": "KhTest123!"})["id"]
+    password = secrets.token_urlsafe(24)  # throwaway user; never reused or printed
+    return client.create("users", {"email": email, "password": password, "passwordConfirm": password})["id"]
 
 
 auditor = _user("selftest-kh-auditor@buildanddo.internal")
