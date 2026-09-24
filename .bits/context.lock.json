@@ -137,7 +137,7 @@
     },
     {
       "area": "ci",
-      "evidence": "referenced by: tests/upgrade/test_ocn_seat_session.py",
+      "evidence": "referenced by: nothing in this repo",
       "severity": "high",
       "srs": "",
       "statement": "scripts/ci/ocn_observation_record.py is not configured in reachable GitLab jobs"
@@ -155,13 +155,6 @@
       "severity": "high",
       "srs": "",
       "statement": "scripts/ci/ocn_rbac_probe.py is not configured in reachable GitLab jobs"
-    },
-    {
-      "area": "ci",
-      "evidence": "referenced by: tests/upgrade/test_public_redaction.py",
-      "severity": "high",
-      "srs": "",
-      "statement": "scripts/ci/public_redaction.py is never executed by GitHub Actions"
     },
     {
       "area": "ci",
@@ -232,20 +225,6 @@
       "severity": "high",
       "srs": "",
       "statement": "scripts/ci/verify_public_disclosure.py is not configured in reachable GitLab jobs"
-    },
-    {
-      "area": "governance",
-      "evidence": ".bits/srs/SRS-BUILDANDDO-BUDDI-001.md is unregistered, so no branch may claim it",
-      "severity": "high",
-      "srs": "",
-      "statement": "SRS-BUILDANDDO-BUDDI-001 has a spec but is not in the registry"
-    },
-    {
-      "area": "governance",
-      "evidence": ".bits/srs/SRS-BUILDANDDO-BUDDI-001.md is unregistered, so no branch may claim it",
-      "severity": "high",
-      "srs": "",
-      "statement": "SRS-BUILDANDDO-BUDDI-001 has a spec but is not in the registry"
     },
     {
       "area": "governance",
@@ -662,7 +641,7 @@
       "wired_into_ci": true
     }
   ],
-  "generated_at": "2026-09-24T00:23:31.337956+00:00",
+  "generated_at": "2026-09-24T03:01:59.783080+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -696,6 +675,13 @@
         "spec": ".bits/srs/SRS-BUILDANDDO-BUDDI-001.md",
         "status": "in_progress",
         "title": "Brand mark and the Buddi mascot with server-confirmed achievements"
+      },
+      {
+        "code": "SRS-BUILDANDDO-BUDDI-003",
+        "risk": "A2",
+        "spec": ".bits/srs/SRS-BUILDANDDO-BUDDI-003.md",
+        "status": "in_progress",
+        "title": "Talk to Buddi on the home page - an in-page voice session with the official ElevenLabs SDK"
       },
       {
         "code": "SRS-BUILDANDDO-CAPABILITY-TOKEN-001",
@@ -745,6 +731,13 @@
         "spec": ".bits/srs/SRS-BUILDANDDO-DECISION-001.md",
         "status": "in_progress",
         "title": "BuildAndDo Decision Runtime Phase 1 typed decision primitive"
+      },
+      {
+        "code": "SRS-BUILDANDDO-DEPLOY-SWAP-001",
+        "risk": "A2",
+        "spec": ".bits/srs/SRS-BUILDANDDO-DEPLOY-SWAP-001.md",
+        "status": "in_progress",
+        "title": "A deploy copies the build beside the live site and swaps it in, so the live site is never emptied first"
       },
       {
         "code": "SRS-BUILDANDDO-DEVELOPMENT-LOOP-001",
@@ -824,6 +817,13 @@
         "title": "Semantic ISR research"
       },
       {
+        "code": "SRS-BUILDANDDO-HEADERS-001",
+        "risk": "A1",
+        "spec": ".bits/srs/SRS-BUILDANDDO-HEADERS-001.md",
+        "status": "in_progress",
+        "title": "Every location in the staging web container sends the server's security headers, built assets included"
+      },
+      {
         "code": "SRS-BUILDANDDO-INTEGRITY-001",
         "risk": "A1",
         "spec": ".bits/srs/SRS-BUILDANDDO-INTEGRITY-001.md",
@@ -866,11 +866,25 @@
         "title": "MetaFunction Fabric platform page - VFX, architecture visuals, and capability dashboard"
       },
       {
+        "code": "SRS-BUILDANDDO-PRESENCE-001",
+        "risk": "A1",
+        "spec": ".bits/srs/SRS-BUILDANDDO-PRESENCE-001.md",
+        "status": "in_progress",
+        "title": "Classroom presence states one verification contract in its route, its shared library and its test"
+      },
+      {
         "code": "SRS-BUILDANDDO-PUBLIC-REDACTION-001",
         "risk": "A2",
         "spec": ".bits/srs/SRS-BUILDANDDO-PUBLIC-REDACTION-001.md",
         "status": "in_progress",
         "title": "No fleet machine name or IP address in the generated JSON or the site bundle"
+      },
+      {
+        "code": "SRS-BUILDANDDO-PURPOSE-001",
+        "risk": "A1",
+        "spec": ".bits/srs/SRS-BUILDANDDO-PURPOSE-001.md",
+        "status": "in_progress",
+        "title": "Every public page says BuildAndDo is an educational, collaborative platform"
       },
       {
         "code": "SRS-BUILDANDDO-RELEASE-TAG-001",
@@ -1219,13 +1233,13 @@
       "scripts/deploy/ship.py",
       "scripts/deploy/staging-readback.sh"
     ],
-    "migrations": 58,
-    "python_files": 413,
+    "migrations": 69,
+    "python_files": 435,
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 1577,
-    "web_source_files": 385
+    "tracked_files": 1754,
+    "web_source_files": 413
   },
   "schema_version": 1,
   "sprint_readiness": {
@@ -1245,7 +1259,7 @@
       },
       {
         "id": "HS-03",
-        "next_step": "Execute both expanded native runtime profiles, including media-session and lesson installation, typed track responses, ownership/revocation and rollback. Have the release owner install matching backend migrations/hooks before the frontend and measure actual provider delivery and stream revocation on staging.",
+        "next_step": "Migration rollout is now validated on BOTH environments: preflighted against a disposable copy of live data, applied behind a database backup, and confirmed by an authenticated readback from a second box (production at 72 applied migrations, 79 collections, 33 lessons). Recovery is still unexercised - backups were taken but no restore has been performed, so rollback remains a claim rather than an observation. Exercise a restore onto a disposable profile and record it.",
         "owner": "BITS-CODEGEN / IDE1",
         "why": "Persisted work and tenant isolation make the application useful beyond a visual prototype."
       },
@@ -1304,22 +1318,22 @@
         "why": "Competition readiness requires an evidence-backed learning-through-work journey, a reproducible replay and actual submission criteria."
       }
     ],
-    "source_sha256": "6dc2468d21afe779672b3f8150f74b94f59864655a77bf6d5f67bcb74d973de5",
+    "source_sha256": "b82f2afa923ae3df7b65bb7b4a61e5c9f3ef66ef210c86e7b4a50825656e5fd8",
     "state": "PASS"
   },
   "summary": {
-    "findings": 36,
-    "findings_high": 36,
+    "findings": 35,
+    "findings_high": 35,
     "pipelines": 10,
-    "srs_open": 36,
-    "srs_total": 40,
-    "unwired_gates": 22
+    "srs_open": 42,
+    "srs_total": 46,
+    "unwired_gates": 32
   },
   "tests": {
     "js_runners": [
       "vitest"
     ],
-    "js_test_files": 77,
+    "js_test_files": 89,
     "js_test_script": true,
     "junit_configured": true,
     "python_suite_entrypoints": [
