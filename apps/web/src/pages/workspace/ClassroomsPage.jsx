@@ -18,6 +18,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { BookOpen, Users } from 'lucide-react';
+import Buddi from '@/components/brand/Buddi';
 import { Button, Card } from '@/components/site/ui';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { PageHeader } from '@/components/workspace/workspaceHelpers';
@@ -123,7 +124,10 @@ function ClassroomList({ control, onPage, status, onStatus }) {
         </div>
         {!data.can_host && <p className="text-sm text-muted-foreground">Your viewer seat can join and follow lessons. An editor or administrator can host a class.</p>}
         <Feedback control={control} />
-        {!data.items.length && <Card className="space-y-3 p-6"><h2 className="font-display text-xl font-semibold">No classes here yet</h2><p className="text-sm text-muted-foreground">{status === 'all' ? 'Schedule the first class, or ask an editor in your workspace to host one.' : 'There are no classes matching this filter on this page.'}</p><Link className="text-sm underline underline-offset-4" to="/app/tutorials">Read the Field Manual while you wait</Link></Card>}
+        {!data.items.length && <Card className="p-6"><div className="flex flex-col items-start gap-5 sm:flex-row sm:items-center">
+            <Buddi pose="build" size={116} ground decorative className="shrink-0" />
+            <div className="space-y-3"><h2 className="font-display text-xl font-semibold">No classes here yet</h2><p className="text-sm text-muted-foreground">{status === 'all' ? 'Schedule the first class, or ask an editor in your workspace to host one.' : 'There are no classes matching this filter on this page.'}</p><Link className="text-sm underline underline-offset-4" to="/app/tutorials">Read the Field Manual while you wait</Link></div>
+        </div></Card>}
         <ul className="grid gap-4 md:grid-cols-2">{data.items.map((room) => <li key={room.id} className="min-w-0"><Card className="flex h-full flex-col gap-3 p-5">
             <div className="flex flex-wrap justify-between gap-2"><span className="text-xs font-semibold uppercase tracking-wide text-primary">{statusLabel[room.status]}</span><span className="text-xs text-muted-foreground">Hosted by {room.host_name}</span></div>
             <h2 className="break-words font-display text-xl font-semibold">{room.title}</h2><p className="line-clamp-3 whitespace-pre-wrap break-words text-sm text-muted-foreground">{room.description}</p>

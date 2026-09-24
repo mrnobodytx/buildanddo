@@ -20,6 +20,7 @@
 
 import React, { Suspense, lazy, useCallback, useEffect, useState } from 'react';
 import { ExternalLink, Mic, RotateCcw } from 'lucide-react';
+import Buddi from '@/components/brand/Buddi';
 import { Button, Card, Rule, Section, SectionLabel } from '@/components/site/ui';
 import { describeMicrophoneError, microphonePolicy, voiceAgent } from '@/lib/voiceAgent';
 
@@ -100,12 +101,17 @@ export default function TalkToBuddi() {
     return (
         <Section id="talk-to-buddi" className="border-t border-foreground/80 py-12 sm:py-16">
             <SectionLabel icon={Mic}>Talk to Buddi</SectionLabel>
-            <h2 className="mt-2 font-display text-2xl font-bold tracking-tight sm:text-3xl">Ask Buddi, out loud.</h2>
-            <p className="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground">
-                Buddi is BuildAndDo's voice agent: an automated assistant, not a person. Ask about a lesson, a
-                challenge or how the platform works. What you say goes to ElevenLabs, our voice provider, and may be
-                recorded. Your browser asks before it uses the microphone.
-            </p>
+            <div className="mt-2 flex items-start gap-5">
+                <Buddi pose="hello" size={104} decorative className="hidden shrink-0 sm:block" />
+                <div>
+                    <h2 className="font-display text-2xl font-bold tracking-tight sm:text-3xl">Ask Buddi, out loud.</h2>
+                    <p className="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground">
+                        Buddi is BuildAndDo's voice agent: an automated assistant, not a person. Ask about a lesson, a
+                        challenge or how the platform works. What you say goes to ElevenLabs, our voice provider, and
+                        may be recorded. Your browser asks before it uses the microphone.
+                    </p>
+                </div>
+            </div>
             <Rule className="my-6" />
             <Card className="p-5">
                 {phase === 'idle' && (
