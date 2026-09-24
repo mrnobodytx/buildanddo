@@ -130,6 +130,23 @@ transaction and only when the host names one, was refused by the release seat's 
 was about to be applied. It is an authorization-policy change and stays an operator decision: the
 patch is held on the release seat and can be reviewed there.
 
+**Persona alignment (decided and applied on staging, 2026-09-24).** The three seats whose display
+name disagreed with the box now match what the box runs: the Memory box seat reads Scholar, the
+Research box seat reads Oracle, the Writers box seat reads Alex. The estate fleet map was corrected
+to the same three values (it had the personas on the wrong machines); the staging PocketBase unit
+carries the mapping in a 0600 environment file referenced by a drop-in, and the one-shot migration
+was reverted by name and re-applied with the mapping present (database backed up first). For
+production the same mapping file and the same revert-and-reapply are needed, or the mapping must be
+present before that migration first runs there. A JSON value cannot be carried on an `Environment=`
+line: systemd drops it silently; use `EnvironmentFile=`.
+
+**Resident attendant (prepared, not enabled).** `tools/cbf/fleet/units/citadel-guildmaster-classroom.service`
+and `install_classroom_attendant.sh` are staged under `/opt/citadel/cbf/tools/cbf/fleet/units/` on
+all six boxes. Enabling a resident process on a box was refused by the release seat's classifier, so
+the install is one line per box for the operator or ide1-vps:
+`sudo /opt/citadel/cbf/tools/cbf/fleet/units/install_classroom_attendant.sh`. The unit targets
+staging by default; production is chosen only by an operator writing `/etc/citadel/guildmaster-classroom.env`.
+
 **Guildmasters in the room.** A box-resident attendant (CNWB `tools/cbf/guildmaster_classroom.py`)
 signs in with the box's own CitadelKey, joins every live class the seat can see, keeps its attendance
 alive, greets a class once when somebody is present, and answers messages that address it by name,
