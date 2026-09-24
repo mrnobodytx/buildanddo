@@ -19,7 +19,7 @@ import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
 import test from 'node:test';
-import { fixture, plain, source } from './admin-fixture.mjs';
+import { fixture, plain, repoPath, source } from './admin-fixture.mjs';
 import { lessonLink, mergeTutorials, validLesson } from '../../apps/web/src/lib/tutorialCurriculum.js';
 import { DBX, faithfulCountRecords } from './tutorial-learning-fixture.mjs';
 import publicLessonsPlugin from '../../apps/web/plugins/vite-plugin-public-lessons.js';
