@@ -624,7 +624,9 @@
       ],
       "path": "services/praxis_evidence/run_all_tests.py",
       "referenced_by": [
-        "tests/praxis_evidence/test_target_guard.py"
+        "services/praxis_evidence/isolated_test.py",
+        "tests/praxis_evidence/test_target_guard.py",
+        "tests/upgrade/test_praxis_isolation.py"
       ],
       "wired_into_ci": true
     },
@@ -641,7 +643,7 @@
       "wired_into_ci": true
     }
   ],
-  "generated_at": "2026-09-24T03:07:11.040223+00:00",
+  "generated_at": "2026-09-24T09:17:12.318607+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -1247,13 +1249,13 @@
       "scripts/deploy/ship.py",
       "scripts/deploy/staging-readback.sh"
     ],
-    "migrations": 70,
-    "python_files": 435,
+    "migrations": 75,
+    "python_files": 437,
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 1757,
-    "web_source_files": 413
+    "tracked_files": 1783,
+    "web_source_files": 416
   },
   "schema_version": 1,
   "sprint_readiness": {
@@ -1261,7 +1263,7 @@
     "pieces": [
       {
         "id": "HS-01",
-        "next_step": "Run the local acceptance gate against the pinned backend build. GitHub Actions is not the gate here - the operator has confirmed this estate's CI is GitLab, and the stored GitHub credential returns 401, so its check state cannot be measured from this seat and should not be read as signal. On project 104, restore the GitLab instance's write path before reading any pipeline as a code verdict: measured 2026-09-21, its reads answered in 8-12s while a pipeline retry returned 500, a second timed out and pipeline creation returned 502. The CI owner must confirm public candidate delivery, trusted review metadata and same-revision GitLab statuses before updating required-check settings. Execute the complete governance/source matrices and all eighteen acceptance profiles with retained artifacts; Cloudflare needs its separate diagnostic.",
+        "next_step": "The CI owner must confirm public candidate delivery, trusted review metadata and same-revision GitLab statuses before updating required-check settings. Execute the complete governance/source matrices, isolated Praxis profiles and all eighteen acceptance profiles with retained artifacts; Cloudflare needs its separate diagnostic. Privately audit past shared test destinations without running mutating probes against them.",
         "owner": "BITS-CODEGEN / repository owner",
         "why": "A repeatable candidate and visible failed gates are prerequisites for every demo claim."
       },
@@ -1332,7 +1334,7 @@
         "why": "Competition readiness requires an evidence-backed learning-through-work journey, a reproducible replay and actual submission criteria."
       }
     ],
-    "source_sha256": "2253c5d3252e6ec3cc63164275113c654dadddba7829c5a621405678740d5c9b",
+    "source_sha256": "a3369a8b652d9f27271bf6565332d8024fba096d0254824f9f777d876011113c",
     "state": "PASS"
   },
   "summary": {
@@ -1347,7 +1349,7 @@
     "js_runners": [
       "vitest"
     ],
-    "js_test_files": 89,
+    "js_test_files": 90,
     "js_test_script": true,
     "junit_configured": true,
     "python_suite_entrypoints": [

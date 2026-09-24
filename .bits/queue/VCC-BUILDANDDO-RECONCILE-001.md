@@ -59,7 +59,7 @@ conflicts. Four later merges followed both lines as they moved:
   in the registry, which keeps both new entries, and in the locks. The migration arrives unchanged, and it
   changes no web file.
 
-**Suites on the final tree:**
+**Suites on #106's merged tree:**
 - **Node** (`node --test tests/upgrade/*.test.mjs`, PYTHONPATH unset): 782 of 782.
 - **Web lint:** clean.
 - **Web suite** (Vitest): 826 of 827. The one failure, a TutorialCatalog source-case test, also fails on main at
@@ -123,6 +123,58 @@ back and re-applied, and then the server does not start. It needs its own fix an
 - **Control.** Two routes that only the merged code serves answered 404 before the sync and 401 after it.
 - **Web.** Build, lint and the integrity gate passed. Staging's `/_version` reads back `ea97e3b`, and
   production's `/_version` was the same before and after.
+
+## Convergence after #105 (2026-09-24, R14)
+
+The staging line at `ea97e3b` (#106) and main at `4c60b79` (#105 and #103) differed in 52 files. Each file the
+merge touched was compared three ways: ours, #105's branch tip before it merged main back (`9481315`), and main.
+
+- **35 files** where main's copy was exactly #105's resolution: ours stays. Each difference was read, and each was
+  a choice, not a loss.
+- **8 files** where main gained work after #105: merged onto ours, with #105's copy as the base.
+- **9 files** combined by hand.
+- **89 files** git merged itself: 80 only received main's later work, and the rest keep #106's lines.
+
+**Kept by R14:** the chatroom guard, `SystemRoot` in the native harness, presence verified against the SFU, the
+new mark and wordmark, `norm()` in 13 migrations, the swap's owner/mode step, the address-free deploy host, the
+repointed handoff references.
+
+**Defects main already had, fixed here.** Each is its own commit, and each fails on a clean checkout of `4c60b79`:
+- `broadcast-lessons.test.mjs` called `repoPath()` without importing it (2 tests);
+- `learningFixture()` lost its `progressAuthority` option in #103's merge (50 tests);
+- the authority-repair lesson test ran the learning hook with no `$dbx` and a filter-string `countRecords`
+  (2 tests);
+- the answer-wait migration refused a boxed native field type, which main's own test models.
+
+**Evidence (R12).** The convergence changed a file in the broadcast run's scope, so the run was repeated on the
+converged sources: 127 of 127, Node 24.20.0. The record follows main's model and binds the committed revision
+`7301df8`.
+
+**Names and addresses (R13).**
+- main's staging-candidate handoff lost the machine name from its file name, and its references follow.
+- main's new praxis isolation test uses a documentation address where it named the production VM.
+- One branch name that contains a machine name stays verbatim in #105's branch-archive lists.
+
+**Suites on the converged tree:**
+- node: 881 of 881. A clean checkout of main fails 54 of 876.
+- Python source suite, 1,188 tests: every failure also fails on a parent. The one that did not fail on the staging
+  line is a symlink test that Windows refuses without privilege, and main fails it here too.
+- Native suites:
+  - learning 11 of 11, with main's 5 new tests;
+  - classroom 10 of 10;
+  - suite 8 of 8;
+  - workspace 11 of 14, the staging line's same 3 failures, with main's 6 new tests passing;
+  - dossier 0 of 4, as on the staging line.
+- Web: 857 of 858. The one failure, and main fails it too, is a product question. The daily edition test expects
+  a disabled Publish button for an editor, while the page hides publishing from anyone who is not an owner or
+  admin.
+- Web lint: clean. A planted syntax error fails it, so the pass is real.
+- Additional fixes, each its own commit and each failing on a clean checkout of main:
+  - the agent activity panel redacts seat logins and machine names again;
+  - the media rollback count reaches past main's new authority lesson;
+  - the claim rollback uses revert();
+  - two workspace page tests get a complete motion mock.
+- Evidence: the broadcast run is recorded on the final revision, `7301df8`: 127 of 127.
 
 ## Constraints
 
