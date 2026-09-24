@@ -21,16 +21,50 @@ import { Button, Card } from '@/components/site/ui';
 import { dateLabel } from '@/components/workspace/ControlPrimitives';
 import { useWorkspaceKnowledge } from '@/hooks/useWorkspaceKnowledge';
 
+/**
+ * Read the packet, or say why it cannot be read. Never throw.
+ *
+ * THIS COMPONENT IS FED BY TWO DIFFERENT PAYLOADS AND ONLY ONE CARRIES A CONTEXT.
+ * `workspace-knowledge.js` adds `context: assembleContext(...)` to what it returns; the
+ * assistant's `workspace-assistant.js` returns the same graph WITHOUT that key. Both reach
+ * `GraphBrowser`, which rendered this unconditionally, so `JSON.parse(undefined.text)` threw and
+ * the page boundary replaced the whole of Knowledge & context with an error card. It fired on a
+ * WORKING backend answering 200, which is why every route sweep called the page healthy.
+ *
+ * A missing context is a real state, not a fault: it means nothing was assembled. It renders as
+ * absence. A context whose text will not parse IS a fault, and says so rather than showing
+ * nothing, because a silent blank is the failure this page already had.
+ */
+function readPacket(context) {
+    if (!context || typeof context.text !== 'string') return { state: 'absent' };
+    try {
+        const parsed = JSON.parse(context.text);
+        if (!parsed || !Array.isArray(parsed.sources)) return { state: 'unreadable' };
+        return { state: 'ok', packet: parsed };
+    } catch {
+        return { state: 'unreadable' };
+    }
+}
+
 /** Display the exact cited packet offered for export. */
 export function KnowledgeContextResults({ context, onSelect }) {
-    const packet = JSON.parse(context.text);
+    const read = readPacket(context);
+    if (read.state === 'absent')
+        return <p role="status" className="text-sm text-muted-foreground">No context has been assembled for this view.</p>;
+    if (read.state === 'unreadable')
+        return <p role="alert" className="text-sm">The assembled context could not be read. Refresh to assemble it again; if it persists the packet is malformed and an operator should look at it.</p>;
+    const packet = read.packet;
     const download = () => {
         const url = URL.createObjectURL(new Blob([context.text], { type: 'application/json' }));
         const link = document.createElement('a'); link.href = url; link.download = 'buildanddo-context.json';
         document.body.appendChild(link); link.click(); link.remove(); setTimeout(() => URL.revokeObjectURL(url), 0);
     };
     return <div className="min-w-0 space-y-3">
-        <p className="text-sm text-muted-foreground">{packet.sources.length} cited sources · {context.characters.toLocaleString()} / {context.max_chars.toLocaleString()} character budget</p>
+        {/* A packet can parse and still omit its budget counters; a number that is not there is
+            reported as unknown rather than crashing the page it is one line of. */}
+        <p className="text-sm text-muted-foreground">{packet.sources.length} cited sources{Number.isFinite(context.characters) && Number.isFinite(context.max_chars)
+            ? ` · ${context.characters.toLocaleString()} / ${context.max_chars.toLocaleString()} character budget`
+            : ' · character budget unknown'}</p>
         {context.truncated && <p role="status" className="text-sm">Context is partial: {context.omitted_sources} matching sources omitted. Excerpts or source reads may also be limited.</p>}
         {!packet.sources.length && <p className="text-sm">{context.empty_reason === 'budget_too_small' ? 'Increase the context size to include a cited source.' : 'No readable sources match this request. Try another question or add research and evidence.'}</p>}
         <ol aria-label="Context citations" className="max-h-96 space-y-4 overflow-y-auto pr-1">

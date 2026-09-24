@@ -43,7 +43,7 @@ Commands with a topic accept the optional `query` argument.
 | `docs query:pricing` | Search public page descriptions and open a result. |
 | `learn query:missions` | Search lesson titles, summaries, categories and slugs; select a lesson. |
 | `lesson query:welcome-to-buildanddo` | Read the complete authored lesson using Previous and Next. |
-| `quiz query:welcome-to-buildanddo` | Answer one knowledge check and read its explanation. |
+| `quiz query:welcome-to-buildanddo` | Practice one knowledge check; the lesson marks it, not the bot. |
 | `workspace query:integrations` | Open a known workspace desk through the existing website login. |
 | `support` | Open Contact and see what to include in a reproducible bug report. |
 | `diagnostics` | Let a member with Manage Server permission inspect bot scope and local read counters. |
@@ -56,8 +56,10 @@ typing into a command field makes no HTTP request.
 
 Controls belong to the initiating person and expire after ten minutes. A quiz
 accepts one answer; retrying the same answer after a failed delivery returns the
-same explanation. A different answer requires a new quiz. Practice does not
-write tutorial progress, award authority, approve a mission or issue credentials.
+same reply. A different answer requires a new quiz. The bot does not mark the
+check and says so: the graded answer is not in the public feed it reads, and the
+lesson itself marks the check for a signed-in learner. Practice does not write
+tutorial progress, award authority, approve a mission or issue credentials.
 Saved progress remains in the signed-in website.
 
 With the research bridge configured, `/buildanddo missions`, `mission`,

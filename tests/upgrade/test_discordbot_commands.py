@@ -19,6 +19,7 @@
 from __future__ import annotations
 
 import copy
+from dataclasses import fields
 from datetime import datetime, timedelta, timezone
 import json
 from pathlib import Path
@@ -142,9 +143,14 @@ class CommandTests(unittest.IsolatedAsyncioTestCase):
                 quiz = await self.service.execute("quiz", lesson.slug, caller)
                 self.assertEqual(quiz.pages[0].body.split("\n\n")[0], lesson.question)
                 self.assertIsNotNone(quiz.quiz)
-                answered = PersonalSession(caller.user_id, quiz, now=0).answer(caller.user_id, lesson.quiz.answer, 1)
-                self.assertIn("Correct.", answered.body)
-                self.assertIn(lesson.quiz.explanation, answered.body)
+                # The public feed carries no graded answer, so the reply must record the
+                # submitted choice, refuse a verdict, and send the person to the lesson
+                # that does mark the check. "Answer: " was the old leaked answer text.
+                answered = PersonalSession(caller.user_id, quiz, now=0).answer(caller.user_id, 0, 1)
+                self.assertIn("You chose 1:\n\"" + lesson.quiz.choices[0] + "\"", answered.body)
+                self.assertIn("does not mark knowledge checks", answered.body)
+                self.assertNotIn("Answer: ", answered.body)
+                self.assertEqual(answered.url, SITE_ORIGIN + "/app/tutorials")
         self.assertEqual(self.reads, ["/community-catalog.json"])
 
     async def test_search_selection_and_autocomplete_reuse_the_loaded_catalogue(self) -> None:
@@ -242,6 +248,17 @@ class CatalogueTests(unittest.TestCase):
     def setUpClass(cls) -> None:
         cls.source = generated_catalogue()
 
+    def test_the_public_feed_never_carries_a_graded_answer_or_its_explanation(self) -> None:
+        """Fail here if the generator ever republishes what makes a check self-answering."""
+        for lesson in self.source["lessons"]:
+            with self.subTest(slug=lesson["slug"]):
+                # The exact key set, not merely the absence of two names: a newly authored
+                # graded field would otherwise reach this public file the same way answer
+                # and explanation did, and no test would say so.
+                self.assertEqual(sorted(lesson["lesson"]["check"]), ["choices", "question"])
+        for parsed in Catalogue.parse(self.source).lessons:
+            self.assertEqual([field.name for field in fields(parsed.quiz)], ["choices"])
+
     def test_public_feed_rejects_private_routes_bad_versions_and_duplicate_slugs(self) -> None:
         for mutate in [
             lambda data: data.update(site_origin="https://untrusted.invalid"),
@@ -251,8 +268,8 @@ class CatalogueTests(unittest.TestCase):
             lambda data: data["lessons"].append(data["lessons"][0]),
             lambda data: data["lessons"][0].update(effort_minutes=True),
             lambda data: data["lessons"][0].update(slug="../private"),
-            lambda data: data["lessons"][0]["lesson"]["check"].update(answer=True),
-            lambda data: data["lessons"][0]["lesson"]["check"].update(answer=99),
+            lambda data: data["lessons"][0]["lesson"]["check"].update(question="   "),
+            lambda data: data["lessons"][0]["lesson"]["check"].update(choices=["Choice"] * 7),
             lambda data: data["lessons"][0]["lesson"]["check"].update(choices=["Only one"]),
             lambda data: data["lessons"][0]["lesson"]["sections"][0].update(paragraphs=[]),
             lambda data: data["lessons"][0]["lesson"].update(schema_version=2),

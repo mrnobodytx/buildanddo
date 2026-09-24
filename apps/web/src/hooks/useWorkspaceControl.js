@@ -23,6 +23,13 @@ import pb from '@/lib/pocketbaseClient';
 import { observeMutation } from '@/lib/observability/mutations';
 import { createWorkspaceAccessLoader, createWorkspaceControlClient, workspaceLifecycleKey } from '@/lib/workspaceControl';
 
+// Sentences a surface shows beside a control it has switched off. They live
+// here, next to the state that produces them, so two pages cannot describe the
+// same access outcome differently.
+const ACCESS_CHECKING = 'Checking what you are allowed to do here.';
+const ACCESS_READ_ONLY = 'Your role in this workspace is read-only, so you cannot change records here.';
+const ACCESS_UNKNOWN = 'We could not confirm what you are allowed to do here, so these controls stay off.';
+
 /** Load a command-backed view for the current account and workspace.
  * @param {string} section Supported endpoint suffix.
  * @param {object} query Bounded pagination arguments.
@@ -78,9 +85,41 @@ export function useWorkspaceControl(section, query = {}) {
     }, [scope, key]);
     const current = snapshot.key === key;
     const writing = write.scope === scope ? write : { saving: false, error: '', uncertain: false, saved: null };
-    return { data: current ? snapshot.data : null, loading: !current || snapshot.loading, error: current ? snapshot.error : '',
+    const data = current ? snapshot.data : null;
+    const loading = !current || snapshot.loading;
+    const error = current ? snapshot.error : '';
+    // `data: null` answered two different questions - the read is still out,
+    // and the read came back with nothing - and a response discarded as out of
+    // scope carries no error text at all, so a caller saw "not loading, no
+    // data, no reason" and had nothing to put on screen. Name the settled
+    // no-answer case and always carry a reason for it. Additive: every other
+    // field keeps its previous meaning, including accessEpoch, which counts
+    // grant boundaries so lifecycle keys can fence work across them.
+    const unavailableReason = loading || data ? '' : error || 'The request did not return an answer.';
+    return { data, loading, error, unavailableReason,
         accessEpoch: current ? snapshot.accessEpoch || 0 : 0,
         demo, scope, refresh: load, saving: writing.saving, writeError: writing.error, uncertain: writing.uncertain, saved: writing.saved,
         mutate: (action, payload, revision) => perform(() => api.command(action, payload, revision)),
         retry: () => perform(() => api.retry()) };
+}
+
+/** Say in one sentence why an access-gated control is switched off.
+ *
+ * Three facts used to render as the same nothing: the check is still out, the
+ * check said no, and the check never answered. A greyed-out control with no
+ * text beside it reads as the second one every time, which is the failure this
+ * exists to prevent - so each state names itself, and none of them is guessed.
+ *
+ * @param {object} access Value from useWorkspaceControl('access') or its context.
+ * @returns {string} The sentence, or '' when the control is usable.
+ */
+export function describeAccess(access) {
+    if (access?.loading) return ACCESS_CHECKING;
+    // An error outranks data, as it does in workspaceLifecycleKey and in the
+    // pages' canWrite: a grant seen before a failed re-check is not a grant
+    // now, so it must not be described as one.
+    const data = access?.error ? null : access?.data;
+    if (data) return data.can_write ? '' : ACCESS_READ_ONLY;
+    const reason = access?.unavailableReason || access?.error || '';
+    return reason ? `${ACCESS_UNKNOWN} ${reason}` : ACCESS_UNKNOWN;
 }

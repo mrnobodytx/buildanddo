@@ -5,6 +5,7 @@ import { useWorkspace } from '@/contexts/WorkspaceContext';
 import { useWorkspaceAccess } from '@/contexts/WorkspaceAccessContext';
 import { useWorkspaceRecords } from '@/hooks/useWorkspaceRecords';
 import { useDemoMode } from '@/hooks/useDemoMode';
+import { describeAccess } from '@/hooks/useWorkspaceControl';
 import { DegradedNotice, DemoModeBanner, WriteErrorNotice } from '@/components/workspace/WorkspaceNotices';
 import EmptyState from '@/components/workspace/EmptyState';
 import { PageHeader } from '@/components/workspace/workspaceHelpers';
@@ -15,12 +16,20 @@ import { Textarea } from '@/components/ui/textarea';
 import { workspaceLifecycleKey } from '@/lib/workspaceControl';
 
 const EMPTY_FORM = { prior_prediction: '', observed_result: '', reference: '' };
+// Says what a failed read means for this page, and why the Record controls are
+// off meanwhile: canCreate requires a read that succeeded.
+const UNREAD = 'Corrections could not be loaded, so this page cannot say whether any exist, and recording stays off until they do.';
+
 function CorrectionsDesk() {
     const control = useWorkspaceRecords('corrections', { sort: '-created' });
     const { records, loading, refresh, saving } = control;
     const access = useWorkspaceAccess();
     const canWrite = access.data?.can_write === true && !access.loading && !access.error && !control.demo;
     const canCreate = canWrite && !control.degraded && !loading;
+    // Every Record control below greys out on the access result, and a greyed
+    // control with nothing beside it reads as "you are not allowed" even when
+    // the check is still out or never answered. describeAccess names which.
+    const accessNotice = describeAccess(access);
     const [show, setShow] = useState(false);
     const [form, setForm] = useState(EMPTY_FORM);
     const [error, setError] = useState('');
@@ -52,6 +61,7 @@ function CorrectionsDesk() {
                 }
             />
             {control.demo && <DemoModeBanner />}
+            {accessNotice && <p className="text-sm text-muted-foreground">{accessNotice}</p>}
             <WriteErrorNotice message={control.writeError} onDismiss={control.clearWriteError} />
             {control.uncertain && <Button size="sm" disabled={!canWrite || saving} onClick={async () => { const result = await control.retry(); if (result.ok) { setForm(EMPTY_FORM); setShow(false); } }}>Retry previous comparison</Button>}
 
@@ -81,7 +91,12 @@ function CorrectionsDesk() {
                 </Card>
             )}
 
-            {control.degraded ? <DegradedNotice onRetry={refresh} /> : loading ? (
+            {/* A read that FAILED and a workspace that is genuinely empty are different
+                facts. This branch comes first so a failure never falls through to the empty
+                state, whose copy asserts that nothing is recorded. The hook's own error text
+                is one generic sentence ("what you see may be incomplete") that is wrong here,
+                where nothing is shown at all, so the page says what the failure means for it. */}
+            {control.degraded ? <DegradedNotice message={UNREAD} onRetry={refresh} /> : loading ? (
                 <Card className="p-8 text-center text-sm text-muted-foreground"><Loader2 className="mx-auto h-5 w-5 animate-spin" /></Card>
             ) : records.length === 0 ? (
                 <EmptyState

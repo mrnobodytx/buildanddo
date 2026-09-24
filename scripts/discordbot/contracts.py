@@ -152,11 +152,12 @@ class Option:
 
 @dataclass(frozen=True)
 class Quiz:
-    """Hold one authored knowledge check without saved progress."""
+    """Hold one authored knowledge check as the public feed actually serves it."""
 
+    # No answer and no explanation field: the public catalogue withholds both, because it is
+    # served with no session and publishing them made every check self-answering. Keeping
+    # them as unset Optionals would only let reply code go on pretending it can mark one.
     choices: tuple[str, ...]
-    answer: int
-    explanation: str
 
 
 @dataclass(frozen=True)
@@ -246,7 +247,7 @@ class PersonalSession:
         return self.reply.pages[self.index]
 
     def answer(self, user: int, choice: int, now: float) -> Page:
-        """Explain one submitted answer without advancing a mission or lesson record."""
+        """Record one submitted choice without marking it or writing any progress."""
         self.check(user, now)
         quiz = self.reply.quiz
         if self.answered and choice == self._answer_choice and self._answer_page is not None:
@@ -254,12 +255,21 @@ class PersonalSession:
         if self.answered or quiz is None or not 0 <= choice < len(quiz.choices):
             raise InteractionDenied("This knowledge check cannot accept another answer.")
         self.answered = True
-        correct = choice == quiz.answer
+        # The public feed carries no graded answer, so this bot cannot mark the check. The
+        # old reply said "Correct." or "Review the explanation." and printed the answer
+        # text; every one of those claims needed data the bot no longer receives. The
+        # failure mode to avoid is a reply that reads like the bot marked the check and is
+        # being coy about the verdict, or that implies a result was stored somewhere, so
+        # this says what happened and where the marking really is. The number matches the
+        # numbering the question page printed for the same choices.
         body = (
-            ("Correct.\n\n" if correct else "Review the explanation.\n\n")
-            + "Answer: " + quiz.choices[quiz.answer] + "\n\n" + quiz.explanation
+            "You chose " + str(choice + 1) + ":\n\"" + quiz.choices[choice] + "\""
+            + "\n\nThis bot does not mark knowledge checks. It has not said whether that"
+            " choice is right, and it has stored nothing."
+            + "\n\nThis check is marked in the lesson itself. Open the lesson in the Field"
+            " Manual while signed in and answer it there, where the result counts."
             + "\n\nPractice only. Progress is saved through your signed-in BuildAndDo workspace."
         )
         self._answer_choice = choice
-        self._answer_page = Page("Knowledge check", body, SITE_ORIGIN + "/docs")
+        self._answer_page = Page("Knowledge check", body, SITE_ORIGIN + "/app/tutorials")
         return self._answer_page
