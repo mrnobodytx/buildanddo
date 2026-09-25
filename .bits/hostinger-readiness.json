@@ -83,13 +83,16 @@
         "apps/web/src/pages/workspace/OverviewPage.jsx",
         "apps/web/src/lib/authSession.js",
         "apps/pocketbase/pb_hooks/government-access.js",
-        "apps/web/src/components/workspace/GovernmentGate.jsx"
+        "apps/web/src/components/workspace/GovernmentGate.jsx",
+        "apps/pocketbase/pb_hooks/builder-mailer.pb.js",
+        "apps/pocketbase/pb_hooks/customerio-mail.js"
       ],
       "checks": [
         "source_node",
         "web_tests",
         "web_build",
-        "native_workspace"
+        "native_workspace",
+        "native_mail"
       ],
       "requires": [
         "HS-01"
@@ -105,7 +108,8 @@
         "Rollback of the objective migration disables new objective setup while retaining existing goals, workspace links and receipts. Failure to load a confirmed workspace can be retried without resubmitting setup.",
         "Persisted sessions require native refresh; delayed account responses cannot restore old identity. Named onboarding selects the exact returned readable workspace.",
         "Government content and tools require current operator-approved paid membership in addition to native account and workspace access; account changes and expiry cannot reuse a stale grant.",
-        "Controller-owned same-account authentication refresh preserves in-progress work; actual session replacement, logout/relogin and identity changes fence old responses and clear private drafts."
+        "Controller-owned same-account authentication refresh preserves in-progress work; actual session replacement, logout/relogin and identity changes fence old responses and clear private drafts.",
+        "Account mail leaves a real PocketBase through Customer.io with open/click tracking and body retention off; the delivered reset link changes the password, an unknown address sends nothing, and a refusal is logged without the address or key."
       ],
       "next_step": "Execute rendered objective-first onboarding and both native profiles, then demonstrate signup, an explicit intent/objective, the saved workspace's first lesson, setup recovery, password recovery and return navigation on the accepted candidate."
     },

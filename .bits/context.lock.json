@@ -677,7 +677,7 @@
       "wired_into_ci": true
     }
   ],
-  "generated_at": "2026-09-24T15:31:56.703328+00:00",
+  "generated_at": "2026-09-25T12:05:13.715463+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -893,6 +893,13 @@
         "spec": ".bits/srs/SRS-BUILDANDDO-LEARNING-NATIVE-001.md",
         "status": "in_progress",
         "title": "Native learning summary and migration replay on declared PocketBase"
+      },
+      {
+        "code": "SRS-BUILDANDDO-MAIL-001",
+        "risk": "A2",
+        "spec": ".bits/srs/SRS-BUILDANDDO-MAIL-001.md",
+        "status": "in_progress",
+        "title": "Account mail (password reset, verification) through Customer.io's transactional API"
       },
       {
         "code": "SRS-BUILDANDDO-OCN-TELEMETRY-001",
@@ -1289,17 +1296,18 @@
       "apps/web/tools/observability-smoke.mjs",
       "apps/web/vite.config.js",
       "scripts/deploy/apply_production_runtime_config.py",
+      "scripts/deploy/bundle_telemetry_check.py",
       "scripts/deploy/roadmap_status.py",
       "scripts/deploy/ship.py",
       "scripts/deploy/staging-readback.sh"
     ],
     "migrations": 75,
-    "python_files": 443,
+    "python_files": 446,
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 1805,
-    "web_source_files": 428
+    "tracked_files": 1815,
+    "web_source_files": 432
   },
   "schema_version": 1,
   "sprint_readiness": {
@@ -1378,22 +1386,22 @@
         "why": "Competition readiness requires an evidence-backed learning-through-work journey, a reproducible replay and actual submission criteria."
       }
     ],
-    "source_sha256": "e93b3c90f862ad61fa0f82319b6b6a0cae86ca7c06bb2996699332ed5531da40",
+    "source_sha256": "d60c4977e207d75e02d67f59670decc2085e900059afa1e075371687430194a4",
     "state": "PASS"
   },
   "summary": {
     "findings": 36,
     "findings_high": 36,
     "pipelines": 10,
-    "srs_open": 45,
-    "srs_total": 49,
+    "srs_open": 46,
+    "srs_total": 50,
     "unwired_gates": 33
   },
   "tests": {
     "js_runners": [
       "vitest"
     ],
-    "js_test_files": 102,
+    "js_test_files": 104,
     "js_test_script": true,
     "junit_configured": true,
     "python_suite_entrypoints": [
