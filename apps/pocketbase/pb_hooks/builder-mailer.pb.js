@@ -1,8 +1,22 @@
 
 /// <reference path="../pb_data/types.d.ts" />
+// Account mail goes out through the first of: PocketBase SMTP when it is enabled
+// in settings; Customer.io when BUILDER_MAILER_PROVIDER=customerio
+// (customerio-mail.js); otherwise the builder mailer API below.
 onMailerSend((e) => {
     if (e.app.settings().smtp.enabled) {
         return e.next()
+    }
+
+    if (($os.getenv("BUILDER_MAILER_PROVIDER") || "").trim().toLowerCase() === "customerio") {
+        const result = require(`${__hooks}/customerio-mail.js`).send(e.message, $http, (name) => $os.getenv(name))
+        if (!result.ok) {
+            e.app.logger().error("Customer.io did not accept an account email",
+                "reason", result.reason, "status", result.status, "detail", result.detail)
+            throw new ApiError(500, "Failed to send email")
+        }
+        e.app.logger().info("Account email handed to Customer.io", "delivery", result.delivery)
+        return
     }
 
     const senderAddress = $os.getenv("BUILDER_MAILER_SENDER_ADDRESS");

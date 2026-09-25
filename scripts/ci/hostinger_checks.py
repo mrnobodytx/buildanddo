@@ -128,6 +128,13 @@ CHECKS = {
         "native",
         "unittest",
     ),
+    # A real password reset through the Customer.io mail hook to a fake on loopback; the
+    # delivered link must reset the password. Nothing is sent off the machine.
+    "native_mail": Check(
+        ("python", "tests/upgrade/test_mail_native.py", "--require-binary"),
+        "native",
+        "unittest",
+    ),
     # The OCN detector's OFFLINE half. `sweep` needs ssh keys to a fleet box and so cannot be a
     # gate - a check that only passes on the release workstation is a false red everywhere else. What is gated here is
     # the part that decides what a status MEANS: that 403 reads as working software, that a 404

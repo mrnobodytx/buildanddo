@@ -360,6 +360,11 @@ jobs:
           BUILDANDDO_TEST_POCKETBASE: ${{ runner.temp }}/dossier-pocketbase
         run: python scripts/ci/hostinger_readiness.py --run native_workspace --runtime ${{ matrix.runtime }} --evidence-dir reports/hostinger
 
+      - name: Require a native password reset delivered through Customer.io with a working link
+        env:
+          BUILDANDDO_TEST_POCKETBASE: ${{ runner.temp }}/dossier-pocketbase
+        run: python scripts/ci/hostinger_readiness.py --run native_mail --runtime ${{ matrix.runtime }} --evidence-dir reports/hostinger
+
       - name: Retain native acceptance results and failure logs
         if: always()
         uses: actions/upload-artifact@v4
