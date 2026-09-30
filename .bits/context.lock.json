@@ -4,7 +4,7 @@
   "findings": [
     {
       "area": "ci",
-      "evidence": "run only by GitHub (.github/workflows/candidate-to-gitlab.yml); referenced by: nothing in this repo",
+      "evidence": "run only by GitHub (.github/workflows/candidate-to-gitlab.yml); referenced by: tests/upgrade/check_work_exchange.py, tests/upgrade/test_work_exchange.py",
       "severity": "high",
       "srs": "",
       "statement": "scripts/ci/candidate_manifest.py is not configured in reachable GitLab jobs"
@@ -60,7 +60,7 @@
     },
     {
       "area": "ci",
-      "evidence": "run only by GitHub (.github/workflows/evidence-epoch.yml); referenced by: apps/federal_foundry/evidence.py, apps/federal_foundry/protocol.py, apps/mission_suite/bundle.py, apps/mission_suite/engine.py, scripts/deploy/ship.py",
+      "evidence": "run only by GitHub (.github/workflows/evidence-epoch.yml); referenced by: apps/federal_foundry/evidence.py, apps/federal_foundry/protocol.py, apps/mission_suite/bundle.py, apps/mission_suite/engine.py, scripts/deploy/ship.py, tests/upgrade/test_work_exchange.py",
       "severity": "high",
       "srs": "",
       "statement": "scripts/ci/evidence_epoch.py is not configured in reachable GitLab jobs"
@@ -456,7 +456,10 @@
         "github"
       ],
       "path": "scripts/ci/candidate_manifest.py",
-      "referenced_by": [],
+      "referenced_by": [
+        "tests/upgrade/check_work_exchange.py",
+        "tests/upgrade/test_work_exchange.py"
+      ],
       "wired_into_ci": false
     },
     {
@@ -550,7 +553,8 @@
         "apps/federal_foundry/protocol.py",
         "apps/mission_suite/bundle.py",
         "apps/mission_suite/engine.py",
-        "scripts/deploy/ship.py"
+        "scripts/deploy/ship.py",
+        "tests/upgrade/test_work_exchange.py"
       ],
       "wired_into_ci": false
     },
@@ -872,7 +876,7 @@
       "wired_into_ci": true
     }
   ],
-  "generated_at": "2026-09-30T14:51:43.806208+00:00",
+  "generated_at": "2026-09-30T16:33:31.319159+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -1585,11 +1589,11 @@
       "scripts/deploy/staging-readback.sh"
     ],
     "migrations": 77,
-    "python_files": 453,
+    "python_files": 461,
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 1821,
+    "tracked_files": 1839,
     "web_source_files": 383
   },
   "schema_version": 1,
@@ -1598,7 +1602,7 @@
     "pieces": [
       {
         "id": "HS-01",
-        "next_step": "The CI owner must confirm public candidate delivery, trusted review metadata and same-revision GitLab statuses before updating required-check settings. Execute the complete governance/source matrices, isolated Praxis profiles and all eighteen acceptance profiles with retained artifacts; Cloudflare needs its separate diagnostic. Privately audit past shared test destinations without running mutating probes against them.",
+        "next_step": "The CI owner must confirm public candidate delivery, trusted review metadata and same-revision GitLab statuses before updating required-check settings. Execute the complete governance/source matrices, isolated Praxis profiles and all eighteen acceptance profiles with retained artifacts; Cloudflare needs its separate diagnostic. Privately audit past shared test destinations without running mutating probes against them. Execute the candidate/chain continuity controls and the new work exchange gate on the receiving GitLab runner; source configuration is not evidence that those jobs ran.",
         "owner": "BITS-CODEGEN / repository owner",
         "why": "A repeatable candidate and visible failed gates are prerequisites for every demo claim."
       },
@@ -1622,19 +1626,19 @@
       },
       {
         "id": "HS-05",
-        "next_step": "Use the receiving dispatch to run the native ERP effect and the registered bounded n8n operation; retain current release identity and a distinct result verifier.",
+        "next_step": "Use the receiving dispatch to run the native ERP effect and the registered bounded n8n operation; retain current release identity and a distinct result verifier. CMAX-B/CSCC must authorize and assign the source-bound Buddi/workspace dogfood proposal, confirm the actual source object on both planes, and bind it to the existing native mission commands before returning a measured result.",
         "owner": "BITS-CODEGEN / CMAX-B",
         "why": "Work must have a fixed scope, approval and a review independent of its producer."
       },
       {
         "id": "HS-06",
-        "next_step": "Execute frozen approved steps, exercise cancellation and HOLD reconciliation, and retain the actual native result alongside the run event.",
+        "next_step": "Run rendered action readback, cancellation-lock and mission/evidence navigation checks; execute frozen approved steps, exercise cancellation and HOLD reconciliation, and retain the actual native result alongside the run event.",
         "owner": "BITS-CODEGEN / IDE1",
         "why": "Ordered work and atomic observations allow failed or interrupted actions to be explained and replayed."
       },
       {
         "id": "HS-07",
-        "next_step": "Bind both Firecrawl and n8n through the receiving owner; prove each configuration revision, health probe, bounded effect and uncertainty recovery. For Buddi, execute locked React/build/browser checks, then have the receiving owner confirm the public tools, microphone policy and private post-call receipt on the same deployed candidate; follow the dated Buddi activation handoff.",
+        "next_step": "Bind both Firecrawl and n8n through the receiving owner; prove each configuration revision, health probe, bounded effect and uncertainty recovery. For Buddi, execute locked React/build/browser checks, then have the receiving owner confirm the public tools, microphone policy and private post-call receipt on the same deployed candidate; follow the dated Buddi activation handoff. Include open-page observation expiry and viewer refresh in rendered acceptance; use the workspace-connection handoff for provider readback.",
         "owner": "CMAX-B / IDE1",
         "why": "A saved integration setting must not be mistaken for a working service connection."
       },
@@ -1652,13 +1656,13 @@
       },
       {
         "id": "HS-09",
-        "next_step": "Attempt denied evidence mutations, inspect frozen reviews, and reconcile the exact native result and release context with controller/provider captures. Supply scoped canonical owner mappings and retained captures for developmental queries; resolve identity and evidence gaps before independent progression review. Bind the real applicant identity and independently review exact career participation before compiling any personal application. The Citadel/CSEG receiver must authenticate world-event identity/read/share scope and exact review pins before connecting live provider references or publishing a projection.",
+        "next_step": "Attempt denied evidence mutations, inspect frozen reviews, and reconcile the exact native result and release context with controller/provider captures. Supply scoped canonical owner mappings and retained captures for developmental queries; resolve identity and evidence gaps before independent progression review. Bind the real applicant identity and independently review exact career participation before compiling any personal application. The Citadel/CSEG receiver must authenticate world-event identity/read/share scope and exact review pins before connecting live provider references or publishing a projection. Follow the CSCC work exchange handoff: authenticate canonical worker and reviewer mappings, return actual job/artifact/readback evidence, independently admit it, then retain the selected sanitized bundle in the existing epoch and derived history.",
         "owner": "BITS-CODEGEN / release owner",
         "why": "A reviewer needs inspectable receipts and integrity checks for the exact candidate."
       },
       {
         "id": "HS-10",
-        "next_step": "Run actual browser and native isolation tests, bind the existing inference endpoint under approved data authority, and observe scoped chat-to-form-to-personal-knowledge behavior. Validate value-card drill-downs against one real reviewed mission and exact provider/release receipts; collect comparable cost, effort and eligible-work baselines before displaying ROI. Exercise career export/import with the actual native account, ten real job dossiers and reviewed draft documents; obtain separate receiving authority for one permitted ATS browser submission and retain its actual receipt.",
+        "next_step": "Run actual browser and native isolation tests, bind the existing inference endpoint under approved data authority, and observe scoped chat-to-form-to-personal-knowledge behavior. Validate value-card drill-downs against one real reviewed mission and exact provider/release receipts; collect comparable cost, effort and eligible-work baselines before displaying ROI. Exercise career export/import with the actual native account, ten real job dossiers and reviewed draft documents; obtain separate receiving authority for one permitted ATS browser submission and retain its actual receipt. Include unconfigured, failed-read and reconnected Buddi states with draft preservation before the real inferred action.",
         "owner": "BITS-CODEGEN / CMAX-B",
         "why": "The operator and daily edition must explain current work with visible uncertainty and evidence."
       },
@@ -1669,7 +1673,7 @@
         "why": "Competition readiness requires an evidence-backed learning-through-work journey, a reproducible replay and actual submission criteria."
       }
     ],
-    "source_sha256": "a0a1f967a344126d28dda5cdd7e05b7161d325f46815fb63abf91f73a3b84a78",
+    "source_sha256": "4398efe3758894d5f96b782885dc1d18599b4b0b025aef53950b322833e9d5cb",
     "state": "PASS"
   },
   "summary": {

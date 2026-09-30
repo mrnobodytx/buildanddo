@@ -20,6 +20,64 @@
 **Status:** in_progress **Risk:** A2 **Seat:** BITS-CODEGEN
 **Dispatch:** VCC-BUILDANDDO-UPGRADE-001 **Actor:** actor:agent
 
+## Mutual development work exchange - 2026-09-30
+
+The owner requests finishing the existing BuildAndDo/Citadel development loop.
+Continue this A2 public-source dispatch with portable candidate-only work and
+result contracts over the existing evolution, independent-review and epoch
+libraries. GitHub remains the collaboration plane; GitLab and receiving owners
+retain execution, private source, release and deployment authority.
+
+Acceptance:
+
+1. Define strict, versioned `buildanddo.work/v1` and `buildanddo.work-result/v1`
+   contracts with objective, source revision, scope, SRS/dispatch, bounded paths,
+   capabilities, acceptance and required evidence. Support both directions and
+   the development, experience, research and operations lanes without granting
+   execution authority or publishing private inputs.
+2. Connect existing development mission packets to the work contract. Bind
+   results to the exact work, repository, base and independently selected
+   candidate revision. Check retained evidence bytes and reject path escapes,
+   foreign scope, conflicting retries, missing checks and altered artifacts.
+3. Reuse the receiving-pinned ReviewPolicy and independent VerificationReceipt.
+   Producer reports, account labels, hashes and epoch inclusion cannot approve
+   work. Missing tests, deployment and external readback stay explicit; producer
+   and contributing identities cannot verify their own result.
+4. Extend the existing evidence epoch with explicit local work-result inputs,
+   preserving the existing hash/chain construction and exact candidate identity.
+   Derive bounded worker experience from retained results without fabricated
+   success rates, identity authentication, learning promotion or authority.
+5. Prepare a real, source-bound first Buddi/workspace dogfood mission and a
+   concrete private CSCC receiving handoff. Run connected/adversarial tests and
+   retain source evidence separately from unexecuted GitLab, browser, native,
+   provider, signing and deployment acceptance.
+
+## Disconnected workspace systems - 2026-09-30
+
+The owner asks to identify and improve inoperable or disconnected systems.
+Continue the existing A2 source dispatch across integration observations,
+workspace Buddi and workflow execution readback. Preserve the earlier public
+voice recovery work. No deployment or external activation is included.
+
+Acceptance:
+
+1. An open integration desk expires its health observations using the existing
+   fifteen-minute rule and offers a read-only refresh for receiving new operator
+   receipts. Use the same freshness rule in action-form connection checks.
+2. Workspace Buddi retains drafts and history while its configuration is loading,
+   unavailable or absent, but sends no new session/chat request until the existing
+   endpoint is reported configured. An explicit recheck can restore use without
+   reloading the page. Configuration is not a claim of provider health.
+3. Workflow action readback cannot replace a newer receipt with an older poll or
+   settle into another run, step, account or workspace. Failed readback disables
+   new dispatch until recovery. Current permission checks and stable retry keys
+   continue to govern writes; parent review controls respect an in-flight action.
+4. Workflow mission and evidence links carry the saved record identity to the
+   existing scoped desks. They neither approve work nor bypass destination access.
+5. Reproduce the failures with production-handler regressions, retain passing
+   connected backend/client controls, and document unavailable rendered/native
+   acceptance plus the private activation dependencies without inventing results.
+
 ## Buddi connection recovery - 2026-09-30
 
 Continue the owner's request to improve system connections, integrations and

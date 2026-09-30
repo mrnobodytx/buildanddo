@@ -1,10 +1,10 @@
 # ─── CGRF Header ───────────────────────────────────────────────
 # File:        tests/upgrade/test_development_support.py
 # Stage:       08_TEST
-# SRS:         SRS-BUILDANDDO-DEVELOPMENT-LOOP-001
+# SRS:         SRS-BUILDANDDO-DEVELOPMENT-LOOP-001, SRS-BUILDANDDO-UPGRADE-001
 # CAPS:        pending
 # CK:          pending
-# Dispatch:    VCC-BUILDANDDO-DEVELOPMENT-LOOP-001
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-21
@@ -44,7 +44,9 @@ from libs.semantic_twin.receipts import VerificationReceipt
 from libs.semantic_twin.vocabulary import AuthorityTier
 from tests.upgrade.test_evolution_support import verification
 
-AT = datetime(2026, 9, 21, 1, tzinfo=timezone.utc)
+# Freeze fixtures near the run so real-clock CLI tests do not age out of their
+# existing seven-day policy; explicit stale/future controls still offset AT.
+AT = datetime.now(timezone.utc).replace(microsecond=0) - timedelta(minutes=5)
 SHA = "a" * 40
 ACTOR = SemanticId("cni://agent/synthetic-development-producer")
 SCOPE = "synthetic-development/workspace"

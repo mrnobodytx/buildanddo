@@ -8,14 +8,14 @@
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-15
-// Depends:     apps/web/src/lib/workflowRuns.js
+// Depends:     apps/web/src/lib/workflowRuns.js, apps/web/src/components/workspace/workflows/BusinessActionReview.jsx
 // EnumType:    Widget
-// EnumEdges:   CONSUMES apps/web/src/lib/workflowRuns.js
+// EnumEdges:   CONSUMES apps/web/src/lib/workflowRuns.js; CONSUMES apps/web/src/components/workspace/workflows/BusinessActionReview.jsx
 // DAG Node:    none
 // Intent:      Let operators record source-backed step outcomes and explicit approvals while preserving rejected observations for safe retries.
 // ───────────────────────────────────────────────────────────────
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/site/ui';
 import { Input } from '@/components/ui/input';
@@ -39,6 +39,7 @@ export default function WorkflowRunReview({ run, api, onSaved, onBusy, disabled 
     const [reason, setReason] = useState('');
     const [error, setError] = useState('');
     const [saving, setSaving] = useState(false);
+    const [executing, setExecuting] = useState(false);
     const busy = useRef(false);
     const alive = useRef(true);
     const intent = useRef(createRetryIntent());
@@ -48,9 +49,10 @@ export default function WorkflowRunReview({ run, api, onSaved, onBusy, disabled 
         heading.current?.focus();
         return () => { alive.current = false; };
     }, []);
+    const executionBusy = useCallback((value) => { setExecuting(value); onBusy(value); }, [onBusy]);
 
     const send = async (action, outcome = '') => {
-        if (busy.current || disabled) return;
+        if (busy.current || executing || disabled) return;
         const note = action === 'cancel' ? reason : observation;
         if (!note.trim() || (action === 'step' && !approval && !source.trim())) {
             setError('Add your observation and its source before recording the outcome.');
@@ -70,7 +72,7 @@ export default function WorkflowRunReview({ run, api, onSaved, onBusy, disabled 
         else if (result.error) setError(result.error);
     };
     const reload = async () => {
-        if (busy.current) return;
+        if (busy.current || executing) return;
         busy.current = true; setSaving(true); onBusy(true);
         const result = await api.read(run.id);
         if (!alive.current) return;
@@ -90,14 +92,14 @@ export default function WorkflowRunReview({ run, api, onSaved, onBusy, disabled 
             </div>
             <p className="text-sm text-muted-foreground">{snapshot.description}</p>
             {snapshot.mission_title && <p className="text-sm">Mission: {snapshot.mission_title}.{' '}
-                <Link className="underline" to="/app/missions">Open the Mission Desk</Link>.</p>}
+                <Link className="underline" to={snapshot.mission_id ? `/app/missions?mission=${encodeURIComponent(snapshot.mission_id)}` : '/app/missions'}>Open the Mission Desk</Link>.</p>}
 
             {open && step ? (
                 <section className="space-y-3 border border-border p-4" aria-label="Current step" data-assistant-authority={approval ? 'human' : undefined}>
                     <h3 ref={heading} tabIndex={-1} className="font-semibold">Step {run.next_step + 1}: {step.name}</h3>
                     <p className="text-sm text-muted-foreground">{STEP_KINDS[step.kind]}{step.detail ? ` · ${step.detail}` : ''}</p>
                     {step.kind === 'execute' ? <BusinessActionReview key={`${run.id}:${run.revision}`} run={run} step={step}
-                        runApi={api} onSaved={onSaved} disabled={disabled} /> : <>
+                        runApi={api} onSaved={onSaved} onBusy={executionBusy} disabled={disabled || saving} /> : <>
                     <p className="text-sm text-muted-foreground">{approval ?
                         'A workspace owner or admin must approve or reject this checkpoint before work continues.' :
                         'Perform the step, then record what you observed. This record does not send a message or run an external tool.'}</p>
@@ -132,7 +134,7 @@ export default function WorkflowRunReview({ run, api, onSaved, onBusy, disabled 
 
             {error && <div className="space-y-2 border border-border p-3">
                 <p role="alert" className="text-sm text-destructive">{error}</p>
-                <Button type="button" variant="secondary" size="sm" disabled={saving} onClick={reload}>Reload latest run</Button>
+                <Button type="button" variant="secondary" size="sm" disabled={saving || executing} onClick={reload}>Reload latest run</Button>
                 <p className="text-xs text-muted-foreground">Retry the same decision to recover a saved result. Reloading shows another operator’s changes.</p>
             </div>}
             {saving && <p role="status" className="text-sm">Saving the decision and evidence…</p>}
@@ -147,21 +149,22 @@ export default function WorkflowRunReview({ run, api, onSaved, onBusy, disabled 
                             <p className="font-medium">{name} · {command.outcome || 'cancelled'}</p>
                             <p className="mt-1 whitespace-pre-wrap">{command.observation}</p>
                             <p className="mt-2 text-xs text-muted-foreground">{command.source || 'Operator decision'} · Account {event.actor} · <time dateTime={event.at}>{event.at}</time></p>
-                            <p className="mt-1 text-xs text-muted-foreground">Evidence receipt: {event.evidence}</p>
+                            <p className="mt-1 text-xs text-muted-foreground">Evidence receipt: {event.evidence ?
+                                <Link className="underline" to={`/app/evidence?evidence=${encodeURIComponent(event.evidence)}`}>{event.evidence}</Link> : 'Not recorded'}</p>
                         </li>;
                     })}</ol>}
                 <Link to="/app/evidence" className="text-sm underline">Open the Evidence Ledger</Link>
             </section>
 
             {open && <div className="space-y-3 border-t border-border pt-3">
-                <Button type="button" variant="ghost" size="sm" disabled={saving || disabled} onClick={() => setCancelling(!cancelling)}>
+                <Button type="button" variant="ghost" size="sm" disabled={saving || executing || disabled} onClick={() => setCancelling(!cancelling)}>
                     {cancelling ? 'Keep this run open' : 'Cancel run'}
                 </Button>
                 {cancelling && <div className="space-y-2">
                     <Label htmlFor="cancel-reason">Cancellation reason</Label>
-                    <Textarea id="cancel-reason" maxLength={1200} value={reason} disabled={saving || disabled}
+                    <Textarea id="cancel-reason" maxLength={1200} value={reason} disabled={saving || executing || disabled}
                         onChange={(event) => setReason(event.target.value)} />
-                    <Button type="button" variant="secondary" size="sm" disabled={saving || disabled || !reason.trim()}
+                    <Button type="button" variant="secondary" size="sm" disabled={saving || executing || disabled || !reason.trim()}
                         onClick={() => send('cancel')}>Confirm cancellation</Button>
                 </div>}
             </div>}

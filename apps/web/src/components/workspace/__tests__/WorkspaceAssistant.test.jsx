@@ -232,10 +232,41 @@ it('demo mode makes no native or model requests', async () => {
     expect(screen.getByRole('region', { name: 'Buddi' })).toBeInTheDocument(); expect(screen.getByRole('heading', { name: 'Buddi' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Close Buddi' })).toBeInTheDocument();
 });
-it('shows unavailable inference without fabricating proposed actions', async () => {
+it('retains a draft without sending while unconfigured and reconnects through an explicit recheck', async () => {
     backend.agentConfig.enabled = false; const user = userEvent.setup(); render(<Page />); await compose(user);
     expect(await screen.findByText(/Buddi isn't connected yet\. Your workspace operator must bind the existing agent endpoint\./)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Ask Buddi' })).toBeDisabled();
     await user.click(screen.getByRole('button', { name: 'Ask Buddi' }));
-    await screen.findByText(/Buddi is unavailable\. Your message is retained for retry/); expect(screen.queryByRole('region', { name: 'Proposed actions' })).not.toBeInTheDocument();
-    expect(screen.getAllByText('Buddi:').length).toBeGreaterThan(0);
+    expect(pb.send.mock.calls.filter(([, options]) => options.method === 'POST')).toHaveLength(0);
+    expect(backend.data.assistant_sessions).toHaveLength(0);
+    expect(screen.getByLabelText('What would you like to do?')).toHaveValue('Help me with the customer task');
+    backend.agentConfig.enabled = true;
+    await user.click(screen.getByRole('button', { name: 'Recheck connection' }));
+    await waitFor(() => expect(screen.getByRole('button', { name: 'Ask Buddi' })).toBeEnabled());
+    await user.click(screen.getByRole('button', { name: 'Ask Buddi' }));
+    await screen.findByRole('region', { name: 'Proposed actions' });
+    expect(backend.data.assistant_sessions).toHaveLength(1); expect(backend.agentConfig.calls).toHaveLength(1);
+});
+it('blocks new sends after a failed connection reload while preserving the unsent draft', async () => {
+    const user = userEvent.setup(); render(<Page />); await compose(user);
+    await waitFor(() => expect(screen.getByRole('button', { name: 'Ask Buddi' })).toBeEnabled());
+    pb.send.mockRejectedValueOnce(new Error('Synthetic unavailable read'));
+    await user.click(screen.getByRole('button', { name: 'Reload history' }));
+    await screen.findByText(/Buddi connection settings could not be checked/);
+    expect(screen.getByRole('button', { name: 'Ask Buddi' })).toBeDisabled();
+    expect(screen.getByLabelText('What would you like to do?')).toHaveValue('Help me with the customer task');
+    expect(pb.send.mock.calls.filter(([, options]) => options.method === 'POST')).toHaveLength(0);
+    await user.click(screen.getByRole('button', { name: 'Recheck connection' }));
+    await waitFor(() => expect(screen.getByRole('button', { name: 'Ask Buddi' })).toBeEnabled());
+});
+it('allows drafting but waits for the initial connection read before enabling Ask Buddi', async () => {
+    let release;
+    pb.send.mockImplementationOnce(() => new Promise((resolve) => { release = resolve; }));
+    const user = userEvent.setup(); render(<Page />); await compose(user);
+    expect(screen.getByText('Checking Buddi connection settings…')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Ask Buddi' })).toBeDisabled();
+    expect(screen.getByLabelText('What would you like to do?')).toHaveValue('Help me with the customer task');
+    await act(async () => { release(plain(backend.service.snapshot(backend.event('editor')))); });
+    await waitFor(() => expect(screen.getByRole('button', { name: 'Ask Buddi' })).toBeEnabled());
+    expect(pb.send.mock.calls.filter(([, options]) => options.method === 'POST')).toHaveLength(0);
 });

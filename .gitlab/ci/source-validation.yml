@@ -8,9 +8,9 @@
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-21
-# Depends:     tests/upgrade/check_discordbot.py, tests/upgrade/check_blueprint_pipeline.py, tests/foundry/check_foundry.py, tests/upgrade/check_federal_foundry.py, tests/upgrade/check_mission_suite.py, tests/career/check_career.py, tests/knowledge_units/check_knowledge_units.py, tests/integrity/check_integrity.py, tests/world_twin/check_world_twin.py, tests/assurance/run.py, tests/deploy/test_release_telemetry.py, tests/deploy/test_ship_telemetry.py
+# Depends:     tests/upgrade/check_discordbot.py, tests/upgrade/check_blueprint_pipeline.py, tests/foundry/check_foundry.py, tests/upgrade/check_federal_foundry.py, tests/upgrade/check_mission_suite.py, tests/career/check_career.py, tests/knowledge_units/check_knowledge_units.py, tests/integrity/check_integrity.py, tests/world_twin/check_world_twin.py, tests/assurance/run.py, tests/deploy/test_release_telemetry.py, tests/deploy/test_ship_telemetry.py, tests/upgrade/check_work_exchange.py
 # EnumType:    Workflow
-# EnumEdges:   CONSUMES tests/upgrade/check_discordbot.py; CONSUMES tests/upgrade/check_blueprint_pipeline.py; CONSUMES tests/foundry/check_foundry.py; CONSUMES tests/upgrade/check_federal_foundry.py; CONSUMES tests/upgrade/check_mission_suite.py; CONSUMES tests/career/check_career.py; CONSUMES tests/knowledge_units/check_knowledge_units.py; CONSUMES tests/integrity/check_integrity.py; CONSUMES tests/world_twin/check_world_twin.py; CONSUMES tests/assurance/run.py; CONSUMES tests/deploy/test_release_telemetry.py; CONSUMES tests/deploy/test_ship_telemetry.py
+# EnumEdges:   CONSUMES tests/upgrade/check_discordbot.py; CONSUMES tests/upgrade/check_blueprint_pipeline.py; CONSUMES tests/foundry/check_foundry.py; CONSUMES tests/upgrade/check_federal_foundry.py; CONSUMES tests/upgrade/check_mission_suite.py; CONSUMES tests/career/check_career.py; CONSUMES tests/knowledge_units/check_knowledge_units.py; CONSUMES tests/integrity/check_integrity.py; CONSUMES tests/world_twin/check_world_twin.py; CONSUMES tests/assurance/run.py; CONSUMES tests/deploy/test_release_telemetry.py; CONSUMES tests/deploy/test_ship_telemetry.py; CONSUMES tests/upgrade/check_work_exchange.py
 # Intent:      Keep native parser and portable coverage requirements executing on GitLab when duplicate GitHub scheduling is retired.
 # ───────────────────────────────────────────────────────────────
 
@@ -135,6 +135,7 @@ source_behavior_coverage:
     - state/ci/behavior-venv/bin/python tests/knowledge_units/check_knowledge_units.py
     - state/ci/behavior-venv/bin/python tests/integrity/check_integrity.py
     - state/ci/behavior-venv/bin/python tests/world_twin/check_world_twin.py
+    - state/ci/behavior-venv/bin/python tests/upgrade/check_work_exchange.py
   artifacts:
     name: "source-behavior-coverage-${PYTHON_VERSION}"
     when: always
@@ -144,6 +145,7 @@ source_behavior_coverage:
       - reports/coverage/knowledge-units.json
       - reports/coverage/integrity.json
       - reports/coverage/world-twin.json
+      - reports/coverage/work-exchange.json
   rules:
     - if: '$DAY21_FULL_ACCEPTANCE == "1" || $DAY21_COMPILE_SUBMISSION == "1"'
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "external_pull_request_event"'

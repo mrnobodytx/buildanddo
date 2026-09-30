@@ -16,7 +16,7 @@
 // ───────────────────────────────────────────────────────────────
 
 import React from 'react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { act } from '@testing-library/react';
 import { Route, Routes } from 'react-router-dom';
 import { fixture, plain } from '../../../../../../tests/upgrade/admin-fixture.mjs';
@@ -47,6 +47,7 @@ function renderPage(element, actor = 'owner') {
 beforeEach(() => {
     backend = fixture(); pb.send.mockReset(); pb.send.mockImplementation(async (...args) => send(...args));
 });
+afterEach(() => { vi.restoreAllMocks(); vi.useRealTimers(); });
 
 describe('workspace administration', () => {
     it('connects Settings and navigation to current server permissions and removes admin links after demotion', async () => {
@@ -131,6 +132,24 @@ describe('workspace administration', () => {
 });
 
 describe('integration controls', () => {
+    it('expires an open health display and lets a viewer read a newer operator receipt', async () => {
+        vi.useFakeTimers({ toFake: ['setInterval', 'clearInterval'] });
+        backend.command('integration.save', { provider: 'firecrawl', enabled: true, configuration: { mode: 'read', binding: 'test-search' } });
+        const record = backend.data.workspace_integrations[0];
+        Object.assign(record, { observed_state: 'healthy', observed_at: new Date(Date.now() - 899_000).toISOString(),
+            applied_revision: record.revision, receipt_ref: 'test-receipt' });
+        const user = setupUser(); renderPage(<IntegrationsPage />, 'viewer');
+        expect(await screen.findByText('Healthy')).toBeInTheDocument();
+        const now = vi.spyOn(Date, 'now').mockReturnValue(Date.now() + 15_000);
+        act(() => vi.advanceTimersByTime(15_000));
+        expect(screen.getByText('Healthy — out of date')).toBeInTheDocument();
+        now.mockRestore(); record.observed_at = new Date().toISOString();
+        await user.click(screen.getByRole('button', { name: 'Refresh observations' }));
+        expect(await screen.findByText('Healthy')).toBeInTheDocument();
+        expect(pb.send.mock.calls.every(([, options]) => options.method === 'GET')).toBe(true);
+        expect(backend.data.workspace_admin_events).toHaveLength(1);
+    });
+
     it('persists a Reddit request without claiming health or publishing a post', async () => {
         const user = setupUser(); renderPage(<IntegrationsPage />);
         await user.click(await screen.findByRole('button', { name: 'Configure Reddit' }));

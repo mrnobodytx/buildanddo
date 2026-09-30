@@ -38,11 +38,13 @@ function AssistantDesk({ accountId, workspaceId, demo, sessionEpoch, isSessionCu
     const [open, setOpen] = useState(false), [session, setSession] = useState(''), [snapshot, setSnapshot] = useState(null);
     const [message, setMessage] = useState(''), [turn, setTurn] = useState(null), [error, setError] = useState(''), [busy, setBusy] = useState(false);
     const [recordPending, setRecordPending] = useState(null), [notice, setNotice] = useState(''), [forgetting, setForgetting] = useState(false);
+    const [connection, setConnection] = useState('checking');
     const alive = useRef(true), lock = useRef(false), captured = useRef(null), pending = useRef(null), route = useRef(location.pathname);
     const startKey = useRef(globalThis.crypto.randomUUID()), startPayload = useRef(null), composer = useRef(null);
     const selectedSession = useRef(session), historyRequest = useRef(0);
     const permission = useRef(access); permission.current = access;
     const ready = !demo && !access.loading && !access.error && Boolean(access.data);
+    const canChat = connection === 'configured';
     useFailureTelemetry(open && !demo && Boolean(error), 'control_feedback');
     selectedSession.current = session;
     route.current = location.pathname;
@@ -75,8 +77,11 @@ function AssistantDesk({ accountId, workspaceId, demo, sessionEpoch, isSessionCu
     const load = async (selected = selectedSession.current, paging = {}) => {
         if (!current()) return;
         const ticket = ++historyRequest.current;
+        setConnection('checking');
         const result = await api.snapshot(selected, paging.sessionPage || 1, paging.turnPage || 1);
         if (!current() || ticket !== historyRequest.current || selected !== selectedSession.current) return;
+        setConnection(result.ok ? result.data.inference_configured === true ? 'configured' :
+            result.data.inference_configured === false ? 'unconfigured' : 'unavailable' : 'unavailable');
         if (result.ok) { setSnapshot((before) => {
             const retained = paging.append === 'sessions' ? before?.sessions.items || [] : (before?.sessions.items || []).filter((item) => item.id === selected);
             const sessions = [...new Map([...retained, ...result.data.sessions.items].map((item) => [item.id, item])).values()];
@@ -90,7 +95,7 @@ function AssistantDesk({ accountId, workspaceId, demo, sessionEpoch, isSessionCu
     useEffect(() => { if (open) composer.current?.focus(); }, [open]);
     const send = async (event) => {
         event.preventDefault();
-        if (lock.current || !current() || !message.trim() || recordPending || closed) return;
+        if (lock.current || !current() || !canChat || !message.trim() || recordPending || closed) return;
         lock.current = true; setBusy(true); setError(''); loadFailed.current = false; setNotice('');
         try {
             let activeSession = session;
@@ -189,7 +194,10 @@ function AssistantDesk({ accountId, workspaceId, demo, sessionEpoch, isSessionCu
                         <option value="">New conversation</option>{snapshot?.sessions?.items.map((item) => <option key={item.id} value={item.id}>{item.title} · {item.status}</option>)}
                     </select></label>
                     {snapshot?.sessions?.has_more && <Button type="button" size="sm" variant="ghost" disabled={!ready || busy} onClick={() => load(session, { sessionPage: snapshot.sessions.page + 1, append: 'sessions' })}>Load earlier sessions</Button>}
-                    {snapshot?.inference_configured === false && <p role="status" className="border border-border p-2">Buddi isn't connected yet. Your workspace operator must bind the existing agent endpoint.</p>}
+                    {connection === 'checking' && <p role="status">Checking Buddi connection settings…</p>}
+                    {connection === 'unconfigured' && <p role="status" className="border border-border p-2">Buddi isn't connected yet. Your workspace operator must bind the existing agent endpoint. Your draft stays here.</p>}
+                    {connection === 'unavailable' && <p role="status">Buddi connection settings could not be checked. Your draft stays here.</p>}
+                    {['unconfigured', 'unavailable'].includes(connection) && <Button type="button" size="sm" variant="secondary" disabled={!ready || busy} onClick={() => load()}>Recheck connection</Button>}
                     <ol className="space-y-3" aria-label="Conversation">{history.map((item) => <li key={item.id} className="space-y-2 border-b border-border pb-3">
                         <p className="whitespace-pre-wrap"><strong>You:</strong> {item.message}</p><p className="whitespace-pre-wrap"><strong>Buddi:</strong> {item.reply || 'Response pending…'}</p>
                         <p className="text-xs text-muted-foreground">{item.status}</p>
@@ -214,7 +222,7 @@ function AssistantDesk({ accountId, workspaceId, demo, sessionEpoch, isSessionCu
                     {closed && <p>This session is retained for reading. Start a new session to continue.</p>}
                     <form onSubmit={send} className="space-y-2"><label htmlFor="assistant-message" className="font-medium">What would you like to do?</label>
                         <Textarea ref={composer} id="assistant-message" value={message} onChange={(event) => { setMessage(event.target.value); }} maxLength={4000} rows={3} disabled={!ready || busy || closed || Boolean(recordPending)} />
-                        <Button type="submit" size="sm" disabled={!ready || busy || closed || !message.trim() || Boolean(recordPending)}>{busy ? 'Working…' : pending.current ? 'Retry message' : 'Ask Buddi'}</Button></form>
+                        <Button type="submit" size="sm" disabled={!ready || !canChat || busy || closed || !message.trim() || Boolean(recordPending)}>{busy ? 'Working…' : pending.current ? 'Retry message' : 'Ask Buddi'}</Button></form>
                 </>}
             </div>
         </Card>}
