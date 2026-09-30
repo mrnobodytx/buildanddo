@@ -16,7 +16,7 @@
 // Intent:      Run one voice session with Buddi through the official SDK, saying each state in words.
 // ───────────────────────────────────────────────────────────────
 
-import React, { useCallback, useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { ConversationProvider, useConversation } from '@elevenlabs/react';
 import { Mic, MicOff, PhoneOff } from 'lucide-react';
 import { Button } from '@/components/site/ui';
@@ -28,6 +28,9 @@ export const ENDED = Object.freeze({
     agent: 'Buddi ended the conversation.',
 });
 
+const CONNECTION_TIMEOUT_MS = 30_000;
+const CLOSE_TIMEOUT_MS = 10_000;
+
 function statusWords(status, isSpeaking) {
     if (status === 'connected') return isSpeaking ? 'Buddi is speaking.' : 'Buddi is listening. Go ahead.';
     if (status === 'connecting') return 'Connecting to Buddi…';
@@ -35,67 +38,118 @@ function statusWords(status, isSpeaking) {
 }
 
 function Session({ agentId, onEnd, onFail, actionSection }) {
-    const observed = useRef({ section: publicActionSection(actionSection), connected: false, terminal: false });
+    const observed = useRef({ section: publicActionSection(actionSection), active: false, connected: false, terminal: false, ending: false });
+    const connectionTimeout = useRef(null);
+    const closeTimeout = useRef(null);
+    const [closing, setClosing] = useState(false);
     const observe = useCallback((outcome, reason) => {
-        // Deduplicate measurement only; the SDK and parent still own session state.
+        // A completed or unmounted session cannot change a newer attempt or its measurements.
         const current = observed.current;
-        if (current.terminal || outcome === 'connected' && current.connected) return;
+        if (!current.active || current.terminal || outcome === 'connected' && (current.connected || current.ending)) return false;
         if (outcome === 'connected') current.connected = true;
         else current.terminal = true;
+        clearTimeout(connectionTimeout.current);
+        if (current.terminal) clearTimeout(closeTimeout.current);
         trackPublicAction(PUBLIC_ACTIONS.VOICE_SESSION, outcome, reason, undefined, { section: current.section });
+        return true;
     }, []);
     const { status, message, isSpeaking, isMuted, setMuted, startSession, endSession } = useConversation({
         onDisconnect: (details) => {
             if (details?.reason === 'error') {
-                observe('failure', 'connection_lost');
-                onFail('The voice session was interrupted.', details.message);
+                if (observe('failure', 'connection_lost')) onFail('The voice session was interrupted.', details.message);
             } else {
-                observe('ended', details?.reason === 'agent' ? 'agent_ended' : details?.reason === 'user' ? 'user_ended' : 'disconnected');
-                onEnd(ENDED[details?.reason] || ENDED.user);
+                if (observe('ended', details?.reason === 'agent' ? 'agent_ended' : details?.reason === 'user' ? 'user_ended' : 'disconnected')) {
+                    onEnd(ENDED[details?.reason] || ENDED.user);
+                }
             }
         },
     });
     const started = useRef(false);
 
     useEffect(() => {
-        // One session per mount. The provider ends it when this unmounts, so there is nothing to clean up here.
+        const current = observed.current;
+        current.active = true;
+        if (!current.connected && !current.terminal) {
+            connectionTimeout.current = setTimeout(() => {
+                if (!current.ending && observe('failure', 'connection_failed')) {
+                    onFail('Buddi did not connect in time. Try again.');
+                }
+            }, CONNECTION_TIMEOUT_MS);
+        }
+        return () => {
+            current.active = false;
+            clearTimeout(connectionTimeout.current);
+            clearTimeout(closeTimeout.current);
+        };
+    }, [onFail, observe]);
+
+    useEffect(() => {
+        // Start once even if React replays effects. The provider owns normal unmount cleanup.
         if (started.current) return;
         started.current = true;
+        const failed = (error) => {
+            if (observe('failure', 'connection_failed')) onFail('The voice session could not start.', error?.message);
+        };
         try {
-            startSession({ agentId, connectionType: 'webrtc' });
+            const pending = startSession({ agentId, connectionType: 'webrtc' });
+            if (pending && typeof pending.then === 'function') {
+                Promise.resolve(pending).then(() => {
+                    // A transport can finish opening after provider cleanup already ran.
+                    const current = observed.current;
+                    if (!current.active || current.terminal || current.ending) {
+                        try { Promise.resolve(endSession()).catch(() => {}); } catch { /* The old provider owns this transport. */ }
+                    }
+                }, failed);
+            }
         } catch (error) {
-            observe('failure', 'connection_failed');
-            onFail('The voice session could not start.', error?.message);
+            failed(error);
         }
-    }, [agentId, startSession, onFail, observe]);
+    }, [agentId, startSession, endSession, onFail, observe]);
 
     useEffect(() => {
         // A session that never connects reports here, not through onDisconnect.
         if (status === 'error') {
-            observe('failure', 'connection_failed');
-            onFail('The voice session could not start.', message);
+            if (observe('failure', 'connection_failed')) onFail('The voice session could not start.', message);
         }
         if (status === 'connected') observe('connected', 'connected');
     }, [status, message, onFail, observe]);
 
     const end = () => {
-        endSession();
-        observe('ended', 'user_requested');
-        onEnd(ENDED.user);
+        const current = observed.current;
+        if (!current.active || current.terminal || current.ending) return;
+        current.ending = true;
+        setClosing(true);
+        clearTimeout(connectionTimeout.current);
+        const completed = () => {
+            if (observe('ended', 'user_requested')) onEnd(ENDED.user);
+        };
+        const failed = (error) => {
+            if (observe('failure', 'connection_lost')) {
+                onFail('The voice session could not end. Reload this page to close the connection.', error?.message, false);
+            }
+        };
+        closeTimeout.current = setTimeout(() => failed(), CLOSE_TIMEOUT_MS);
+        try {
+            const pending = endSession();
+            if (pending && typeof pending.then === 'function') Promise.resolve(pending).then(completed, failed);
+            else completed();
+        } catch (error) {
+            failed(error);
+        }
     };
 
     const connected = status === 'connected';
     return (
         <div className="space-y-4">
-            <p role="status" className="text-sm font-semibold leading-6">{statusWords(status, isSpeaking)}</p>
+            <p role="status" className="text-sm font-semibold leading-6">{closing ? 'Ending the voice session…' : statusWords(status, isSpeaking)}</p>
             <div className="flex flex-wrap gap-3">
                 {connected && (
-                    <Button variant="secondary" size="sm" aria-pressed={isMuted} onClick={() => setMuted(!isMuted)}>
+                    <Button variant="secondary" size="sm" disabled={closing} aria-pressed={isMuted} onClick={() => setMuted(!isMuted)}>
                         {isMuted ? <MicOff className="h-4 w-4" aria-hidden="true" /> : <Mic className="h-4 w-4" aria-hidden="true" />}
                         {isMuted ? 'Unmute' : 'Mute'}
                     </Button>
                 )}
-                <Button variant="secondary" size="sm" onClick={end}>
+                <Button variant="secondary" size="sm" disabled={closing} onClick={end}>
                     <PhoneOff className="h-4 w-4" aria-hidden="true" />
                     {connected ? 'End' : 'Cancel'}
                 </Button>
@@ -107,7 +161,7 @@ function Session({ agentId, onEnd, onFail, actionSection }) {
 /**
  * One voice session with the given agent, started on mount.
  *
- * @param {{agentId: string, onEnd: (note: string) => void, onFail: (reason: string, detail?: string) => void, actionSection?: string}} props
+ * @param {{agentId: string, onEnd: (note: string) => void, onFail: (reason: string, detail?: string, retry?: boolean) => void, actionSection?: string}} props
  */
 export default function VoiceSession(props) {
     return (

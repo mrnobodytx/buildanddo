@@ -1,10 +1,10 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/src/components/voice/__tests__/VoiceChunk.test.jsx
 // Stage:       08_TEST
-// SRS:         SRS-BUILDANDDO-BUDDI-003
+// SRS:         SRS-BUILDANDDO-BUDDI-003, SRS-BUILDANDDO-UPGRADE-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-BUDDI-003
+// Dispatch:    VCC-BUILDANDDO-BUDDI-003, VCC-BUILDANDDO-UPGRADE-001
 // Seat:        C-ONE
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-23
@@ -20,7 +20,7 @@
 // needs a module registry no other test has touched. Both cases reset it, so their order does not matter.
 
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { act, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
@@ -73,5 +73,20 @@ describe('the voice chunk', () => {
         expect(await screen.findByText(NOT_LOADED)).toBeVisible();
         expect(screen.queryByRole('button', { name: 'Try again' })).toBeNull();
         expect(screen.getByRole('link', { name: /Talk to Buddi on ElevenLabs instead/ })).toBeVisible();
+    });
+
+    it('can cancel voice-code loading without starting a session when the import finishes', async () => {
+        let finishImport;
+        const session = vi.fn(() => <p>The voice session mounted.</p>);
+        vi.doMock('@/components/voice/VoiceSession', () => new Promise((resolve) => { finishImport = resolve; }));
+        const { default: TalkToBuddi } = await import('@/components/voice/TalkToBuddi');
+        const user = userEvent.setup();
+        render(<TalkToBuddi />);
+        await user.click(screen.getByRole('button', { name: 'Start talking' }));
+        expect(await screen.findByText('Loading the voice session…')).toBeVisible();
+        await user.click(screen.getByRole('button', { name: 'Cancel' }));
+        await act(async () => { finishImport({ default: session }); });
+        expect(session).not.toHaveBeenCalled();
+        expect(screen.getByRole('button', { name: 'Start talking' })).toBeVisible();
     });
 });

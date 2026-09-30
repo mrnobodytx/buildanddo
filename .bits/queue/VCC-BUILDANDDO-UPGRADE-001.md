@@ -20,6 +20,26 @@
 **SRS:** SRS-BUILDANDDO-UPGRADE-001 **Risk:** A2 **Seat:** BITS-CODEGEN
 **Status:** in_progress **Actor:** actor:agent
 
+## Buddi connection recovery - 2026-09-30
+
+The owner requests improving connections, integrations and Buddi usage after a
+private-system handoff. Continue the existing public A2 source dispatch. The
+reported 84 private tests were not run in this repository; live activation and
+deployment remain pending receiving-owner actions.
+
+| Phase | Task | Gate command | Status |
+|---|---|---|---|
+| BV-1 | Reproduce cancelled, stale and failed voice attempts | `node --test --test-name-pattern='voice' tests/upgrade/public-action-telemetry.test.mjs` | PASS: 12 regression failures observed before repair |
+| BV-2 | Make microphone and session startup cancellable and retry-safe | Same connected handler suite; rendered voice regressions | source PASS: 23 voice cases; rendered cases authored, dependencies unavailable |
+| BV-3 | Verify source boundaries and record remaining runtime acceptance | Readiness, context, public boundary, report and memory checks | source checks recorded in buddi-connection-report.md; rendered/live acceptance pending |
+
+Observed local result: 143/143 targeted Node cases pass on Node 22.17.0. The
+five changed JS/JSX modules pass the existing limited syntax/binding diagnostic.
+Vitest, React, Vite, the ElevenLabs SDK and repository lint plugins are absent;
+no rendered coverage, production build, native backend or live agent result is
+claimed. The receiving handoff is
+`.bits/handoffs/2026-09-30-bits-codegen-cmax-b-buddi-activation.md`.
+
 ## PR 112 conflict resolution - 2026-09-24
 
 The owner requests integrating current main into `claude/keen-pasteur-aoyiht`.

@@ -872,7 +872,7 @@
       "wired_into_ci": true
     }
   ],
-  "generated_at": "2026-09-24T23:18:25.370028+00:00",
+  "generated_at": "2026-09-30T14:51:43.806208+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -1589,7 +1589,7 @@
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 1819,
+    "tracked_files": 1821,
     "web_source_files": 383
   },
   "schema_version": 1,
@@ -1634,7 +1634,7 @@
       },
       {
         "id": "HS-07",
-        "next_step": "Bind both Firecrawl and n8n through the receiving owner; prove each configuration revision, health probe, bounded effect and uncertainty recovery.",
+        "next_step": "Bind both Firecrawl and n8n through the receiving owner; prove each configuration revision, health probe, bounded effect and uncertainty recovery. For Buddi, execute locked React/build/browser checks, then have the receiving owner confirm the public tools, microphone policy and private post-call receipt on the same deployed candidate; follow the dated Buddi activation handoff.",
         "owner": "CMAX-B / IDE1",
         "why": "A saved integration setting must not be mistaken for a working service connection."
       },
@@ -1669,7 +1669,7 @@
         "why": "Competition readiness requires an evidence-backed learning-through-work journey, a reproducible replay and actual submission criteria."
       }
     ],
-    "source_sha256": "6005c7ce8a9176951ae315b04f1278993037bf5186b2eff7bf11b73c9d3fa6b7",
+    "source_sha256": "a0a1f967a344126d28dda5cdd7e05b7161d325f46815fb63abf91f73a3b84a78",
     "state": "PASS"
   },
   "summary": {
