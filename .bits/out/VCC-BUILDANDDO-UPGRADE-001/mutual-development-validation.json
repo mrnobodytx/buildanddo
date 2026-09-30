@@ -1,0 +1,162 @@
+{
+  "schema": "buildanddo.local-source-validation/v1",
+  "recorded_at": "2026-09-30T16:31:34.901995+00:00",
+  "scope": "Local source and explicitly synthetic fixtures; no candidate acceptance or provider authentication.",
+  "source_revision_at_run": "ac4e1afb2812d543c01406ea856c7161942195e0",
+  "workspace_changes_present": true,
+  "source_sha256": {
+    "libs/evolution/work.py": "f3fb08ee6807a8e69d4bc0cfb5e548b7d71c99557e6c6a6adafde421e29df66f",
+    "libs/evolution/work_exchange.py": "9b498e4766476d3bebba19a3bf97ebef416f43a7b945f5138dfb8621f551a6ce",
+    "libs/evolution/work_cli.py": "2a9eb6c0ca4ae198fcddb50666b493fc1ec8cc086f7b37fed4d8979b48f9d869",
+    "scripts/ci/candidate_manifest.py": "e07fe1f34a2511b1f2d18d99d5d42a97f30ebe8be93f24805d0e74aa6f3b2eba",
+    "scripts/ci/evidence_epoch.py": "d68a74e9345c9a1df082b7039a6ee375ec1f789f558773768a230942aada2446",
+    ".github/workflows/evidence-epoch.yml": "11ee7df3b9d9788e1e894d04491507a0b267b4e832198a799ccecd90f26ebe41",
+    ".gitlab/ci/source-validation.yml": "3fe782770758c129ae4bf59022760087b52b2713af87a51591d42514f8d057f5",
+    "tests/upgrade/test_work_support.py": "94171fed4ae935dac0c44b3d8f9bd4c3f237219fca4804930a135921e87d51e3",
+    "tests/upgrade/test_work_contracts.py": "859a3cac89c1d95ae61f6a022591d760057e27b7dfcd9fb556110a3fc17d2df3",
+    "tests/upgrade/test_work_exchange.py": "1746a4a2a448354772f0d09af025eec26c67a6356cb306d401184ae0051fa77d",
+    "tests/upgrade/test_work_cli.py": "1881d4a0e81afece479ccfd6860530acb2a600b10f8f96c9d26d519ec1cf76d3",
+    "tests/upgrade/check_work_exchange.py": "7d7a2127b1e12d008020cc50adb59a2df519677432133e94af40cb8e2d70fc89",
+    "tests/upgrade/test_development_support.py": "101a534f9ac1ea2e9b186a8e4d3222bd0df4aca7484f7c9c2e255611ecb43914",
+    "tests/upgrade/test_development_sources.py": "c57c36410577794ba3c2a38a12ad82785dd237dc11668d349bb1ec14303d19f9",
+    "tests/upgrade/test_gitlab_acceptance.py": "df51e829b457ae4c0b7559e324b065384983c3899468b4cb35333187d8b04fc4"
+  },
+  "coverage_profiles": {
+    "3.11.15": {
+      "state": "PASS",
+      "tests": 46,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "coverage_kind": "Python trace statement lines; no branch coverage claim",
+      "coverage": {
+        "libs/evolution/work.py": {
+          "covered": 293,
+          "statements": 293,
+          "percent": 100.0,
+          "missing": []
+        },
+        "libs/evolution/work_exchange.py": {
+          "covered": 363,
+          "statements": 365,
+          "percent": 99.45,
+          "missing": [
+            71,
+            72
+          ]
+        },
+        "libs/evolution/work_cli.py": {
+          "covered": 233,
+          "statements": 235,
+          "percent": 99.15,
+          "missing": [
+            312,
+            336
+          ]
+        },
+        "scripts/ci/candidate_manifest.py": {
+          "covered": 100,
+          "statements": 104,
+          "percent": 96.15,
+          "missing": [
+            39,
+            40,
+            42,
+            141
+          ]
+        }
+      },
+      "fixtures": "Synthetic work, provider identities, source results and separately pinned reviews",
+      "live_cscc_or_gitlab_runs": 0,
+      "deployments": 0
+    },
+    "3.12.13": {
+      "state": "PASS",
+      "tests": 46,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "coverage_kind": "Python trace statement lines; no branch coverage claim",
+      "coverage": {
+        "libs/evolution/work.py": {
+          "covered": 293,
+          "statements": 293,
+          "percent": 100.0,
+          "missing": []
+        },
+        "libs/evolution/work_exchange.py": {
+          "covered": 382,
+          "statements": 385,
+          "percent": 99.22,
+          "missing": [
+            55,
+            71,
+            72
+          ]
+        },
+        "libs/evolution/work_cli.py": {
+          "covered": 243,
+          "statements": 245,
+          "percent": 99.18,
+          "missing": [
+            312,
+            336
+          ]
+        },
+        "scripts/ci/candidate_manifest.py": {
+          "covered": 99,
+          "statements": 103,
+          "percent": 96.12,
+          "missing": [
+            39,
+            40,
+            42,
+            141
+          ]
+        }
+      },
+      "fixtures": "Synthetic work, provider identities, source results and separately pinned reviews",
+      "live_cscc_or_gitlab_runs": 0,
+      "deployments": 0
+    }
+  },
+  "connected_regressions": {
+    "3.11.15": {
+      "tests": 164,
+      "failures": 0,
+      "errors": 0,
+      "skips": 0
+    },
+    "3.12.13": {
+      "tests": 164,
+      "failures": 0,
+      "errors": 0,
+      "skips": 0
+    }
+  },
+  "regression_command": "python -m unittest tests.upgrade.test_work_contracts tests.upgrade.test_work_exchange tests.upgrade.test_work_cli tests.upgrade.test_development_loop tests.upgrade.test_development_intelligence tests.upgrade.test_development_sources tests.upgrade.test_development_review_packets tests.upgrade.test_capability_token_contracts tests.upgrade.test_capability_token_records tests.upgrade.test_mission_suite tests.upgrade.test_gitlab_acceptance",
+  "targeted_red_green": {
+    "candidate_revision_guards": {
+      "before_failures": 2,
+      "after_failures": 0
+    },
+    "duplicate_result_later_review": {
+      "before_failures": 1,
+      "after_failures": 0
+    }
+  },
+  "typing": "PASS: strict mypy on the three new implementation modules",
+  "lint": "PASS: Ruff on changed Python source and tests",
+  "workflow_syntax": "PASS: both changed pipeline YAML documents parsed",
+  "jsx_diagnostic": "PASS: changed progression descriptor syntax and bindings; no rendered acceptance",
+  "unexecuted": [
+    "Hosted GitHub/GitLab workflows",
+    "Native PocketBase and rendered browser acceptance",
+    "Private CSCC and identity adapters",
+    "Live Buddi/provider/post-call delivery",
+    "Deployment, external readback and signing"
+  ],
+  "external_writes": 0,
+  "deployments": 0,
+  "assigned_live_workers": 0
+}

@@ -10,7 +10,7 @@
       "enum_type": "ConfigDoc",
       "functions": [],
       "dependencies": [],
-      "lines": 1697,
+      "lines": 1701,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Keep the registered mission research continuation and measured repository inventory reviewable while retaining earlier runtime and governance findings.",
@@ -48,7 +48,9 @@
         "test-isolation-and-claim-authority",
         "telemetry-coverage",
         "pr112-integration",
-        "buddi-connection-recovery"
+        "buddi-connection-recovery",
+        "workspace-connection-recovery",
+        "mutual-development-exchange"
       ],
       "tenant_id": null
     },
@@ -542,7 +544,7 @@
       "dependencies": [
         ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md"
       ],
-      "lines": 65869,
+      "lines": 67863,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Describe the public memory payload that carries this dispatch into the post-merge ingest flow.",
@@ -561,7 +563,9 @@
         "educational-collaboration",
         "government-research-assurance",
         "career-passport",
-        "buddi-connection-recovery"
+        "buddi-connection-recovery",
+        "workspace-connection-recovery",
+        "mutual-development-exchange"
       ],
       "tenant_id": null
     },
@@ -680,7 +684,7 @@
       "dependencies": [
         ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md"
       ],
-      "lines": 1837,
+      "lines": 1875,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Track the authorized eight-area implementation and its verification gates.",
@@ -706,7 +710,9 @@
         "test-isolation-and-claim-authority",
         "telemetry-coverage",
         "pr112-integration",
-        "buddi-connection-recovery"
+        "buddi-connection-recovery",
+        "workspace-connection-recovery",
+        "mutual-development-exchange"
       ],
       "tenant_id": null
     },
@@ -1010,7 +1016,7 @@
       "dependencies": [
         ".bits/srs_registry.yml"
       ],
-      "lines": 2493,
+      "lines": 2550,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Define acceptance evidence for the eight owner-authorized BuildAndDo upgrades.",
@@ -1036,7 +1042,9 @@
         "test-isolation-and-claim-authority",
         "telemetry-coverage",
         "pr112-integration",
-        "buddi-connection-recovery"
+        "buddi-connection-recovery",
+        "workspace-connection-recovery",
+        "mutual-development-exchange"
       ],
       "tenant_id": null
     },
@@ -1355,7 +1363,8 @@
         "SRS-BUILDANDDO-UPGRADE-001",
         "sprint-user-journey",
         "government-research-assurance",
-        "test-isolation-and-claim-authority"
+        "test-isolation-and-claim-authority",
+        "mutual-development-exchange"
       ],
       "tenant_id": null
     },
@@ -6135,9 +6144,10 @@
       ],
       "dependencies": [
         "apps/web/src/hooks/useWorkspaceControl.js",
-        "apps/web/src/components/workspace/ControlPrimitives.jsx"
+        "apps/web/src/components/workspace/ControlPrimitives.jsx",
+        "apps/web/src/lib/connectorReadiness.js"
       ],
-      "lines": 86,
+      "lines": 91,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Present one scoped control surface for sinks, extensions, Discord and Reddit with explicit requested versus observed states.",
@@ -6152,7 +6162,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "workspace-administration"
+        "workspace-administration",
+        "workspace-connection-recovery"
       ],
       "tenant_id": null
     },
@@ -6293,7 +6304,8 @@
         "SRS-BUILDANDDO-UPGRADE-001",
         "governance-repair",
         "government-research-assurance",
-        "test-isolation-and-claim-authority"
+        "test-isolation-and-claim-authority",
+        "mutual-development-exchange"
       ],
       "tenant_id": null
     },
@@ -6926,9 +6938,10 @@
         "WorkflowRunReview"
       ],
       "dependencies": [
-        "apps/web/src/lib/workflowRuns.js"
+        "apps/web/src/lib/workflowRuns.js",
+        "apps/web/src/components/workspace/workflows/BusinessActionReview.jsx"
       ],
-      "lines": 170,
+      "lines": 173,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Let operators record source-backed step outcomes and explicit approvals while preserving rejected observations for safe retries.",
@@ -6945,7 +6958,8 @@
         "SRS-BUILDANDDO-UPGRADE-001",
         "workflow-runs",
         "sprint-completion",
-        "workspace-assistant"
+        "workspace-assistant",
+        "workspace-connection-recovery"
       ],
       "tenant_id": null
     },
@@ -6996,9 +7010,10 @@
       "dependencies": [
         "apps/web/src/components/workspace/workflows/WorkflowRunsPanel.jsx",
         "apps/web/src/components/workspace/workflows/WorkflowRunReview.jsx",
-        "apps/web/src/components/workspace/workflows/StartWorkflowRun.jsx"
+        "apps/web/src/components/workspace/workflows/StartWorkflowRun.jsx",
+        "apps/web/src/components/workspace/workflows/BusinessActionReview.jsx"
       ],
-      "lines": 267,
+      "lines": 295,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Exercise workflow history, safe retries, approval consent, evidence recording and scope changes through the real workspace UI.",
@@ -7013,7 +7028,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "sprint-user-journey"
+        "sprint-user-journey",
+        "workspace-connection-recovery"
       ],
       "tenant_id": null
     },
@@ -9585,7 +9601,7 @@
       "lines": 400,
       "caps_grade": "pending",
       "ck_stamp": "pending",
-      "intent_statement": "Show the day the edition is about — today's priorities, what was",
+      "intent_statement": "Show the day the edition is about \u2014 today's priorities, what was",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
       "outcome": "partial",
       "supersedes": false,
@@ -9816,7 +9832,7 @@
       "lines": 718,
       "caps_grade": "pending",
       "ck_stamp": "pending",
-      "intent_statement": "Make a list of missions triageable — priority, progress, due dates, editing and deletion — instead of an append-only stack.",
+      "intent_statement": "Make a list of missions triageable \u2014 priority, progress, due dates, editing and deletion \u2014 instead of an append-only stack.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
       "outcome": "partial",
       "supersedes": false,
@@ -9857,7 +9873,7 @@
       "lines": 628,
       "caps_grade": "pending",
       "ck_stamp": "pending",
-      "intent_statement": "Give the operations surface the two things it was missing — the runbook text and the record of each time a human ran it.",
+      "intent_statement": "Give the operations surface the two things it was missing \u2014 the runbook text and the record of each time a human ran it.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
       "outcome": "partial",
       "supersedes": false,
@@ -9892,7 +9908,7 @@
       "lines": 526,
       "caps_grade": "pending",
       "ck_stamp": "pending",
-      "intent_statement": "Answer \"what is happening in this workspace\" in one screen — one merged activity feed, counts that mean something, and an honest statement when the data layer cannot be read.",
+      "intent_statement": "Answer \"what is happening in this workspace\" in one screen \u2014 one merged activity feed, counts that mean something, and an honest statement when the data layer cannot be read.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
       "outcome": "partial",
       "supersedes": false,
@@ -9967,7 +9983,7 @@
       "lines": 625,
       "caps_grade": "pending",
       "ck_stamp": "pending",
-      "intent_statement": "Make the roadmap answer \"how far along is this workspace, and on what evidence\" — a status distribution, a filterable ledger, and in-place status changes that still cannot fake a verification.",
+      "intent_statement": "Make the roadmap answer \"how far along is this workspace, and on what evidence\" \u2014 a status distribution, a filterable ledger, and in-place status changes that still cannot fake a verification.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
       "outcome": "partial",
       "supersedes": false,
@@ -10238,7 +10254,7 @@
       "lines": 733,
       "caps_grade": "pending",
       "ck_stamp": "pending",
-      "intent_statement": "Give a workflow the sequence that makes it one — ordered, editable steps — so activating it says what would run.",
+      "intent_statement": "Give a workflow the sequence that makes it one \u2014 ordered, editable steps \u2014 so activating it says what would run.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
       "outcome": "partial",
       "supersedes": false,
@@ -10276,7 +10292,7 @@
         "apps/web/src/components/workspace/WorkspaceLayout.jsx",
         "tests/upgrade/admin-fixture.mjs"
       ],
-      "lines": 182,
+      "lines": 201,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Exercise actual administration screens through the browser adapter and server policies including role denial and uncertain-save recovery.",
@@ -10291,7 +10307,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "workspace-administration"
+        "workspace-administration",
+        "workspace-connection-recovery"
       ],
       "tenant_id": null
     },
@@ -11781,7 +11798,7 @@
         "apps/pocketbase/pb_migrations/1789600000_create_workflow_runs.js",
         "tests/upgrade/workflow-runs.test.mjs"
       ],
-      "lines": 178,
+      "lines": 186,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Explain recorded workflow execution, its permission and retry boundaries, and the evidence needed before native activation.",
@@ -11796,7 +11813,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "workflow-runs"
+        "workflow-runs",
+        "workspace-connection-recovery"
       ],
       "tenant_id": null
     },
@@ -11820,7 +11838,7 @@
         "tests/upgrade/workspace-community.test.mjs",
         "tests/upgrade/workspace-control-client.test.mjs"
       ],
-      "lines": 241,
+      "lines": 245,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Explain workspace authority, retained administration records and concrete native/browser acceptance before activating community and integration controls.",
@@ -11835,7 +11853,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "workspace-administration"
+        "workspace-administration",
+        "workspace-connection-recovery"
       ],
       "tenant_id": null
     },
@@ -34528,7 +34547,7 @@
       "type": "C",
       "event_type": "smoke_run",
       "file_path": "apps/mission_suite/bundle.py",
-      "description": "The extended portable source passed 256 Node and 192 Python cases with nine explicit native skips. Existing mission-suite coverage passed 23 cases at 87.96–99.55% statement coverage. Strict typing passed six source modules, Ruff passed changed Python source/tests, and the JavaScript diagnostic parsed 239 modules without errors.",
+      "description": "The extended portable source passed 256 Node and 192 Python cases with nine explicit native skips. Existing mission-suite coverage passed 23 cases at 87.96\u201399.55% statement coverage. Strict typing passed six source modules, Ruff passed changed Python source/tests, and the JavaScript diagnostic parsed 239 modules without errors.",
       "caps_before": null,
       "caps_after": null,
       "dag_impact": null,
@@ -34684,7 +34703,7 @@
       "type": "C",
       "event_type": "test_pass",
       "file_path": "tests/upgrade/check_blueprint_pipeline.py",
-      "description": "Blueprint pipeline continuation: 44 focused cases: 42 pass, two native PDF skips; 94.17–100% statement coverage per new Python module. Strict source typing and Ruff pass.",
+      "description": "Blueprint pipeline continuation: 44 focused cases: 42 pass, two native PDF skips; 94.17\u2013100% statement coverage per new Python module. Strict source typing and Ruff pass.",
       "caps_before": null,
       "caps_after": null,
       "dag_impact": null,
@@ -38385,7 +38404,7 @@
       "dependencies": [
         ".bits/hostinger-readiness.json"
       ],
-      "lines": 669,
+      "lines": 687,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Identify the mandatory sprint contract without embedding comments in JSON.",
@@ -38410,7 +38429,9 @@
         "broadcast-repairs-and-lessons",
         "test-isolation-and-claim-authority",
         "telemetry-coverage",
-        "buddi-connection-recovery"
+        "buddi-connection-recovery",
+        "workspace-connection-recovery",
+        "mutual-development-exchange"
       ],
       "tenant_id": null
     },
@@ -38457,7 +38478,7 @@
       "dependencies": [
         ".bits/hostinger-readiness.lock.json"
       ],
-      "lines": 1353,
+      "lines": 1366,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Distinguish reviewed source fingerprints from execution or deployment evidence.",
@@ -38483,7 +38504,9 @@
         "test-isolation-and-claim-authority",
         "telemetry-coverage",
         "pr112-integration",
-        "buddi-connection-recovery"
+        "buddi-connection-recovery",
+        "workspace-connection-recovery",
+        "mutual-development-exchange"
       ],
       "tenant_id": null
     },
@@ -38698,9 +38721,10 @@
         ".bits/handoffs/2026-09-21-bits-codegen-cmax-b-governance-execution.md",
         "docs/sprint-user-journey.md",
         "docs/development-loop.md",
+        "docs/mutual-development.md",
         "docs/media-corpus.md"
       ],
-      "lines": 421,
+      "lines": 427,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Make the reason, acceptance boundary and next action for every sprint piece a required source review rather than a remembered plan.",
@@ -38718,7 +38742,8 @@
         "sprint-user-journey",
         "developmental-twin",
         "evidence-backed-value",
-        "educational-collaboration"
+        "educational-collaboration",
+        "mutual-development-exchange"
       ],
       "tenant_id": null
     },
@@ -40214,7 +40239,8 @@
       ],
       "enum_type": "Widget",
       "functions": [
-        "AssistantDesk"
+        "AssistantDesk",
+        "WorkspaceAssistant"
       ],
       "dependencies": [
         "apps/web/src/pages/workspace/JourneyPage.jsx",
@@ -40223,7 +40249,7 @@
         "apps/web/src/contexts/WorkspaceAccessContext.jsx",
         "apps/web/src/hooks/useFailureTelemetry.js"
       ],
-      "lines": 234,
+      "lines": 242,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Offer a persistent account-scoped assistant with visible plans, form assistance, retryable outcomes and personal session history.",
@@ -40241,7 +40267,8 @@
         "sprint-completion",
         "workspace-assistant",
         "audited-evidence-repairs",
-        "telemetry-coverage"
+        "telemetry-coverage",
+        "workspace-connection-recovery"
       ],
       "tenant_id": null
     },
@@ -40296,7 +40323,7 @@
         "apps/web/src/components/workspace/WorkspaceAssistant.jsx",
         "tests/upgrade/assistant-fixture.mjs"
       ],
-      "lines": 241,
+      "lines": 272,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Require rendered conversation recovery, reviewed form effects, current-account isolation and honest unavailable-provider states.",
@@ -40313,7 +40340,8 @@
         "SRS-BUILDANDDO-UPGRADE-001",
         "sprint-completion",
         "workspace-assistant",
-        "audited-evidence-repairs"
+        "audited-evidence-repairs",
+        "workspace-connection-recovery"
       ],
       "tenant_id": null
     },
@@ -40366,7 +40394,7 @@
         "apps/web/src/lib/businessExecution.js",
         "apps/web/src/lib/workflowRuns.js"
       ],
-      "lines": 58,
+      "lines": 93,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Expose actual bounded execution and uncertain outcomes in the existing workflow review.",
@@ -40382,7 +40410,8 @@
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
         "sprint-completion",
-        "workspace-assistant"
+        "workspace-assistant",
+        "workspace-connection-recovery"
       ],
       "tenant_id": null
     },
@@ -40874,7 +40903,7 @@
         "apps/web/src/lib/workspaceAssistant.js",
         "apps/web/src/components/workspace/WorkspaceAssistant.jsx"
       ],
-      "lines": 141,
+      "lines": 149,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Explain personal assistant isolation, inferred browser actions, scoped context and receiving acceptance without granting model authority.",
@@ -40890,7 +40919,8 @@
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
         "sprint-completion",
-        "workspace-assistant"
+        "workspace-assistant",
+        "workspace-connection-recovery"
       ],
       "tenant_id": null
     },
@@ -42515,9 +42545,10 @@
         "docs/capability-tokens.md",
         "docs/submission-guide.md",
         "libs/semantic_twin/progression.py",
-        "docs/operator-plane.md"
+        "docs/operator-plane.md",
+        "docs/mutual-development.md"
       ],
-      "lines": 358,
+      "lines": 364,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Make development observations, proposed work and independent grading operable without confusing source tests with competence or competition acceptance.",
@@ -42534,7 +42565,8 @@
         "SRS-BUILDANDDO-UPGRADE-001",
         "four-gap-closure",
         "developmental-twin",
-        "evidence-backed-value"
+        "evidence-backed-value",
+        "mutual-development-exchange"
       ],
       "tenant_id": null
     },
@@ -43583,7 +43615,7 @@
         ".gitlab/ci/day21-submission.yml",
         ".gitlab/ci/source-validation.yml"
       ],
-      "lines": 409,
+      "lines": 413,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Prevent GitHub configuration, unreachable jobs or incomplete artifacts from standing in for GitLab acceptance.",
@@ -43599,7 +43631,8 @@
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
         "sprint-user-journey",
-        "government-research-assurance"
+        "government-research-assurance",
+        "mutual-development-exchange"
       ],
       "tenant_id": null
     },
@@ -44047,9 +44080,10 @@
         "tests/assurance/run.py",
         "tests/deploy/test_release_telemetry.py",
         "tests/deploy/test_ship_telemetry.py",
+        "tests/upgrade/check_work_exchange.py",
         "tests/upgrade/check_media_corpus.py"
       ],
-      "lines": 213,
+      "lines": 215,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Keep native parser and portable coverage requirements executing on GitLab when duplicate GitHub scheduling is retired.",
@@ -44066,7 +44100,8 @@
         "SRS-BUILDANDDO-UPGRADE-001",
         "governance-repair",
         "government-research-assurance",
-        "telemetry-coverage"
+        "telemetry-coverage",
+        "mutual-development-exchange"
       ],
       "tenant_id": null
     },
@@ -44844,12 +44879,13 @@
       ],
       "enum_type": "Adapter",
       "functions": [
+        "isIntegrationObservationCurrent",
         "connectorReadiness"
       ],
       "dependencies": [
         "apps/pocketbase/pb_hooks/workspace-administration.js"
       ],
-      "lines": 33,
+      "lines": 44,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Explain current connection prerequisites before an operator requests a bounded effect.",
@@ -44864,7 +44900,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "sprint-user-journey"
+        "sprint-user-journey",
+        "workspace-connection-recovery"
       ],
       "tenant_id": null
     },
@@ -64541,6 +64578,1963 @@
     },
     {
       "type": "A",
+      "file_path": ".bits/handoffs/2026-09-30-bits-codegen-ide1-workspace-connections.md",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "docs/workspace-administration.md",
+        "docs/workspace-assistant.md",
+        "docs/workflow-system.md",
+        "docs/business-execution.md",
+        "tests/upgrade/workspace-connections.test.mjs"
+      ],
+      "lines": 63,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Hand off rendered and native acceptance of repaired workspace connections while keeping provider binding and deployment with the receiving owners.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "workspace-connection-recovery"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/workspace-connections-report.md",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "tests/upgrade/workspace-connections.test.mjs",
+        "apps/web/src/lib/connectorReadiness.js",
+        "docs/workspace-administration.md",
+        "docs/workspace-assistant.md",
+        "docs/workflow-system.md",
+        ".bits/handoffs/2026-09-30-bits-codegen-ide1-workspace-connections.md"
+      ],
+      "lines": 113,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Retain reproduced workspace connection failures, source repairs and receiving-runtime gaps without treating source checks as live service activation.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "workspace-connection-recovery"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/workspace-connections.test.mjs",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "clock",
+        "component",
+        "integrationFixture",
+        "assistant",
+        "action"
+      ],
+      "dependencies": [
+        "apps/web/src/components/workspace/IntegrationControls.jsx",
+        "apps/web/src/lib/connectorReadiness.js",
+        "apps/web/src/components/workspace/WorkspaceAssistant.jsx",
+        "apps/web/src/components/workspace/workflows/BusinessActionReview.jsx",
+        "apps/web/src/components/workspace/workflows/WorkflowRunReview.jsx",
+        "tests/upgrade/admin-fixture.mjs",
+        "tests/upgrade/assistant-fixture.mjs"
+      ],
+      "lines": 363,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Reproduce expired connection claims, unconfigured assistant sends and stale workflow readback using production handlers and explicit runtime doubles.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "workspace-connection-recovery"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/workspace/IntegrationControls.jsx",
+      "target": "apps/web/src/lib/connectorReadiness.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/components/workspace/IntegrationControls.jsx declares CONSUMES apps/web/src/lib/connectorReadiness.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/workspace/workflows/WorkflowRunReview.jsx",
+      "target": "apps/web/src/components/workspace/workflows/BusinessActionReview.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/components/workspace/workflows/WorkflowRunReview.jsx declares CONSUMES apps/web/src/components/workspace/workflows/BusinessActionReview.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/workspace/workflows/__tests__/WorkflowRuns.test.jsx",
+      "target": "apps/web/src/components/workspace/workflows/BusinessActionReview.jsx",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "apps/web/src/components/workspace/workflows/__tests__/WorkflowRuns.test.jsx declares VALIDATES apps/web/src/components/workspace/workflows/BusinessActionReview.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-30-bits-codegen-ide1-workspace-connections.md",
+      "target": "docs/workspace-administration.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/handoffs/2026-09-30-bits-codegen-ide1-workspace-connections.md declares CONSUMES docs/workspace-administration.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-30-bits-codegen-ide1-workspace-connections.md",
+      "target": "docs/workspace-assistant.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/handoffs/2026-09-30-bits-codegen-ide1-workspace-connections.md declares CONSUMES docs/workspace-assistant.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-30-bits-codegen-ide1-workspace-connections.md",
+      "target": "docs/workflow-system.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/handoffs/2026-09-30-bits-codegen-ide1-workspace-connections.md declares CONSUMES docs/workflow-system.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-30-bits-codegen-ide1-workspace-connections.md",
+      "target": "docs/business-execution.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/handoffs/2026-09-30-bits-codegen-ide1-workspace-connections.md declares CONSUMES docs/business-execution.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-30-bits-codegen-ide1-workspace-connections.md",
+      "target": "tests/upgrade/workspace-connections.test.mjs",
+      "edge_type": "VERIFIED_BY",
+      "weight": 1.0,
+      "description": ".bits/handoffs/2026-09-30-bits-codegen-ide1-workspace-connections.md declares VERIFIED_BY tests/upgrade/workspace-connections.test.mjs.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/workspace-connections-report.md",
+      "target": "tests/upgrade/workspace-connections.test.mjs",
+      "edge_type": "VERIFIED_BY",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/workspace-connections-report.md declares VERIFIED_BY tests/upgrade/workspace-connections.test.mjs.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/workspace-connections-report.md",
+      "target": "apps/web/src/lib/connectorReadiness.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/workspace-connections-report.md declares CONSUMES apps/web/src/lib/connectorReadiness.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/workspace-connections-report.md",
+      "target": "docs/workspace-administration.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/workspace-connections-report.md declares CONSUMES docs/workspace-administration.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/workspace-connections-report.md",
+      "target": "docs/workspace-assistant.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/workspace-connections-report.md declares CONSUMES docs/workspace-assistant.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/workspace-connections-report.md",
+      "target": "docs/workflow-system.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/workspace-connections-report.md declares CONSUMES docs/workflow-system.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/workspace-connections-report.md",
+      "target": ".bits/handoffs/2026-09-30-bits-codegen-ide1-workspace-connections.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/workspace-connections-report.md declares CONSUMES .bits/handoffs/2026-09-30-bits-codegen-ide1-workspace-connections.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/workspace-connections-report.md",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/memory.json",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/workspace-connections-report.md declares CONSUMES .bits/out/VCC-BUILDANDDO-UPGRADE-001/memory.json.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/workspace-connections.test.mjs",
+      "target": "apps/web/src/components/workspace/IntegrationControls.jsx",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/workspace-connections.test.mjs declares VALIDATES apps/web/src/components/workspace/IntegrationControls.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/workspace-connections.test.mjs",
+      "target": "apps/web/src/lib/connectorReadiness.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/workspace-connections.test.mjs declares VALIDATES apps/web/src/lib/connectorReadiness.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/workspace-connections.test.mjs",
+      "target": "apps/web/src/components/workspace/WorkspaceAssistant.jsx",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/workspace-connections.test.mjs declares VALIDATES apps/web/src/components/workspace/WorkspaceAssistant.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/workspace-connections.test.mjs",
+      "target": "apps/web/src/components/workspace/workflows/BusinessActionReview.jsx",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/workspace-connections.test.mjs declares VALIDATES apps/web/src/components/workspace/workflows/BusinessActionReview.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/workspace-connections.test.mjs",
+      "target": "apps/web/src/components/workspace/workflows/WorkflowRunReview.jsx",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/workspace-connections.test.mjs declares VALIDATES apps/web/src/components/workspace/workflows/WorkflowRunReview.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/workspace-connections.test.mjs",
+      "target": "tests/upgrade/admin-fixture.mjs",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/upgrade/workspace-connections.test.mjs declares DEPENDS_ON tests/upgrade/admin-fixture.mjs.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/workspace-connections.test.mjs",
+      "target": "tests/upgrade/assistant-fixture.mjs",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "tests/upgrade/workspace-connections.test.mjs declares DEPENDS_ON tests/upgrade/assistant-fixture.mjs.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "C",
+      "event_type": "test_fail",
+      "file_path": "tests/upgrade/workspace-connections.test.mjs",
+      "description": "Workspace connection regressions reproduced nine failures and one passing control before repair: expired integration health, missing or failed Buddi configuration reads, workflow receipt races and stale permission gating. Production handlers used explicit local doubles.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-30T15:26:47.714841+00:00",
+      "commit_sha": null,
+      "smoke_result": "1/10"
+    },
+    {
+      "type": "C",
+      "event_type": "test_pass",
+      "file_path": "tests/upgrade/workspace-connections.test.mjs",
+      "description": "All 344 targeted connection, assistant, workflow, mission, public-action and read-failure Node cases passed on Node 22.17.0, including eighteen dedicated recovery cases and the retained twenty-three voice cases. Zero skips; local test subprocess access was authorized.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-30T15:26:47.714841+00:00",
+      "commit_sha": null,
+      "smoke_result": "344/344"
+    },
+    {
+      "type": "C",
+      "event_type": "test_pass",
+      "file_path": "apps/web/src/lib/connectorReadiness.js",
+      "description": "The imported connector-readiness helper measured 100 percent lines, 92 percent branches and 100 percent functions across 46 passing local cases. This is helper coverage, not rendered JSX coverage.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-30T15:26:47.714841+00:00",
+      "commit_sha": null,
+      "smoke_result": "46/46"
+    },
+    {
+      "type": "C",
+      "event_type": "failure",
+      "file_path": ".bits/handoffs/2026-09-30-bits-codegen-ide1-workspace-connections.md",
+      "description": "The rendered workspace test command exited 127; locked React, Vitest, Vite and ElevenLabs dependencies are absent. Full lint/build, native PocketBase and live provider acceptance remain unexecuted in this continuation; no external activation or deployment occurred.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-30T15:26:47.714841+00:00",
+      "commit_sha": null,
+      "smoke_result": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/handoffs/2026-09-30-bits-codegen-cscc-work-exchange.md",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "docs/mutual-development.md",
+        "libs/evolution/work.py",
+        "libs/evolution/work_exchange.py",
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/mutual-development-dogfood.json"
+      ],
+      "lines": 68,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Give CSCC and release owners a concrete public contract and acceptance matrix for the first independently verified reciprocal mission.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "mutual-development-exchange"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/mutual-development-dogfood.json",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Schema",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/mutual-development-dogfood.json",
+        "libs/evolution/work.py",
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/workspace-connections-report.md"
+      ],
+      "lines": 1,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Retain a real source-bound proposed Buddi/workspace mission whose missing independent runtime evidence remains explicit.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "mutual-development-exchange"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/mutual-development-dogfood.json.cgrf.yaml",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Schema",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/mutual-development-dogfood.json",
+        "libs/evolution/work.py",
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/workspace-connections-report.md"
+      ],
+      "lines": 18,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Retain a real source-bound proposed Buddi/workspace mission whose missing independent runtime evidence remains explicit.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "mutual-development-exchange"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/mutual-development-report.md",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "docs/mutual-development.md",
+        "tests/upgrade/check_work_exchange.py",
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/mutual-development-validation.json",
+        ".bits/handoffs/2026-09-30-bits-codegen-cscc-work-exchange.md",
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/memory.json"
+      ],
+      "lines": 140,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Record the implemented reciprocal work boundary, measured source evidence and unexecuted private integration without self-certifying a live loop.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "mutual-development-exchange"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/mutual-development-validation.json",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Schema",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/mutual-development-validation.json",
+        "tests/upgrade/check_work_exchange.py"
+      ],
+      "lines": 162,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Preserve observed work exchange coverage and connected regression results separately from unexecuted receiving-runtime acceptance.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "mutual-development-exchange"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/mutual-development-validation.json.cgrf.yaml",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Schema",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/mutual-development-validation.json",
+        "tests/upgrade/check_work_exchange.py"
+      ],
+      "lines": 18,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Preserve observed work exchange coverage and connected regression results separately from unexecuted receiving-runtime acceptance.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "mutual-development-exchange"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".github/workflows/evidence-epoch.yml",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Workflow",
+      "functions": [],
+      "dependencies": [
+        "scripts/ci/evidence_epoch.py",
+        "scripts/ci/datadog_publish.py",
+        "scripts/ci/verify_public_boundary.py",
+        "scripts/ci/epoch_chain.json"
+      ],
+      "lines": 235,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Fingerprint every merge's evidence set and publish the root where it outlives the 30-day artifact retention window.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "mutual-development-exchange"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "docs/mutual-development.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "libs/evolution/work.py",
+        "libs/evolution/work_exchange.py",
+        "libs/evolution/work_cli.py",
+        "scripts/ci/candidate_manifest.py",
+        "scripts/ci/evidence_epoch.py",
+        "docs/development-loop.md"
+      ],
+      "lines": 237,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Explain the operable public work/result exchange and the independent receiving steps still needed to close the reciprocal development loop.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "mutual-development-exchange"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "libs/evolution/work.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Schema",
+      "functions": [
+        "bounded_text",
+        "revision",
+        "relative_path",
+        "_matches",
+        "public_path"
+      ],
+      "dependencies": [
+        "libs/evolution/common.py",
+        "libs/semantic_twin/contracts.py",
+        "libs/semantic_twin/identity.py"
+      ],
+      "lines": 443,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Preserve public work boundaries and result provenance across BuildAndDo and Citadel without transferring execution authority.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "mutual-development-exchange"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "libs/evolution/work_cli.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Adapter",
+      "functions": [
+        "from_development_mission",
+        "_write_new",
+        "_json_file",
+        "main"
+      ],
+      "dependencies": [
+        "libs/evolution/work.py",
+        "libs/evolution/work_exchange.py",
+        "libs/evolution/intelligence.py",
+        "libs/evolution/common.py",
+        "libs/capability_tokens/verification.py",
+        "libs/semantic_twin/contracts.py",
+        "libs/semantic_twin/identity.py",
+        "libs/semantic_twin/receipts.py"
+      ],
+      "lines": 336,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Make existing development missions and returned evidence usable as portable candidate-only work through local commands.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "mutual-development-exchange"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "libs/evolution/work_exchange.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Adapter",
+      "functions": [
+        "_object",
+        "read_bytes",
+        "load_contract",
+        "require_candidate_provenance",
+        "evidence_bytes",
+        "_bind",
+        "assess_result",
+        "read_bundle",
+        "write_bundle",
+        "candidate_paths",
+        "worker_experience"
+      ],
+      "dependencies": [
+        "libs/evolution/work.py",
+        "libs/evolution/common.py",
+        "libs/capability_tokens/verification.py",
+        "libs/semantic_twin/receipts.py",
+        "libs/semantic_twin/contracts.py",
+        "libs/semantic_twin/identity.py",
+        "libs/semantic_twin/vocabulary.py"
+      ],
+      "lines": 522,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Recheck exact work evidence through the existing independent review boundary and retain deduplicated worker experience without promotion.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "mutual-development-exchange"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "scripts/ci/candidate_manifest.py",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Adapter",
+      "functions": [
+        "sha_file",
+        "git",
+        "main"
+      ],
+      "dependencies": [
+        "libs/evolution/work.py",
+        "libs/evolution/work_exchange.py"
+      ],
+      "lines": 141,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Bind optional public work scope to the actual candidate without attributing checkout evidence to another revision.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "mutual-development-exchange"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "scripts/ci/evidence_epoch.py",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "sha256_file",
+        "sha256_json",
+        "leaf_digest",
+        "merkle_root",
+        "root_of",
+        "git",
+        "git_facts",
+        "iter_files",
+        "collect_artifacts",
+        "read_chain",
+        "next_epoch_id",
+        "append_chain",
+        "work_artifacts",
+        "build_manifest",
+        "verify_manifest",
+        "emit_github_outputs",
+        "main"
+      ],
+      "dependencies": [
+        "scripts/ci/candidate_manifest.py",
+        "scripts/ci/verify_public_boundary.py",
+        "scripts/ci/telemetry_snapshot.py",
+        "scripts/ci/epoch_chain.json",
+        "libs/evolution/work_exchange.py"
+      ],
+      "lines": 594,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Fingerprint one run's whole evidence set into a chained root a third party can recompute, so retention expiry stops looking like tampering.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "mutual-development-exchange"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/check_work_exchange.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "main"
+      ],
+      "dependencies": [
+        "libs/evolution/work.py",
+        "libs/evolution/work_exchange.py",
+        "libs/evolution/work_cli.py",
+        "tests/upgrade/test_work_contracts.py",
+        "tests/upgrade/test_work_exchange.py",
+        "tests/upgrade/test_work_cli.py"
+      ],
+      "lines": 102,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Require connected work exchange behavior and measured per-module source coverage in the existing Python validation lane.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "mutual-development-exchange"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/test_development_sources.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "capture"
+      ],
+      "dependencies": [
+        "libs/evolution/development_sources.py",
+        "tests/upgrade/test_development_support.py"
+      ],
+      "lines": 288,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Reject cross-source and incomplete CI evidence while proving authenticated-reader observations cannot mint test truth.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "mutual-development-exchange"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/test_development_support.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "source_fixture",
+        "prediction",
+        "measured",
+        "review_request",
+        "pinned_review",
+        "signal",
+        "opportunity"
+      ],
+      "dependencies": [
+        "libs/evolution/development.py",
+        "tests/upgrade/test_evolution_support.py"
+      ],
+      "lines": 176,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Keep synthetic source, reviewer and grading fixtures separate from actual development acceptance.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "mutual-development-exchange"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/test_work_cli.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [],
+      "dependencies": [
+        "libs/evolution/work_cli.py",
+        "libs/evolution/intelligence.py",
+        "tests/upgrade/test_work_support.py",
+        "tests/upgrade/test_development_support.py"
+      ],
+      "lines": 344,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Exercise real mission packet producers and local work commands without remote effects or fabricated acceptance.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "mutual-development-exchange"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/test_work_contracts.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [],
+      "dependencies": [
+        "libs/evolution/work.py",
+        "libs/evolution/work_exchange.py",
+        "tests/upgrade/test_work_support.py"
+      ],
+      "lines": 404,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Reject authority expansion, scope substitution and self-certified work while preserving incomplete and failed attempts.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "mutual-development-exchange"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/test_work_exchange.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [],
+      "dependencies": [
+        "scripts/ci/candidate_manifest.py",
+        "scripts/ci/evidence_epoch.py",
+        "libs/evolution/work_exchange.py",
+        "tests/upgrade/test_work_support.py"
+      ],
+      "lines": 528,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Prevent wrong-candidate evidence and verify portable result integrity, epoch continuity and non-inflating worker history.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "mutual-development-exchange"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/test_work_support.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "work",
+        "manifest_bytes",
+        "submission",
+        "pinned_review"
+      ],
+      "dependencies": [
+        "libs/evolution/work.py",
+        "tests/upgrade/test_evolution_support.py"
+      ],
+      "lines": 173,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Supply explicit synthetic work, artifacts and externally pinned review fixtures without claiming live execution.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "mutual-development-exchange"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "B",
+      "source": "docs/hostinger-sprint-closure.md",
+      "target": "docs/mutual-development.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/hostinger-sprint-closure.md declares CONSUMES docs/mutual-development.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/development-loop.md",
+      "target": "docs/mutual-development.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/development-loop.md declares CONSUMES docs/mutual-development.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".gitlab/ci/source-validation.yml",
+      "target": "tests/upgrade/check_work_exchange.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".gitlab/ci/source-validation.yml declares CONSUMES tests/upgrade/check_work_exchange.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-30-bits-codegen-cscc-work-exchange.md",
+      "target": "docs/mutual-development.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/handoffs/2026-09-30-bits-codegen-cscc-work-exchange.md declares CONSUMES docs/mutual-development.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-30-bits-codegen-cscc-work-exchange.md",
+      "target": "libs/evolution/work.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/handoffs/2026-09-30-bits-codegen-cscc-work-exchange.md declares CONSUMES libs/evolution/work.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-30-bits-codegen-cscc-work-exchange.md",
+      "target": "libs/evolution/work_exchange.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/handoffs/2026-09-30-bits-codegen-cscc-work-exchange.md declares CONSUMES libs/evolution/work_exchange.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-30-bits-codegen-cscc-work-exchange.md",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/mutual-development-dogfood.json",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/handoffs/2026-09-30-bits-codegen-cscc-work-exchange.md declares CONSUMES .bits/out/VCC-BUILDANDDO-UPGRADE-001/mutual-development-dogfood.json.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/mutual-development-dogfood.json.cgrf.yaml",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/mutual-development-dogfood.json",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/mutual-development-dogfood.json.cgrf.yaml declares VALIDATES .bits/out/VCC-BUILDANDDO-UPGRADE-001/mutual-development-dogfood.json.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/mutual-development-dogfood.json.cgrf.yaml",
+      "target": "libs/evolution/work.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/mutual-development-dogfood.json.cgrf.yaml declares CONSUMES libs/evolution/work.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/mutual-development-dogfood.json.cgrf.yaml",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/workspace-connections-report.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/mutual-development-dogfood.json.cgrf.yaml declares CONSUMES .bits/out/VCC-BUILDANDDO-UPGRADE-001/workspace-connections-report.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/mutual-development-report.md",
+      "target": "docs/mutual-development.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/mutual-development-report.md declares CONSUMES docs/mutual-development.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/mutual-development-report.md",
+      "target": "tests/upgrade/check_work_exchange.py",
+      "edge_type": "VERIFIED_BY",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/mutual-development-report.md declares VERIFIED_BY tests/upgrade/check_work_exchange.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/mutual-development-report.md",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/mutual-development-validation.json",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/mutual-development-report.md declares CONSUMES .bits/out/VCC-BUILDANDDO-UPGRADE-001/mutual-development-validation.json.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/mutual-development-report.md",
+      "target": ".bits/handoffs/2026-09-30-bits-codegen-cscc-work-exchange.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/mutual-development-report.md declares CONSUMES .bits/handoffs/2026-09-30-bits-codegen-cscc-work-exchange.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/mutual-development-report.md",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/memory.json",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/mutual-development-report.md declares CONSUMES .bits/out/VCC-BUILDANDDO-UPGRADE-001/memory.json.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/mutual-development-validation.json.cgrf.yaml",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/mutual-development-validation.json",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/mutual-development-validation.json.cgrf.yaml declares VALIDATES .bits/out/VCC-BUILDANDDO-UPGRADE-001/mutual-development-validation.json.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/mutual-development-validation.json.cgrf.yaml",
+      "target": "tests/upgrade/check_work_exchange.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/mutual-development-validation.json.cgrf.yaml declares CONSUMES tests/upgrade/check_work_exchange.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".github/workflows/evidence-epoch.yml",
+      "target": "scripts/ci/evidence_epoch.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".github/workflows/evidence-epoch.yml declares CONSUMES scripts/ci/evidence_epoch.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".github/workflows/evidence-epoch.yml",
+      "target": "scripts/ci/datadog_publish.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".github/workflows/evidence-epoch.yml declares CONSUMES scripts/ci/datadog_publish.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".github/workflows/evidence-epoch.yml",
+      "target": "scripts/ci/epoch_chain.json",
+      "edge_type": "PRODUCES",
+      "weight": 1.0,
+      "description": ".github/workflows/evidence-epoch.yml declares PRODUCES scripts/ci/epoch_chain.json.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".github/workflows/evidence-epoch.yml",
+      "target": "datadog.metrics.buildanddo_epoch",
+      "edge_type": "PRODUCES",
+      "weight": 1.0,
+      "description": ".github/workflows/evidence-epoch.yml declares PRODUCES datadog.metrics.buildanddo_epoch.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".github/workflows/evidence-epoch.yml",
+      "target": "datadog.events.evidence_epoch",
+      "edge_type": "PRODUCES",
+      "weight": 1.0,
+      "description": ".github/workflows/evidence-epoch.yml declares PRODUCES datadog.events.evidence_epoch.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/mutual-development.md",
+      "target": "libs/evolution/work.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/mutual-development.md declares CONSUMES libs/evolution/work.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/mutual-development.md",
+      "target": "libs/evolution/work_exchange.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/mutual-development.md declares CONSUMES libs/evolution/work_exchange.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/mutual-development.md",
+      "target": "libs/evolution/work_cli.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/mutual-development.md declares CONSUMES libs/evolution/work_cli.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/mutual-development.md",
+      "target": "scripts/ci/candidate_manifest.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/mutual-development.md declares CONSUMES scripts/ci/candidate_manifest.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/mutual-development.md",
+      "target": "scripts/ci/evidence_epoch.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/mutual-development.md declares CONSUMES scripts/ci/evidence_epoch.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/mutual-development.md",
+      "target": "docs/development-loop.md",
+      "edge_type": "EXTENDS",
+      "weight": 1.0,
+      "description": "docs/mutual-development.md declares EXTENDS docs/development-loop.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/evolution/work.py",
+      "target": "libs/evolution/common.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "libs/evolution/work.py declares CONSUMES libs/evolution/common.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/evolution/work.py",
+      "target": "libs/semantic_twin/contracts.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "libs/evolution/work.py declares CONSUMES libs/semantic_twin/contracts.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/evolution/work.py",
+      "target": "libs/semantic_twin/identity.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "libs/evolution/work.py declares CONSUMES libs/semantic_twin/identity.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/evolution/work_cli.py",
+      "target": "libs/evolution/work.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "libs/evolution/work_cli.py declares CONSUMES libs/evolution/work.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/evolution/work_cli.py",
+      "target": "libs/evolution/work_exchange.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "libs/evolution/work_cli.py declares CONSUMES libs/evolution/work_exchange.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/evolution/work_cli.py",
+      "target": "libs/evolution/intelligence.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "libs/evolution/work_cli.py declares CONSUMES libs/evolution/intelligence.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/evolution/work_cli.py",
+      "target": "libs/evolution/common.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "libs/evolution/work_cli.py declares CONSUMES libs/evolution/common.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/evolution/work_cli.py",
+      "target": "libs/capability_tokens/verification.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "libs/evolution/work_cli.py declares CONSUMES libs/capability_tokens/verification.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/evolution/work_cli.py",
+      "target": "libs/semantic_twin/contracts.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "libs/evolution/work_cli.py declares CONSUMES libs/semantic_twin/contracts.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/evolution/work_cli.py",
+      "target": "libs/semantic_twin/identity.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "libs/evolution/work_cli.py declares CONSUMES libs/semantic_twin/identity.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/evolution/work_cli.py",
+      "target": "libs/semantic_twin/receipts.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "libs/evolution/work_cli.py declares CONSUMES libs/semantic_twin/receipts.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/evolution/work_exchange.py",
+      "target": "libs/evolution/work.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "libs/evolution/work_exchange.py declares CONSUMES libs/evolution/work.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/evolution/work_exchange.py",
+      "target": "libs/evolution/common.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "libs/evolution/work_exchange.py declares CONSUMES libs/evolution/common.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/evolution/work_exchange.py",
+      "target": "libs/capability_tokens/verification.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "libs/evolution/work_exchange.py declares CONSUMES libs/capability_tokens/verification.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/evolution/work_exchange.py",
+      "target": "libs/semantic_twin/receipts.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "libs/evolution/work_exchange.py declares CONSUMES libs/semantic_twin/receipts.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/evolution/work_exchange.py",
+      "target": "libs/semantic_twin/contracts.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "libs/evolution/work_exchange.py declares CONSUMES libs/semantic_twin/contracts.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/evolution/work_exchange.py",
+      "target": "libs/semantic_twin/identity.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "libs/evolution/work_exchange.py declares CONSUMES libs/semantic_twin/identity.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "libs/evolution/work_exchange.py",
+      "target": "libs/semantic_twin/vocabulary.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "libs/evolution/work_exchange.py declares CONSUMES libs/semantic_twin/vocabulary.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "scripts/ci/candidate_manifest.py",
+      "target": "libs/evolution/work.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "scripts/ci/candidate_manifest.py declares CONSUMES libs/evolution/work.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "scripts/ci/candidate_manifest.py",
+      "target": "libs/evolution/work_exchange.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "scripts/ci/candidate_manifest.py declares CONSUMES libs/evolution/work_exchange.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "scripts/ci/evidence_epoch.py",
+      "target": "scripts/ci/verify_public_boundary.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "scripts/ci/evidence_epoch.py declares CONSUMES scripts/ci/verify_public_boundary.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "scripts/ci/evidence_epoch.py",
+      "target": "scripts/ci/candidate_manifest.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "scripts/ci/evidence_epoch.py declares CONSUMES scripts/ci/candidate_manifest.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "scripts/ci/evidence_epoch.py",
+      "target": "scripts/ci/telemetry_snapshot.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "scripts/ci/evidence_epoch.py declares CONSUMES scripts/ci/telemetry_snapshot.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "scripts/ci/evidence_epoch.py",
+      "target": "scripts/ci/epoch_chain.json",
+      "edge_type": "PRODUCES",
+      "weight": 1.0,
+      "description": "scripts/ci/evidence_epoch.py declares PRODUCES scripts/ci/epoch_chain.json.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "scripts/ci/evidence_epoch.py",
+      "target": "state/epochs",
+      "edge_type": "PRODUCES",
+      "weight": 1.0,
+      "description": "scripts/ci/evidence_epoch.py declares PRODUCES state/epochs.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "scripts/ci/evidence_epoch.py",
+      "target": "scripts/ci/evidence_epoch.py --verify",
+      "edge_type": "VERIFIED_BY",
+      "weight": 1.0,
+      "description": "scripts/ci/evidence_epoch.py declares VERIFIED_BY scripts/ci/evidence_epoch.py --verify.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "scripts/ci/evidence_epoch.py",
+      "target": "libs/evolution/work_exchange.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "scripts/ci/evidence_epoch.py declares CONSUMES libs/evolution/work_exchange.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/check_work_exchange.py",
+      "target": "libs/evolution/work.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/check_work_exchange.py declares VALIDATES libs/evolution/work.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/check_work_exchange.py",
+      "target": "libs/evolution/work_exchange.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/check_work_exchange.py declares VALIDATES libs/evolution/work_exchange.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/check_work_exchange.py",
+      "target": "libs/evolution/work_cli.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/check_work_exchange.py declares VALIDATES libs/evolution/work_cli.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/check_work_exchange.py",
+      "target": "tests/upgrade/test_work_contracts.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "tests/upgrade/check_work_exchange.py declares CONSUMES tests/upgrade/test_work_contracts.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/check_work_exchange.py",
+      "target": "tests/upgrade/test_work_exchange.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "tests/upgrade/check_work_exchange.py declares CONSUMES tests/upgrade/test_work_exchange.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/check_work_exchange.py",
+      "target": "tests/upgrade/test_work_cli.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "tests/upgrade/check_work_exchange.py declares CONSUMES tests/upgrade/test_work_cli.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_development_sources.py",
+      "target": "libs/evolution/development_sources.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_development_sources.py declares VALIDATES libs/evolution/development_sources.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_development_sources.py",
+      "target": "tests/upgrade/test_development_support.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_development_sources.py declares CONSUMES tests/upgrade/test_development_support.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_development_support.py",
+      "target": "libs/evolution/development.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_development_support.py declares VALIDATES libs/evolution/development.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_development_support.py",
+      "target": "tests/upgrade/test_evolution_support.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_development_support.py declares CONSUMES tests/upgrade/test_evolution_support.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_work_cli.py",
+      "target": "libs/evolution/work_cli.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_work_cli.py declares VALIDATES libs/evolution/work_cli.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_work_cli.py",
+      "target": "libs/evolution/intelligence.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_work_cli.py declares CONSUMES libs/evolution/intelligence.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_work_cli.py",
+      "target": "tests/upgrade/test_work_support.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_work_cli.py declares CONSUMES tests/upgrade/test_work_support.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_work_cli.py",
+      "target": "tests/upgrade/test_development_support.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_work_cli.py declares CONSUMES tests/upgrade/test_development_support.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_work_contracts.py",
+      "target": "libs/evolution/work.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_work_contracts.py declares VALIDATES libs/evolution/work.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_work_contracts.py",
+      "target": "libs/evolution/work_exchange.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_work_contracts.py declares VALIDATES libs/evolution/work_exchange.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_work_contracts.py",
+      "target": "tests/upgrade/test_work_support.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_work_contracts.py declares CONSUMES tests/upgrade/test_work_support.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_work_exchange.py",
+      "target": "scripts/ci/candidate_manifest.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_work_exchange.py declares VALIDATES scripts/ci/candidate_manifest.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_work_exchange.py",
+      "target": "scripts/ci/evidence_epoch.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_work_exchange.py declares VALIDATES scripts/ci/evidence_epoch.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_work_exchange.py",
+      "target": "libs/evolution/work_exchange.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_work_exchange.py declares VALIDATES libs/evolution/work_exchange.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_work_exchange.py",
+      "target": "tests/upgrade/test_work_support.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_work_exchange.py declares CONSUMES tests/upgrade/test_work_support.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_work_support.py",
+      "target": "libs/evolution/work.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_work_support.py declares CONSUMES libs/evolution/work.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_work_support.py",
+      "target": "tests/upgrade/test_evolution_support.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_work_support.py declares CONSUMES tests/upgrade/test_evolution_support.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "C",
+      "event_type": "test_fail",
+      "file_path": "tests/upgrade/test_work_exchange.py",
+      "description": "Two original continuity controls failed before repair: candidate provenance and evidence epochs accepted a CI SHA different from the local checkout. The new guards and pinned workflow checkout reject both mismatches. An added arrival-order control also exposed and then closed loss of a later independently pinned review for an identical result.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-30T16:35:34.685001+00:00",
+      "commit_sha": null,
+      "smoke_result": "0/2"
+    },
+    {
+      "type": "C",
+      "event_type": "test_pass",
+      "file_path": "tests/upgrade/check_work_exchange.py",
+      "description": "The work exchange gate passed 46 dedicated source cases on Python 3.11.15 and 3.12.13 with zero skips. Connected regressions passed 164 cases on each interpreter, including those 46. Python trace statement coverage is at least 99.15 percent in new work modules and 96.12 percent in candidate provenance; synthetic identities, artifacts and review pins do not establish live acceptance.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-30T16:35:34.685001+00:00",
+      "commit_sha": null,
+      "smoke_result": "164/164"
+    },
+    {
+      "type": "C",
+      "event_type": "test_pass",
+      "file_path": "tests/upgrade/test_mission_suite.py",
+      "description": "The real disposable mission archive identity command passes after keeping optional work imports out of its standalone hashing closure. The connected CLI fixture clock now stays within its existing seven-day policy; explicit stale/future controls and production freshness limits are unchanged. Receiving CI, browser/native runtime and external providers remain unexecuted.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-30T16:35:34.685001+00:00",
+      "commit_sha": null,
+      "smoke_result": null
+    },
+    {
+      "type": "C",
+      "event_type": "smoke_run",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/mutual-development-dogfood.json",
+      "description": "Validated BD-CN-BUDDI-20260930-001 as a proposed candidate-only contract bound to the inspected local revision and retained workspace repair report. Deployment and runtime evidence remain required but absent. A concrete CSCC/identity/native/release handoff is prepared; no live worker assignment, external write, signing or deployment occurred.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-30T16:35:34.685001+00:00",
+      "commit_sha": null,
+      "smoke_result": null
+    },
+    {
+      "type": "A",
       "file_path": ".bits/handoffs/2026-09-30-bits-codegen-cmax-b-media-corpus.md",
       "cket_stage": "11_COMMIT",
       "srs_codes": [
@@ -65855,9 +67849,9 @@
     }
   ],
   "summary": {
-    "type_a_count": 1006,
-    "type_b_count": 2626,
-    "type_c_count": 252,
+    "type_a_count": 1029,
+    "type_b_count": 2726,
+    "type_c_count": 260,
     "ioo_compliance": true,
     "dkg_orphans": 0,
     "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",

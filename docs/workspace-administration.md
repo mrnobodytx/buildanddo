@@ -89,6 +89,10 @@ role, hidden button or user-editable field is never an authorization grant.
    reference. A request alone cannot change the observed state to healthy or
    prove that disabling has taken effect. Old service/channel cards are retained
    as historical records; their reported status is not a new health check.
+   The open desk rechecks receipt age every fifteen seconds and marks observations
+   older than fifteen minutes out of date. **Refresh observations** reads the
+   operator's latest receipts without requesting another check or saving changes;
+   viewers can use it too. Finish an open draft or recover an uncertain save first.
 
 All lists are paginated in groups of twenty. Pending inputs survive rejected
 saves. A revision conflict asks for an explicit reload. If a response is lost,

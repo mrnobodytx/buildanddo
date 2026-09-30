@@ -1,16 +1,16 @@
 # ─── CGRF Header ───────────────────────────────────────────────
 # File:        tests/upgrade/test_development_sources.py
 # Stage:       08_TEST
-# SRS:         SRS-BUILDANDDO-DEVELOPMENT-LOOP-001
+# SRS:         SRS-BUILDANDDO-DEVELOPMENT-LOOP-001, SRS-BUILDANDDO-UPGRADE-001
 # CAPS:        pending
 # CK:          pending
-# Dispatch:    VCC-BUILDANDDO-DEVELOPMENT-LOOP-001
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-21
-# Depends:     libs/evolution/development_sources.py
+# Depends:     libs/evolution/development_sources.py, tests/upgrade/test_development_support.py
 # EnumType:    Test
-# EnumEdges:   VALIDATES libs/evolution/development_sources.py
+# EnumEdges:   VALIDATES libs/evolution/development_sources.py; CONSUMES tests/upgrade/test_development_support.py
 # Intent:      Reject cross-source and incomplete CI evidence while proving authenticated-reader observations cannot mint test truth.
 # ───────────────────────────────────────────────────────────────
 
@@ -23,7 +23,7 @@ import subprocess
 import tempfile
 import unittest
 from dataclasses import replace
-from datetime import datetime, timedelta, timezone
+from datetime import timedelta
 from pathlib import Path
 from unittest.mock import patch
 
@@ -40,7 +40,7 @@ from libs.evolution.store import Journal
 from libs.semantic_twin.contracts import ContractError
 from libs.semantic_twin.vocabulary import AuthorityTier, EvidenceState
 
-AT = datetime(2026, 9, 21, 1, tzinfo=timezone.utc)
+from tests.upgrade.test_development_support import AT
 REPO = "example/synthetic-development-fixture"
 SHA = "a" * 40
 

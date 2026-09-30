@@ -47,6 +47,14 @@ Starting a recorded run writes a real start timestamp on the server.
 6. Finish all steps or explicitly cancel with a reason. A finished run is
    terminal. Starting another run produces a separate history, not a rewrite.
 
+The saved mission link opens that mission in the scoped Mission Desk, and each
+evidence receipt links to its record in the Evidence Ledger. For approved
+executable steps, receipt polling pauses during dispatch and discards responses
+from older reads or another run/step. Cancellation waits for the in-flight
+dispatch response. An unavailable receipt read or uncertain dispatch requires
+**Reload action receipt** before another attempt; recovery retains the original
+request identity. Backend authority and effect deduplication remain authoritative.
+
 Step kinds describe work the operator performs. They do not send messages,
 invoke n8n, run an agent or start infrastructure. A completed run records the
 operator's observations. It does not mark a mission verified, issue a credential

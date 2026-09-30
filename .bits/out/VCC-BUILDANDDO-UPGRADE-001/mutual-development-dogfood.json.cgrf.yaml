@@ -1,0 +1,18 @@
+# ─── CGRF Header ───────────────────────────────────────────────
+# File:        .bits/out/VCC-BUILDANDDO-UPGRADE-001/mutual-development-dogfood.json.cgrf.yaml
+# Stage:       11_COMMIT
+# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# CAPS:        pending
+# CK:          pending
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+# Seat:        BITS-CODEGEN
+# Owner:       Citadel Nexus Inc.
+# Created:     2026-09-30
+# Depends:     .bits/out/VCC-BUILDANDDO-UPGRADE-001/mutual-development-dogfood.json, libs/evolution/work.py, .bits/out/VCC-BUILDANDDO-UPGRADE-001/workspace-connections-report.md
+# EnumType:    Schema
+# EnumEdges:   VALIDATES .bits/out/VCC-BUILDANDDO-UPGRADE-001/mutual-development-dogfood.json; CONSUMES libs/evolution/work.py; CONSUMES .bits/out/VCC-BUILDANDDO-UPGRADE-001/workspace-connections-report.md
+# Intent:      Retain a real source-bound proposed Buddi/workspace mission whose missing independent runtime evidence remains explicit.
+# ───────────────────────────────────────────────────────────────
+schema: buildanddo.work/v1
+status: proposed
+runtime_execution: pending_receiving_dispatch

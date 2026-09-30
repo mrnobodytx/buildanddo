@@ -8,9 +8,9 @@
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-15
-// Depends:     apps/web/src/components/workspace/workflows/WorkflowRunsPanel.jsx, apps/web/src/components/workspace/workflows/WorkflowRunReview.jsx, apps/web/src/components/workspace/workflows/StartWorkflowRun.jsx
+// Depends:     apps/web/src/components/workspace/workflows/WorkflowRunsPanel.jsx, apps/web/src/components/workspace/workflows/WorkflowRunReview.jsx, apps/web/src/components/workspace/workflows/StartWorkflowRun.jsx, apps/web/src/components/workspace/workflows/BusinessActionReview.jsx
 // EnumType:    Test
-// EnumEdges:   VALIDATES apps/web/src/components/workspace/workflows/WorkflowRunsPanel.jsx; VALIDATES apps/web/src/components/workspace/workflows/WorkflowRunReview.jsx; VALIDATES apps/web/src/components/workspace/workflows/StartWorkflowRun.jsx
+// EnumEdges:   VALIDATES apps/web/src/components/workspace/workflows/WorkflowRunsPanel.jsx; VALIDATES apps/web/src/components/workspace/workflows/WorkflowRunReview.jsx; VALIDATES apps/web/src/components/workspace/workflows/StartWorkflowRun.jsx; VALIDATES apps/web/src/components/workspace/workflows/BusinessActionReview.jsx
 // DAG Node:    none
 // Intent:      Exercise workflow history, safe retries, approval consent, evidence recording and scope changes through the real workspace UI.
 // ───────────────────────────────────────────────────────────────
@@ -28,6 +28,7 @@ vi.mock('@/lib/observability/mutations', () => ({ observeMutation: (_collection,
 import pb from '@/lib/pocketbaseClient';
 import AuthContext from '@/contexts/AuthContext';
 import WorkspaceContext from '@/contexts/WorkspaceContext';
+import WorkspaceAccessContext from '@/contexts/WorkspaceAccessContext';
 import WorkflowsPage from '@/pages/workspace/WorkflowsPage';
 import WorkflowRunsPanel from '@/components/workspace/workflows/WorkflowRunsPanel';
 import WorkflowRunReview from '@/components/workspace/workflows/WorkflowRunReview';
@@ -142,6 +143,7 @@ describe('workflow run history and start', () => {
             method: 'POST', body: { workspace: 'ws_test', workflow: 'workflow1', mission: 'mission1', request_key: expect.any(String) } })));
         expect(await screen.findByRole('heading', { name: 'Original saved procedure' })).toBeInTheDocument();
         expect(screen.getByText(/Mission: Measured mission/)).toBeInTheDocument();
+        expect(screen.getByRole('link', { name: 'Open the Mission Desk' })).toHaveAttribute('href', '/app/missions?mission=mission1');
         expect(onRecordsChanged).toHaveBeenCalledTimes(1);
     });
 
@@ -199,6 +201,31 @@ describe('workflow outcome and approval forms', () => {
         renderWithProviders(<WorkflowRunReview run={run} api={api} onSaved={onSaved} onBusy={onBusy} />);
         return { api, onSaved, onBusy };
     };
+
+    it('locks cancellation and tells the enclosing dialog while an approved action is being dispatched', async () => {
+        const user = setupUser(), response = deferred(), onBusy = vi.fn();
+        const step = { id: 'execute1', name: 'Create the approved task', kind: 'execute', action: { provider: 'erp' } };
+        const run = savedRun({ snapshot: { ...savedRun().snapshot, steps: [step] } });
+        const job = { id: 'job1', workspace: 'ws_test', run: run.id, step_id: step.id, status: 'dispatched' };
+        const api = { decide: vi.fn(), read: vi.fn() }; let accepted = false;
+        pb.send.mockImplementation(async (_path, options) => options.method === 'POST' ? response.promise :
+            { workspace: 'ws_test', items: accepted ? [job] : [] });
+        renderWithProviders(<WorkspaceAccessContext.Provider value={{ data: { can_write: true }, loading: false, error: '' }}>
+            <WorkflowRunReview run={run} api={api} onSaved={vi.fn()} onBusy={onBusy} />
+        </WorkspaceAccessContext.Provider>);
+        await waitFor(() => expect(screen.getByRole('button', { name: 'Execute approved step' })).toBeEnabled());
+        await user.click(screen.getByRole('button', { name: 'Cancel run' }));
+        await user.type(screen.getByLabelText('Cancellation reason'), 'Stop after observing the action receipt.');
+        await user.click(screen.getByRole('button', { name: 'Execute approved step' }));
+        expect(onBusy).toHaveBeenLastCalledWith(true);
+        expect(screen.getByRole('button', { name: 'Confirm cancellation' })).toBeDisabled();
+        expect(screen.getByRole('button', { name: 'Keep this run open' })).toBeDisabled();
+        expect(api.decide).not.toHaveBeenCalled();
+        await act(async () => { accepted = true; response.resolve(job); });
+        await waitFor(() => expect(onBusy).toHaveBeenLastCalledWith(false));
+        expect(screen.getByRole('button', { name: 'Confirm cancellation' })).toBeEnabled();
+        expect(screen.getByRole('button', { name: 'Execute approved step' })).toBeDisabled();
+    });
 
     it('requires an observation, source and explicit confirmation before recording a completed step', async () => {
         const user = setupUser(); const { api, onSaved } = renderReview();
@@ -261,6 +288,7 @@ describe('workflow outcome and approval forms', () => {
         renderReview(run);
         expect(screen.getByText('Three rows matched.')).toBeInTheDocument();
         expect(screen.getByText(/Evidence receipt: receipt1/)).toBeInTheDocument();
+        expect(screen.getByRole('link', { name: 'receipt1' })).toHaveAttribute('href', '/app/evidence?evidence=receipt1');
         expect(screen.queryByRole('button', { name: 'Cancel run' })).not.toBeInTheDocument();
         expect(screen.queryByRole('button', { name: 'Record completed step' })).not.toBeInTheDocument();
     });

@@ -8,19 +8,20 @@
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-15
-// Depends:     apps/web/src/hooks/useWorkspaceControl.js, apps/web/src/components/workspace/ControlPrimitives.jsx
+// Depends:     apps/web/src/hooks/useWorkspaceControl.js, apps/web/src/components/workspace/ControlPrimitives.jsx, apps/web/src/lib/connectorReadiness.js
 // EnumType:    Widget
-// EnumEdges:   CONSUMES apps/web/src/hooks/useWorkspaceControl.js; CONSUMES apps/web/src/components/workspace/ControlPrimitives.jsx
+// EnumEdges:   CONSUMES apps/web/src/hooks/useWorkspaceControl.js; CONSUMES apps/web/src/components/workspace/ControlPrimitives.jsx; CONSUMES apps/web/src/lib/connectorReadiness.js
 // DAG Node:    none
 // Intent:      Present one scoped control surface for sinks, extensions, Discord and Reddit with explicit requested versus observed states.
 // ───────────────────────────────────────────────────────────────
 
 import { MotionValue } from '@/components/motion/MotionPrimitives';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Card } from '@/components/site/ui';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { ControlState, ControlFeedback, controlInput, dateLabel, focusPendingRetry } from '@/components/workspace/ControlPrimitives';
 import { useWorkspaceControl } from '@/hooks/useWorkspaceControl';
+import { isIntegrationObservationCurrent } from '@/lib/connectorReadiness';
 
 const fieldNames = { guild_id: 'Discord server ID', channel_id: 'Discord channel ID', subreddit: 'Subreddit name', binding: 'Registered connection name' };
 const modeNames = { read: 'Read only', reviewed_publish: 'Publish reviewed content', telemetry: 'Receive telemetry', reviewed_run: 'Run approved workflows' };
@@ -49,10 +50,14 @@ function IntegrationForm({ item, control, onClose }) {
 
 function IntegrationDesk({ control, kinds }) {
     const [editing, setEditing] = useState(null);
+    const [now, setNow] = useState(Date.now);
+    useEffect(() => { const timer = setInterval(() => setNow(Date.now()), 15_000); return () => clearInterval(timer); }, []);
     const disabled = control.saving || control.uncertain;
-    const items = control.data.items.filter((item) => !kinds || kinds.includes(item.kind));
+    const items = control.data.items.filter((item) => !kinds || kinds.includes(item.kind)).map((item) => ({ ...item,
+        observation: { ...item.observation, current: isIntegrationObservationCurrent(item.observation, now) } }));
     return <div className="space-y-4">
         <p className="text-sm leading-6 text-muted-foreground">Configure connections, request changes and check their latest reported state. Saving a request waits for the service operator to apply it.</p>
+        <Button type="button" variant="secondary" size="sm" disabled={disabled || Boolean(editing)} onClick={control.refresh}>Refresh observations</Button>
         {!control.data.can_admin && <p className="text-sm">Your workspace role can view integrations. An owner or administrator must change them.</p>}
         <ControlFeedback control={control} />
         <div className="grid gap-4 md:grid-cols-2">{items.map((item) => <Card key={item.provider} className="min-w-0 space-y-4 p-5">

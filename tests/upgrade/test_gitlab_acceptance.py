@@ -335,7 +335,10 @@ class GitLabAcceptanceTests(unittest.TestCase):
                 f"state/ci/behavior-venv/bin/python tests/{suite}/check_{suite}.py"
                 for suite in suites
             )
-            + ("state/ci/behavior-venv/bin/python tests/upgrade/check_media_corpus.py",),
+            + (
+                "state/ci/behavior-venv/bin/python tests/upgrade/check_work_exchange.py",
+                "state/ci/behavior-venv/bin/python tests/upgrade/check_media_corpus.py",
+            ),
         )
         sections = {
             name: body
@@ -346,6 +349,7 @@ class GitLabAcceptanceTests(unittest.TestCase):
         self.assertIn("tags: [buildanddo]", body)
         self.assertIn('name: "source-behavior-coverage-${PYTHON_VERSION}"', body)
         self.assertIn("expire_in: 30 days", body)
+        self.assertIn("      - reports/coverage/work-exchange.json\n", body)
         for suite in suites:
             with self.subTest(suite=suite):
                 self.assertIn(

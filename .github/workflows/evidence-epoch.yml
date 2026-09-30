@@ -1,9 +1,10 @@
 # ─── CGRF Header ───────────────────────────────────────────────
 # File:        .github/workflows/evidence-epoch.yml
 # Stage:       11_COMMIT
-# SRS:         SRS-BUILDANDDO-EPOCH-001
+# SRS:         SRS-BUILDANDDO-EPOCH-001, SRS-BUILDANDDO-UPGRADE-001
 # CAPS:        pending
 # CK:          pending
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-10
@@ -52,9 +53,9 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          # Checkout the branch, not the detached SHA: this job commits the
-          # chain head back and needs a branch to push.
-          ref: ${{ github.ref_name }}
+          # Build the event's exact candidate even when the branch has advanced.
+          # The chain-head push below already names HEAD and its destination.
+          ref: ${{ github.sha }}
 
       - uses: actions/setup-node@v4
         with:
@@ -80,15 +81,28 @@ jobs:
           test -d dist/apps/web
           test -f dist/apps/web/index.html
 
+      # Chain state has a different lifetime from source. A queued event can
+      # predate the previous epoch's metadata commit; read the current published
+      # chain from the fetched branch without changing the candidate checkout.
+      - name: Read current published chain
+        env:
+          EPOCH_BRANCH: ${{ github.ref_name }}
+        run: |
+          mkdir -p state/epochs
+          git show "refs/remotes/origin/${EPOCH_BRANCH}:scripts/ci/epoch_chain.json" > state/epochs/chain-head.json
+
       - name: Create evidence epoch
         id: epoch
-        run: python scripts/ci/evidence_epoch.py --trigger "${{ inputs.trigger || 'merge' }}"
+        run: python scripts/ci/evidence_epoch.py --chain state/epochs/chain-head.json --trigger "${{ inputs.trigger || 'merge' }}"
 
       # This one does fail the job. A root that does not recompute from its own
       # manifest is a defect in the epoch script, and publishing it as evidence
       # would be worse than publishing nothing.
       - name: Self-verify the epoch root
         run: python scripts/ci/evidence_epoch.py --verify state/epochs/latest.json --recheck-files
+
+      - name: Retain the checked chain head
+        run: cp state/epochs/chain-head.json scripts/ci/epoch_chain.json
 
       - name: Publish epoch to Datadog
         if: always() && steps.epoch.outputs.epoch_id != ''
