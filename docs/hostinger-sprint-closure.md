@@ -8,9 +8,9 @@
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-20
-# Depends:     .bits/hostinger-readiness.json, scripts/ci/hostinger_readiness.py, scripts/ci/hostinger_replay.py, tools/day21/day21_acceptance.py, .bits/handoffs/2026-09-21-bits-codegen-cmax-b-governance-execution.md, docs/sprint-user-journey.md, docs/development-loop.md
+# Depends:     .bits/hostinger-readiness.json, scripts/ci/hostinger_readiness.py, scripts/ci/hostinger_replay.py, tools/day21/day21_acceptance.py, .bits/handoffs/2026-09-21-bits-codegen-cmax-b-governance-execution.md, docs/sprint-user-journey.md, docs/development-loop.md, docs/mutual-development.md
 # EnumType:    Doc
-# EnumEdges:   CONSUMES .bits/hostinger-readiness.json; CONSUMES scripts/ci/hostinger_readiness.py; CONSUMES scripts/ci/hostinger_replay.py; CONSUMES tools/day21/day21_acceptance.py; EXTENDS docs/operator-plane.md; EXTENDS docs/mission-system.md; CONSUMES .bits/handoffs/2026-09-21-bits-codegen-cmax-b-governance-execution.md; CONSUMES docs/sprint-user-journey.md; CONSUMES docs/development-loop.md
+# EnumEdges:   CONSUMES .bits/hostinger-readiness.json; CONSUMES scripts/ci/hostinger_readiness.py; CONSUMES scripts/ci/hostinger_replay.py; CONSUMES tools/day21/day21_acceptance.py; EXTENDS docs/operator-plane.md; EXTENDS docs/mission-system.md; CONSUMES .bits/handoffs/2026-09-21-bits-codegen-cmax-b-governance-execution.md; CONSUMES docs/sprint-user-journey.md; CONSUMES docs/development-loop.md; CONSUMES docs/mutual-development.md
 # Intent:      Make the reason, acceptance boundary and next action for every sprint piece a required source review rather than a remembered plan.
 # ───────────────────────────────────────────────────────────────
 
@@ -26,6 +26,12 @@ mandatory governance. This continues SRS-BUILDANDDO-UPGRADE-001 and
 VCC-BUILDANDDO-UPGRADE-001. Private runtime activation and deployment still need
 their receiving authority. The first private loop is BuildAndDo; additional
 federal domain packs are not prerequisites.
+
+The reciprocal work exchange in `docs/mutual-development.md` supports this same
+first demo. Its proposed Buddi/workspace mission reuses the retained repairs and
+requires actual GitLab, native/browser and deployment/runtime evidence. The
+public contract, result validation and epoch linkage are source capabilities;
+CSCC assignment and successful live operation remain receiving acceptance.
 
 `scripts/ci/sprint_cycle.py` owns the eleven milestones, dates and weights.
 `.bits/hostinger-readiness.json` owns each milestone's rationale, affected source,

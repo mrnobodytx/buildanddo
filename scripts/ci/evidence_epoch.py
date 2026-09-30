@@ -2,21 +2,23 @@
 # ─── CGRF Header ───────────────────────────────────────────────
 # File:        scripts/ci/evidence_epoch.py
 # Stage:       11_COMMIT
-# SRS:         SRS-BUILDANDDO-EPOCH-001
+# SRS:         SRS-BUILDANDDO-EPOCH-001, SRS-BUILDANDDO-UPGRADE-001
 # CAPS:        pending
 # CK:          pending
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-10
 # Depends:     scripts/ci/candidate_manifest.py, scripts/ci/verify_public_boundary.py,
-#              scripts/ci/telemetry_snapshot.py, scripts/ci/epoch_chain.json
+#              scripts/ci/telemetry_snapshot.py, scripts/ci/epoch_chain.json, libs/evolution/work_exchange.py
 # EnumType:    Service
 # EnumEdges:   CONSUMES scripts/ci/verify_public_boundary.py;
 #              CONSUMES scripts/ci/candidate_manifest.py;
 #              CONSUMES scripts/ci/telemetry_snapshot.py;
 #              PRODUCES scripts/ci/epoch_chain.json;
 #              PRODUCES state/epochs;
-#              VERIFIED_BY scripts/ci/evidence_epoch.py --verify
+#              VERIFIED_BY scripts/ci/evidence_epoch.py --verify;
+#              CONSUMES libs/evolution/work_exchange.py
 # Intent:      Fingerprint one run's whole evidence set into a chained root a third
 #              party can recompute, so retention expiry stops looking like tampering.
 # ───────────────────────────────────────────────────────────────
@@ -89,6 +91,8 @@ import os
 import subprocess
 import sys
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
 SCHEMA = "buildanddo.public-anchor/v1"
 CHAIN_SCHEMA = "buildanddo.epoch-chain/v1"
@@ -188,11 +192,13 @@ def git(root: Path, *args: str) -> str:
 def git_facts(root: Path) -> dict:
     """Identity of the commit this epoch describes.
 
-    GitHub Actions values win when present: on a `push` the checked-out ref is
-    what `GITHUB_SHA` names, but on `workflow_run` the workspace can be a
-    detached checkout whose symbolic branch name is useless.
+    CI may name the expected candidate, but cannot relabel another checkout.
+    Detached checkouts retain their actual object identity too.
     """
-    sha = os.environ.get("GITHUB_SHA") or git(root, "rev-parse", "HEAD")
+    sha = git(root, "rev-parse", "HEAD")
+    expected = os.environ.get("GITHUB_SHA")
+    if expected and expected != sha:
+        raise ValueError("CI candidate revision differs from the actual checkout")
     branch = os.environ.get("GITHUB_REF_NAME") or git(root, "rev-parse", "--abbrev-ref", "HEAD")
     return {
         "sha": sha,
@@ -322,11 +328,62 @@ def append_chain(chain: dict, manifest: dict) -> dict:
 
 # ── manifest ─────────────────────────────────────────────────────────────────
 
-def build_manifest(root: Path, trigger: str, chain: dict, now: dt.datetime) -> dict:
+def work_artifacts(root: Path, directories: tuple[str, ...], candidate: str, now: dt.datetime, repository: str | None) -> tuple[list[dict], list[dict]]:
+    """Fingerprint explicit returned work without authenticating an imported review."""
+    if not directories:
+        return [], []
+    # The mission suite ships this module's stdlib hashing primitives in its
+    # portable closure. Only explicit work exchange needs the larger library.
+    from libs.evolution.work import relative_path, revision
+    from libs.evolution.work_exchange import candidate_paths, read_bundle
+    from libs.semantic_twin.contracts import require
+    require(len(directories) <= 100 and len(set(directories)) == len(directories), "duplicate or excessive work bundles")
+    require(not directories or bool(repository), "work epochs require an expected public repository")
+    artifacts: list[dict] = []
+    records: list[dict] = []
+    attempts: set[tuple[str, str, str]] = set()
+    for directory in directories:
+        relative_path(directory)
+        target = root
+        for part in directory.split("/"):
+            target = target / part
+            require(not target.is_symlink(), "work bundle path contains a symlink")
+        bundle = read_bundle(target)
+        work, result = bundle.submission.work, bundle.submission.result
+        revision(candidate)
+        require(result.candidate_revision == candidate, "work result belongs to another candidate revision")
+        require(result.completed_at <= now, "work result is from the future")
+        assert repository is not None
+        expected_paths = candidate_paths(root, work, candidate, repository)
+        require(set(expected_paths) == set(result.changed_paths), "work result omits or invents changed paths")
+        key = (result.scope_id, result.mission_id, result.attempt_id)
+        require(key not in attempts, "duplicate work attempt in epoch")
+        attempts.add(key)
+        for name, raw in bundle.files.items():
+            artifacts.append({"path": f"{directory}/{name}", "digest": hashlib.sha256(raw).hexdigest(), "size": len(raw), "kind": "work_result"})
+        records.append({
+            "mission_id": work.mission_id, "scope_id": work.scope_id,
+            "attempt_id": result.attempt_id, "worker": str(result.worker.actor_id),
+            "work_digest": work.digest, "result_digest": result.digest,
+            "candidate_revision": candidate, "reported_status": result.status,
+            "verification": "not_conferred_by_epoch", "bundle": directory,
+        })
+    return artifacts, sorted(records, key=lambda record: (record["scope_id"], record["mission_id"], record["attempt_id"]))
+
+
+def build_manifest(root: Path, trigger: str, chain: dict, now: dt.datetime, *, work_bundles: tuple[str, ...] = (), repository: str | None = None) -> dict:
     previous = chain.get("latest") or {}
     previous_root = previous.get("root_digest") or None
     git_meta = git_facts(root)
     artifacts, sources = collect_artifacts(root, git_meta, previous_root)
+    expected_repository = repository or os.environ.get("GITHUB_REPOSITORY")
+    if repository and os.environ.get("GITHUB_REPOSITORY") and repository != os.environ["GITHUB_REPOSITORY"]:
+        raise ValueError("CI repository differs from the selected repository")
+    work_files, work_records = work_artifacts(root, work_bundles, git_meta["sha"], now, expected_repository)
+    if {a["path"] for a in artifacts} & {a["path"] for a in work_files}:
+        raise ValueError("work bundle overlaps an existing evidence source")
+    artifacts.extend(work_files)
+    artifacts.sort(key=lambda artifact: artifact["path"])
 
     manifest = {
         "schema": SCHEMA,
@@ -362,6 +419,8 @@ def build_manifest(root: Path, trigger: str, chain: dict, now: dt.datetime) -> d
         # changing the schema. See SRS-BUILDANDDO-EPOCH-001.
         "anchor": {"state": "pending", "witness": None, "receipt": None},
     }
+    if work_records:
+        manifest["work_results"] = work_records
     manifest["manifest_digest"] = sha256_json(
         {k: v for k, v in manifest.items() if k != "manifest_digest"}
     )
@@ -443,6 +502,8 @@ def main() -> int:
                     help="with --verify, also re-hash every artifact still on disk")
     ap.add_argument("--json", action="store_true", help="print the manifest instead of a summary")
     ap.add_argument("--dry-run", action="store_true", help="compute everything, write nothing")
+    ap.add_argument("--work-bundle", action="append", default=[], help="explicit repository-relative work/result packet; integrity only, no review authority")
+    ap.add_argument("--repository", help="expected public repository for returned work (or GITHUB_REPOSITORY)")
     args = ap.parse_args()
 
     root = Path(args.root).resolve()
@@ -465,7 +526,11 @@ def main() -> int:
 
     chain_path = root / args.chain
     chain = read_chain(chain_path)
-    manifest = build_manifest(root, args.trigger, chain, dt.datetime.now(dt.timezone.utc))
+    try:
+        manifest = build_manifest(root, args.trigger, chain, dt.datetime.now(dt.timezone.utc), work_bundles=tuple(args.work_bundle), repository=args.repository)
+    except (ValueError, ImportError) as exc:
+        print(f"FAIL: {exc}")
+        return 1
 
     # Self-verification is not ceremony. It is the difference between publishing
     # "a root was produced" and publishing "a root was produced and recomputes",

@@ -20,6 +20,38 @@
 **Status:** in_progress **Risk:** A2 **Seat:** BITS-CODEGEN
 **Dispatch:** VCC-BUILDANDDO-UPGRADE-001 **Actor:** actor:agent
 
+## Mutual development work exchange - 2026-09-30
+
+The owner requests finishing the existing BuildAndDo/Citadel development loop.
+Continue this A2 public-source dispatch with portable candidate-only work and
+result contracts over the existing evolution, independent-review and epoch
+libraries. GitHub remains the collaboration plane; GitLab and receiving owners
+retain execution, private source, release and deployment authority.
+
+Acceptance:
+
+1. Define strict, versioned `buildanddo.work/v1` and `buildanddo.work-result/v1`
+   contracts with objective, source revision, scope, SRS/dispatch, bounded paths,
+   capabilities, acceptance and required evidence. Support both directions and
+   the development, experience, research and operations lanes without granting
+   execution authority or publishing private inputs.
+2. Connect existing development mission packets to the work contract. Bind
+   results to the exact work, repository, base and independently selected
+   candidate revision. Check retained evidence bytes and reject path escapes,
+   foreign scope, conflicting retries, missing checks and altered artifacts.
+3. Reuse the receiving-pinned ReviewPolicy and independent VerificationReceipt.
+   Producer reports, account labels, hashes and epoch inclusion cannot approve
+   work. Missing tests, deployment and external readback stay explicit; producer
+   and contributing identities cannot verify their own result.
+4. Extend the existing evidence epoch with explicit local work-result inputs,
+   preserving the existing hash/chain construction and exact candidate identity.
+   Derive bounded worker experience from retained results without fabricated
+   success rates, identity authentication, learning promotion or authority.
+5. Prepare a real, source-bound first Buddi/workspace dogfood mission and a
+   concrete private CSCC receiving handoff. Run connected/adversarial tests and
+   retain source evidence separately from unexecuted GitLab, browser, native,
+   provider, signing and deployment acceptance.
+
 ## Disconnected workspace systems - 2026-09-30
 
 The owner asks to identify and improve inoperable or disconnected systems.

@@ -20,6 +20,27 @@
 **SRS:** SRS-BUILDANDDO-UPGRADE-001 **Risk:** A2 **Seat:** BITS-CODEGEN
 **Status:** in_progress **Actor:** actor:agent
 
+## Mutual development work exchange - 2026-09-30
+
+The owner requests an executable public work/result boundary for reciprocal
+BuildAndDo/Citadel development. This continuation uses the existing A2 source
+authority. Private CSCC adapters, identity authentication, fleet execution,
+signing, publication and release remain receiving-owner work.
+
+| Phase | Task | Gate command | Status |
+|---|---|---|---|
+| MD-1 | Define bounded work/results and reuse independent review | Work contract and adversarial Python suites | source PASS: strict version/scope/path validation and existing independent review controls |
+| MD-2 | Connect mission packets, candidate provenance, epochs and experience | Connected work exchange/epoch tests | source PASS: 164 connected cases per Python version, including 46 dedicated cases; standalone mission packaging preserved |
+| MD-3 | Prepare the real dogfood packet and receiving contract; verify source | Work coverage, readiness, context, boundary and memory checks | source evidence and receiving handoff retained in mutual-development-report.md; live assignment, CI, browser/native and release acceptance remain pending |
+
+Memory brief: PR 118 is reported merged; its voice/workspace repairs are retained.
+Existing development packets, ReviewPolicy pins, candidate manifests and Merkle
+epochs are present, but no work/result envelope joins them. Telemetry workflows
+can intentionally report no state; their presence does not prove live delivery.
+The current sandbox has no native PocketBase or locked browser toolchain. Reuse
+the current source tests and prepare missing runtime verification as actual work,
+not a synthetic completed mission or an agent assignment.
+
 ## Disconnected workspace systems - 2026-09-30
 
 The owner's resumed request extends this public-source A2 repair pass to the

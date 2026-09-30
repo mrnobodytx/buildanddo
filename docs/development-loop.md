@@ -8,9 +8,9 @@
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-21
-# Depends:     libs/evolution/development.py, libs/evolution/development_sources.py, libs/evolution/intelligence.py, libs/evolution/review_packets.py, docs/verified-evolution.md, docs/capability-tokens.md, docs/submission-guide.md, libs/semantic_twin/progression.py, docs/operator-plane.md
+# Depends:     libs/evolution/development.py, libs/evolution/development_sources.py, libs/evolution/intelligence.py, libs/evolution/review_packets.py, docs/verified-evolution.md, docs/capability-tokens.md, docs/submission-guide.md, libs/semantic_twin/progression.py, docs/operator-plane.md, docs/mutual-development.md
 # EnumType:    Doc
-# EnumEdges:   CONSUMES libs/evolution/development.py; CONSUMES libs/evolution/development_sources.py; CONSUMES libs/evolution/intelligence.py; CONSUMES libs/evolution/review_packets.py; EXTENDS docs/verified-evolution.md; EXTENDS docs/capability-tokens.md; CONSUMES docs/submission-guide.md; CONSUMES libs/semantic_twin/progression.py; CONSUMES docs/operator-plane.md
+# EnumEdges:   CONSUMES libs/evolution/development.py; CONSUMES libs/evolution/development_sources.py; CONSUMES libs/evolution/intelligence.py; CONSUMES libs/evolution/review_packets.py; EXTENDS docs/verified-evolution.md; EXTENDS docs/capability-tokens.md; CONSUMES docs/submission-guide.md; CONSUMES libs/semantic_twin/progression.py; CONSUMES docs/operator-plane.md; CONSUMES docs/mutual-development.md
 # Intent:      Make development observations, proposed work and independent grading operable without confusing source tests with competence or competition acceptance.
 # ───────────────────────────────────────────────────────────────
 
@@ -20,6 +20,12 @@ The additive adapters reuse the evolution journal, deterministic compiler,
 semantic graph, capability-token review policy and existing replay/promotion
 gates. Run them with Python 3.11+ and the standard library. They do not activate
 a private runtime, create remote issues, approve work, or deploy a candidate.
+
+`docs/mutual-development.md` connects this existing mission-packet producer to
+`buildanddo.work/v1`, returned work evidence, the independent review kernel and
+the existing evidence epoch. Its local CLI preserves proposal lineage and exact
+candidate identity. CSCC assignment, authenticated provider history and release
+readback remain explicit receiving work.
 
 ```text
 Repository-authenticated GitHub observation
