@@ -1,10 +1,11 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/src/hooks/__tests__/useOpenClasses.test.jsx
 // Stage:       08_TEST
-// SRS:         SRS-BUILDANDDO-CLASSROOM-001
+// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-CLASSROOM-001
 // CAPS:        pending
 // CK:          pending
-// Seat:        C-ONE
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+// Seat:        BITS-CODEGEN, C-ONE
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-24
 // Depends:     apps/web/src/hooks/useOpenClasses.js, apps/web/src/lib/classrooms.js
@@ -18,7 +19,7 @@
 // ───────────────────────────────────────────────────────────────
 
 import React from 'react';
-import { renderHook, waitFor } from '@testing-library/react';
+import { act, renderHook, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import AuthContext from '@/contexts/AuthContext';
 import WorkspaceContext from '@/contexts/WorkspaceContext';
@@ -37,21 +38,25 @@ const ROOMS = {
     ws1: [room('ws1', 'r1', 'live', 'Deploy my first website', 'Forge'), room('ws1', 'r0', 'ended', 'Old class', 'Forge')],
     ws2: [room('ws2', 'r2', 'scheduled', 'Evidence workshop', 'Scholar', '2026-10-01T10:00:00Z')],
 };
-let workspaces;
+let workspaces, sessionEpoch;
 function Wrapper({ children }) {
-    return <AuthContext.Provider value={{ user: { id: 'owner' }, isAuthed: true }}>
+    return <AuthContext.Provider value={{ user: { id: 'owner' }, isAuthed: true, sessionEpoch,
+        isSessionCurrent: (epoch) => epoch === sessionEpoch }}>
         <WorkspaceContext.Provider value={{ workspaces, active: workspaces[0] || null, setActive: () => {} }}>{children}</WorkspaceContext.Provider>
     </AuthContext.Provider>;
 }
-function answer(path) {
+function answer(path, { query = { page: 1, status: 'all' } } = {}, rows) {
     const workspace = path.split('/')[4];
     if (workspace === 'ws3') throw { status: 403, response: { message: 'Current workspace membership is required.' } };
-    return { workspace, role: 'viewer', can_host: false, items: ROOMS[workspace] || [], page: 1, has_more: false, lessons: { items: [], has_more: false } };
+    const matching = (rows || ROOMS[workspace] || []).filter((item) => query.status === 'all' || item.status === query.status);
+    return { workspace, role: 'viewer', can_host: false, items: matching.slice((query.page - 1) * 20, query.page * 20),
+        page: query.page, has_more: matching.length > query.page * 20, lessons: { items: [], has_more: false } };
 }
 beforeEach(() => {
+    sessionEpoch = 1;
     workspaces = [{ id: 'ws1', name: 'My business' }, { id: 'ws2', name: 'Guild Hall' }, { id: 'ws3', name: 'Locked' }];
     pb.authStore.record = { id: 'owner' };
-    pb.send.mockReset(); pb.send.mockImplementation(async (path) => answer(path));
+    pb.send.mockReset(); pb.send.mockImplementation(async (path, options) => answer(path, options));
 });
 afterEach(() => { vi.useRealTimers(); vi.restoreAllMocks(); });
 
@@ -63,7 +68,7 @@ describe('open classes across workspaces', () => {
         expect(items.map((entry) => `${entry.workspace.id}:${entry.room.id}:${entry.room.status}`)).toEqual(['ws1:r1:live', 'ws2:r2:scheduled']);
         expect(items.find((entry) => entry.room.id === 'r0')).toBeUndefined();
         expect(unavailable).toEqual([{ id: 'ws3', name: 'Locked' }]);
-        expect(pb.send).toHaveBeenCalledTimes(3);
+        expect(pb.send).toHaveBeenCalledTimes(5);
     });
 
     it('asks each workspace through its own classroom route', async () => {
@@ -75,9 +80,9 @@ describe('open classes across workspaces', () => {
 
     it('never populates the current view with an answer for a previous workspace set', async () => {
         let release;
-        pb.send.mockImplementation((path) => new Promise((resolve, reject) => {
-            if (path.includes('/ws1/')) { release = () => resolve(answer(path)); return; }
-            try { resolve(answer(path)); } catch (error) { reject(error); }
+        pb.send.mockImplementation((path, options) => new Promise((resolve, reject) => {
+            if (path.includes('/ws1/')) { release = () => resolve(answer(path, options)); return; }
+            try { resolve(answer(path, options)); } catch (error) { reject(error); }
         }));
         const view = renderHook(() => useOpenClasses(), { wrapper: Wrapper });
         workspaces = [{ id: 'ws2', name: 'Guild Hall' }];
@@ -86,6 +91,51 @@ describe('open classes across workspaces', () => {
         release();
         await new Promise((resolve) => setTimeout(resolve, 20));
         expect(view.result.current.items.map((entry) => entry.workspace.id)).toEqual(['ws2']);
+    });
+
+    it('finds an older live room behind ended history and follows all scheduled pages', async () => {
+        workspaces = [{ id: 'ws1', name: 'Workshop' }];
+        const rows = [
+            ...Array.from({ length: 21 }, (_, i) => room('ws1', `end${i}`, 'ended', 'Ended', 'Forge')),
+            ...Array.from({ length: 22 }, (_, i) => room('ws1', `plan${i}`, 'scheduled', 'Planned', 'Forge')),
+            room('ws1', 'oldlive', 'live', 'Older live class', 'Forge'),
+        ];
+        pb.send.mockImplementation(async (path, options) => answer(path, options, rows));
+        const view = renderHook(() => useOpenClasses(), { wrapper: Wrapper });
+        await waitFor(() => expect(view.result.current.loading).toBe(false));
+        expect(view.result.current.items).toHaveLength(23);
+        expect(view.result.current.items[0].room.id).toBe('oldlive');
+        expect(pb.send.mock.calls.some(([, options]) => options.query.page === 2)).toBe(true);
+    });
+
+    it('names a workspace when a later page fails instead of presenting a truncated list', async () => {
+        workspaces = [{ id: 'ws1', name: 'Workshop' }];
+        const rows = Array.from({ length: 21 }, (_, i) => room('ws1', `plan${i}`, 'scheduled', 'Planned', 'Forge'));
+        pb.send.mockImplementation(async (path, options) => {
+            if (options.query.page === 2) throw new Error('Offline');
+            return answer(path, options, rows);
+        });
+        const view = renderHook(() => useOpenClasses(), { wrapper: Wrapper });
+        await waitFor(() => expect(view.result.current.loading).toBe(false));
+        expect(view.result.current.items).toEqual([]);
+        expect(view.result.current.unavailable).toEqual(workspaces);
+    });
+
+    it('discards a delayed response from a replaced session for the same account', async () => {
+        workspaces = [{ id: 'ws1', name: 'Workshop' }];
+        let first = true, release;
+        pb.send.mockImplementation(async (path, options) => {
+            const result = answer(path, options);
+            if (first) { first = false; await new Promise((resolve) => { release = resolve; }); }
+            return result;
+        });
+        const view = renderHook(() => useOpenClasses(), { wrapper: Wrapper });
+        sessionEpoch++; view.rerender();
+        expect(view.result.current.items).toEqual([]);
+        await waitFor(() => expect(view.result.current.loading).toBe(false));
+        const current = view.result.current;
+        await act(async () => { release(); });
+        expect(view.result.current).toBe(current);
     });
 
     it('orders live before scheduled, then by planned start', () => {

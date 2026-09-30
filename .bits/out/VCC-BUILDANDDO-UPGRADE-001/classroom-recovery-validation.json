@@ -1,0 +1,133 @@
+{
+  "schema": "buildanddo.classroom-recovery-validation/v1",
+  "srs": "SRS-BUILDANDDO-UPGRADE-001",
+  "dispatch": "VCC-BUILDANDDO-UPGRADE-001",
+  "observed_at": "2026-09-30T18:21:00.592203+00:00",
+  "baseline_revision": "52251dbcd19f02893730bf58f7c8e48ebb86b88d",
+  "evidence_scope": "Reported public source execution with explicit hook-scheduling, transactional-storage and provider/browser doubles.",
+  "independently_verified": false,
+  "deployed": false,
+  "delivered_media_verified": false,
+  "source_sha256": {
+    "apps/web/src/hooks/useClassrooms.js": "606b5246920ccdfeaf61588df905e2f737fb6090e7b8a7c7b5e3429ad84e9c0e",
+    "apps/web/src/hooks/useOpenClasses.js": "e998e793f1692e29304e86371d4f4729296f842b73e166ebd1b26d50dd87c46d",
+    "apps/web/src/hooks/__tests__/useClassrooms.test.jsx": "7f9cb9ba27808c6ea7bbfe3e5b4063c737da7dcdb42bdc519e90f21493f3d42b",
+    "apps/web/src/hooks/__tests__/useOpenClasses.test.jsx": "242837583e25b2c4a49304b5d4b73b7ef35409e541c33bf504970988e19eddf7",
+    "tests/upgrade/classroom-recovery.test.mjs": "5da7301241a504f73f25471b3a463e7a97a14f3bf7f1eef49f65ffc57cb69963",
+    "apps/web/src/lib/classrooms.js": "5ab24f3cd6498fd81e7b49c40b859c00b5f3ad0aaa2877062dd9869604fa19a5",
+    "apps/pocketbase/pb_hooks/classrooms.pb.js": "f6bcd5b6e39384f55700a6ef87cd045751ebf8171fd024966100f63965c2fb82",
+    "apps/pocketbase/pb_hooks/classrooms.js": "fbc04c610397862a79dc718a8c554619916f77fb45a9b46523c1981fee76f8ae"
+  },
+  "environment": {
+    "node": "v24.13.0",
+    "python": "Python 3.12.13",
+    "declared_node": "22",
+    "missing_local_modules": [
+      "react",
+      "vitest",
+      "vite",
+      "eslint",
+      "playwright"
+    ],
+    "pocketbase_test_binary_available": false
+  },
+  "baseline": {
+    "tests": 137,
+    "passed": 137,
+    "failed": 0,
+    "skipped": 0
+  },
+  "initial_red": {
+    "tests": 10,
+    "pass": 2,
+    "fail": 8,
+    "skipped": 0,
+    "failed_cases": [
+      "discovery finds an older live class behind twenty newer ended rooms",
+      "discovery follows every live and scheduled page and names a forbidden workspace",
+      "a later page failure identifies incomplete discovery instead of showing a complete list",
+      "discovery polls do not overlap an unfinished workspace read",
+      "returning to a workspace cannot revive its previous discovery response",
+      "a replacement native session hides room data and discards a late save for the same account",
+      "leaving and returning to a room does not trap a new save behind an old request",
+      "session replacement fences old callbacks even before the next render"
+    ],
+    "observed_at": "2026-09-30T18:07:54.734930+00:00",
+    "capture_sha256": "4cc0fbcc74603de9b1c59d70da16713bc843910fb98d993ea351e6fd810023f2",
+    "scope": "Initial ten-case regression snapshot against unchanged baseline hooks; subsequently expanded to twenty cases."
+  },
+  "final_source": {
+    "tests": 157,
+    "pass": 157,
+    "fail": 0,
+    "skipped": 0,
+    "new_regression_cases": 20,
+    "exit_code": 0,
+    "command": "node --test --test-isolation=none --experimental-test-coverage --test-coverage-include='**/apps/web/src/hooks/useClassrooms.js' --test-coverage-include='**/apps/web/src/hooks/useOpenClasses.js' --test-reporter=tap tests/upgrade/classroom-system.test.mjs tests/upgrade/classroom-client.test.mjs tests/upgrade/classroom-presence.test.mjs tests/upgrade/classroom-media.test.mjs tests/upgrade/classroom-media-client.test.mjs tests/upgrade/classroom-media-lifetime.test.mjs tests/upgrade/classroom-telemetry.test.mjs tests/upgrade/classroom-recovery.test.mjs",
+    "observed_at": "2026-09-30T18:17:42.141678+00:00",
+    "capture_sha256": "ee79cc60989c3838b825741794e50769f27777b8e9693aeb46b2bb11b6d49e87"
+  },
+  "coverage": {
+    "kind": "Node V8 coverage of actual source hook bodies, with imports replaced by explicit test doubles; not React/DOM coverage.",
+    "modules": {
+      "apps/web/src/hooks/useClassrooms.js": {
+        "lines_percent": 100.0,
+        "branches_percent": 97.39,
+        "functions_percent": 100.0
+      },
+      "apps/web/src/hooks/useOpenClasses.js": {
+        "lines_percent": 100.0,
+        "branches_percent": 83.82,
+        "functions_percent": 100.0
+      }
+    }
+  },
+  "limited_source_diagnostic": {
+    "modules": 5,
+    "errors": 0,
+    "runner": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/check-source.cjs:inspectSource",
+    "full_repository_lint": false
+  },
+  "rendered": {
+    "status": "blocked",
+    "new_cases_authored": 7,
+    "exit_code": 127,
+    "command": "npm run test --prefix apps/web -- --run src/hooks/__tests__/useClassrooms.test.jsx src/hooks/__tests__/useOpenClasses.test.jsx src/pages/workspace/__tests__/ClassroomsFlow.test.jsx",
+    "reason": "vitest invocation reports Permission denied; independent local module resolution returns ERR_MODULE_NOT_FOUND for React/Vitest."
+  },
+  "native": {
+    "status": "skipped",
+    "tests": 10,
+    "executed": 0,
+    "command": "python -m unittest tests.upgrade.test_classroom_native",
+    "reason": "BUILDANDDO_TEST_POCKETBASE prerequisite is not present."
+  },
+  "historical_broadcast_evidence": {
+    "status": "blocked",
+    "passed": 12,
+    "failed": 1,
+    "command": "node --test --test-isolation=none --test-reporter=spec tests/upgrade/broadcast-lessons.test.mjs",
+    "reason": "The recorded source-evidence test cannot read historical revision 7301df8cd79a4e9b36a148512dce9fb687323a63 in this checkout. Existing evidence was not rewritten."
+  },
+  "acceptance_remaining": [
+    "Declared Node 22 and locked frontend dependencies",
+    "Rendered classroom flow and real React lifetimes",
+    "Native PocketBase on the full receiving migration set",
+    "Original reported page/error and deployed revision",
+    "Independent host/listener delivered media and revocation",
+    "Hosted GitLab and any separately approved release/readback"
+  ],
+  "handoff": ".bits/handoffs/2026-09-30-bits-codegen-cmax-b-classroom-recovery.md",
+  "governance": {
+    "observed_at": "2026-09-30T18:26:15.513531+00:00",
+    "hostinger_readiness": "PASS: 12 milestones",
+    "submission_readiness": "PASS: 11 internal checkpoints of 12 planned; official rules unknown",
+    "agent_context": "PASS: binding current; 62 existing findings and 32 unwired gates retained",
+    "public_boundary": {
+      "state": "PASS",
+      "files_checked": 1844,
+      "actor_label_not_applied": true
+    },
+    "memory": "PASS: IOO, declared edges, source counts and historical event preservation; current counts reproduced by verify.py"
+  }
+}

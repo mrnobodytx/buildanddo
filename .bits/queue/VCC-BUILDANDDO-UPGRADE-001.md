@@ -20,6 +20,28 @@
 **SRS:** SRS-BUILDANDDO-UPGRADE-001 **Risk:** A2 **Seat:** BITS-CODEGEN
 **Status:** in_progress **Actor:** actor:agent
 
+## Upstream and classroom integration authorized 2026-09-30
+
+The owner requests the latest supplied upstream and resolution of the saved
+classroom repair's seven conflicts. Existing A2 source authority covers this
+integration; receiving runtime and deployment authority stays unchanged.
+
+| Phase | Task | Gate command | Status |
+|---|---|---|---|
+| MI-1 | Preserve both source histories and reconcile current requirements | Public boundary and conflict checks | done — seven conflicts resolved; both acceptance lists and original reports retained |
+| MI-2 | Check the combined classroom, media and work-exchange behavior | Existing targeted Node and Python suites | done — 157 classroom and 105 media/workspace cases pass; 199 Python cases pass per declared version; historical broadcast evidence remains 12/13 with its original object unavailable |
+| MI-3 | Refresh reviewed bindings and retain complete provenance | Readiness, submission, context and dispatch memory validators | done — five source governance checks pass; all 263 distinct parent events retained before integration observations |
+
+Memory brief: the supplied upstream already contains PR 119 and the media
+corpus. The pending merge reapplies the saved classroom repair. Earlier media
+reports accurately describe the original checkout; their missing-source note
+is historical after this integration. Preserve both parents' events and test
+limitations, and update current receiving instructions without claiming live
+assignment, provider execution or a deployed outcome.
+
+Current integration evidence and remaining receiving checks are retained in
+`.bits/out/VCC-BUILDANDDO-UPGRADE-001/upstream-integration-report.md`.
+
 ## Mutual development work exchange - 2026-09-30
 
 The owner requests an executable public work/result boundary for reciprocal
@@ -58,6 +80,32 @@ integration backend already expires observations and the command clients already
 retain retry identities. Reuse these contracts; do not introduce a provider or
 fabricate a live seat event. The sandbox lacks the locked React/Vite/Vitest/SDK
 toolchain and native PocketBase, so their acceptance remains explicit.
+
+## Classroom recovery continuation authorized 2026-09-30
+
+The owner's classroom failure report continues the existing A2 classroom scope.
+Use the current source and native session contracts. Live activation remains
+with the receiving owner; local substitute tests cannot establish it.
+
+| Phase | Task | Gate command | Status |
+|---|---|---|---|
+| CR-1 | Reproduce missing open classes and stale classroom sessions | `node --test tests/upgrade/classroom-recovery.test.mjs` | done — eight of the initial ten cases fail before repair and pass afterward |
+| CR-2 | Repair discovery pagination and native-session lifetimes | Connected classroom Node suites and rendered regressions | source PASS — 157 cases including 20 new regressions; seven React cases authored but not executable without dependencies |
+| CR-3 | Record evidence and receiving checks | Readiness, submission, context, boundary and memory checks | source PASS — reviewed bindings and provenance pass; browser/native/media acceptance remains with CMAX-B |
+
+Memory brief: 137 existing classroom Node cases pass against explicit backend,
+provider and browser substitutes. The finder reads only the first 20 unfiltered
+rooms per workspace; the classroom hook lacks the native session epoch already
+used by media. React/Vitest, browser tooling and a native PocketBase binary are
+not installed. One separate historical broadcast-evidence test cannot resolve
+its retained source revision in this checkout. Preserve that evidence and name
+the limitation rather than changing its original binding.
+
+Observed source results and unexecuted acceptance are retained in
+`.bits/out/VCC-BUILDANDDO-UPGRADE-001/classroom-recovery-report.md` and its
+validation JSON. All 252 prior memory events are preserved. The private runtime
+handoff is `.bits/handoffs/2026-09-30-bits-codegen-cmax-b-classroom-recovery.md`.
+
 ## Media corpus continuation authorized 2026-09-30
 
 The owner's content-production request continues this existing A2 source
