@@ -276,9 +276,10 @@
         "A recorded procedure is not represented as an external worker or n8n execution.",
         "An explicit approval checkpoint precedes executable steps; native results and run events commit atomically.",
         "Cancellation preserves uncertain issued work; late receipts cannot advance cancelled runs.",
-        "A durable run link reloads the current saved snapshot and revision; unavailable and foreign runs are never opened for a decision."
+        "A durable run link reloads the current saved snapshot and revision; unavailable and foreign runs are never opened for a decision.",
+        "Action receipt polling cannot replace newer dispatch/readback with an older result or another run/step; failed reads pause dispatch until recovery. Mission and evidence links retain their saved record identity, and parent cancellation waits for in-flight dispatch."
       ],
-      "next_step": "Execute frozen approved steps, exercise cancellation and HOLD reconciliation, and retain the actual native result alongside the run event."
+      "next_step": "Run rendered action readback, cancellation-lock and mission/evidence navigation checks; execute frozen approved steps, exercise cancellation and HOLD reconciliation, and retain the actual native result alongside the run event."
     },
     {
       "id": "HS-07",
@@ -323,9 +324,10 @@
         "n8n deduplicates effect identities and reconciliation only reads an existing result.",
         "Action forms select current configured bindings and visibly expire observed health while retaining backend registration and revision checks.",
         "Public Buddi voice starts only after visitor consent; cancellation, startup timeout, failed hang-up and navigation cannot revive an obsolete attempt. A completed SDK startup promise alone does not establish a connection.",
-        "The accepted website candidate has rendered voice recovery checks and one authorized real conversation with current public-tool and post-call readback. Source tests and a report from another repository cannot establish live activation."
+        "The accepted website candidate has rendered voice recovery checks and one authorized real conversation with current public-tool and post-call readback. Source tests and a report from another repository cannot establish live activation.",
+        "An open integration desk expires observations on the same fifteen-minute rule as action forms and offers an explicit read-only refresh, including for viewers; refreshing never applies configuration or requests a health probe."
       ],
-      "next_step": "Bind both Firecrawl and n8n through the receiving owner; prove each configuration revision, health probe, bounded effect and uncertainty recovery. For Buddi, execute locked React/build/browser checks, then have the receiving owner confirm the public tools, microphone policy and private post-call receipt on the same deployed candidate; follow the dated Buddi activation handoff."
+      "next_step": "Bind both Firecrawl and n8n through the receiving owner; prove each configuration revision, health probe, bounded effect and uncertainty recovery. For Buddi, execute locked React/build/browser checks, then have the receiving owner confirm the public tools, microphone policy and private post-call receipt on the same deployed candidate; follow the dated Buddi activation handoff. Include open-page observation expiry and viewer refresh in rendered acceptance; use the workspace-connection handoff for provider readback."
     },
     {
       "id": "HS-12",
@@ -523,9 +525,10 @@
         "Same-grant permission polling preserves career imports, journey drafts and assistant work while pausing new requests. Observed denial/regrant boundaries invalidate old work; already-issued command receipts may settle only in the same lifetime, and private reads/chat remain permission-gated. Polling cannot steal keyboard focus.",
         "Pending media joins and discovery cannot revive cancelled room/account lifetimes; same-session token refresh preserves subscriptions. Structured agent detail renders as bounded inert text. The broadcast repair lesson and downloadable source-test evidence stay separate from workspace outcomes, learning completion, independent verification and deployed acceptance.",
         "Catalogue completion derives from canonical guided states, not editable reading history; unavailable aggregates do not block individually authorized tutorials or imply zero completion. Open-book/self-reported limits, pending correction review, absent payment ingestion and claimed agent labels remain visible. The authority-repair lesson and source capture cannot create workspace outcomes or learner awards.",
-        "Browser views, failed reads, rendered degradation and validated action outcomes use bounded private section names. Receipt and lifetime checks precede success; obsolete responses, demo and cancellation cannot become backend-failure events. Native diagnostics omit personal content and stdout remains separately activated. Full coverage requires exact-release arrival in both vendors, not passing source doubles."
+        "Browser views, failed reads, rendered degradation and validated action outcomes use bounded private section names. Receipt and lifetime checks precede success; obsolete responses, demo and cancellation cannot become backend-failure events. Native diagnostics omit personal content and stdout remains separately activated. Full coverage requires exact-release arrival in both vendors, not passing source doubles.",
+        "Workspace Buddi preserves drafts and personal history while connection settings are loading, unconfigured or unavailable. New session/chat sends wait for a configured endpoint; an explicit recheck restores use without inventing provider health."
       ],
-      "next_step": "Run actual browser and native isolation tests, bind the existing inference endpoint under approved data authority, and observe scoped chat-to-form-to-personal-knowledge behavior. Validate value-card drill-downs against one real reviewed mission and exact provider/release receipts; collect comparable cost, effort and eligible-work baselines before displaying ROI. Exercise career export/import with the actual native account, ten real job dossiers and reviewed draft documents; obtain separate receiving authority for one permitted ATS browser submission and retain its actual receipt."
+      "next_step": "Run actual browser and native isolation tests, bind the existing inference endpoint under approved data authority, and observe scoped chat-to-form-to-personal-knowledge behavior. Validate value-card drill-downs against one real reviewed mission and exact provider/release receipts; collect comparable cost, effort and eligible-work baselines before displaying ROI. Exercise career export/import with the actual native account, ten real job dossiers and reviewed draft documents; obtain separate receiving authority for one permitted ATS browser submission and retain its actual receipt. Include unconfigured, failed-read and reconnected Buddi states with draft preservation before the real inferred action."
     },
     {
       "id": "HS-11",

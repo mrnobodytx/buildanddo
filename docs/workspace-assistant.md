@@ -56,6 +56,14 @@ and personal patterns in one transaction while preserving native business record
 The panel clears private state on account/workspace changes and discards stale
 history/model responses. Demo mode performs no private read or write.
 
+The composer keeps an unsent draft while the connection settings load or the
+existing agent endpoint is unconfigured. **Ask Buddi** waits for a successful
+configuration read before creating a session or sending a message. After the
+operator binds the endpoint, **Recheck connection** restores sending without
+losing the draft. A failed reload also pauses sending until a successful recheck.
+Reported configuration permits an attempt; the actual response establishes
+whether inference worked. History and personal retention controls stay available.
+
 ## Tenant and account boundaries
 
 | Surface | Effective authority |

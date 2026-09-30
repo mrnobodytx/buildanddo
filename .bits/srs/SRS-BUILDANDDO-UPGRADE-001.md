@@ -20,6 +20,32 @@
 **Status:** in_progress **Risk:** A2 **Seat:** BITS-CODEGEN
 **Dispatch:** VCC-BUILDANDDO-UPGRADE-001 **Actor:** actor:agent
 
+## Disconnected workspace systems - 2026-09-30
+
+The owner asks to identify and improve inoperable or disconnected systems.
+Continue the existing A2 source dispatch across integration observations,
+workspace Buddi and workflow execution readback. Preserve the earlier public
+voice recovery work. No deployment or external activation is included.
+
+Acceptance:
+
+1. An open integration desk expires its health observations using the existing
+   fifteen-minute rule and offers a read-only refresh for receiving new operator
+   receipts. Use the same freshness rule in action-form connection checks.
+2. Workspace Buddi retains drafts and history while its configuration is loading,
+   unavailable or absent, but sends no new session/chat request until the existing
+   endpoint is reported configured. An explicit recheck can restore use without
+   reloading the page. Configuration is not a claim of provider health.
+3. Workflow action readback cannot replace a newer receipt with an older poll or
+   settle into another run, step, account or workspace. Failed readback disables
+   new dispatch until recovery. Current permission checks and stable retry keys
+   continue to govern writes; parent review controls respect an in-flight action.
+4. Workflow mission and evidence links carry the saved record identity to the
+   existing scoped desks. They neither approve work nor bypass destination access.
+5. Reproduce the failures with production-handler regressions, retain passing
+   connected backend/client controls, and document unavailable rendered/native
+   acceptance plus the private activation dependencies without inventing results.
+
 ## Buddi connection recovery - 2026-09-30
 
 Continue the owner's request to improve system connections, integrations and

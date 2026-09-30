@@ -20,6 +20,24 @@
 **SRS:** SRS-BUILDANDDO-UPGRADE-001 **Risk:** A2 **Seat:** BITS-CODEGEN
 **Status:** in_progress **Actor:** actor:agent
 
+## Disconnected workspace systems - 2026-09-30
+
+The owner's resumed request extends this public-source A2 repair pass to the
+workspace integration, Buddi and workflow paths. Existing source and voice fixes
+are retained. Runtime bindings, secrets and deployment remain receiving work.
+
+| Phase | Task | Gate command | Status |
+|---|---|---|---|
+| WC-1 | Reproduce stale integration health, disconnected sends and workflow read races | `node --test tests/upgrade/workspace-connections.test.mjs` | source PASS: nine regression failures observed before repair; eighteen final dedicated cases pass |
+| WC-2 | Repair connection recovery and scoped workflow receipt handling | Same production-handler suite plus existing backend/client suites | source PASS: 344 targeted Node cases; shared helper has 100% lines and 92% branches; rendered acceptance remains unavailable |
+| WC-3 | Verify links, source boundaries, reviewed readiness and provenance | Readiness, context, public boundary and memory validators | source PASS: both readiness checks, context, 1,824-file boundary and cumulative memory pass; native/rendered/provider acceptance remains in the receiving handoff |
+
+Memory brief: the prior Buddi voice changes are the iteration baseline. The
+integration backend already expires observations and the command clients already
+retain retry identities. Reuse these contracts; do not introduce a provider or
+fabricate a live seat event. The sandbox lacks the locked React/Vite/Vitest/SDK
+toolchain and native PocketBase, so their acceptance remains explicit.
+
 ## Buddi connection recovery - 2026-09-30
 
 The owner requests improving connections, integrations and Buddi usage after a
