@@ -212,9 +212,9 @@ function onboard(f) {
 const receipt = () => ({ owner: 'synthetic-account', workspace: 'synthetic-private-workspace', services: Array.from({ length: 7 }, (_, index) => `synthetic-private-service-${index}`),
     intent: 'build', objective: 'synthetic-private-objective' });
 
-function talk(f) {
+function talk(f, exposed = []) {
     const voice = load('lib/voiceAgent.js', f.globals, ['describeMicrophoneError', 'microphonePolicy']);
-    return handlers(f, 'components/voice/TalkToBuddi.jsx', 'TalkToBuddi', ['start', 'phase', 'problem', 'note', 'actionSection', 'fail', 'ended'],
+    return handlers(f, 'components/voice/TalkToBuddi.jsx', 'TalkToBuddi', ['start', 'phase', 'problem', 'note', 'actionSection', 'fail', 'ended', ...exposed],
         { preamble: 'function VoiceNotLoaded', globals: { ...voice, voiceAgent: () => ({ agentId: privateText, talkToUrl: 'https://fixture.invalid/talk' }) } });
 }
 
@@ -503,7 +503,7 @@ test('a failed lazy voice chunk reports once without collecting the loader error
     assert.equal(f.actions.length, 1); assert.equal(calls.length, 2); assert.equal(calls[0][2], false);
 });
 
-for (const mode of ['throw', 'status', 'disconnect']) test(`voice ${mode} failures are bounded and terminal measurement is deduplicated without suppressing callbacks`, () => {
+for (const mode of ['throw', 'status', 'disconnect']) test(`voice ${mode} failures settle the page and terminal measurement once`, () => {
     const f = fixture('/'), calls = [], s = session(f, { onFail: (...args) => calls.push(args) });
     if (mode === 'throw') s.sdk.startSession = () => { throw new Error(privateText); };
     s.h.read();
@@ -511,7 +511,7 @@ for (const mode of ['throw', 'status', 'disconnect']) test(`voice ${mode} failur
     if (mode === 'disconnect') s.sdk.options.onDisconnect({ reason: 'error', message: privateText });
     observed(f, f.names.VOICE_SESSION, 'failure', mode === 'disconnect' ? 'connection_lost' : 'connection_failed', '/');
     s.sdk.options.onDisconnect({ reason: 'error', message: privateText });
-    s.sdk.status = 'connected'; s.h.read(); assert.equal(f.actions.length, 1); assert.equal(calls.length, 2);
+    s.sdk.status = 'connected'; s.h.read(); assert.equal(f.actions.length, 1); assert.equal(calls.length, 1);
     assert.equal(calls[0][1], privateText, 'Existing visible SDK detail remains unchanged, but is not sent to telemetry');
 });
 
@@ -526,6 +526,134 @@ test('explicit voice cancel still ends once even without a disconnect callback',
     const f = fixture('/'), calls = [], s = session(f, { onEnd: (value) => calls.push(value) });
     s.h.read().end(); observed(f, f.names.VOICE_SESSION, 'ended', 'user_requested', '/');
     assert.equal(s.sdk.ends, 1); assert.equal(calls.length, 1);
+});
+
+test('voice permission granted after navigation releases tracks without starting a session', async () => {
+    const f = fixture('/'), microphone = deferred(), h = talk(f); let stopped = 0;
+    f.navigator.mediaDevices.getUserMedia = () => microphone.promise;
+    const pending = h.read().start(); h.unmount();
+    microphone.resolve({ getTracks: () => [{ stop() { stopped++; } }, { stop() { stopped++; } }] });
+    await pending;
+    assert.equal(stopped, 2);
+    assert.notEqual(h.read().phase, 'session');
+    assert.equal(f.actions.length, 1);
+});
+
+test('voice repeated Start requests open only one microphone prompt', async () => {
+    const f = fixture('/'), microphone = deferred(), h = talk(f); let requests = 0;
+    f.navigator.mediaDevices.getUserMedia = () => { requests++; return microphone.promise; };
+    const first = h.read().start(), second = h.read().start();
+    microphone.resolve({ getTracks: () => [] }); await Promise.all([first, second]);
+    assert.equal(requests, 1); assert.equal(f.actions.length, 1); assert.equal(h.read().phase, 'session');
+});
+
+for (const result of ['granted', 'denied']) test(`voice cancelled permission ${result} cannot replace a newer request`, async () => {
+    const f = fixture('/'), oldMicrophone = deferred(), newMicrophone = deferred(), h = talk(f, ['cancel']); let stopped = 0;
+    f.navigator.mediaDevices.getUserMedia = () => oldMicrophone.promise;
+    const oldRequest = h.read().start(); h.read().cancel();
+    assert.equal(h.read().phase, 'idle'); assert.match(h.read().note, /cancelled/i);
+    observed(f, f.names.VOICE_SESSION, 'ended', 'user_requested', '/');
+    f.navigator.mediaDevices.getUserMedia = () => newMicrophone.promise;
+    const newRequest = h.read().start();
+    if (result === 'granted') oldMicrophone.resolve({ getTracks: () => [{ stop() { stopped++; } }] });
+    else oldMicrophone.reject(Object.assign(new Error(privateText), { name: 'NotAllowedError' }));
+    await oldRequest;
+    assert.equal(h.read().phase, 'asking'); assert.equal(h.read().problem, null);
+    assert.equal(stopped, result === 'granted' ? 1 : 0); assert.equal(f.actions.length, 3);
+    newMicrophone.resolve({ getTracks: () => [] }); await newRequest;
+    assert.equal(h.read().phase, 'session');
+});
+
+test('voice rejected startup promise offers retry without an unhandled rejection', async () => {
+    const f = fixture('/'), calls = [], s = session(f, { onFail: (...args) => calls.push(args) });
+    s.sdk.startSession = () => Promise.reject(new Error(privateText));
+    s.h.read(); await tick();
+    assert.equal(calls.length, 1); assert.match(calls[0][0], /could not start/);
+    observed(f, f.names.VOICE_SESSION, 'failure', 'connection_failed', '/');
+});
+
+test('voice late startup after navigation closes transport without updating the page', async () => {
+    const f = fixture('/'), start = deferred(), calls = [], s = session(f, {
+        onEnd: (...args) => calls.push(args), onFail: (...args) => calls.push(args),
+    });
+    s.sdk.startSession = () => start.promise;
+    s.h.read(); s.h.unmount();
+    s.sdk.options.onDisconnect({ reason: 'error', message: privateText });
+    start.resolve('synthetic-conversation'); await tick();
+    assert.equal(s.sdk.ends, 1); assert.equal(calls.length, 0); assert.equal(f.actions.length, 0);
+});
+
+test('voice connection timeout offers recovery and closes a later successful start', async () => {
+    const f = fixture('/'), start = deferred(), calls = [], s = session(f, { onFail: (...args) => calls.push(args) });
+    s.sdk.startSession = () => start.promise;
+    s.h.read(); f.advance(29_999); assert.equal(calls.length, 0);
+    f.advance(1); assert.equal(calls.length, 1); assert.match(calls[0][0], /connect in time/);
+    observed(f, f.names.VOICE_SESSION, 'failure', 'connection_failed', '/');
+    s.h.unmount(); start.resolve('synthetic-conversation'); await tick();
+    assert.equal(s.sdk.ends, 1); assert.equal(calls.length, 1); assert.equal(f.actions.length, 1);
+});
+
+test('voice startup resolution alone is not a connection and connected sessions do not time out', async () => {
+    const f = fixture('/'), start = deferred(), calls = [], s = session(f, { onFail: (...args) => calls.push(args) });
+    s.sdk.startSession = () => start.promise;
+    s.h.read(); start.resolve('synthetic-conversation'); await tick();
+    assert.equal(f.actions.length, 0);
+    s.sdk.status = 'connected'; s.h.read(); f.advance(60_000);
+    observed(f, f.names.VOICE_SESSION, 'connected', 'connected', '/');
+    assert.equal(calls.length, 0); assert.equal(f.actions.length, 1);
+});
+
+test('voice rejected End does not claim the connection ended', async () => {
+    const f = fixture('/'), failures = [], ended = [], s = session(f, {
+        onFail: (...args) => failures.push(args), onEnd: (...args) => ended.push(args),
+    });
+    s.sdk.endSession = () => Promise.reject(new Error(privateText));
+    s.h.read().end(); await tick();
+    assert.equal(ended.length, 0); assert.equal(failures.length, 1); assert.match(failures[0][0], /could not end/);
+    assert.equal(f.actions.filter(([, action]) => action.outcome === 'ended').length, 0);
+});
+
+test('voice repeated End waits for one transport close and ignores subsequent callbacks', async () => {
+    const f = fixture('/'), close = deferred(), ended = [], s = session(f, { onEnd: (...args) => ended.push(args) });
+    s.sdk.endSession = () => { s.sdk.ends++; return close.promise; };
+    s.h.read().end(); s.h.read().end();
+    assert.equal(s.sdk.ends, 1); assert.equal(ended.length, 0);
+    close.resolve(); await tick();
+    assert.equal(ended.length, 1); observed(f, f.names.VOICE_SESSION, 'ended', 'user_requested', '/');
+    s.sdk.options.onDisconnect({ reason: 'agent' });
+    assert.equal(ended.length, 1); assert.equal(f.actions.length, 1);
+});
+
+test('voice stalled End offers a reload after ten seconds without claiming success', async () => {
+    const f = fixture('/'), close = deferred(), ended = [], failures = [], s = session(f, {
+        onEnd: (...args) => ended.push(args), onFail: (...args) => failures.push(args),
+    });
+    s.sdk.endSession = () => close.promise;
+    s.h.read().end(); f.advance(9_999); assert.equal(failures.length, 0);
+    f.advance(1); assert.equal(failures.length, 1); assert.equal(failures[0][2], false);
+    assert.match(failures[0][0], /Reload this page/);
+    close.resolve(); await tick();
+    assert.equal(ended.length, 0); assert.equal(f.actions.length, 1);
+    observed(f, f.names.VOICE_SESSION, 'failure', 'connection_lost', '/');
+});
+
+test('voice pending End and rejected startup cannot report after navigation', async () => {
+    for (const operation of ['startSession', 'endSession']) {
+        const f = fixture('/'), pending = deferred(), calls = [], s = session(f, {
+            onEnd: (...args) => calls.push(args), onFail: (...args) => calls.push(args),
+        });
+        s.sdk[operation] = () => pending.promise;
+        s.h.read(); if (operation === 'endSession') s.h.read().end();
+        s.h.unmount(); pending.reject(new Error(privateText)); await tick(); f.advance(60_000);
+        assert.equal(calls.length, 0); assert.equal(f.actions.length, 0);
+    }
+});
+
+test('voice synchronous End failure is recoverable and terminal', () => {
+    const f = fixture('/'), failures = [], s = session(f, { onFail: (...args) => failures.push(args) });
+    s.sdk.endSession = () => { throw new Error(privateText); };
+    s.h.read().end(); s.sdk.options.onDisconnect({ reason: 'error', message: privateText });
+    assert.equal(failures.length, 1); assert.equal(failures[0][2], false); assert.equal(f.actions.length, 1);
 });
 
 test('throwing SDK observers cannot convert successful public work into application failures or retries', async () => {

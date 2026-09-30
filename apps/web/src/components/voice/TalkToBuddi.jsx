@@ -77,12 +77,26 @@ export default function TalkToBuddi() {
     const [note, setNote] = useState('');
     const [problem, setProblem] = useState(null);
     const actionSection = useRef('/unknown');
+    const attempt = useRef(null);
+    const mounted = useRef(false);
+
+    useEffect(() => {
+        mounted.current = true;
+        return () => {
+            mounted.current = false;
+            attempt.current = null;
+        };
+    }, []);
 
     const fail = useCallback((reason, detail = '', retry = true) => {
+        if (!mounted.current || !attempt.current) return;
+        attempt.current = null;
         setProblem({ reason, detail, retry });
         setPhase('unavailable');
     }, []);
     const ended = useCallback((text) => {
+        if (!mounted.current || !attempt.current) return;
+        attempt.current = null;
         setNote(text);
         setPhase('idle');
     }, []);
@@ -90,10 +104,14 @@ export default function TalkToBuddi() {
     if (!agent.agentId) return null;
 
     async function start() {
+        if (!mounted.current || attempt.current) return;
         const section = publicActionSection();
+        const current = { section };
+        attempt.current = current;
         actionSection.current = section;
         trackPublicAction(PUBLIC_ACTIONS.VOICE_SESSION, 'started', 'user_requested', undefined, { section });
         setNote('');
+        setProblem(null);
         if (microphonePolicy() === false) {
             trackPublicAction(PUBLIC_ACTIONS.VOICE_SESSION, 'failure', 'policy_blocked', undefined, { section });
             fail(POLICY_BLOCKED, '', false);
@@ -105,11 +123,22 @@ export default function TalkToBuddi() {
             const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
             stream.getTracks().forEach((track) => track.stop());
         } catch (error) {
+            if (attempt.current !== current) return;
             trackPublicAction(PUBLIC_ACTIONS.VOICE_SESSION, 'failure', 'microphone_unavailable', undefined, { section });
             fail(describeMicrophoneError(error));
             return;
         }
+        if (attempt.current !== current) return;
         setPhase('session');
+    }
+
+    function cancel() {
+        if (!attempt.current) return;
+        const { section } = attempt.current;
+        attempt.current = null;
+        trackPublicAction(PUBLIC_ACTIONS.VOICE_SESSION, 'ended', 'user_requested', undefined, { section });
+        setNote('Voice request cancelled. Dismiss any microphone prompt still open in your browser.');
+        setPhase('idle');
     }
 
     return (
@@ -138,10 +167,16 @@ export default function TalkToBuddi() {
                     </div>
                 )}
                 {phase === 'asking' && (
-                    <p role="status" className="text-sm leading-6">Waiting for your browser's microphone permission…</p>
+                    <div className="space-y-3">
+                        <p role="status" className="text-sm leading-6">Waiting for your browser's microphone permission…</p>
+                        <Button variant="secondary" size="sm" onClick={cancel}>Cancel</Button>
+                    </div>
                 )}
                 {phase === 'session' && (
-                    <Suspense fallback={<p role="status" className="text-sm leading-6">Loading the voice session…</p>}>
+                    <Suspense fallback={<div className="space-y-3">
+                        <p role="status" className="text-sm leading-6">Loading the voice session…</p>
+                        <Button variant="secondary" size="sm" onClick={cancel}>Cancel</Button>
+                    </div>}>
                         <VoiceSession agentId={agent.agentId} onEnd={ended} onFail={fail} actionSection={actionSection.current} />
                     </Suspense>
                 )}

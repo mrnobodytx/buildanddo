@@ -296,28 +296,36 @@
         "apps/mission_suite/business_worker.py",
         "docs/business-execution.md",
         "apps/web/src/components/workspace/ConnectorBinding.jsx",
-        "apps/web/src/lib/connectorReadiness.js"
+        "apps/web/src/lib/connectorReadiness.js",
+        "apps/web/src/components/voice",
+        "apps/web/src/lib/voiceAgent.js",
+        ".bits/handoffs/2026-09-30-bits-codegen-cmax-b-buddi-activation.md"
       ],
       "checks": [
         "source_node",
         "source_python",
         "native_workspace",
-        "native_suite"
+        "native_suite",
+        "web_tests",
+        "web_build"
       ],
       "requires": [
         "HS-06"
       ],
       "runtime_requirements": [
-        "connectors"
+        "connectors",
+        "browser"
       ],
       "acceptance": [
         "Firecrawl/n8n bindings have fresh observations for their current configuration revisions.",
         "Disabled, stale and unavailable providers remain explicit and do not create successful activity.",
         "Both Firecrawl and n8n have an observed successful use plus disabled, stale and unavailable-provider controls.",
         "n8n deduplicates effect identities and reconciliation only reads an existing result.",
-        "Action forms select current configured bindings and visibly expire observed health while retaining backend registration and revision checks."
+        "Action forms select current configured bindings and visibly expire observed health while retaining backend registration and revision checks.",
+        "Public Buddi voice starts only after visitor consent; cancellation, startup timeout, failed hang-up and navigation cannot revive an obsolete attempt. A completed SDK startup promise alone does not establish a connection.",
+        "The accepted website candidate has rendered voice recovery checks and one authorized real conversation with current public-tool and post-call readback. Source tests and a report from another repository cannot establish live activation."
       ],
-      "next_step": "Bind both Firecrawl and n8n through the receiving owner; prove each configuration revision, health probe, bounded effect and uncertainty recovery."
+      "next_step": "Bind both Firecrawl and n8n through the receiving owner; prove each configuration revision, health probe, bounded effect and uncertainty recovery. For Buddi, execute locked React/build/browser checks, then have the receiving owner confirm the public tools, microphone policy and private post-call receipt on the same deployed candidate; follow the dated Buddi activation handoff."
     },
     {
       "id": "HS-12",

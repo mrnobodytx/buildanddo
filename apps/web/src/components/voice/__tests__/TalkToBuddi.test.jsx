@@ -1,10 +1,10 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/src/components/voice/__tests__/TalkToBuddi.test.jsx
 // Stage:       08_TEST
-// SRS:         SRS-BUILDANDDO-BUDDI-003
+// SRS:         SRS-BUILDANDDO-BUDDI-003, SRS-BUILDANDDO-UPGRADE-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-BUDDI-003
+// Dispatch:    VCC-BUILDANDDO-BUDDI-003, VCC-BUILDANDDO-UPGRADE-001
 // Seat:        C-ONE
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-23
@@ -87,6 +87,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
+    vi.useRealTimers();
     delete navigator.mediaDevices;
     delete document.permissionsPolicy;
 });
@@ -204,6 +205,76 @@ describe('talk to Buddi', () => {
         expect(screen.getByText('The voice session was interrupted.')).toBeVisible();
         expect(screen.getByText('Details: connection lost')).toBeVisible();
         expectTalkToLink();
+    });
+
+    it('cancels a microphone prompt and releases its late stream without starting Buddi', async () => {
+        const user = userEvent.setup();
+        let grant;
+        const stop = vi.fn();
+        navigator.mediaDevices.getUserMedia.mockReturnValue(new Promise((resolve) => { grant = resolve; }));
+        render(<TalkToBuddi />);
+        await startTalking(user);
+        expect(screen.getByRole('status')).toHaveTextContent(/microphone permission/);
+        await user.click(screen.getByRole('button', { name: 'Cancel' }));
+        expect(screen.getByRole('status')).toHaveTextContent(/request cancelled/);
+        await act(async () => { grant({ getTracks: () => [{ stop }] }); });
+        expect(stop).toHaveBeenCalledTimes(1);
+        expect(sdk.startSession).not.toHaveBeenCalled();
+        expect(screen.getByRole('button', { name: 'Start talking' })).toBeVisible();
+    });
+
+    it('offers retry when the SDK startup promise rejects', async () => {
+        const user = userEvent.setup();
+        microphoneGranted();
+        sdk.startSession.mockRejectedValue(new Error('Connection refused'));
+        render(<TalkToBuddi />);
+        await startTalking(user);
+        expect(await screen.findByText('The voice session could not start.')).toBeVisible();
+        expect(screen.getByRole('button', { name: 'Try again' })).toBeVisible();
+        expectTalkToLink();
+    });
+
+    it('ignores callbacks from the old session while its replacement is connecting', async () => {
+        const user = userEvent.setup();
+        await connected(user);
+        const previous = sdk.options;
+        await user.click(screen.getByRole('button', { name: 'End' }));
+        sdk.state.status = 'connecting';
+        await startTalking(user);
+        await waitFor(() => expect(sdk.startSession).toHaveBeenCalledTimes(2));
+        act(() => previous.onDisconnect({ reason: 'error', message: 'Old connection lost' }));
+        expect(screen.getByRole('status')).toHaveTextContent('Connecting to Buddi…');
+        expect(screen.queryByText('The voice session was interrupted.')).toBeNull();
+    });
+
+    it('replaces a stalled connection with retry and the external talk link after thirty seconds', async () => {
+        const user = userEvent.setup();
+        microphoneGranted();
+        render(<TalkToBuddi />);
+        vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
+        const timedUser = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+        await startTalking(timedUser);
+        await act(async () => {});
+        act(() => vi.advanceTimersByTime(30_000));
+        expect(screen.getByText('Buddi did not connect in time. Try again.')).toBeVisible();
+        expectTalkToLink();
+        vi.useRealTimers();
+        await user.click(screen.getByRole('button', { name: 'Try again' }));
+        await waitFor(() => expect(sdk.startSession).toHaveBeenCalledTimes(2));
+    });
+
+    it('waits for hang-up confirmation and offers reload on failure', async () => {
+        const user = userEvent.setup();
+        await connected(user);
+        let rejectClose;
+        sdk.endSession.mockReturnValue(new Promise((_, reject) => { rejectClose = reject; }));
+        await user.click(screen.getByRole('button', { name: 'End' }));
+        expect(screen.getByRole('status')).toHaveTextContent('Ending the voice session…');
+        expect(screen.getByRole('button', { name: 'End' })).toBeDisabled();
+        await act(async () => { rejectClose(new Error('Transport still open')); });
+        expect(screen.getByText(/could not end\. Reload this page/)).toBeVisible();
+        expect(screen.queryByRole('button', { name: 'Try again' })).toBeNull();
+        expect(screen.queryByText('The conversation has ended.')).toBeNull();
     });
 });
 

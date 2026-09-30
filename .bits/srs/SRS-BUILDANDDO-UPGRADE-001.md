@@ -20,6 +20,30 @@
 **Status:** in_progress **Risk:** A2 **Seat:** BITS-CODEGEN
 **Dispatch:** VCC-BUILDANDDO-UPGRADE-001 **Actor:** actor:agent
 
+## Buddi connection recovery - 2026-09-30
+
+Continue the owner's request to improve system connections, integrations and
+Buddi usage in the public repository. This source continuation closes the
+website voice connection's cancellation and retry gaps. The supplied report of
+84 private-system tests is historical context, not validation of this candidate.
+
+Acceptance:
+
+1. A visitor can cancel microphone permission or voice-code loading. A late
+   permission result releases every temporary track and cannot start a cancelled
+   or superseded attempt. Repeated clicks cannot start parallel attempts.
+2. Startup failures, including rejected SDK promises and a 30-second connection
+   timeout, offer the existing retry and external talk link. Promise completion
+   alone does not establish a connected session.
+3. Only the active session may update the page or record its terminal outcome.
+   Late callbacks after cancellation, failure or navigation cannot overwrite a
+   retry. End requests handle rejected promises without claiming a successful end.
+4. Retain lazy SDK loading, visitor consent, the published agent identity and
+   bounded telemetry. Test the actual handlers with offline transport doubles and
+   add rendered regression cases; identify unavailable dependencies explicitly.
+5. Deployment, live agent/tool configuration, headers, private post-call handling
+   and external activation remain receiving-owner work.
+
 ## PR 112 conflict resolution - 2026-09-24
 
 The owner requests resolving PR 112 against current main on its existing branch.

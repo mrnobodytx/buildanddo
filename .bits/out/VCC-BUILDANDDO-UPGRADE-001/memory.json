@@ -10,7 +10,7 @@
       "enum_type": "ConfigDoc",
       "functions": [],
       "dependencies": [],
-      "lines": 1652,
+      "lines": 1695,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Keep the registered mission research continuation and measured repository inventory reviewable while retaining earlier runtime and governance findings.",
@@ -47,7 +47,8 @@
         "broadcast-repairs-and-lessons",
         "test-isolation-and-claim-authority",
         "telemetry-coverage",
-        "pr112-integration"
+        "pr112-integration",
+        "buddi-connection-recovery"
       ],
       "tenant_id": null
     },
@@ -541,7 +542,7 @@
       "dependencies": [
         ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md"
       ],
-      "lines": 64202,
+      "lines": 64550,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Describe the public memory payload that carries this dispatch into the post-merge ingest flow.",
@@ -559,7 +560,8 @@
         "objective-first-onboarding",
         "educational-collaboration",
         "government-research-assurance",
-        "career-passport"
+        "career-passport",
+        "buddi-connection-recovery"
       ],
       "tenant_id": null
     },
@@ -678,7 +680,7 @@
       "dependencies": [
         ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md"
       ],
-      "lines": 1792,
+      "lines": 1812,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Track the authorized eight-area implementation and its verification gates.",
@@ -703,7 +705,8 @@
         "broadcast-repairs-and-lessons",
         "test-isolation-and-claim-authority",
         "telemetry-coverage",
-        "pr112-integration"
+        "pr112-integration",
+        "buddi-connection-recovery"
       ],
       "tenant_id": null
     },
@@ -1007,7 +1010,7 @@
       "dependencies": [
         ".bits/srs_registry.yml"
       ],
-      "lines": 2421,
+      "lines": 2445,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Define acceptance evidence for the eight owner-authorized BuildAndDo upgrades.",
@@ -1032,7 +1035,8 @@
         "broadcast-repairs-and-lessons",
         "test-isolation-and-claim-authority",
         "telemetry-coverage",
-        "pr112-integration"
+        "pr112-integration",
+        "buddi-connection-recovery"
       ],
       "tenant_id": null
     },
@@ -1049,7 +1053,7 @@
         ".bits/context.md",
         "scripts/ci/agent_context.py"
       ],
-      "lines": 411,
+      "lines": 434,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Name every SRS code a branch may claim, and where its spec lives.",
@@ -3319,7 +3323,7 @@
         "apps/pocketbase/pb_hooks/workflow-policy.js",
         "apps/pocketbase/pb_hooks/government-access.js"
       ],
-      "lines": 129,
+      "lines": 138,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Resolve current workspace authority and validate bounded commands without trusting client roles or historical authorship.",
@@ -3494,7 +3498,7 @@
       "dependencies": [
         "apps/pocketbase/pb_hooks/workspace-access.js"
       ],
-      "lines": 113,
+      "lines": 136,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Reject stale membership, reassigned records, foreign relations and browser-asserted review, revenue or seat identity at the native workspace write boundary.",
@@ -10001,7 +10005,7 @@
         "react",
         "react-router-dom"
       ],
-      "lines": 263,
+      "lines": 185,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Keep workspace writes attributed to real backend outcomes and expose actionable failure states in this page.",
@@ -10631,7 +10635,7 @@
       "dependencies": [
         "apps/web/src/pages/workspace/SettingsPage.jsx"
       ],
-      "lines": 96,
+      "lines": 151,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Test appearance, account sign-out and recoverable domain-authorization writes.",
@@ -10953,7 +10957,7 @@
         "apps/pocketbase/pb_migrations",
         "apps/web/src/contexts/AuthContext.jsx"
       ],
-      "lines": 576,
+      "lines": 646,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Write down the API surface that already exists, extracted from the",
@@ -16405,7 +16409,7 @@
         "scripts/discordbot/dossier.py",
         "scripts/discordbot/grading.py"
       ],
-      "lines": 722,
+      "lines": 723,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Serve useful public Discord interactions with explicit scope, private replies and no import-time activation.",
@@ -38376,7 +38380,7 @@
       "dependencies": [
         ".bits/hostinger-readiness.json"
       ],
-      "lines": 651,
+      "lines": 659,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Identify the mandatory sprint contract without embedding comments in JSON.",
@@ -38400,7 +38404,8 @@
         "audited-evidence-repairs",
         "broadcast-repairs-and-lessons",
         "test-isolation-and-claim-authority",
-        "telemetry-coverage"
+        "telemetry-coverage",
+        "buddi-connection-recovery"
       ],
       "tenant_id": null
     },
@@ -38447,7 +38452,7 @@
       "dependencies": [
         ".bits/hostinger-readiness.lock.json"
       ],
-      "lines": 1321,
+      "lines": 1345,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Distinguish reviewed source fingerprints from execution or deployment evidence.",
@@ -38472,7 +38477,8 @@
         "broadcast-repairs-and-lessons",
         "test-isolation-and-claim-authority",
         "telemetry-coverage",
-        "pr112-integration"
+        "pr112-integration",
+        "buddi-connection-recovery"
       ],
       "tenant_id": null
     },
@@ -39968,7 +39974,7 @@
         "apps/pocketbase/pb_migrations/1790700000_workspace_onboarding.js",
         "apps/pocketbase/pb_migrations/1791100000_objective_onboarding.js"
       ],
-      "lines": 103,
+      "lines": 100,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Complete onboarding in one transaction so failed seeds and lost responses cannot create duplicate workspaces.",
@@ -45917,7 +45923,7 @@
         "apps/web/src/pages/workspace/OverviewPage.jsx",
         "apps/web/src/test/utils.jsx"
       ],
-      "lines": 352,
+      "lines": 362,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Keep the front page honest: counts must come from records, the domain banner must not imply authorisation, and empty means empty.",
@@ -47730,7 +47736,7 @@
       "enum_type": "Doc",
       "functions": [],
       "dependencies": [],
-      "lines": 584,
+      "lines": 585,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Explain the educational collaboration product, its learning and evidence loop, and the application domains so contributors understand what BuildAndDo is for.",
@@ -56289,7 +56295,7 @@
         "tests/upgrade/test_workspace_native.py",
         "tests/upgrade/test_tutorial_learning_native.py"
       ],
-      "lines": 637,
+      "lines": 661,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Detect incomplete native fixtures and unsafe failure diagnostics without claiming native execution from subprocess doubles.",
@@ -60000,7 +60006,8 @@
       "enum_type": "Widget",
       "functions": [
         "VoiceNotLoaded",
-        "Unavailable"
+        "Unavailable",
+        "TalkToBuddi"
       ],
       "dependencies": [
         "apps/web/src/lib/voiceAgent.js",
@@ -60008,7 +60015,7 @@
         "apps/web/src/components/site/ui.jsx",
         "apps/web/src/lib/publicActions.js"
       ],
-      "lines": 152,
+      "lines": 187,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Let a visitor talk to Buddi on the home page. Nothing voice-related loads until they press Start, and when the microphone cannot be used they read why and get the talk-to link, never a dead button.",
@@ -60023,7 +60030,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "telemetry-coverage"
+        "telemetry-coverage",
+        "buddi-connection-recovery"
       ],
       "tenant_id": null
     },
@@ -60038,14 +60046,15 @@
       "enum_type": "Widget",
       "functions": [
         "statusWords",
-        "Session"
+        "Session",
+        "VoiceSession"
       ],
       "dependencies": [
         "@elevenlabs/react",
         "apps/web/src/components/site/ui.jsx",
         "apps/web/src/lib/publicActions.js"
       ],
-      "lines": 118,
+      "lines": 172,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Run one voice session with Buddi through the official SDK, saying each state in words.",
@@ -60060,7 +60069,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "telemetry-coverage"
+        "telemetry-coverage",
+        "buddi-connection-recovery"
       ],
       "tenant_id": null
     },
@@ -61085,10 +61095,10 @@
         "apps/web/src/pages/workspace/OperatorPage.jsx",
         "apps/web/src/pages/workspace/RoomsPage.jsx"
       ],
-      "lines": 1008,
+      "lines": 1136,
       "caps_grade": "pending",
       "ck_stamp": "pending",
-      "intent_statement": "Connect actual public action handlers to both offline SDK doubles and assert privacy, truthful outcomes and unchanged retry lifetimes.",
+      "intent_statement": "Connect actual public action handlers to both offline SDK doubles and assert privacy, truthful outcomes and unchanged retry lifetimes. ----------------------------------------------------------------",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
       "outcome": "partial",
       "supersedes": false,
@@ -61101,7 +61111,8 @@
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
         "telemetry-coverage",
-        "pr112-integration"
+        "pr112-integration",
+        "buddi-connection-recovery"
       ],
       "tenant_id": null
     },
@@ -63829,7 +63840,7 @@
       "dependencies": [
         "scripts/ci/system_growth.py"
       ],
-      "lines": 702,
+      "lines": 745,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Bind regenerated growth metadata to the reconciled source without claiming runtime acceptance.",
@@ -64185,12 +64196,349 @@
       "timestamp": "2026-09-24T22:32:18.571940+00:00",
       "commit_sha": null,
       "smoke_result": "1444/1445 Node, zero failures; 1336/1351 Python, seven failures and eight skips"
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/handoffs/2026-09-30-bits-codegen-cmax-b-buddi-activation.md",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "apps/web/src/components/voice/TalkToBuddi.jsx",
+        "apps/web/src/components/voice/VoiceSession.jsx",
+        ".bits/srs/SRS-BUILDANDDO-BUDDI-002.md",
+        ".bits/srs/SRS-BUILDANDDO-BUDDI-003.md"
+      ],
+      "lines": 79,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Give the receiving owner concrete candidate, voice, public-tool and post-call acceptance work without treating source repairs as live activation.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "buddi-connection-recovery"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/buddi-connection-report.md",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "apps/web/src/components/voice/TalkToBuddi.jsx",
+        "apps/web/src/components/voice/VoiceSession.jsx",
+        "tests/upgrade/public-action-telemetry.test.mjs",
+        ".bits/handoffs/2026-09-30-bits-codegen-cmax-b-buddi-activation.md"
+      ],
+      "lines": 118,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Retain observed Buddi connection regression results and explicit rendered and live acceptance limits for the public source candidate.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "buddi-connection-recovery"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/components/voice/__tests__/TalkToBuddi.test.jsx",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "sdkSays",
+        "microphoneGranted",
+        "startTalking",
+        "connected",
+        "expectTalkToLink"
+      ],
+      "dependencies": [
+        "apps/web/src/components/voice/TalkToBuddi.jsx",
+        "apps/web/src/components/voice/VoiceSession.jsx",
+        "apps/web/src/lib/voiceAgent.js"
+      ],
+      "lines": 298,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Verify the visitor starts Buddi themselves, reads every state in words, and gets the talk-to link whenever the microphone or the session cannot be used.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "buddi-connection-recovery"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/components/voice/__tests__/VoiceChunk.test.jsx",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [],
+      "dependencies": [
+        "apps/web/src/components/voice/TalkToBuddi.jsx"
+      ],
+      "lines": 92,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Verify the voice SDK is imported only after Start, and that a voice chunk which cannot load is reported in the section instead of taking the page down.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "buddi-connection-recovery"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/workspace/__tests__/SettingsPage.test.jsx",
+      "target": "apps/web/src/components/workspace/WebsiteDomainPanel.jsx",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "apps/web/src/pages/workspace/__tests__/SettingsPage.test.jsx declares VALIDATES apps/web/src/components/workspace/WebsiteDomainPanel.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/workspace/__tests__/SettingsPage.test.jsx",
+      "target": "tests/upgrade/admin-fixture.mjs",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/web/src/pages/workspace/__tests__/SettingsPage.test.jsx declares DEPENDS_ON tests/upgrade/admin-fixture.mjs.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_native_fixture_contracts.py",
+      "target": "tests/upgrade/test_domain_verification_native.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_native_fixture_contracts.py declares VALIDATES tests/upgrade/test_domain_verification_native.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-30-bits-codegen-cmax-b-buddi-activation.md",
+      "target": "apps/web/src/components/voice/TalkToBuddi.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/handoffs/2026-09-30-bits-codegen-cmax-b-buddi-activation.md declares CONSUMES apps/web/src/components/voice/TalkToBuddi.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-30-bits-codegen-cmax-b-buddi-activation.md",
+      "target": "apps/web/src/components/voice/VoiceSession.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/handoffs/2026-09-30-bits-codegen-cmax-b-buddi-activation.md declares CONSUMES apps/web/src/components/voice/VoiceSession.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-30-bits-codegen-cmax-b-buddi-activation.md",
+      "target": ".bits/srs/SRS-BUILDANDDO-BUDDI-002.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/handoffs/2026-09-30-bits-codegen-cmax-b-buddi-activation.md declares CONSUMES .bits/srs/SRS-BUILDANDDO-BUDDI-002.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-30-bits-codegen-cmax-b-buddi-activation.md",
+      "target": ".bits/srs/SRS-BUILDANDDO-BUDDI-003.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/handoffs/2026-09-30-bits-codegen-cmax-b-buddi-activation.md declares CONSUMES .bits/srs/SRS-BUILDANDDO-BUDDI-003.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/buddi-connection-report.md",
+      "target": "apps/web/src/components/voice/TalkToBuddi.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/buddi-connection-report.md declares CONSUMES apps/web/src/components/voice/TalkToBuddi.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/buddi-connection-report.md",
+      "target": "apps/web/src/components/voice/VoiceSession.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/buddi-connection-report.md declares CONSUMES apps/web/src/components/voice/VoiceSession.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/buddi-connection-report.md",
+      "target": "tests/upgrade/public-action-telemetry.test.mjs",
+      "edge_type": "VERIFIED_BY",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/buddi-connection-report.md declares VERIFIED_BY tests/upgrade/public-action-telemetry.test.mjs.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/buddi-connection-report.md",
+      "target": ".bits/handoffs/2026-09-30-bits-codegen-cmax-b-buddi-activation.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/buddi-connection-report.md declares CONSUMES .bits/handoffs/2026-09-30-bits-codegen-cmax-b-buddi-activation.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/buddi-connection-report.md",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/memory.json",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/buddi-connection-report.md declares CONSUMES .bits/out/VCC-BUILDANDDO-UPGRADE-001/memory.json.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/voice/__tests__/TalkToBuddi.test.jsx",
+      "target": "apps/web/src/components/voice/TalkToBuddi.jsx",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "apps/web/src/components/voice/__tests__/TalkToBuddi.test.jsx declares VALIDATES apps/web/src/components/voice/TalkToBuddi.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/voice/__tests__/TalkToBuddi.test.jsx",
+      "target": "apps/web/src/components/voice/VoiceSession.jsx",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "apps/web/src/components/voice/__tests__/TalkToBuddi.test.jsx declares VALIDATES apps/web/src/components/voice/VoiceSession.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/voice/__tests__/TalkToBuddi.test.jsx",
+      "target": "apps/web/src/lib/voiceAgent.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "apps/web/src/components/voice/__tests__/TalkToBuddi.test.jsx declares VALIDATES apps/web/src/lib/voiceAgent.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/voice/__tests__/VoiceChunk.test.jsx",
+      "target": "apps/web/src/components/voice/TalkToBuddi.jsx",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "apps/web/src/components/voice/__tests__/VoiceChunk.test.jsx declares VALIDATES apps/web/src/components/voice/TalkToBuddi.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "C",
+      "event_type": "test_fail",
+      "file_path": "tests/upgrade/public-action-telemetry.test.mjs",
+      "description": "Buddi connection regressions reproduced 12 failures and 8 passes before repair using the existing handler/SDK doubles; no live provider call.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-30T14:54:00.060714+00:00",
+      "commit_sha": null,
+      "smoke_result": "8/20"
+    },
+    {
+      "type": "C",
+      "event_type": "test_pass",
+      "file_path": "tests/upgrade/public-action-telemetry.test.mjs",
+      "description": "Buddi recovery plus public-action, public API and staging contracts passed 143 cases on Node 22.17.0; includes 23 voice cases and disposable loopback readback.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-30T14:54:00.060714+00:00",
+      "commit_sha": null,
+      "smoke_result": "143/143"
+    },
+    {
+      "type": "C",
+      "event_type": "failure",
+      "file_path": ".bits/handoffs/2026-09-30-bits-codegen-cmax-b-buddi-activation.md",
+      "description": "Rendered tests, component coverage, full lint and build remain unavailable because locked React/Vitest/Vite/SDK dependencies are absent. No native backend or live activation was tested.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-30T14:54:00.060714+00:00",
+      "commit_sha": null,
+      "smoke_result": null
     }
   ],
   "summary": {
-    "type_a_count": 983,
-    "type_b_count": 2552,
-    "type_c_count": 245,
+    "type_a_count": 987,
+    "type_b_count": 2568,
+    "type_c_count": 248,
     "ioo_compliance": true,
     "dkg_orphans": 0,
     "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
