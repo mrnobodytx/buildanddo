@@ -8,9 +8,9 @@
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-30
-# Depends:     docs/field-interviewer-v1.3.md, scripts/publish/media_contracts.py, scripts/publish/media_corpus.py, scripts/publish/media_library.py, scripts/publish/activity_publish.py, apps/web/src/components/workspace/ContentStudio.jsx, tests/upgrade/check_media_corpus.py
+# Depends:     docs/field-interviewer-v1.3.md, scripts/publish/media_contracts.py, scripts/publish/media_corpus.py, scripts/publish/media_library.py, scripts/publish/activity_publish.py, apps/web/src/components/workspace/ContentStudio.jsx, tests/upgrade/check_media_corpus.py, docs/mutual-development.md
 # EnumType:    Doc
-# EnumEdges:   EXTENDS docs/field-interviewer-v1.3.md; CONSUMES scripts/publish/media_contracts.py; CONSUMES scripts/publish/media_corpus.py; CONSUMES scripts/publish/media_library.py; CONSUMES scripts/publish/activity_publish.py; CONSUMES apps/web/src/components/workspace/ContentStudio.jsx; VERIFIED_BY tests/upgrade/check_media_corpus.py
+# EnumEdges:   EXTENDS docs/field-interviewer-v1.3.md; CONSUMES scripts/publish/media_contracts.py; CONSUMES scripts/publish/media_corpus.py; CONSUMES scripts/publish/media_library.py; CONSUMES scripts/publish/activity_publish.py; CONSUMES apps/web/src/components/workspace/ContentStudio.jsx; VERIFIED_BY tests/upgrade/check_media_corpus.py; CONSUMES docs/mutual-development.md
 # Intent:      Make the existing editorial and publication surfaces usable for an evidence-backed corpus sprint while retaining provider, rights, cost and human publication gates.
 # ───────────────────────────────────────────────────────────────
 
@@ -34,10 +34,12 @@ Selected public source + original evidence bytes
 
 Local compilation, draft import and observation reconciliation are implemented.
 This does not connect an account, synthesize audio, post to a channel or execute
-a mission. The current sandbox does not contain the work-exchange files reported
-in PR 119. The receiving owner must materialize that revision and map the same
-source/corpus/job identities through its existing work contract before claiming
-the reciprocal mission integration.
+a mission. The supplied upstream now contains the work exchange described in
+`docs/mutual-development.md`. The receiving owner must map the same
+source/corpus/job identities through that contract before claiming the
+reciprocal mission integration. Earlier corpus reports retain the original
+checkout's missing-source observation; merging source does not assign a worker
+or establish a live mission.
 
 ## Provider facts and the production window
 

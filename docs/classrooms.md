@@ -8,9 +8,9 @@
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-16
-# Depends:     apps/web/src/pages/workspace/ClassroomsPage.jsx, apps/pocketbase/pb_hooks/classrooms.js, apps/pocketbase/pb_hooks/classroom-media.js, tests/upgrade/test_classroom_native.py
+# Depends:     apps/web/src/pages/workspace/ClassroomsPage.jsx, apps/web/src/hooks/useClassrooms.js, apps/web/src/hooks/useOpenClasses.js, apps/pocketbase/pb_hooks/classrooms.js, apps/pocketbase/pb_hooks/classroom-media.js, tests/upgrade/test_classroom_native.py, tests/upgrade/classroom-recovery.test.mjs
 # EnumType:    Doc
-# EnumEdges:   CONSUMES apps/web/src/pages/workspace/ClassroomsPage.jsx; CONSUMES apps/pocketbase/pb_hooks/classrooms.js; CONSUMES apps/pocketbase/pb_hooks/classroom-media.js; VERIFIED_BY tests/upgrade/test_classroom_native.py
+# EnumEdges:   CONSUMES apps/web/src/pages/workspace/ClassroomsPage.jsx; CONSUMES apps/web/src/hooks/useClassrooms.js; CONSUMES apps/web/src/hooks/useOpenClasses.js; CONSUMES apps/pocketbase/pb_hooks/classrooms.js; CONSUMES apps/pocketbase/pb_hooks/classroom-media.js; VERIFIED_BY tests/upgrade/test_classroom_native.py; VERIFIED_BY tests/upgrade/classroom-recovery.test.mjs
 # DAG Node:    none
 # Intent:      Describe the classroom user flow, installed-backend requirements and acceptance limits without representing a shared lesson as a video stream.
 # ───────────────────────────────────────────────────────────────
@@ -105,6 +105,14 @@ inside every mutation transaction.
 
 ## Consistency and privacy
 
+**Classes you can join** discovers live and scheduled rooms in other readable
+workspaces through the same authorized route as the desk. It follows each status's
+pages, so newer ended rooms cannot hide an older open class. Discovery refreshes
+every thirty seconds without overlapping a pending refresh, with at most four
+workspace reads in flight. It follows `has_more` even when permission filtering
+empties a page. A failed read or the safety limit of 100 pages per status names
+that workspace as unavailable; a partial list is never presented as complete.
+
 The page polls every five seconds and renews active attendance every twenty
 seconds. A refresh failure disables writes and marks the last view disconnected;
 an authorization, missing-record or malformed-response failure hides the room.
@@ -112,7 +120,18 @@ Navigating away cancels timers. Old account, workspace and room responses cannot
 populate the current view. No room records, discussion or pending commands are
 written to browser storage. A pending save can be recovered while that scoped
 page remains mounted; a full page reload requires reading the saved history
-before re-submitting an uncertain action.
+before re-submitting an uncertain action. The same applies after leaving and
+returning to a room or signing in again as the same account: old pending results
+cannot revive the new view or block new saves. Native session refresh and list
+pagination preserve the current retry key. Pending server actions may already
+have completed; cancellation of a browser lifetime is not a server rollback.
+
+The September 30 recovery tests execute actual hook, client and route sources
+with explicit hook scheduling and storage doubles. They also exercise the route's
+removal of lesson grading answers. They establish source behavior; the retained
+React regressions, native PocketBase suite and two-browser media check remain
+separate acceptance steps. See the classroom recovery report and receiving
+handoff under the upgrade dispatch.
 
 Commands include a fresh request key and room revision. A transaction stores the
 operation and its receipt together. Repeating the same key and intent returns

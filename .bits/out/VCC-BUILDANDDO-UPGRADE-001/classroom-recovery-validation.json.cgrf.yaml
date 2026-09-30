@@ -1,0 +1,19 @@
+# --- CGRF Header ------------------------------------------------
+# File:        .bits/out/VCC-BUILDANDDO-UPGRADE-001/classroom-recovery-validation.json.cgrf.yaml
+# Stage:       11_COMMIT
+# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# CAPS:        pending
+# CK:          pending
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+# Seat:        BITS-CODEGEN
+# Owner:       Citadel Nexus Inc.
+# Created:     2026-09-30
+# Depends:     .bits/out/VCC-BUILDANDDO-UPGRADE-001/classroom-recovery-validation.json
+# EnumType:    Doc
+# EnumEdges:   VALIDATES .bits/out/VCC-BUILDANDDO-UPGRADE-001/classroom-recovery-validation.json
+# Intent:      Identify measured local classroom evidence without assigning browser, native or deployment acceptance to source doubles.
+# ----------------------------------------------------------------
+schema_version: 1
+artifact: classroom-recovery-validation.json
+evidence_scope: local public source with explicit hook, storage and provider substitutes
+runtime_acceptance: pending

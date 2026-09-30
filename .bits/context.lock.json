@@ -878,7 +878,7 @@
       "wired_into_ci": true
     }
   ],
-  "generated_at": "2026-09-30T18:20:51.092864+00:00",
+  "generated_at": "2026-09-30T18:50:56.035356+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -1595,7 +1595,7 @@
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 1857,
+    "tracked_files": 1863,
     "web_source_files": 384
   },
   "schema_version": 1,
@@ -1658,13 +1658,13 @@
       },
       {
         "id": "HS-09",
-        "next_step": "Attempt denied evidence mutations, inspect frozen reviews, and reconcile the exact native result and release context with controller/provider captures. Supply scoped canonical owner mappings and retained captures for developmental queries; resolve identity and evidence gaps before independent progression review. Bind the real applicant identity and independently review exact career participation before compiling any personal application. The Citadel/CSEG receiver must authenticate world-event identity/read/share scope and exact review pins before connecting live provider references or publishing a projection. Follow the CSCC work exchange handoff: authenticate canonical worker and reviewer mappings, return actual job/artifact/readback evidence, independently admit it, then retain the selected sanitized bundle in the existing epoch and derived history. Attempt denied evidence mutations, inspect frozen reviews, and reconcile the exact native result and release context with controller/provider captures. Supply scoped canonical owner mappings and retained captures for developmental queries; resolve identity and evidence gaps before independent progression review. Bind the real applicant identity and independently review exact career participation before compiling any personal application. The Citadel/CSEG receiver must authenticate world-event identity/read/share scope and exact review pins before connecting live provider references or publishing a projection. For media work, retain actual generation and publication bytes, authenticate provider observations independently and bind engagement to the same publication and interval before recording a verified outcome.",
+        "next_step": "Attempt denied evidence mutations, inspect frozen reviews, and reconcile the exact native result and release context with controller/provider captures. Supply scoped canonical owner mappings and retained captures for developmental queries; resolve identity and evidence gaps before independent progression review. Bind the real applicant identity and independently review exact career participation before compiling any personal application. The Citadel/CSEG receiver must authenticate world-event identity/read/share scope and exact review pins before connecting live provider references or publishing a projection. Follow the CSCC work exchange handoff: authenticate canonical worker and reviewer mappings, return actual job/artifact/readback evidence, independently admit it, then retain the selected sanitized bundle in the existing epoch and derived history. For media work, retain actual generation and publication bytes, authenticate provider observations independently and bind engagement to the same publication and interval before recording a verified outcome.",
         "owner": "BITS-CODEGEN / release owner",
         "why": "A reviewer needs inspectable receipts and integrity checks for the exact candidate."
       },
       {
         "id": "HS-10",
-        "next_step": "Run actual browser and native isolation tests, bind the existing inference endpoint under approved data authority, and observe scoped chat-to-form-to-personal-knowledge behavior. Validate value-card drill-downs against one real reviewed mission and exact provider/release receipts; collect comparable cost, effort and eligible-work baselines before displaying ROI. Exercise career export/import with the actual native account, ten real job dossiers and reviewed draft documents; obtain separate receiving authority for one permitted ATS browser submission and retain its actual receipt. Include unconfigured, failed-read and reconnected Buddi states with draft preservation before the real inferred action. Run actual browser and native isolation tests, bind the existing inference endpoint under approved data authority, and observe scoped chat-to-form-to-personal-knowledge behavior. Validate value-card drill-downs against one real reviewed mission and exact provider/release receipts; collect comparable cost, effort and eligible-work baselines before displaying ROI. Exercise career export/import with the actual native account, ten real job dossiers and reviewed draft documents; obtain separate receiving authority for one permitted ATS browser submission and retain its actual receipt. The content and private ElevenLabsBridge owners must verify requested provider/account terms, approved voices and funding, then demonstrate the existing draft/review flow and one real generation, human publication, independent readback and measured engagement. Reconcile the missing PR 119 work-exchange revision before connecting CSCC mission authority.",
+        "next_step": "Run actual browser and native isolation tests, bind the existing inference endpoint under approved data authority, and observe scoped chat-to-form-to-personal-knowledge behavior. Validate value-card drill-downs against one real reviewed mission and exact provider/release receipts; collect comparable cost, effort and eligible-work baselines before displaying ROI. Exercise career export/import with the actual native account, ten real job dossiers and reviewed draft documents; obtain separate receiving authority for one permitted ATS browser submission and retain its actual receipt. Include unconfigured, failed-read and reconnected Buddi states with draft preservation before the real inferred action. The content and private ElevenLabsBridge owners must verify requested provider/account terms, approved voices and funding, then demonstrate the existing draft/review flow and one real generation, human publication, independent readback and measured engagement. Use the incorporated PR 119 work contract to map media source, corpus and job identities; CSCC mission assignment still requires receiving authorization. Run the classroom React regressions and disposable native backend suite, reproduce the reported classroom symptom, and retain independent host/listener media readback under the existing receiving release authority.",
         "owner": "BITS-CODEGEN / CMAX-B",
         "why": "The operator and daily edition must explain current work with visible uncertainty and evidence."
       },
@@ -1675,7 +1675,7 @@
         "why": "Competition readiness requires an evidence-backed learning-through-work journey, a reproducible replay and actual submission criteria."
       }
     ],
-    "source_sha256": "52d3630218269103a6242d01f0351a924a5930f0db3331ffcc640350436b6d72",
+    "source_sha256": "671dad8a2b8409b0e6689c3649dc63de7a42dac9442876143a7587d7fa2de648",
     "state": "PASS"
   },
   "summary": {
