@@ -20,6 +20,40 @@
 **Status:** in_progress **Risk:** A2 **Seat:** BITS-CODEGEN
 **Dispatch:** VCC-BUILDANDDO-UPGRADE-001 **Actor:** actor:agent
 
+## Classroom discovery and session recovery - 2026-09-30
+
+The owner reports that the classroom system still does not work properly.
+Continue this existing A2 classroom repair dispatch. Inspect the routed desk,
+native classroom contracts and media boundaries; reproduce source defects before
+changing behavior. An unspecified live symptom is not evidence of a provider or
+deployment failure.
+
+Acceptance:
+
+1. Find live and scheduled classes beyond the first page in every readable
+   workspace through the existing authorized classroom route. Bound background
+   work and identify unreadable or incomplete workspaces instead of silently
+   presenting a truncated list as complete.
+2. Fence discovery, room reads, saves, retries and attendance to the current
+   native session and room lifetime. Leaving and returning to the same room or
+   replacing a session for the same account cannot revive an old response,
+   saved draft or pending save. Native token refresh preserves valid retries.
+3. Verify regressions against the actual client, route and classroom service
+   with explicit storage and hook doubles, and retain rendered regression cases
+   for the frontend suite. Preserve membership, revision, retry and media
+   authority checks. State unavailable browser/native/live checks explicitly.
+4. Record source evidence and receiving-owner checks, refresh readiness/context
+   bindings and retain historical memory. No live room mutation, media provider
+   configuration, secret access or deployment is authorized by this repair.
+
+Observed source result: 157 targeted Node cases pass, including 20 new
+regressions. The initial eight failures are resolved with current-session retry
+and backend authority preserved. Both hooks have 100% source line/function
+coverage and at least 83.82% branches under explicit scheduling doubles. Seven
+React regressions are authored; rendered/native/live acceptance remains open.
+The report and source hashes are retained under the upgrade dispatch's
+classroom-recovery artifacts. No deployment or media delivery is claimed.
+
 ## Evidence-backed media corpus - 2026-09-30
 
 The owner requests a reusable content corpus from real BuildAndDo/Citadel

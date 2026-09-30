@@ -20,6 +20,31 @@
 **SRS:** SRS-BUILDANDDO-UPGRADE-001 **Risk:** A2 **Seat:** BITS-CODEGEN
 **Status:** in_progress **Actor:** actor:agent
 
+## Classroom recovery continuation authorized 2026-09-30
+
+The owner's classroom failure report continues the existing A2 classroom scope.
+Use the current source and native session contracts. Live activation remains
+with the receiving owner; local substitute tests cannot establish it.
+
+| Phase | Task | Gate command | Status |
+|---|---|---|---|
+| CR-1 | Reproduce missing open classes and stale classroom sessions | `node --test tests/upgrade/classroom-recovery.test.mjs` | done — eight of the initial ten cases fail before repair and pass afterward |
+| CR-2 | Repair discovery pagination and native-session lifetimes | Connected classroom Node suites and rendered regressions | source PASS — 157 cases including 20 new regressions; seven React cases authored but not executable without dependencies |
+| CR-3 | Record evidence and receiving checks | Readiness, submission, context, boundary and memory checks | source PASS — reviewed bindings and provenance pass; browser/native/media acceptance remains with CMAX-B |
+
+Memory brief: 137 existing classroom Node cases pass against explicit backend,
+provider and browser substitutes. The finder reads only the first 20 unfiltered
+rooms per workspace; the classroom hook lacks the native session epoch already
+used by media. React/Vitest, browser tooling and a native PocketBase binary are
+not installed. One separate historical broadcast-evidence test cannot resolve
+its retained source revision in this checkout. Preserve that evidence and name
+the limitation rather than changing its original binding.
+
+Observed source results and unexecuted acceptance are retained in
+`.bits/out/VCC-BUILDANDDO-UPGRADE-001/classroom-recovery-report.md` and its
+validation JSON. All 252 prior memory events are preserved. The private runtime
+handoff is `.bits/handoffs/2026-09-30-bits-codegen-cmax-b-classroom-recovery.md`.
+
 ## Media corpus continuation authorized 2026-09-30
 
 The owner's content-production request continues this existing A2 source

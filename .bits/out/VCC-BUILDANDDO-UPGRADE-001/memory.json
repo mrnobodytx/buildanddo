@@ -542,7 +542,7 @@
       "dependencies": [
         ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md"
       ],
-      "lines": 65869,
+      "lines": 66401,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Describe the public memory payload that carries this dispatch into the post-merge ingest flow.",
@@ -680,7 +680,7 @@
       "dependencies": [
         ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md"
       ],
-      "lines": 1837,
+      "lines": 1862,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Track the authorized eight-area implementation and its verification gates.",
@@ -706,7 +706,8 @@
         "test-isolation-and-claim-authority",
         "telemetry-coverage",
         "pr112-integration",
-        "buddi-connection-recovery"
+        "buddi-connection-recovery",
+        "classroom-recovery"
       ],
       "tenant_id": null
     },
@@ -1010,7 +1011,7 @@
       "dependencies": [
         ".bits/srs_registry.yml"
       ],
-      "lines": 2493,
+      "lines": 2527,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Define acceptance evidence for the eight owner-authorized BuildAndDo upgrades.",
@@ -1036,7 +1037,8 @@
         "test-isolation-and-claim-authority",
         "telemetry-coverage",
         "pr112-integration",
-        "buddi-connection-recovery"
+        "buddi-connection-recovery",
+        "classroom-recovery"
       ],
       "tenant_id": null
     },
@@ -7211,7 +7213,7 @@
         "apps/web/src/hooks/useClassrooms.js",
         "tests/upgrade/classroom-fixture.mjs"
       ],
-      "lines": 111,
+      "lines": 176,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Verify classroom polling, attendance timers, cleanup and late-response isolation under the real React hook lifecycle.",
@@ -7226,7 +7228,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "srs-buildanddo-upgrade-001",
-        "classrooms"
+        "classrooms",
+        "classroom-recovery"
       ],
       "tenant_id": null
     },
@@ -7407,15 +7410,16 @@
       "srs_codes": [
         "SRS-BUILDANDDO-UPGRADE-001"
       ],
-      "enum_type": "Service",
+      "enum_type": "Adapter",
       "functions": [
         "useClassrooms"
       ],
       "dependencies": [
         "apps/web/src/lib/classrooms.js",
-        "apps/web/src/contexts/WorkspaceContext.jsx"
+        "apps/web/src/contexts/WorkspaceContext.jsx",
+        "apps/web/src/contexts/AuthContext.jsx"
       ],
-      "lines": 100,
+      "lines": 124,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Keep shared lessons current and attendance expiring while discarding responses and drafts from an earlier account or room.",
@@ -7430,7 +7434,8 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "srs-buildanddo-upgrade-001",
-        "classrooms"
+        "classrooms",
+        "classroom-recovery"
       ],
       "tenant_id": null
     },
@@ -9585,7 +9590,7 @@
       "lines": 400,
       "caps_grade": "pending",
       "ck_stamp": "pending",
-      "intent_statement": "Show the day the edition is about — today's priorities, what was",
+      "intent_statement": "Show the day the edition is about \u2014 today's priorities, what was",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
       "outcome": "partial",
       "supersedes": false,
@@ -9816,7 +9821,7 @@
       "lines": 718,
       "caps_grade": "pending",
       "ck_stamp": "pending",
-      "intent_statement": "Make a list of missions triageable — priority, progress, due dates, editing and deletion — instead of an append-only stack.",
+      "intent_statement": "Make a list of missions triageable \u2014 priority, progress, due dates, editing and deletion \u2014 instead of an append-only stack.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
       "outcome": "partial",
       "supersedes": false,
@@ -9857,7 +9862,7 @@
       "lines": 628,
       "caps_grade": "pending",
       "ck_stamp": "pending",
-      "intent_statement": "Give the operations surface the two things it was missing — the runbook text and the record of each time a human ran it.",
+      "intent_statement": "Give the operations surface the two things it was missing \u2014 the runbook text and the record of each time a human ran it.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
       "outcome": "partial",
       "supersedes": false,
@@ -9892,7 +9897,7 @@
       "lines": 526,
       "caps_grade": "pending",
       "ck_stamp": "pending",
-      "intent_statement": "Answer \"what is happening in this workspace\" in one screen — one merged activity feed, counts that mean something, and an honest statement when the data layer cannot be read.",
+      "intent_statement": "Answer \"what is happening in this workspace\" in one screen \u2014 one merged activity feed, counts that mean something, and an honest statement when the data layer cannot be read.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
       "outcome": "partial",
       "supersedes": false,
@@ -9967,7 +9972,7 @@
       "lines": 625,
       "caps_grade": "pending",
       "ck_stamp": "pending",
-      "intent_statement": "Make the roadmap answer \"how far along is this workspace, and on what evidence\" — a status distribution, a filterable ledger, and in-place status changes that still cannot fake a verification.",
+      "intent_statement": "Make the roadmap answer \"how far along is this workspace, and on what evidence\" \u2014 a status distribution, a filterable ledger, and in-place status changes that still cannot fake a verification.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
       "outcome": "partial",
       "supersedes": false,
@@ -10238,7 +10243,7 @@
       "lines": 733,
       "caps_grade": "pending",
       "ck_stamp": "pending",
-      "intent_statement": "Give a workflow the sequence that makes it one — ordered, editable steps — so activating it says what would run.",
+      "intent_statement": "Give a workflow the sequence that makes it one \u2014 ordered, editable steps \u2014 so activating it says what would run.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
       "outcome": "partial",
       "supersedes": false,
@@ -11099,11 +11104,14 @@
       "functions": [],
       "dependencies": [
         "apps/web/src/pages/workspace/ClassroomsPage.jsx",
+        "apps/web/src/hooks/useClassrooms.js",
+        "apps/web/src/hooks/useOpenClasses.js",
         "apps/pocketbase/pb_hooks/classrooms.js",
         "apps/pocketbase/pb_hooks/classroom-media.js",
-        "tests/upgrade/test_classroom_native.py"
+        "tests/upgrade/test_classroom_native.py",
+        "tests/upgrade/classroom-recovery.test.mjs"
       ],
-      "lines": 216,
+      "lines": 235,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Describe the classroom user flow, installed-backend requirements and acceptance limits without representing a shared lesson as a video stream.",
@@ -11119,7 +11127,8 @@
         "BITS-CODEGEN",
         "srs-buildanddo-upgrade-001",
         "classrooms",
-        "broadcast-repairs-and-lessons"
+        "broadcast-repairs-and-lessons",
+        "classroom-recovery"
       ],
       "tenant_id": null
     },
@@ -34528,7 +34537,7 @@
       "type": "C",
       "event_type": "smoke_run",
       "file_path": "apps/mission_suite/bundle.py",
-      "description": "The extended portable source passed 256 Node and 192 Python cases with nine explicit native skips. Existing mission-suite coverage passed 23 cases at 87.96–99.55% statement coverage. Strict typing passed six source modules, Ruff passed changed Python source/tests, and the JavaScript diagnostic parsed 239 modules without errors.",
+      "description": "The extended portable source passed 256 Node and 192 Python cases with nine explicit native skips. Existing mission-suite coverage passed 23 cases at 87.96\u201399.55% statement coverage. Strict typing passed six source modules, Ruff passed changed Python source/tests, and the JavaScript diagnostic parsed 239 modules without errors.",
       "caps_before": null,
       "caps_after": null,
       "dag_impact": null,
@@ -34684,7 +34693,7 @@
       "type": "C",
       "event_type": "test_pass",
       "file_path": "tests/upgrade/check_blueprint_pipeline.py",
-      "description": "Blueprint pipeline continuation: 44 focused cases: 42 pass, two native PDF skips; 94.17–100% statement coverage per new Python module. Strict source typing and Ruff pass.",
+      "description": "Blueprint pipeline continuation: 44 focused cases: 42 pass, two native PDF skips; 94.17\u2013100% statement coverage per new Python module. Strict source typing and Ruff pass.",
       "caps_before": null,
       "caps_after": null,
       "dag_impact": null,
@@ -38385,7 +38394,7 @@
       "dependencies": [
         ".bits/hostinger-readiness.json"
       ],
-      "lines": 669,
+      "lines": 673,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Identify the mandatory sprint contract without embedding comments in JSON.",
@@ -38410,7 +38419,8 @@
         "broadcast-repairs-and-lessons",
         "test-isolation-and-claim-authority",
         "telemetry-coverage",
-        "buddi-connection-recovery"
+        "buddi-connection-recovery",
+        "classroom-recovery"
       ],
       "tenant_id": null
     },
@@ -38457,7 +38467,7 @@
       "dependencies": [
         ".bits/hostinger-readiness.lock.json"
       ],
-      "lines": 1353,
+      "lines": 1354,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Distinguish reviewed source fingerprints from execution or deployment evidence.",
@@ -38483,7 +38493,8 @@
         "test-isolation-and-claim-authority",
         "telemetry-coverage",
         "pr112-integration",
-        "buddi-connection-recovery"
+        "buddi-connection-recovery",
+        "classroom-recovery"
       ],
       "tenant_id": null
     },
@@ -38698,9 +38709,11 @@
         ".bits/handoffs/2026-09-21-bits-codegen-cmax-b-governance-execution.md",
         "docs/sprint-user-journey.md",
         "docs/development-loop.md",
-        "docs/media-corpus.md"
+        "docs/media-corpus.md",
+        "docs/classrooms.md",
+        ".bits/handoffs/2026-09-30-bits-codegen-cmax-b-classroom-recovery.md"
       ],
-      "lines": 421,
+      "lines": 438,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Make the reason, acceptance boundary and next action for every sprint piece a required source review rather than a remembered plan.",
@@ -38718,7 +38731,8 @@
         "sprint-user-journey",
         "developmental-twin",
         "evidence-backed-value",
-        "educational-collaboration"
+        "educational-collaboration",
+        "classroom-recovery"
       ],
       "tenant_id": null
     },
@@ -65852,12 +65866,530 @@
       "timestamp": "2026-09-30T17:45:49.194492+00:00",
       "commit_sha": null,
       "smoke_result": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/handoffs/2026-09-30-bits-codegen-cmax-b-classroom-recovery.md",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "docs/classrooms.md",
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/classroom-recovery-report.md",
+        "tests/upgrade/test_classroom_native.py"
+      ],
+      "lines": 64,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Give the platform owner concrete classroom runtime acceptance steps without treating local source repair as deployment or functioning media.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "classroom-recovery"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/classroom-recovery-report.md",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "docs/classrooms.md",
+        "tests/upgrade/classroom-recovery.test.mjs",
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/classroom-recovery-validation.json",
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/memory.json",
+        ".bits/handoffs/2026-09-30-bits-codegen-cmax-b-classroom-recovery.md"
+      ],
+      "lines": 136,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Retain the reproduced classroom failures, measured source repair and unexecuted runtime acceptance without claiming the live classroom is fixed.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "classroom-recovery"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/classroom-recovery-validation.json",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/classroom-recovery-validation.json"
+      ],
+      "lines": 133,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Identify measured local classroom evidence without assigning browser, native or deployment acceptance to source doubles.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "classroom-recovery"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/classroom-recovery-validation.json.cgrf.yaml",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/classroom-recovery-validation.json"
+      ],
+      "lines": 19,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Identify measured local classroom evidence without assigning browser, native or deployment acceptance to source doubles.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "classroom-recovery"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/hooks/__tests__/useOpenClasses.test.jsx",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "Wrapper",
+        "answer"
+      ],
+      "dependencies": [
+        "apps/web/src/hooks/useOpenClasses.js",
+        "apps/web/src/lib/classrooms.js"
+      ],
+      "lines": 149,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Classes across every readable workspace are found without switching workspaces; ended rooms are left out; an unreadable workspace is named, not dropped; a stale answer from a previous workspace set never populates the current view. Responses carry the exact shape the classroom client validates, so the test exercises the real read path.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "classroom-recovery"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/hooks/useOpenClasses.js",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Adapter",
+      "functions": [
+        "orderOpenClasses",
+        "useOpenClasses"
+      ],
+      "dependencies": [
+        "apps/web/src/lib/classrooms.js",
+        "apps/web/src/contexts/WorkspaceContext.jsx",
+        "apps/web/src/contexts/AuthContext.jsx"
+      ],
+      "lines": 125,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "List the live and scheduled classes across EVERY workspace the account can read, so a person does not have to know which workspace a class lives in to find it.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "classroom-recovery"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/classroom-recovery.test.mjs",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "fixture",
+        "mount"
+      ],
+      "dependencies": [
+        "apps/web/src/hooks/useOpenClasses.js",
+        "apps/web/src/hooks/useClassrooms.js",
+        "apps/web/src/lib/classrooms.js",
+        "apps/pocketbase/pb_hooks/classrooms.pb.js",
+        "tests/upgrade/classroom-fixture.mjs"
+      ],
+      "lines": 385,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Reproduce missing classes and stale session recovery through actual hook, client and route sources with explicit offline lifecycle and storage doubles.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "partial",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "classroom-recovery"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/hooks/useClassrooms.js",
+      "target": "apps/web/src/contexts/AuthContext.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/hooks/useClassrooms.js consumes apps/web/src/contexts/AuthContext.jsx for the classroom recovery contract.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/classrooms.md",
+      "target": "apps/web/src/hooks/useClassrooms.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/classrooms.md consumes apps/web/src/hooks/useClassrooms.js for the classroom recovery contract.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/classrooms.md",
+      "target": "apps/web/src/hooks/useOpenClasses.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/classrooms.md consumes apps/web/src/hooks/useOpenClasses.js for the classroom recovery contract.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/classrooms.md",
+      "target": "tests/upgrade/classroom-recovery.test.mjs",
+      "edge_type": "VERIFIED_BY",
+      "weight": 1.0,
+      "description": "docs/classrooms.md verified_by tests/upgrade/classroom-recovery.test.mjs for the classroom recovery contract.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/hostinger-sprint-closure.md",
+      "target": "docs/classrooms.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/hostinger-sprint-closure.md consumes docs/classrooms.md for the classroom recovery contract.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/hostinger-sprint-closure.md",
+      "target": ".bits/handoffs/2026-09-30-bits-codegen-cmax-b-classroom-recovery.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/hostinger-sprint-closure.md consumes .bits/handoffs/2026-09-30-bits-codegen-cmax-b-classroom-recovery.md for the classroom recovery contract.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-30-bits-codegen-cmax-b-classroom-recovery.md",
+      "target": "docs/classrooms.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/handoffs/2026-09-30-bits-codegen-cmax-b-classroom-recovery.md consumes docs/classrooms.md for the classroom recovery contract.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-30-bits-codegen-cmax-b-classroom-recovery.md",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/classroom-recovery-report.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/handoffs/2026-09-30-bits-codegen-cmax-b-classroom-recovery.md consumes .bits/out/VCC-BUILDANDDO-UPGRADE-001/classroom-recovery-report.md for the classroom recovery contract.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-30-bits-codegen-cmax-b-classroom-recovery.md",
+      "target": "tests/upgrade/test_classroom_native.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/handoffs/2026-09-30-bits-codegen-cmax-b-classroom-recovery.md consumes tests/upgrade/test_classroom_native.py for the classroom recovery contract.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/classroom-recovery-report.md",
+      "target": "docs/classrooms.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/classroom-recovery-report.md consumes docs/classrooms.md for the classroom recovery contract.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/classroom-recovery-report.md",
+      "target": "tests/upgrade/classroom-recovery.test.mjs",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/classroom-recovery-report.md consumes tests/upgrade/classroom-recovery.test.mjs for the classroom recovery contract.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/classroom-recovery-report.md",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/classroom-recovery-validation.json",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/classroom-recovery-report.md consumes .bits/out/VCC-BUILDANDDO-UPGRADE-001/classroom-recovery-validation.json for the classroom recovery contract.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/classroom-recovery-report.md",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/memory.json",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/classroom-recovery-report.md consumes .bits/out/VCC-BUILDANDDO-UPGRADE-001/memory.json for the classroom recovery contract.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/classroom-recovery-report.md",
+      "target": ".bits/handoffs/2026-09-30-bits-codegen-cmax-b-classroom-recovery.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/classroom-recovery-report.md consumes .bits/handoffs/2026-09-30-bits-codegen-cmax-b-classroom-recovery.md for the classroom recovery contract.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/classroom-recovery-validation.json.cgrf.yaml",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/classroom-recovery-validation.json",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/classroom-recovery-validation.json.cgrf.yaml validates .bits/out/VCC-BUILDANDDO-UPGRADE-001/classroom-recovery-validation.json for the classroom recovery contract.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/hooks/__tests__/useOpenClasses.test.jsx",
+      "target": "apps/web/src/hooks/useOpenClasses.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "apps/web/src/hooks/__tests__/useOpenClasses.test.jsx validates apps/web/src/hooks/useOpenClasses.js for the classroom recovery contract.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/hooks/useOpenClasses.js",
+      "target": "apps/web/src/lib/classrooms.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/hooks/useOpenClasses.js consumes apps/web/src/lib/classrooms.js for the classroom recovery contract.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/hooks/useOpenClasses.js",
+      "target": "apps/web/src/contexts/WorkspaceContext.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/hooks/useOpenClasses.js consumes apps/web/src/contexts/WorkspaceContext.jsx for the classroom recovery contract.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/hooks/useOpenClasses.js",
+      "target": "apps/web/src/contexts/AuthContext.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/hooks/useOpenClasses.js consumes apps/web/src/contexts/AuthContext.jsx for the classroom recovery contract.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/classroom-recovery.test.mjs",
+      "target": "apps/web/src/hooks/useOpenClasses.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/classroom-recovery.test.mjs validates apps/web/src/hooks/useOpenClasses.js for the classroom recovery contract.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/classroom-recovery.test.mjs",
+      "target": "apps/web/src/hooks/useClassrooms.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/classroom-recovery.test.mjs validates apps/web/src/hooks/useClassrooms.js for the classroom recovery contract.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/classroom-recovery.test.mjs",
+      "target": "apps/web/src/lib/classrooms.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "tests/upgrade/classroom-recovery.test.mjs consumes apps/web/src/lib/classrooms.js for the classroom recovery contract.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/classroom-recovery.test.mjs",
+      "target": "apps/pocketbase/pb_hooks/classrooms.pb.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/classroom-recovery.test.mjs validates apps/pocketbase/pb_hooks/classrooms.pb.js for the classroom recovery contract.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/classroom-recovery.test.mjs",
+      "target": "tests/upgrade/classroom-fixture.mjs",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "tests/upgrade/classroom-recovery.test.mjs consumes tests/upgrade/classroom-fixture.mjs for the classroom recovery contract.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "C",
+      "event_type": "test_fail",
+      "file_path": "tests/upgrade/classroom-recovery.test.mjs",
+      "description": "Classroom recovery: eight of ten initial source regression cases fail against baseline 52251dbcd19f02893730bf58f7c8e48ebb86b88d; missing pages, overlapping reads and obsolete room/session lifetimes are reproduced with explicit hook/storage doubles.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-30T18:07:54.734930+00:00",
+      "commit_sha": null,
+      "smoke_result": "2/10"
+    },
+    {
+      "type": "C",
+      "event_type": "test_pass",
+      "file_path": "tests/upgrade/classroom-recovery.test.mjs",
+      "description": "Classroom recovery: all 157 targeted Node cases pass, including 20 new regressions. Changed hooks have 100% measured source lines/functions and at least 83.82% branches. This is local source execution with explicit doubles, not React or native acceptance.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-30T18:17:42.141678+00:00",
+      "commit_sha": null,
+      "smoke_result": "157/157"
+    },
+    {
+      "type": "C",
+      "event_type": "smoke_run",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/classroom-recovery-validation.json",
+      "description": "Classroom recovery: rendered tests cannot execute without React/Vitest; ten native cases are skipped without PocketBase. One historical broadcast evidence test lacks its retained revision. A receiving handoff preserves actual browser, native and delivered-media requirements; nothing was deployed.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-30T18:21:00.592203+00:00",
+      "commit_sha": null,
+      "smoke_result": null
     }
   ],
   "summary": {
-    "type_a_count": 1006,
-    "type_b_count": 2626,
-    "type_c_count": 252,
+    "type_a_count": 1013,
+    "type_b_count": 2650,
+    "type_c_count": 255,
     "ioo_compliance": true,
     "dkg_orphans": 0,
     "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",

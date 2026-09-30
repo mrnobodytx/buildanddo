@@ -874,7 +874,7 @@
       "wired_into_ci": true
     }
   ],
-  "generated_at": "2026-09-30T17:47:45.633791+00:00",
+  "generated_at": "2026-09-30T18:26:58.444108+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -1591,7 +1591,7 @@
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 1839,
+    "tracked_files": 1844,
     "web_source_files": 384
   },
   "schema_version": 1,
@@ -1660,7 +1660,7 @@
       },
       {
         "id": "HS-10",
-        "next_step": "Run actual browser and native isolation tests, bind the existing inference endpoint under approved data authority, and observe scoped chat-to-form-to-personal-knowledge behavior. Validate value-card drill-downs against one real reviewed mission and exact provider/release receipts; collect comparable cost, effort and eligible-work baselines before displaying ROI. Exercise career export/import with the actual native account, ten real job dossiers and reviewed draft documents; obtain separate receiving authority for one permitted ATS browser submission and retain its actual receipt. The content and private ElevenLabsBridge owners must verify requested provider/account terms, approved voices and funding, then demonstrate the existing draft/review flow and one real generation, human publication, independent readback and measured engagement. Reconcile the missing PR 119 work-exchange revision before connecting CSCC mission authority.",
+        "next_step": "Run actual browser and native isolation tests, bind the existing inference endpoint under approved data authority, and observe scoped chat-to-form-to-personal-knowledge behavior. Validate value-card drill-downs against one real reviewed mission and exact provider/release receipts; collect comparable cost, effort and eligible-work baselines before displaying ROI. Exercise career export/import with the actual native account, ten real job dossiers and reviewed draft documents; obtain separate receiving authority for one permitted ATS browser submission and retain its actual receipt. The content and private ElevenLabsBridge owners must verify requested provider/account terms, approved voices and funding, then demonstrate the existing draft/review flow and one real generation, human publication, independent readback and measured engagement. Reconcile the missing PR 119 work-exchange revision before connecting CSCC mission authority. Run the classroom React regressions and disposable native backend suite, reproduce the reported classroom symptom, and retain independent host/listener media readback under the existing receiving release authority.",
         "owner": "BITS-CODEGEN / CMAX-B",
         "why": "The operator and daily edition must explain current work with visible uncertainty and evidence."
       },
@@ -1671,7 +1671,7 @@
         "why": "Competition readiness requires an evidence-backed learning-through-work journey, a reproducible replay and actual submission criteria."
       }
     ],
-    "source_sha256": "233c577a8d651f8c128ad0645a31a00665d7f1c1af0f120766a7a1cb427f25c3",
+    "source_sha256": "bb2b60b36b0b2e37f7caaff886967098b394351c9a920c645bce4173e0153bc5",
     "state": "PASS"
   },
   "summary": {

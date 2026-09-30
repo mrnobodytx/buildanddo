@@ -8,9 +8,9 @@
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-20
-# Depends:     .bits/hostinger-readiness.json, scripts/ci/hostinger_readiness.py, scripts/ci/hostinger_replay.py, tools/day21/day21_acceptance.py, .bits/handoffs/2026-09-21-bits-codegen-cmax-b-governance-execution.md, docs/sprint-user-journey.md, docs/development-loop.md, docs/media-corpus.md
+# Depends:     .bits/hostinger-readiness.json, scripts/ci/hostinger_readiness.py, scripts/ci/hostinger_replay.py, tools/day21/day21_acceptance.py, .bits/handoffs/2026-09-21-bits-codegen-cmax-b-governance-execution.md, docs/sprint-user-journey.md, docs/development-loop.md, docs/media-corpus.md, docs/classrooms.md, .bits/handoffs/2026-09-30-bits-codegen-cmax-b-classroom-recovery.md
 # EnumType:    Doc
-# EnumEdges:   CONSUMES .bits/hostinger-readiness.json; CONSUMES scripts/ci/hostinger_readiness.py; CONSUMES scripts/ci/hostinger_replay.py; CONSUMES tools/day21/day21_acceptance.py; EXTENDS docs/operator-plane.md; EXTENDS docs/mission-system.md; CONSUMES .bits/handoffs/2026-09-21-bits-codegen-cmax-b-governance-execution.md; CONSUMES docs/sprint-user-journey.md; CONSUMES docs/development-loop.md; CONSUMES docs/media-corpus.md
+# EnumEdges:   CONSUMES .bits/hostinger-readiness.json; CONSUMES scripts/ci/hostinger_readiness.py; CONSUMES scripts/ci/hostinger_replay.py; CONSUMES tools/day21/day21_acceptance.py; EXTENDS docs/operator-plane.md; EXTENDS docs/mission-system.md; CONSUMES .bits/handoffs/2026-09-21-bits-codegen-cmax-b-governance-execution.md; CONSUMES docs/sprint-user-journey.md; CONSUMES docs/development-loop.md; CONSUMES docs/media-corpus.md; CONSUMES docs/classrooms.md; CONSUMES .bits/handoffs/2026-09-30-bits-codegen-cmax-b-classroom-recovery.md
 # Intent:      Make the reason, acceptance boundary and next action for every sprint piece a required source review rather than a remembered plan.
 # ───────────────────────────────────────────────────────────────
 
@@ -51,6 +51,23 @@ then confirm current source review, provider capability, account terms, rights
 and funding. Browser/native import acceptance and one real reviewed generation,
 human publication, external readback and engagement observation remain open.
 This source continuation does not advance a deployment or sprint milestone.
+
+## Classroom recovery continuation — 2026-09-30
+
+HS-10 now binds open-class discovery and classroom session recovery. Source
+regressions reproduce older live rooms hidden by ended history and controls
+stuck after navigation or same-account session replacement. Discovery follows
+authorized status pages with bounded requests; room lifetimes preserve only
+current-session retries. These repairs do not change workspace membership or
+media publishing authority.
+
+The classroom recovery report under the upgrade dispatch records 157 passing
+targeted Node cases using explicit hook, storage and media substitutes. Seven
+new React regressions are retained but cannot run in this sandbox; the ten native
+classroom cases are skipped without PocketBase. Follow
+`.bits/handoffs/2026-09-30-bits-codegen-cmax-b-classroom-recovery.md` for actual
+browser/native acceptance and independent host/listener media readback. The
+reported live symptom and deployed state remain unverified.
 
 ## Continuous Semantic Twin progression lane
 
