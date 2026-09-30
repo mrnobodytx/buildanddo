@@ -10,7 +10,7 @@
       "enum_type": "ConfigDoc",
       "functions": [],
       "dependencies": [],
-      "lines": 1695,
+      "lines": 1697,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Keep the registered mission research continuation and measured repository inventory reviewable while retaining earlier runtime and governance findings.",
@@ -542,7 +542,7 @@
       "dependencies": [
         ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md"
       ],
-      "lines": 64550,
+      "lines": 65869,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Describe the public memory payload that carries this dispatch into the post-merge ingest flow.",
@@ -680,7 +680,7 @@
       "dependencies": [
         ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md"
       ],
-      "lines": 1812,
+      "lines": 1837,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Track the authorized eight-area implementation and its verification gates.",
@@ -1010,7 +1010,7 @@
       "dependencies": [
         ".bits/srs_registry.yml"
       ],
-      "lines": 2445,
+      "lines": 2493,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Define acceptance evidence for the eight owner-authorized BuildAndDo upgrades.",
@@ -5975,14 +5975,16 @@
       ],
       "enum_type": "Widget",
       "functions": [
-        "Studio"
+        "Studio",
+        "ContentStudio"
       ],
       "dependencies": [
         "apps/web/src/hooks/useWorkspaceRecords.js",
         "apps/web/src/lib/businessPlanning.js",
-        "apps/web/src/components/workspace/StructuredContent.jsx"
+        "apps/web/src/components/workspace/StructuredContent.jsx",
+        "apps/web/src/lib/contentMedia.js"
       ],
-      "lines": 200,
+      "lines": 229,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Turn workspace briefs into recoverable drafts with readable previews, explicit review and honest publication receipts.",
@@ -6266,7 +6268,9 @@
         "SRS-BUILDANDDO-UPGRADE-001"
       ],
       "enum_type": "Widget",
-      "functions": [],
+      "functions": [
+        "ProgressionPipeline"
+      ],
       "dependencies": [
         "apps/web/src/components/site/ui.jsx",
         ".gitlab/ci/day21-submission.yml",
@@ -10371,7 +10375,7 @@
         "apps/web/src/components/workspace/ContentStudio.jsx",
         "apps/web/src/components/workspace/StructuredContent.jsx"
       ],
-      "lines": 274,
+      "lines": 336,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Exercise real ERP and editorial components through failed saves, retained fields, review decisions and workspace changes.",
@@ -11247,9 +11251,10 @@
         "docs/mission-system.md",
         "apps/web/tools/generate-community.mjs",
         "apps/web/src/pages/workspace/WikiPage.jsx",
-        "apps/pocketbase/pb_hooks/business-policy.js"
+        "apps/pocketbase/pb_hooks/business-policy.js",
+        "docs/media-corpus.md"
       ],
-      "lines": 214,
+      "lines": 222,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Record the owner's interviewer knowledge boundary so private implementation can reuse public product contracts without exporting workspace or operational authority.",
@@ -38380,7 +38385,7 @@
       "dependencies": [
         ".bits/hostinger-readiness.json"
       ],
-      "lines": 659,
+      "lines": 669,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Identify the mandatory sprint contract without embedding comments in JSON.",
@@ -38452,7 +38457,7 @@
       "dependencies": [
         ".bits/hostinger-readiness.lock.json"
       ],
-      "lines": 1345,
+      "lines": 1353,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Distinguish reviewed source fingerprints from execution or deployment evidence.",
@@ -38692,9 +38697,10 @@
         "tools/day21/day21_acceptance.py",
         ".bits/handoffs/2026-09-21-bits-codegen-cmax-b-governance-execution.md",
         "docs/sprint-user-journey.md",
-        "docs/development-loop.md"
+        "docs/development-loop.md",
+        "docs/media-corpus.md"
       ],
-      "lines": 404,
+      "lines": 421,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Make the reason, acceptance boundary and next action for every sprint piece a required source review rather than a remembered plan.",
@@ -43569,9 +43575,7 @@
         "SRS-BUILDANDDO-UPGRADE-001"
       ],
       "enum_type": "Test",
-      "functions": [
-        "GitLabAcceptanceTests"
-      ],
+      "functions": [],
       "dependencies": [
         "scripts/ci/agent_context.py",
         "scripts/ci/hostinger_readiness.py",
@@ -43579,7 +43583,7 @@
         ".gitlab/ci/day21-submission.yml",
         ".gitlab/ci/source-validation.yml"
       ],
-      "lines": 406,
+      "lines": 409,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Prevent GitHub configuration, unreachable jobs or incomplete artifacts from standing in for GitLab acceptance.",
@@ -44042,9 +44046,10 @@
         "tests/world_twin/check_world_twin.py",
         "tests/assurance/run.py",
         "tests/deploy/test_release_telemetry.py",
-        "tests/deploy/test_ship_telemetry.py"
+        "tests/deploy/test_ship_telemetry.py",
+        "tests/upgrade/check_media_corpus.py"
       ],
-      "lines": 211,
+      "lines": 213,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Keep native parser and portable coverage requirements executing on GitLab when duplicate GitHub scheduling is retired.",
@@ -64533,12 +64538,1326 @@
       "timestamp": "2026-09-30T14:54:00.060714+00:00",
       "commit_sha": null,
       "smoke_result": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/handoffs/2026-09-30-bits-codegen-cmax-b-media-corpus.md",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "docs/media-corpus.md",
+        "docs/field-interviewer-v1.3.md",
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-source.json",
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-options.json",
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-preview.json"
+      ],
+      "lines": 53,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Give the existing private content and bridge owners a concrete corpus and acceptance tasks without activating provider accounts or creating a parallel publishing system.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "media-corpus"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-options.json",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Schema",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-options.json",
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-source.json"
+      ],
+      "lines": 29,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Record the bounded format, language and delivery requests needed to reproduce the corpus without inferring provider entitlements or spending authority.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "media-corpus"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-options.json.cgrf.yaml",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Schema",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-options.json",
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-source.json"
+      ],
+      "lines": 19,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Record the bounded format, language and delivery requests needed to reproduce the corpus without inferring provider entitlements or spending authority.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "media-corpus"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-preview.json",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Schema",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-preview.json",
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-source.json"
+      ],
+      "lines": 14,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Provide one exact generated draft for the existing Content studio import while preserving its source citation and unsaved editorial state.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "media-corpus"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-preview.json.cgrf.yaml",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Schema",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-preview.json",
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-source.json"
+      ],
+      "lines": 19,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Provide one exact generated draft for the existing Content studio import while preserving its source citation and unsaved editorial state.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "media-corpus"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-report.md",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "docs/media-corpus.md",
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-validation.json",
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/memory.json",
+        ".bits/handoffs/2026-09-30-bits-codegen-cmax-b-media-corpus.md"
+      ],
+      "lines": 150,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Retain reproducible source acceptance and the exact unexecuted production boundaries for the evidence-backed media continuation.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "media-corpus"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-source.json",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Schema",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-source.json",
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/buddi-connection-report.md"
+      ],
+      "lines": 68,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Retain exact excerpts and original evidence hashes for the real Buddi source account without promoting it to independently reviewed or live evidence.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "media-corpus"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-source.json.cgrf.yaml",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Schema",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-source.json",
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/buddi-connection-report.md"
+      ],
+      "lines": 19,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Retain exact excerpts and original evidence hashes for the real Buddi source account without promoting it to independently reviewed or live evidence.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "media-corpus"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-validation.json",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Schema",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-validation.json",
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-source.json"
+      ],
+      "lines": 309,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Retain observed media compiler, import, coverage and corpus replay results while keeping synthetic receipts separate from unavailable provider and publication acceptance.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "media-corpus"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-validation.json.cgrf.yaml",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Schema",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-validation.json",
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-source.json"
+      ],
+      "lines": 19,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Retain observed media compiler, import, coverage and corpus replay results while keeping synthetic receipts separate from unavailable provider and publication acceptance.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "media-corpus"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/lib/contentMedia.js",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Adapter",
+      "functions": [
+        "parseMediaDraft",
+        "readMediaDraft"
+      ],
+      "dependencies": [
+        "scripts/publish/media_corpus.py",
+        "apps/web/src/lib/businessPlanning.js"
+      ],
+      "lines": 70,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Import bounded media copy into the existing draft flow without importing account, review or publication authority.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "media-corpus"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "docs/media-corpus.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "docs/field-interviewer-v1.3.md",
+        "scripts/publish/media_contracts.py",
+        "scripts/publish/media_corpus.py",
+        "scripts/publish/media_library.py",
+        "scripts/publish/activity_publish.py",
+        "apps/web/src/components/workspace/ContentStudio.jsx",
+        "tests/upgrade/check_media_corpus.py"
+      ],
+      "lines": 212,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Make the existing editorial and publication surfaces usable for an evidence-backed corpus sprint while retaining provider, rights, cost and human publication gates.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "media-corpus"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "scripts/publish/activity_publish.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-BUDDI-001",
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "_publication_key",
+        "_load_ledger",
+        "_save_ledger",
+        "build_release_event",
+        "_counts_as_ipv6",
+        "_address_spans",
+        "_fleet_names",
+        "_name_pattern",
+        "redact_public_text",
+        "_redact_values",
+        "_scrub_text",
+        "compile_public_projection",
+        "_publish_wiki",
+        "_publish_discord",
+        "_publish_reddit",
+        "publish"
+      ],
+      "dependencies": [
+        "scripts/deploy/ship.py"
+      ],
+      "lines": 373,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Publish one verified release to the wiki, Discord and Reddit with every IP address and every fleet machine name withheld from the public text.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "media-corpus"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "scripts/publish/media_contracts.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Schema",
+      "functions": [
+        "public_text",
+        "token",
+        "sha256",
+        "relative_path",
+        "public_url",
+        "language"
+      ],
+      "dependencies": [
+        "libs/semantic_twin/contracts.py",
+        "libs/semantic_twin/identity.py",
+        "libs/evolution/common.py",
+        "scripts/ci/public_redaction.py",
+        "scripts/ci/verify_public_boundary.py"
+      ],
+      "lines": 434,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Bind media drafts to selected public observations and explicit production limits without granting provider or publication authority.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "media-corpus"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "scripts/publish/media_corpus.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Adapter",
+      "functions": [
+        "checked_path",
+        "read_bytes",
+        "read_artifact",
+        "load_object",
+        "_text_leaves",
+        "validate_source",
+        "validate_activity",
+        "_chunks",
+        "_scripts",
+        "compile_corpus",
+        "_json",
+        "write_corpus",
+        "read_corpus",
+        "main"
+      ],
+      "dependencies": [
+        "scripts/publish/media_contracts.py",
+        "scripts/publish/activity_publish.py",
+        "libs/capability_tokens/verification.py",
+        "libs/semantic_twin/receipts.py",
+        "libs/evolution/common.py"
+      ],
+      "lines": 714,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Turn explicitly selected public evidence into reusable local media drafts and receiving production plans without invoking a provider or publisher.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "media-corpus"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "scripts/publish/media_library.py",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Adapter",
+      "functions": [
+        "reconcile",
+        "main"
+      ],
+      "dependencies": [
+        "scripts/publish/media_contracts.py",
+        "scripts/publish/media_corpus.py",
+        "libs/evolution/common.py"
+      ],
+      "lines": 293,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Reconcile retained generation and distribution observations into a reproducible media index without inventing delivery, engagement or provider authentication.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "media-corpus"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/check_media_corpus.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "main"
+      ],
+      "dependencies": [
+        "tests/upgrade/test_media_corpus.py",
+        "scripts/publish/media_contracts.py",
+        "scripts/publish/media_corpus.py",
+        "scripts/publish/media_library.py"
+      ],
+      "lines": 87,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Require connected media source behavior and measured coverage without substituting synthetic fixtures for provider execution.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "media-corpus"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/media-draft-import.test.mjs",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [],
+      "dependencies": [
+        "apps/web/src/lib/contentMedia.js",
+        "scripts/publish/media_corpus.py",
+        "tests/upgrade/test_media_corpus.py"
+      ],
+      "lines": 109,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Exercise compiler-to-editor interoperability and reject oversized, altered or authority-bearing draft imports.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "media-corpus"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/test_media_corpus.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "artifact",
+        "source",
+        "reviewed"
+      ],
+      "dependencies": [
+        "scripts/publish/media_contracts.py",
+        "scripts/publish/media_corpus.py",
+        "scripts/publish/media_library.py",
+        "tests/upgrade/test_activity_publish.py",
+        "tests/upgrade/test_evolution_support.py"
+      ],
+      "lines": 733,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Prove that actual cited bytes, receiving review pins, bounded drafts and retained observations cannot fabricate media or publishing authority.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "media-corpus"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/components/workspace/ContentStudio.jsx",
+      "target": "apps/web/src/lib/contentMedia.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/components/workspace/ContentStudio.jsx declares CONSUMES apps/web/src/lib/contentMedia.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/field-interviewer-v1.3.md",
+      "target": "docs/media-corpus.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/field-interviewer-v1.3.md declares CONSUMES docs/media-corpus.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/hostinger-sprint-closure.md",
+      "target": "docs/media-corpus.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/hostinger-sprint-closure.md declares CONSUMES docs/media-corpus.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".gitlab/ci/source-validation.yml",
+      "target": "tests/upgrade/check_media_corpus.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".gitlab/ci/source-validation.yml declares CONSUMES tests/upgrade/check_media_corpus.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-30-bits-codegen-cmax-b-media-corpus.md",
+      "target": "docs/media-corpus.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/handoffs/2026-09-30-bits-codegen-cmax-b-media-corpus.md declares CONSUMES docs/media-corpus.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-30-bits-codegen-cmax-b-media-corpus.md",
+      "target": "docs/field-interviewer-v1.3.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/handoffs/2026-09-30-bits-codegen-cmax-b-media-corpus.md declares CONSUMES docs/field-interviewer-v1.3.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-30-bits-codegen-cmax-b-media-corpus.md",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-source.json",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/handoffs/2026-09-30-bits-codegen-cmax-b-media-corpus.md declares CONSUMES .bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-source.json.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-30-bits-codegen-cmax-b-media-corpus.md",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-options.json",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/handoffs/2026-09-30-bits-codegen-cmax-b-media-corpus.md declares CONSUMES .bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-options.json.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-30-bits-codegen-cmax-b-media-corpus.md",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-preview.json",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/handoffs/2026-09-30-bits-codegen-cmax-b-media-corpus.md declares CONSUMES .bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-preview.json.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-options.json.cgrf.yaml",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-options.json",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-options.json.cgrf.yaml declares VALIDATES .bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-options.json.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-options.json.cgrf.yaml",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-source.json",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-options.json.cgrf.yaml declares CONSUMES .bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-source.json.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-preview.json.cgrf.yaml",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-preview.json",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-preview.json.cgrf.yaml declares VALIDATES .bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-preview.json.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-preview.json.cgrf.yaml",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-source.json",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-preview.json.cgrf.yaml declares CONSUMES .bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-source.json.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-report.md",
+      "target": "docs/media-corpus.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-report.md declares CONSUMES docs/media-corpus.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-report.md",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-validation.json",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-report.md declares CONSUMES .bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-validation.json.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-report.md",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/memory.json",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-report.md declares CONSUMES .bits/out/VCC-BUILDANDDO-UPGRADE-001/memory.json.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-report.md",
+      "target": ".bits/handoffs/2026-09-30-bits-codegen-cmax-b-media-corpus.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-report.md declares CONSUMES .bits/handoffs/2026-09-30-bits-codegen-cmax-b-media-corpus.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-source.json.cgrf.yaml",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-source.json",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-source.json.cgrf.yaml declares VALIDATES .bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-source.json.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-source.json.cgrf.yaml",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/buddi-connection-report.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-source.json.cgrf.yaml declares CONSUMES .bits/out/VCC-BUILDANDDO-UPGRADE-001/buddi-connection-report.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-validation.json.cgrf.yaml",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-validation.json",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-validation.json.cgrf.yaml declares VALIDATES .bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-validation.json.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-validation.json.cgrf.yaml",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-source.json",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-validation.json.cgrf.yaml declares CONSUMES .bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-source.json.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/lib/contentMedia.js",
+      "target": "scripts/publish/media_corpus.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/lib/contentMedia.js declares CONSUMES scripts/publish/media_corpus.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/lib/contentMedia.js",
+      "target": "apps/web/src/lib/businessPlanning.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/lib/contentMedia.js declares CONSUMES apps/web/src/lib/businessPlanning.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/media-corpus.md",
+      "target": "docs/field-interviewer-v1.3.md",
+      "edge_type": "EXTENDS",
+      "weight": 1.0,
+      "description": "docs/media-corpus.md declares EXTENDS docs/field-interviewer-v1.3.md.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/media-corpus.md",
+      "target": "scripts/publish/media_contracts.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/media-corpus.md declares CONSUMES scripts/publish/media_contracts.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/media-corpus.md",
+      "target": "scripts/publish/media_corpus.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/media-corpus.md declares CONSUMES scripts/publish/media_corpus.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/media-corpus.md",
+      "target": "scripts/publish/media_library.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/media-corpus.md declares CONSUMES scripts/publish/media_library.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/media-corpus.md",
+      "target": "scripts/publish/activity_publish.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/media-corpus.md declares CONSUMES scripts/publish/activity_publish.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/media-corpus.md",
+      "target": "apps/web/src/components/workspace/ContentStudio.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/media-corpus.md declares CONSUMES apps/web/src/components/workspace/ContentStudio.jsx.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/media-corpus.md",
+      "target": "tests/upgrade/check_media_corpus.py",
+      "edge_type": "VERIFIED_BY",
+      "weight": 1.0,
+      "description": "docs/media-corpus.md declares VERIFIED_BY tests/upgrade/check_media_corpus.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "scripts/publish/activity_publish.py",
+      "target": "scripts/deploy/ship.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "scripts/publish/activity_publish.py declares CONSUMES scripts/deploy/ship.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "scripts/publish/activity_publish.py",
+      "target": "tests/upgrade/test_activity_publish.py",
+      "edge_type": "VERIFIED_BY",
+      "weight": 1.0,
+      "description": "scripts/publish/activity_publish.py declares VERIFIED_BY tests/upgrade/test_activity_publish.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "scripts/publish/activity_publish.py",
+      "target": "tests/upgrade/test_media_corpus.py",
+      "edge_type": "VERIFIED_BY",
+      "weight": 1.0,
+      "description": "scripts/publish/activity_publish.py declares VERIFIED_BY tests/upgrade/test_media_corpus.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "scripts/publish/media_contracts.py",
+      "target": "libs/semantic_twin/contracts.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "scripts/publish/media_contracts.py declares DEPENDS_ON libs/semantic_twin/contracts.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "scripts/publish/media_contracts.py",
+      "target": "libs/semantic_twin/identity.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "scripts/publish/media_contracts.py declares DEPENDS_ON libs/semantic_twin/identity.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "scripts/publish/media_contracts.py",
+      "target": "libs/evolution/common.py",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "scripts/publish/media_contracts.py declares DEPENDS_ON libs/evolution/common.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "scripts/publish/media_contracts.py",
+      "target": "scripts/ci/public_redaction.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "scripts/publish/media_contracts.py declares CONSUMES scripts/ci/public_redaction.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "scripts/publish/media_contracts.py",
+      "target": "scripts/ci/verify_public_boundary.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "scripts/publish/media_contracts.py declares CONSUMES scripts/ci/verify_public_boundary.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "scripts/publish/media_corpus.py",
+      "target": "scripts/publish/media_contracts.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "scripts/publish/media_corpus.py declares CONSUMES scripts/publish/media_contracts.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "scripts/publish/media_corpus.py",
+      "target": "scripts/publish/activity_publish.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "scripts/publish/media_corpus.py declares CONSUMES scripts/publish/activity_publish.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "scripts/publish/media_corpus.py",
+      "target": "libs/capability_tokens/verification.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "scripts/publish/media_corpus.py declares CONSUMES libs/capability_tokens/verification.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "scripts/publish/media_corpus.py",
+      "target": "libs/semantic_twin/receipts.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "scripts/publish/media_corpus.py declares CONSUMES libs/semantic_twin/receipts.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "scripts/publish/media_corpus.py",
+      "target": "libs/evolution/common.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "scripts/publish/media_corpus.py declares CONSUMES libs/evolution/common.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "scripts/publish/media_library.py",
+      "target": "scripts/publish/media_contracts.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "scripts/publish/media_library.py declares CONSUMES scripts/publish/media_contracts.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "scripts/publish/media_library.py",
+      "target": "scripts/publish/media_corpus.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "scripts/publish/media_library.py declares CONSUMES scripts/publish/media_corpus.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "scripts/publish/media_library.py",
+      "target": "libs/evolution/common.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "scripts/publish/media_library.py declares CONSUMES libs/evolution/common.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/check_media_corpus.py",
+      "target": "tests/upgrade/test_media_corpus.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "tests/upgrade/check_media_corpus.py declares CONSUMES tests/upgrade/test_media_corpus.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/check_media_corpus.py",
+      "target": "scripts/publish/media_contracts.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/check_media_corpus.py declares VALIDATES scripts/publish/media_contracts.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/check_media_corpus.py",
+      "target": "scripts/publish/media_corpus.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/check_media_corpus.py declares VALIDATES scripts/publish/media_corpus.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/check_media_corpus.py",
+      "target": "scripts/publish/media_library.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/check_media_corpus.py declares VALIDATES scripts/publish/media_library.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/media-draft-import.test.mjs",
+      "target": "apps/web/src/lib/contentMedia.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/media-draft-import.test.mjs declares VALIDATES apps/web/src/lib/contentMedia.js.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/media-draft-import.test.mjs",
+      "target": "scripts/publish/media_corpus.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/media-draft-import.test.mjs declares VALIDATES scripts/publish/media_corpus.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/media-draft-import.test.mjs",
+      "target": "tests/upgrade/test_media_corpus.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "tests/upgrade/media-draft-import.test.mjs declares CONSUMES tests/upgrade/test_media_corpus.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_media_corpus.py",
+      "target": "scripts/publish/media_contracts.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_media_corpus.py declares VALIDATES scripts/publish/media_contracts.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_media_corpus.py",
+      "target": "scripts/publish/media_corpus.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_media_corpus.py declares VALIDATES scripts/publish/media_corpus.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_media_corpus.py",
+      "target": "scripts/publish/media_library.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_media_corpus.py declares VALIDATES scripts/publish/media_library.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_media_corpus.py",
+      "target": "tests/upgrade/test_activity_publish.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_media_corpus.py declares CONSUMES tests/upgrade/test_activity_publish.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_media_corpus.py",
+      "target": "tests/upgrade/test_evolution_support.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_media_corpus.py declares CONSUMES tests/upgrade/test_evolution_support.py.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "C",
+      "event_type": "test_pass",
+      "file_path": "tests/upgrade/check_media_corpus.py",
+      "description": "Media corpus source acceptance: 25 media tests pass on Python 3.11.15 and 3.12.13 with at least 98 percent statement coverage per module; 54 connected Python cases and strict typing pass. Provider receipts are synthetic test fixtures.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-30T17:45:49.194492+00:00",
+      "commit_sha": null,
+      "smoke_result": "54/54"
+    },
+    {
+      "type": "C",
+      "event_type": "test_pass",
+      "file_path": "tests/upgrade/media-draft-import.test.mjs",
+      "description": "Media/editorial integration: 87 connected Node cases pass without skips, including actual compiler-to-importer interchange; contentMedia.js measures 100 percent lines, branches and functions. This does not establish rendered or native acceptance.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-30T17:45:49.194492+00:00",
+      "commit_sha": null,
+      "smoke_result": "87/87"
+    },
+    {
+      "type": "C",
+      "event_type": "smoke_run",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-validation.json",
+      "description": "The real retained Buddi report matches its declared local revision and reproduces 34 English media drafts in 71 identical files with 27092 planned speech characters per alternative production lane. The source remains reported; zero generation/publication observations exist.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-30T17:45:49.194492+00:00",
+      "commit_sha": null,
+      "smoke_result": "71/71 files"
+    },
+    {
+      "type": "C",
+      "event_type": "failure",
+      "file_path": ".bits/handoffs/2026-09-30-bits-codegen-cmax-b-media-corpus.md",
+      "description": "Media production acceptance remains open: React, Vite and Vitest are unavailable; browser/native, hosted GitLab, actual provider generation, publication and engagement are unexecuted. Provider/account/promotion and voice entitlements remain unverified; PR 119 work-exchange source is absent locally.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-30T17:45:49.194492+00:00",
+      "commit_sha": null,
+      "smoke_result": null
     }
   ],
   "summary": {
-    "type_a_count": 987,
-    "type_b_count": 2568,
-    "type_c_count": 248,
+    "type_a_count": 1006,
+    "type_b_count": 2626,
+    "type_c_count": 252,
     "ioo_compliance": true,
     "dkg_orphans": 0,
     "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",

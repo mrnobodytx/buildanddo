@@ -1,0 +1,19 @@
+# ─── CGRF Header ───────────────────────────────────────────────
+# File:        .bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-preview.json.cgrf.yaml
+# Stage:       11_COMMIT
+# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# CAPS:        pending
+# CK:          pending
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+# Seat:        BITS-CODEGEN
+# Owner:       Citadel Nexus Inc.
+# Created:     2026-09-30
+# Depends:     .bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-preview.json, .bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-source.json
+# EnumType:    Schema
+# EnumEdges:   VALIDATES .bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-preview.json; CONSUMES .bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-source.json
+# Intent:      Provide one exact generated draft for the existing Content studio import while preserving its source citation and unsaved editorial state.
+# ───────────────────────────────────────────────────────────────
+schema_version: buildanddo.content-draft/v1
+artifact: .bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-preview.json
+source_authority: VCC-BUILDANDDO-UPGRADE-001
+runtime_acceptance: unmeasured

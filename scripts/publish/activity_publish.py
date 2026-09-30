@@ -2,16 +2,16 @@
 # ─── CGRF Header ───────────────────────────────────────────────
 # File:        scripts/publish/activity_publish.py
 # Stage:       07_BUILD
-# SRS:         SRS-BUILDANDDO-BUDDI-001
+# SRS:         SRS-BUILDANDDO-BUDDI-001, SRS-BUILDANDDO-UPGRADE-001
 # CAPS:        pending
 # CK:          pending
-# Dispatch:    VCC-BUILDANDDO-BUDDI-001
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
 # Seat:        C-ONE
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-07
 # Depends:     scripts/deploy/ship.py
 # EnumType:    Service
-# EnumEdges:   CONSUMED_BY scripts/deploy/ship.py; VALIDATED_BY tests/upgrade/test_activity_publish.py
+# EnumEdges:   CONSUMES scripts/deploy/ship.py; VERIFIED_BY tests/upgrade/test_activity_publish.py; VERIFIED_BY tests/upgrade/test_media_corpus.py
 # DAG Node:    none
 # Intent:      Publish one verified release to the wiki, Discord and Reddit with every IP address
 #              and every fleet machine name withheld from the public text.
@@ -356,6 +356,9 @@ def publish(title: str, summary: str, evidence: dict) -> dict:
         "publication_key": pub_key,
         "event_id": event["event_id"],
         "commit": event["git"]["commit"],
+        # Retain the already-scrubbed input so local media drafting consumes the
+        # same source as existing channel adapters, without invoking them again.
+        "public_event": public_event,
         "channels": {"wiki": wiki_result, "discord": discord_result, "reddit": reddit_result},
         "generated_at": dt.datetime.now(dt.timezone.utc).isoformat(),
     }

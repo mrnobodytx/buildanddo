@@ -20,6 +20,7 @@ import { act, fireEvent, within } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import ErpPage from '@/pages/workspace/ErpPage';
 import ContentStudio from '@/components/workspace/ContentStudio';
+import { readMediaDraft } from '@/lib/contentMedia';
 import WorkspaceContext from '@/contexts/WorkspaceContext';
 import { setDemoMode } from '@/lib/demoWorkspace';
 import pb from '@/lib/pocketbaseClient';
@@ -31,12 +32,14 @@ vi.mock('@/lib/pocketbaseClient', async () => {
     return { default: client, pocketbaseClient: client };
 });
 vi.mock('@/lib/observability/runtime', () => ({ reportAction: vi.fn(), reportMetric: vi.fn(), trackAuthIdentity: vi.fn(), readFailed: vi.fn() }));
+vi.mock('@/lib/contentMedia', () => ({ readMediaDraft: vi.fn() }));
 const access = vi.hoisted(() => ({ data: { role: 'admin', can_write: true, can_admin: true }, loading: false, error: '' }));
 vi.mock('@/contexts/WorkspaceAccessContext', () => ({ useWorkspaceAccess: () => access }));
 const objective = { id: 'objective1', title: 'Reduce response time', description: 'A bounded test.', success_metric: 'Compare the observed median over one week.', status: 'active', due_date: '', workspace: 'ws_test', owner: 'user_test' };
 const draft = { id: 'draft1', title: 'How to review a draft', format: 'blog', audience: 'New editors', brief: 'A synthetic editorial exercise.', body: '# Useful steps\n\n- Read the source\n- Record the limitation', call_to_action: '', channel: '', objective: '', status: 'draft', workspace: 'ws_test', owner: 'user_test' };
 beforeEach(() => {
     pb.__reset(); setDemoMode(false);
+    vi.mocked(readMediaDraft).mockReset();
     access.data = { role: 'admin', can_write: true, can_admin: true }; access.loading = false; access.error = '';
     // Transport-only fixture: native policy is exercised in workspace-claims.test.mjs.
     pb.send = vi.fn(async (_path, { body }) => {
@@ -150,6 +153,65 @@ describe('ERP planning', () => {
 });
 
 describe('content production', () => {
+    it('imports media as an unsaved draft and uses the existing scoped save command', async () => {
+        vi.mocked(readMediaDraft).mockResolvedValue({ ...draft, title: 'Source-bound media', id: '', status: 'approved', owner: 'foreign', reviewed_by: 'forged' });
+        renderWithProviders(<ContentStudio />); const user = setupUser();
+        const input = screen.getByLabelText('Import media draft');
+        await waitFor(() => expect(input).toBeEnabled());
+        await user.upload(input, new File(['{}'], 'media-draft.json', { type: 'application/json' }));
+        const form = within(await screen.findByRole('dialog'));
+        expect(form.getByLabelText('Title')).toHaveValue('Source-bound media');
+        expect(pb.send).not.toHaveBeenCalled();
+        await user.click(form.getByRole('button', { name: 'Save draft' }));
+        expect(await screen.findByText('Draft saved. Request review when the copy is ready.')).toBeVisible();
+        const values = pb.send.mock.calls[0][1].body.payload.values;
+        expect(values.status).toBe('draft');
+        expect(values).not.toHaveProperty('owner');
+        expect(values).not.toHaveProperty('reviewed_by');
+    });
+
+    it('keeps rejected media imports out of the editor and backend', async () => {
+        vi.mocked(readMediaDraft).mockRejectedValue(new Error('The draft body changed after export.'));
+        renderWithProviders(<ContentStudio />); const user = setupUser();
+        const input = screen.getByLabelText('Import media draft');
+        await waitFor(() => expect(input).toBeEnabled());
+        await user.upload(input, new File(['{}'], 'changed.json', { type: 'application/json' }));
+        expect(await screen.findByRole('alert')).toHaveTextContent('changed after export');
+        expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+        expect(pb.send).not.toHaveBeenCalled();
+    });
+
+    it('discards a pending media import after changing workspace', async () => {
+        let finish;
+        vi.mocked(readMediaDraft).mockImplementation(() => new Promise((resolve) => { finish = resolve; }));
+        const first = createWorkspaceValue();
+        const view = renderWithProviders(<WorkspaceContext.Provider value={first}><ContentStudio /></WorkspaceContext.Provider>);
+        const user = setupUser(); const input = screen.getByLabelText('Import media draft');
+        await waitFor(() => expect(input).toBeEnabled());
+        await user.upload(input, new File(['{}'], 'pending.json', { type: 'application/json' }));
+        const second = createWorkspaceValue({ active: createMockWorkspace({ id: 'other-workspace' }) });
+        view.rerender(<WorkspaceContext.Provider value={second}><ContentStudio /></WorkspaceContext.Provider>);
+        await act(async () => { finish({ ...draft, title: 'Obsolete import' }); });
+        expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+        expect(screen.queryByDisplayValue('Obsolete import')).not.toBeInTheDocument();
+        expect(pb.send).not.toHaveBeenCalled();
+    });
+
+    it('keeps a selected saved draft open when an older media import finishes', async () => {
+        let finish;
+        vi.mocked(readMediaDraft).mockImplementation(() => new Promise((resolve) => { finish = resolve; }));
+        pb.__setRecords('social_content', [draft]);
+        renderWithProviders(<ContentStudio />); const user = setupUser();
+        const input = screen.getByLabelText('Import media draft');
+        await waitFor(() => expect(input).toBeEnabled());
+        await user.upload(input, new File(['{}'], 'pending.json', { type: 'application/json' }));
+        await user.click(screen.getByRole('button', { name: `Open ${draft.title}` }));
+        await act(async () => { finish({ ...draft, title: 'Obsolete import' }); });
+        expect(within(screen.getByRole('dialog')).getByRole('button', { name: 'Edit draft' })).toBeVisible();
+        expect(screen.queryByDisplayValue('Obsolete import')).not.toBeInTheDocument();
+        expect(pb.send).not.toHaveBeenCalled();
+    });
+
     it('produces an editable outline, previews it as text and saves a scoped draft', async () => {
         renderWithProviders(<ContentStudio />); const user = setupUser();
         await waitFor(() => expect(screen.getByRole('button', { name: 'New draft' })).toBeEnabled());

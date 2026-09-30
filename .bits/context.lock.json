@@ -716,6 +716,7 @@
       ],
       "path": "scripts/ci/public_redaction.py",
       "referenced_by": [
+        "scripts/publish/media_contracts.py",
         "tests/upgrade/test_hygiene.py",
         "tests/upgrade/test_platform_health_public_projection.py",
         "tests/upgrade/test_public_redaction.py"
@@ -830,6 +831,7 @@
       "referenced_by": [
         "scripts/ci/hostinger_checks.py",
         "scripts/publish/activity_publish.py",
+        "scripts/publish/media_contracts.py",
         "tests/upgrade/test_gitlab_acceptance.py",
         "tests/upgrade/test_public_boundary.py"
       ],
@@ -872,7 +874,7 @@
       "wired_into_ci": true
     }
   ],
-  "generated_at": "2026-09-30T14:51:43.806208+00:00",
+  "generated_at": "2026-09-30T17:47:45.633791+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -1585,12 +1587,12 @@
       "scripts/deploy/staging-readback.sh"
     ],
     "migrations": 77,
-    "python_files": 453,
+    "python_files": 458,
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 1821,
-    "web_source_files": 383
+    "tracked_files": 1839,
+    "web_source_files": 384
   },
   "schema_version": 1,
   "sprint_readiness": {
@@ -1652,13 +1654,13 @@
       },
       {
         "id": "HS-09",
-        "next_step": "Attempt denied evidence mutations, inspect frozen reviews, and reconcile the exact native result and release context with controller/provider captures. Supply scoped canonical owner mappings and retained captures for developmental queries; resolve identity and evidence gaps before independent progression review. Bind the real applicant identity and independently review exact career participation before compiling any personal application. The Citadel/CSEG receiver must authenticate world-event identity/read/share scope and exact review pins before connecting live provider references or publishing a projection.",
+        "next_step": "Attempt denied evidence mutations, inspect frozen reviews, and reconcile the exact native result and release context with controller/provider captures. Supply scoped canonical owner mappings and retained captures for developmental queries; resolve identity and evidence gaps before independent progression review. Bind the real applicant identity and independently review exact career participation before compiling any personal application. The Citadel/CSEG receiver must authenticate world-event identity/read/share scope and exact review pins before connecting live provider references or publishing a projection. For media work, retain actual generation and publication bytes, authenticate provider observations independently and bind engagement to the same publication and interval before recording a verified outcome.",
         "owner": "BITS-CODEGEN / release owner",
         "why": "A reviewer needs inspectable receipts and integrity checks for the exact candidate."
       },
       {
         "id": "HS-10",
-        "next_step": "Run actual browser and native isolation tests, bind the existing inference endpoint under approved data authority, and observe scoped chat-to-form-to-personal-knowledge behavior. Validate value-card drill-downs against one real reviewed mission and exact provider/release receipts; collect comparable cost, effort and eligible-work baselines before displaying ROI. Exercise career export/import with the actual native account, ten real job dossiers and reviewed draft documents; obtain separate receiving authority for one permitted ATS browser submission and retain its actual receipt.",
+        "next_step": "Run actual browser and native isolation tests, bind the existing inference endpoint under approved data authority, and observe scoped chat-to-form-to-personal-knowledge behavior. Validate value-card drill-downs against one real reviewed mission and exact provider/release receipts; collect comparable cost, effort and eligible-work baselines before displaying ROI. Exercise career export/import with the actual native account, ten real job dossiers and reviewed draft documents; obtain separate receiving authority for one permitted ATS browser submission and retain its actual receipt. The content and private ElevenLabsBridge owners must verify requested provider/account terms, approved voices and funding, then demonstrate the existing draft/review flow and one real generation, human publication, independent readback and measured engagement. Reconcile the missing PR 119 work-exchange revision before connecting CSCC mission authority.",
         "owner": "BITS-CODEGEN / CMAX-B",
         "why": "The operator and daily edition must explain current work with visible uncertainty and evidence."
       },
@@ -1669,7 +1671,7 @@
         "why": "Competition readiness requires an evidence-backed learning-through-work journey, a reproducible replay and actual submission criteria."
       }
     ],
-    "source_sha256": "a0a1f967a344126d28dda5cdd7e05b7161d325f46815fb63abf91f73a3b84a78",
+    "source_sha256": "233c577a8d651f8c128ad0645a31a00665d7f1c1af0f120766a7a1cb427f25c3",
     "state": "PASS"
   },
   "summary": {
