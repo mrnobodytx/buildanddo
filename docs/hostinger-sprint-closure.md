@@ -8,9 +8,9 @@
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-20
-# Depends:     .bits/hostinger-readiness.json, scripts/ci/hostinger_readiness.py, scripts/ci/hostinger_replay.py, tools/day21/day21_acceptance.py, .bits/handoffs/2026-09-21-bits-codegen-cmax-b-governance-execution.md, docs/sprint-user-journey.md, docs/development-loop.md, docs/mutual-development.md
+# Depends:     .bits/hostinger-readiness.json, scripts/ci/hostinger_readiness.py, scripts/ci/hostinger_replay.py, tools/day21/day21_acceptance.py, .bits/handoffs/2026-09-21-bits-codegen-cmax-b-governance-execution.md, docs/sprint-user-journey.md, docs/development-loop.md, docs/mutual-development.md, docs/media-corpus.md
 # EnumType:    Doc
-# EnumEdges:   CONSUMES .bits/hostinger-readiness.json; CONSUMES scripts/ci/hostinger_readiness.py; CONSUMES scripts/ci/hostinger_replay.py; CONSUMES tools/day21/day21_acceptance.py; EXTENDS docs/operator-plane.md; EXTENDS docs/mission-system.md; CONSUMES .bits/handoffs/2026-09-21-bits-codegen-cmax-b-governance-execution.md; CONSUMES docs/sprint-user-journey.md; CONSUMES docs/development-loop.md; CONSUMES docs/mutual-development.md
+# EnumEdges:   CONSUMES .bits/hostinger-readiness.json; CONSUMES scripts/ci/hostinger_readiness.py; CONSUMES scripts/ci/hostinger_replay.py; CONSUMES tools/day21/day21_acceptance.py; EXTENDS docs/operator-plane.md; EXTENDS docs/mission-system.md; CONSUMES .bits/handoffs/2026-09-21-bits-codegen-cmax-b-governance-execution.md; CONSUMES docs/sprint-user-journey.md; CONSUMES docs/development-loop.md; CONSUMES docs/mutual-development.md; CONSUMES docs/media-corpus.md
 # Intent:      Make the reason, acceptance boundary and next action for every sprint piece a required source review rather than a remembered plan.
 # ───────────────────────────────────────────────────────────────
 
@@ -40,6 +40,23 @@ no editable completion percentage. Its source binding is
 `.bits/hostinger-readiness.lock.json`. Exact bytes of the tested application,
 libraries, tests and script trees are covered so a changed helper invalidates
 earlier acceptance too. Generated reports and operational evidence are excluded.
+
+## Media corpus continuation — 2026-09-30
+
+HS-09 and HS-10 now include selected source evidence, local media compilation,
+Content studio import and retained generation/publication/engagement observations.
+The first corpus reuses the retained Buddi repair report: 34 English draft assets
+and 27,092 planned speech characters per alternative production lane. These are
+reported source excerpts, not audio artifacts, live outcomes or worker experience.
+Spanish remains held for translated source, an authored template and review.
+
+Follow `docs/media-corpus.md` and the receiving handoff at
+`.bits/handoffs/2026-09-30-bits-codegen-cmax-b-media-corpus.md`. CMAX-B must
+reconcile the absent PR 119 work-exchange source; the content and bridge owners
+then confirm current source review, provider capability, account terms, rights
+and funding. Browser/native import acceptance and one real reviewed generation,
+human publication, external readback and engagement observation remain open.
+This source continuation does not advance a deployment or sprint milestone.
 
 ## Continuous Semantic Twin progression lane
 

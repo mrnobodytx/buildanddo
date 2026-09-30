@@ -1,0 +1,29 @@
+{
+  "schema": "buildanddo.media-options/v1",
+  "formats": [
+    "article",
+    "social",
+    "daily_audio",
+    "short_video",
+    "mission_story",
+    "guild_debrief",
+    "build_report",
+    "tutorial",
+    "onboarding",
+    "case_study"
+  ],
+  "languages": [
+    "en",
+    "es"
+  ],
+  "styles": [
+    "neutral",
+    "curious",
+    "energetic",
+    "serious"
+  ],
+  "requested_model": "eleven_v4",
+  "chunk_characters": 3000,
+  "character_budget": 100000,
+  "max_assets": 200
+}

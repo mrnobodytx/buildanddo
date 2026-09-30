@@ -1,0 +1,309 @@
+{
+  "schema": "buildanddo.media-validation/v1",
+  "recorded_at": "2026-09-30T17:40:29.784193+00:00",
+  "dispatch": "VCC-BUILDANDDO-UPGRADE-001",
+  "srs": "SRS-BUILDANDDO-UPGRADE-001",
+  "status": "SOURCE_PASS_RUNTIME_UNMEASURED",
+  "source_fingerprints": {
+    "scripts/publish/media_contracts.py": {
+      "sha256": "6e835a327e9c827e5bd674317a461997b79872cd8b1d8d051aa0f41419369f41",
+      "size": 15062
+    },
+    "scripts/publish/media_corpus.py": {
+      "sha256": "dceda7a9a518d37b86b4f0cc83750b586655763e3a873fbac796bbcb50b76a80",
+      "size": 28409
+    },
+    "scripts/publish/media_library.py": {
+      "sha256": "3ee0eacfa100e6c96bb01f78beda7e656da23e27aa1fb8efece12ca3125e867b",
+      "size": 12253
+    },
+    "scripts/publish/activity_publish.py": {
+      "sha256": "fa5b5232f1a6dd49d91b41a64dd925af3b961961cacc056c9dd7864c7694b20c",
+      "size": 17932
+    },
+    "apps/web/src/lib/contentMedia.js": {
+      "sha256": "1dee0d8b52da90dac01d50ffca0e46a533fba664d89c6e5e7aed9797f19e7fef",
+      "size": 4202
+    },
+    "apps/web/src/components/workspace/ContentStudio.jsx": {
+      "sha256": "b05e221f2f796cd4b5a41c1c481588bbdedab69e0d1c2ff8d26e445dfb73fa8c",
+      "size": 24814
+    },
+    "apps/web/src/components/workspace/ProgressionPipeline.jsx": {
+      "sha256": "ea8857b3c71e65c2c234663f5b9b9a2298aa0170667860adeac1f53759212219",
+      "size": 14450
+    },
+    "apps/web/src/pages/workspace/__tests__/BusinessDesks.test.jsx": {
+      "sha256": "18de962a41fc2b13e80796f904c8f3a88915c553233c24401311c4bb66c20a20",
+      "size": 25668
+    },
+    "tests/upgrade/test_media_corpus.py": {
+      "sha256": "84628fd75c5ea91a856cb832d795ac438408006e117ddd6f1014a6297c0f13c3",
+      "size": 29133
+    },
+    "tests/upgrade/check_media_corpus.py": {
+      "sha256": "42703ef3531779aef1826543a9dee07f0bb3710a046a3a778735222dd6ae43bb",
+      "size": 3604
+    },
+    "tests/upgrade/media-draft-import.test.mjs": {
+      "sha256": "c45da8165f6bb020b6910e110120d7c6a8718f797fd08a288199988d8fd8485b",
+      "size": 6728
+    },
+    "tests/upgrade/test_gitlab_acceptance.py": {
+      "sha256": "6d61e9580d1b26545cb6b91d4a33d03bbffa357f8fb78741ffb67f89501b4d49",
+      "size": 18050
+    },
+    ".gitlab/ci/source-validation.yml": {
+      "sha256": "e17568a879b49f1527b1ab6bba2e402d20588f64b02db4a557dd4c3929a6bce1",
+      "size": 11090
+    }
+  },
+  "python_coverage": {
+    "3.11": {
+      "state": "PASS",
+      "tests": 25,
+      "errors": 0,
+      "failures": 0,
+      "skipped": 0,
+      "coverage_kind": "Python trace statement lines; no branch-coverage claim",
+      "coverage": {
+        "scripts/publish/media_contracts.py": {
+          "covered": 277,
+          "statements": 277,
+          "percent": 100.0,
+          "missing": []
+        },
+        "scripts/publish/media_corpus.py": {
+          "covered": 530,
+          "statements": 538,
+          "percent": 98.51,
+          "missing": [
+            128,
+            129,
+            130,
+            394,
+            514,
+            671,
+            674,
+            714
+          ]
+        },
+        "scripts/publish/media_library.py": {
+          "covered": 214,
+          "statements": 216,
+          "percent": 99.07,
+          "missing": [
+            208,
+            293
+          ]
+        }
+      },
+      "fixtures": "Synthetic source, review pins and provider observations",
+      "provider_calls": 0,
+      "publications": 0,
+      "interpreter": "Python 3.11.15"
+    },
+    "3.12": {
+      "state": "PASS",
+      "tests": 25,
+      "errors": 0,
+      "failures": 0,
+      "skipped": 0,
+      "coverage_kind": "Python trace statement lines; no branch-coverage claim",
+      "coverage": {
+        "scripts/publish/media_contracts.py": {
+          "covered": 277,
+          "statements": 277,
+          "percent": 100.0,
+          "missing": []
+        },
+        "scripts/publish/media_corpus.py": {
+          "covered": 537,
+          "statements": 547,
+          "percent": 98.17,
+          "missing": [
+            128,
+            129,
+            130,
+            394,
+            514,
+            671,
+            674,
+            676,
+            681,
+            714
+          ]
+        },
+        "scripts/publish/media_library.py": {
+          "covered": 219,
+          "statements": 221,
+          "percent": 99.1,
+          "missing": [
+            208,
+            293
+          ]
+        }
+      },
+      "fixtures": "Synthetic source, review pins and provider observations",
+      "provider_calls": 0,
+      "publications": 0,
+      "interpreter": "Python 3.12.13"
+    }
+  },
+  "connected_python": {
+    "command": "python -m unittest tests.upgrade.test_media_corpus tests.upgrade.test_activity_publish tests.upgrade.test_gitlab_acceptance",
+    "tests": 54,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "node": {
+    "command": "node --test --experimental-test-coverage --test-coverage-include=apps/web/src/lib/contentMedia.js --test-reporter=tap tests/upgrade/media-draft-import.test.mjs tests/upgrade/business-learning.test.mjs tests/upgrade/workspace-claims.test.mjs",
+    "counts": {
+      "tests": 87,
+      "pass": 87,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0
+    },
+    "importer_coverage": {
+      "file": "apps/web/src/lib/contentMedia.js",
+      "lines": 100.0,
+      "branches": 100.0,
+      "functions": 100.0
+    },
+    "runtime": "v24.13.0",
+    "local_worker_access": "Permitted local worker subprocesses; no network services."
+  },
+  "static": {
+    "strict_mypy": {
+      "state": "PASS",
+      "modules": 3,
+      "command": "python -m mypy --strict --explicit-package-bases --follow-imports=silent scripts/publish/media_contracts.py scripts/publish/media_corpus.py scripts/publish/media_library.py"
+    },
+    "ruff": {
+      "lint": "PASS",
+      "source_modules": 3,
+      "test_modules": 3,
+      "format": "PASS",
+      "formatted_modules": 5
+    },
+    "gitlab_yaml": "PASS",
+    "jsx_diagnostic": {
+      "state": "PASS",
+      "modules": 5,
+      "errors": 0,
+      "scope": "Existing offline syntax and binding diagnostic only; not rendered tests or full repository lint."
+    }
+  },
+  "actual_source_replay": {
+    "state": "PASS",
+    "compiled_at": "2026-09-30T17:24:05.274457+00:00",
+    "corpus_digest": "1b8d8f00ccdda6725447f1744b792432c6ec504a27c91be41be85a90aeb99d97",
+    "source_state": "REPORTED_SOURCE",
+    "assets": 34,
+    "characters_per_lane": 27092,
+    "translation_tasks": [
+      {
+        "language": "es",
+        "state": "HOLD",
+        "reason": "selected_translated_source_template_and_review_required"
+      }
+    ],
+    "identical_files": 71,
+    "preview_matches": true,
+    "library_counts": {
+      "assets": 34,
+      "observations": 0,
+      "generation_attempts": 0,
+      "reported_generations": 0,
+      "publication_attempts": 0,
+      "reported_publications": 0,
+      "unresolved_attempts": 0
+    },
+    "authentication": "reported_observations_only",
+    "provider_calls": 0,
+    "publications": 0
+  },
+  "actual_source_evidence_matches_declared_revision": true,
+  "preview_import": {
+    "state": "PASS",
+    "file": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-preview.json",
+    "unsaved": true
+  },
+  "test_scope": "Synthetic source/review/provider fixtures exercise behavior. The separate corpus replay uses the real retained Buddi report. Neither establishes provider authentication, generated audio, publication or independent source review.",
+  "unexecuted": [
+    {
+      "check": "Rendered import and lifetime tests",
+      "state": "BLOCKED",
+      "reason": "React and Vitest unavailable; four cases authored in BusinessDesks.test.jsx."
+    },
+    {
+      "check": "Full repository lint and production build",
+      "state": "BLOCKED",
+      "reason": "Locked frontend dependencies remain unavailable; Vite resolution fails."
+    },
+    {
+      "check": "Native PocketBase/editorial permissions",
+      "state": "NOT_RUN",
+      "reason": "Receiving native acceptance remains required; local transport/policy tests do not establish deployed acceptance."
+    },
+    {
+      "check": "Hosted GitLab Python matrix",
+      "state": "NOT_OBSERVED",
+      "reason": "Configured source coverage gate; local interpreter results do not establish a hosted pipeline run."
+    },
+    {
+      "check": "ElevenLabs model, promotion, account, grant and voice entitlements",
+      "state": "UNVERIFIED",
+      "reason": "Owner-supplied planning inputs; no provider/account lookup or generation."
+    },
+    {
+      "check": "Generation, playback, publication/readback and engagement",
+      "state": "NOT_RUN",
+      "reason": "Private bridge/content/publication owners must perform actual approved production."
+    },
+    {
+      "check": "CSCC work-exchange integration from PR 119",
+      "state": "UNAVAILABLE_SOURCE",
+      "reason": "Reported work-exchange files are absent in this materialized checkout; receiving owner must reconcile revision before linking."
+    }
+  ],
+  "external_effects": 0,
+  "provider_calls": 0,
+  "publications": 0,
+  "handoff": ".bits/handoffs/2026-09-30-bits-codegen-cmax-b-media-corpus.md",
+  "governance": {
+    "observed_at": "2026-09-30T17:46:56.026301+00:00",
+    "readiness": {
+      "state": "PASS",
+      "milestones": 12
+    },
+    "submission": {
+      "state": "PASS",
+      "internal_checkpoints": 11,
+      "planned": 12,
+      "official_rules": "unknown"
+    },
+    "context": {
+      "state": "PASS",
+      "retained_findings": 62,
+      "unwired_gates": 32
+    },
+    "public_boundary": {
+      "state": "PASS",
+      "files_checked": 1839,
+      "actor_label_checked": false
+    },
+    "memory": {
+      "state": "PASS",
+      "file_vectors": 1006,
+      "edges": 2626,
+      "events": 252,
+      "historical_events_preserved": 248,
+      "ioo_compliance": true,
+      "dkg_orphans": 0
+    },
+    "effect": "Source review and provenance only; no operational acceptance state changed."
+  }
+}

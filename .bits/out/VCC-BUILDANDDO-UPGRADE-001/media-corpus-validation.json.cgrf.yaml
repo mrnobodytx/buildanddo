@@ -1,0 +1,19 @@
+# ─── CGRF Header ───────────────────────────────────────────────
+# File:        .bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-validation.json.cgrf.yaml
+# Stage:       11_COMMIT
+# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# CAPS:        pending
+# CK:          pending
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+# Seat:        BITS-CODEGEN
+# Owner:       Citadel Nexus Inc.
+# Created:     2026-09-30
+# Depends:     .bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-validation.json, .bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-source.json
+# EnumType:    Schema
+# EnumEdges:   VALIDATES .bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-validation.json; CONSUMES .bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-source.json
+# Intent:      Retain observed media compiler, import, coverage and corpus replay results while keeping synthetic receipts separate from unavailable provider and publication acceptance.
+# ───────────────────────────────────────────────────────────────
+schema_version: buildanddo.media-validation/v1
+artifact: .bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-validation.json
+source_authority: VCC-BUILDANDDO-UPGRADE-001
+runtime_acceptance: unmeasured

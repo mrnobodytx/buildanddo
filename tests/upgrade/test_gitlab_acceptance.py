@@ -272,6 +272,7 @@ class GitLabAcceptanceTests(unittest.TestCase):
             ("tests/knowledge_units/check_knowledge_units.py",),
             ("tests/integrity/check_integrity.py",),
             ("tests/world_twin/check_world_twin.py",),
+            ("tests/upgrade/check_media_corpus.py",),
         )
         for script, *args in commands:
             with self.subTest(script=script):
@@ -334,13 +335,17 @@ class GitLabAcceptanceTests(unittest.TestCase):
                 f"state/ci/behavior-venv/bin/python tests/{suite}/check_{suite}.py"
                 for suite in suites
             )
-            + ("state/ci/behavior-venv/bin/python tests/upgrade/check_work_exchange.py",),
+            + (
+                "state/ci/behavior-venv/bin/python tests/upgrade/check_work_exchange.py",
+                "state/ci/behavior-venv/bin/python tests/upgrade/check_media_corpus.py",
+            ),
         )
         sections = {
             name: body
             for name, _inline, body in gitlab_ci._sections((ROOT / job.file).read_text())
         }
         body = sections[job.name]
+        self.assertIn("      - reports/coverage/media-corpus.json\n", body)
         self.assertIn("tags: [buildanddo]", body)
         self.assertIn('name: "source-behavior-coverage-${PYTHON_VERSION}"', body)
         self.assertIn("expire_in: 30 days", body)

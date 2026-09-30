@@ -77,6 +77,53 @@ Acceptance:
 5. Reproduce the failures with production-handler regressions, retain passing
    connected backend/client controls, and document unavailable rendered/native
    acceptance plus the private activation dependencies without inventing results.
+## Evidence-backed media corpus - 2026-09-30
+
+The owner requests a reusable content corpus from real BuildAndDo/Citadel
+activity, using ElevenCreative for reviewed studio work and the existing private
+ElevenLabsBridge for separately funded API automation. Continue this existing
+A2 public-source dispatch. Provider model features, promotional eligibility,
+the October 12 deadline and grant balance are supplied claims, not verified
+account facts. No provider call, payment, secret access or publication is granted.
+
+Acceptance:
+
+1. Compile explicitly selected public source observations and retained evidence
+   into deterministic article/social copy, narrated updates, story/dialogue
+   scripts and clip plans. Bind source revision, claim IDs, observed times,
+   limitations and actual artifact hashes. Never infer live success from tests,
+   a source status label or a local hash. Use the existing semantic contracts
+   and receiving-pinned independent review for any reviewed-source claim.
+2. Prepare separate manual ElevenCreative and private-bridge API job plans.
+   Account for every requested language, delivery variant and text chunk;
+   preserve unknown pricing/rights/provider capability as receiving gates.
+   Never assume a studio promotion also covers API usage, fabricate translation,
+   silently truncate a script or invent speech to fill a requested duration.
+3. Reuse the existing Content studio's draft, review and publication commands.
+   Import bounded corpus drafts as unsaved drafts only, preserving account,
+   workspace and current-role boundaries. Imports cannot carry server identity,
+   review status or publication authority. No new database or publisher exists.
+4. Reconcile explicitly supplied generation, artifact, publication and engagement
+   observations against the exact media job and actual retained bytes. Retries
+   must not multiply history; uncertain/missing outcomes stay explicit. Imported
+   receipts are reported observations, never authenticated provider acceptance.
+5. Dogfood compilation against a real retained public source report and prepare
+   the private content/bridge, voice-rights, cost, publication and analytics
+   handoff. The checkout lacks the work-exchange source reported in PR 119;
+   receiving integration must resolve that revision before depending on it.
+6. Exercise deterministic/adversarial compiler, import, review and receipt
+   controls; retain measured coverage and frontend/native/provider limits.
+   Refresh reviewed readiness/context bindings and preserve historical memory.
+
+Observed public-source evidence is retained in
+`.bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-validation.json` and
+`media-corpus-report.md`. All 54 connected Python and 87 Node cases pass; the 25
+media cases pass on both Python 3.11 and 3.12 with at least 98% statement coverage
+per source module. The real Buddi report compiles to 34 English drafts with
+27,092 planned speech characters per alternative production lane; the replay
+matches all 71 output files. Reported source, scripts and synthetic provider
+fixtures are not independently reviewed production evidence. Browser/native,
+hosted GitLab, provider/account and publication/engagement acceptance remain open.
 
 ## Buddi connection recovery - 2026-09-30
 

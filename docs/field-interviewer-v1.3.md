@@ -8,7 +8,7 @@
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-16
-# Depends:     .bits/srs/SRS-BUILDANDDO-UPGRADE-001.md, docs/business-learning.md, docs/workspace-administration.md, docs/mission-system.md, apps/web/tools/generate-community.mjs, apps/web/src/pages/workspace/WikiPage.jsx, apps/pocketbase/pb_hooks/business-policy.js
+# Depends:     .bits/srs/SRS-BUILDANDDO-UPGRADE-001.md, docs/business-learning.md, docs/workspace-administration.md, docs/mission-system.md, apps/web/tools/generate-community.mjs, apps/web/src/pages/workspace/WikiPage.jsx, apps/pocketbase/pb_hooks/business-policy.js, docs/media-corpus.md
 # EnumType:    Doc
 # EnumEdges:   DEPENDS_ON .bits/srs/SRS-BUILDANDDO-UPGRADE-001.md;
 #              CONSUMES docs/business-learning.md;
@@ -16,7 +16,8 @@
 #              CONSUMES docs/mission-system.md;
 #              CONSUMES apps/web/tools/generate-community.mjs;
 #              CONSUMES apps/web/src/pages/workspace/WikiPage.jsx;
-#              CONSUMES apps/pocketbase/pb_hooks/business-policy.js
+#              CONSUMES apps/pocketbase/pb_hooks/business-policy.js;
+#              CONSUMES docs/media-corpus.md
 # DAG Node:    none
 # Intent:      Record the owner's interviewer knowledge boundary so private implementation can reuse public product contracts without exporting workspace or operational authority.
 # ───────────────────────────────────────────────────────────────
@@ -34,6 +35,13 @@ existing private ElevenLabsBridge owns provider transport. The content lab owns
 persona, interview logic, knowledge compilation, claim extraction and drafts.
 Publication, verification authority and operational actions keep their existing
 owners. This public artifact implements none of those private runtime services.
+
+The public media-corpus continuation is implemented in `docs/media-corpus.md`:
+selected evidence excerpts compile into editorial and production drafts, import
+into the existing Content studio, and reconcile supplied media/engagement
+observations. The private content lab and ElevenLabsBridge still own actual
+generation and delivery. The supplied v4 promotion and account capabilities are
+unverified until the receiving owner checks them; no free API use is inferred.
 
 ## Observed reuse and unresolved inputs
 

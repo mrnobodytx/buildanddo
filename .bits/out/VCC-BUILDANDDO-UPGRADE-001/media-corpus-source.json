@@ -1,0 +1,68 @@
+{
+  "schema": "buildanddo.media-source/v1",
+  "event_id": "BD-MEDIA-BUDDI-20260930",
+  "scope_id": "buildanddo-public-source",
+  "kind": "source_change",
+  "revision": "a07457759e31c30aad15ece2351e681d7bc5727e",
+  "producer": "cni://agent/BITS-CODEGEN",
+  "authors": [],
+  "observed_at": "2026-09-30T17:24:05.274457+00:00",
+  "expires_at": "2026-10-07T17:24:05.274457+00:00",
+  "title": "Buddi connection recovery: what the source tests establish",
+  "audience": "BuildAndDo contributors and operators",
+  "language": "en",
+  "source_url": "https://github.com/mrnobodytx/buildanddo",
+  "disclosure_ref": "public-source-review-pending",
+  "artifacts": [
+    {
+      "artifact_id": "buddi-source-report",
+      "path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/buddi-connection-report.md",
+      "sha256": "08cffe3b3729006940f3abf1342a16afb4692897710d266716d0b8808b5a2c47",
+      "size": 7438,
+      "observed_at": "2026-09-30T17:24:05.274457+00:00"
+    }
+  ],
+  "claims": [
+    {
+      "claim_id": "problem",
+      "section": "problem",
+      "text": "The user requested improved\nconnections, integrations and Buddi usage after a supporting-system handoff.",
+      "evidence_ids": [
+        "buddi-source-report"
+      ]
+    },
+    {
+      "claim_id": "action",
+      "section": "action",
+      "text": "Fixes bind\npermission completion to the current attempt, fence SDK callbacks after a\nterminal event or unmount, catch asynchronous SDK errors, release a transport\nthat finishes opening late, and distinguish confirmed hang-up from failure.",
+      "evidence_ids": [
+        "buddi-source-report"
+      ]
+    },
+    {
+      "claim_id": "outcome",
+      "section": "outcome",
+      "text": "PASS: 23 cases",
+      "evidence_ids": [
+        "buddi-source-report"
+      ]
+    },
+    {
+      "claim_id": "lesson",
+      "section": "lesson",
+      "text": "Source repair and source-binding refresh do not mark the sprint or live\nintegration complete.",
+      "evidence_ids": [
+        "buddi-source-report"
+      ]
+    },
+    {
+      "claim_id": "limitation",
+      "section": "limitation",
+      "text": "The handler harness executes production closures with hook/SDK/clock doubles;\nit is not rendered browser evidence. No native PocketBase suite ran.",
+      "evidence_ids": [
+        "buddi-source-report"
+      ]
+    }
+  ],
+  "visibility": "public"
+}

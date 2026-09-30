@@ -8,9 +8,9 @@
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-15
-// Depends:     apps/web/src/hooks/useWorkspaceRecords.js, apps/web/src/lib/businessPlanning.js, apps/web/src/components/workspace/StructuredContent.jsx
+// Depends:     apps/web/src/hooks/useWorkspaceRecords.js, apps/web/src/lib/businessPlanning.js, apps/web/src/components/workspace/StructuredContent.jsx, apps/web/src/lib/contentMedia.js
 // EnumType:    Widget
-// EnumEdges:   CONSUMES apps/web/src/hooks/useWorkspaceRecords.js; CONSUMES apps/web/src/lib/businessPlanning.js; CONSUMES apps/web/src/components/workspace/StructuredContent.jsx
+// EnumEdges:   CONSUMES apps/web/src/hooks/useWorkspaceRecords.js; CONSUMES apps/web/src/lib/businessPlanning.js; CONSUMES apps/web/src/components/workspace/StructuredContent.jsx; CONSUMES apps/web/src/lib/contentMedia.js
 // DAG Node:    none
 // Intent:      Turn workspace briefs into recoverable drafts with readable previews, explicit review and honest publication receipts.
 // ───────────────────────────────────────────────────────────────
@@ -31,6 +31,7 @@ import { workspaceLifecycleKey } from '@/lib/workspaceControl';
 import { useDemoMode } from '@/hooks/useDemoMode';
 import { useWorkspaceRecords } from '@/hooks/useWorkspaceRecords';
 import { CONTENT_FORMATS, CONTENT_STATUSES, contentOutline, dateInput, publicationUrl, retainedFields } from '@/lib/businessPlanning';
+import { readMediaDraft } from '@/lib/contentMedia';
 import pb from '@/lib/pocketbaseClient';
 
 const selectClass = 'h-10 w-full min-w-0 rounded-md border border-border bg-background px-3 text-sm';
@@ -64,17 +65,42 @@ function Studio({ accountId, demo }) {
     const [busy, setBusy] = useState(false);
     const [error, setError] = useState('');
     const [saved, setSaved] = useState('');
+    const [importing, setImporting] = useState(false);
+    const importEpoch = useRef(0);
+    const importAllowed = useRef(false);
+    importAllowed.current = canWrite && !content.loading && !content.degraded && !content.uncertain && !busy;
+    useEffect(() => {
+        if (!canWrite) { importEpoch.current += 1; setImporting(false); }
+    }, [canWrite]);
     const alive = useRef(true);
     const lock = useRef(false);
     const opener = useRef(null);
     useEffect(() => { alive.current = true; return () => { alive.current = false; }; }, []);
     const current = () => alive.current && pb.authStore.record?.id === accountId;
     const begin = (record, target, copy = false) => {
+        importEpoch.current += 1; setImporting(false);
         opener.current = target; setError(''); setSaved(''); setPreview(false); setReplace(false);
         setDraft(Object.fromEntries(Object.entries(emptyDraft).map(([name, fallback]) => [name, record?.[name] || fallback])));
         setEditor({ id: copy ? '' : record?.id || '', record: copy ? null : record }); setDetail(null);
     };
+    const importDraft = async (event) => {
+        const file = event.currentTarget.files?.[0];
+        const target = event.currentTarget;
+        target.value = '';
+        if (!file || !current() || !importAllowed.current) return;
+        const epoch = ++importEpoch.current;
+        setImporting(true); setError(''); setSaved('');
+        try {
+            const fields = await readMediaDraft(file);
+            if (current() && epoch === importEpoch.current && importAllowed.current) begin(fields, target, true);
+        } catch (cause) {
+            if (current() && epoch === importEpoch.current) setError(cause instanceof Error ? cause.message : 'Could not read the selected media draft.');
+        } finally {
+            if (current() && epoch === importEpoch.current) setImporting(false);
+        }
+    };
     const open = (record, target) => {
+        importEpoch.current += 1; setImporting(false);
         opener.current = target; setDetail(record); setError(''); setSaved(''); setChecks({}); setNote('');
         setPlannedDate(dateInput(record.scheduled_for)); setUrl('');
     };
@@ -131,11 +157,14 @@ function Studio({ accountId, demo }) {
     return <div className="ph-no-capture space-y-5" data-dd-privacy="mask">
         <div className="flex flex-wrap items-start justify-between gap-3"><div><h2 className="font-display text-2xl font-semibold">Content studio</h2><p className="mt-1 max-w-2xl text-sm leading-6 text-muted-foreground">Build a brief, write and preview a draft, then review it before recording publication.</p></div><div className="flex flex-wrap gap-2">
             <Button size="sm" variant="secondary" disabled={content.loading || busy} onClick={content.refresh}>Refresh content</Button>
+            <div className="space-y-1"><Label htmlFor="content-media-import">Import media draft</Label><Input id="content-media-import" type="file" accept="application/json,.json" disabled={!importAllowed.current || importing} onChange={importDraft} /></div>
             <Button size="sm" disabled={!canWrite || content.loading || content.degraded || content.uncertain} onClick={(event) => begin(null, event.currentTarget)}>New draft</Button>
         </div></div>
         {demo && <DemoModeBanner />}
         {content.uncertain && !editor && !detail && <div className="space-y-2"><p role="alert" className="text-sm">{content.writeError}</p>{retryButton}</div>}
         {saved && !detail && <p role="status" className="text-sm text-success">{saved}</p>}
+        {importing && <p role="status" className="text-sm">Checking the selected media draft…</p>}
+        {error && !editor && !detail && <p role="alert" className="text-sm text-destructive">{error}</p>}
         <div className="grid gap-3 sm:grid-cols-3">
             <div className="space-y-1"><Label htmlFor="content-search">Search content</Label><Input id="content-search" value={query} onChange={(event) => setQuery(event.target.value)} /></div>
             <div className="space-y-1"><Label htmlFor="content-state">Editorial state</Label><select id="content-state" className={selectClass} value={filter} onChange={(event) => setFilter(event.target.value)}><option value="all">All states</option>{Object.entries(CONTENT_STATUSES).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></div>

@@ -1,0 +1,19 @@
+# ─── CGRF Header ───────────────────────────────────────────────
+# File:        .bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-source.json.cgrf.yaml
+# Stage:       11_COMMIT
+# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# CAPS:        pending
+# CK:          pending
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+# Seat:        BITS-CODEGEN
+# Owner:       Citadel Nexus Inc.
+# Created:     2026-09-30
+# Depends:     .bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-source.json, .bits/out/VCC-BUILDANDDO-UPGRADE-001/buddi-connection-report.md
+# EnumType:    Schema
+# EnumEdges:   VALIDATES .bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-source.json; CONSUMES .bits/out/VCC-BUILDANDDO-UPGRADE-001/buddi-connection-report.md
+# Intent:      Retain exact excerpts and original evidence hashes for the real Buddi source account without promoting it to independently reviewed or live evidence.
+# ───────────────────────────────────────────────────────────────
+schema_version: buildanddo.media-source/v1
+artifact: .bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-source.json
+source_authority: VCC-BUILDANDDO-UPGRADE-001
+runtime_acceptance: unmeasured

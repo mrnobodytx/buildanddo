@@ -58,6 +58,30 @@ integration backend already expires observations and the command clients already
 retain retry identities. Reuse these contracts; do not introduce a provider or
 fabricate a live seat event. The sandbox lacks the locked React/Vite/Vitest/SDK
 toolchain and native PocketBase, so their acceptance remains explicit.
+## Media corpus continuation authorized 2026-09-30
+
+The owner's content-production request continues this existing A2 source
+dispatch. Reuse the editorial desk, public activity projection and semantic
+review contracts; the existing private bridge remains the only provider
+transport. No paid generation, provider configuration or publishing occurs here.
+
+| Phase | Task | Gate command | Status |
+|---|---|---|---|
+| MC-1 | Compile source-bound media variants and separate production plans | `python tests/upgrade/check_media_corpus.py` | done — 25 cases pass on Python 3.11 and 3.12; reported, independently reviewed and stale sources remain distinct |
+| MC-2 | Connect draft import and retained media/engagement observations | Compiler/receipt and content-import regression suites | partial — 87 connected Node cases pass; four rendered import/lifetime cases require missing frontend dependencies; no provider execution |
+| MC-3 | Dogfood actual source evidence and retain runtime handoff | Source, readiness, boundary, context and memory checks | done — 34 drafts reproduce across 71 identical files; readiness/context/boundary/memory checks pass; receiving handoff retains all runtime and account gates |
+
+Memory brief: the materialized baseline contains the earlier Buddi voice repair.
+It has an existing human-reviewed Content studio and activity publisher; the
+Field Interviewer/content lab and ElevenLabsBridge are private handoffs. The
+work-exchange files reported in PR 119 are absent locally. Current provider
+model/price/promotion/account facts and voice grants are unavailable. Production
+plans must retain these gates, distinguish synthetic tests from actual evidence,
+and avoid dependency on absent source or external credential loading.
+
+Media source results and open receiving checks are retained in
+.bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-report.md and its validation
+artifact. Neither the corpus nor a source-binding refresh closes live acceptance.
 
 ## Buddi connection recovery - 2026-09-30
 
