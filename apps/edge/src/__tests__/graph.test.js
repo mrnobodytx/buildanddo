@@ -1,7 +1,7 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/edge/src/__tests__/graph.test.js
 // Stage:       11_COMMIT
-// SRS:         SRS-CN-ENTITY-CATALOGUE-001
+// SRS:         SRS-CN-ENTITY-CATALOGUE-001, SRS-BUILDANDDO-UPGRADE-001
 // CAPS:        pending
 // CK:          pending
 // Dispatch:    VCC-BUILDANDDO-UPGRADE-001
@@ -146,29 +146,29 @@ describe('routing', () => {
 	it('says the binding is missing rather than answering as an empty graph', async () => {
 		// A 503 naming the cause is the difference between "not wired up" and "no such data",
 		// which otherwise look identical to a caller.
-		const res = await handleGraphMatch(post(ask(PUBLIC_GRAPH)), { CSEG_PRINCIPAL_SECRET: SECRET });
+		const res = await handleGraphMatch(post(ask(PUBLIC_GRAPH), `Bearer ${mint({ ...STAFFER, exp: soon() })}`), { CSEG_PRINCIPAL_SECRET: SECRET });
 		expect(res.status).toBe(503);
 		expect((await res.json()).reason).toBe('no_graph_binding');
 	});
 
 	it('refuses a pattern with no graph, which would read across every projection', async () => {
 		const res = await handleGraphMatch(
-			post({ patterns: [{ s: 'cni:org:cni', p: 'cni:education', o: '?l' }] }), fixture());
+			post({ patterns: [{ s: 'cni:org:cni', p: 'cni:education', o: '?l' }] }, `Bearer ${mint({ ...STAFFER, exp: soon() })}`), fixture());
 		expect(res.status).toBe(400);
 		expect((await res.json()).reason).toBe('graph_required');
 	});
 
 	it('refuses empty patterns and invalid JSON', async () => {
-		expect((await handleGraphMatch(post({ patterns: [] }), fixture())).status).toBe(400);
+		expect((await handleGraphMatch(post({ patterns: [] }, `Bearer ${mint({ ...STAFFER, exp: soon() })}`), fixture())).status).toBe(400);
 		const bad = new Request('https://buildanddo.com/api/graph/match',
-			{ method: 'POST', body: 'not json' });
+			{ method: 'POST', body: 'not json', headers: { Authorization: `Bearer ${mint({ ...STAFFER, exp: soon() })}` } });
 		expect((await handleGraphMatch(bad, fixture())).status).toBe(400);
 	});
 });
 
 describe('the public teaching surface', () => {
-	it('answers an anonymous caller', async () => {
-		const res = await handleGraphMatch(post(ask(PUBLIC_GRAPH)), fixture());
+	it('answers a signed entitled caller for a formerly public graph', async () => {
+		const res = await handleGraphMatch(post(ask(PUBLIC_GRAPH), `Bearer ${mint({ ...STAFFER, exp: soon() })}`), fixture());
 		expect(res.status).toBe(200);
 		const body = await res.json();
 		expect(body.state).toBe('PASS');
@@ -177,7 +177,7 @@ describe('the public teaching surface', () => {
 
 	it('returns no rows, not an error, for a term the graph has never seen', async () => {
 		const res = await handleGraphMatch(
-			post({ patterns: [{ s: 'cni:org:nonexistent', p: 'cni:education', o: '?l', g: PUBLIC_GRAPH }] }),
+			post({ patterns: [{ s: 'cni:org:nonexistent', p: 'cni:education', o: '?l', g: PUBLIC_GRAPH }] }, `Bearer ${mint({ ...STAFFER, exp: soon() })}`),
 			fixture());
 		expect(res.status).toBe(200);
 		expect((await res.json()).rows).toEqual([]);
@@ -193,7 +193,7 @@ describe('the gated graph', () => {
 				principal: { authority: 'A5', trust_points: 9999, platforms: ['cnwb'], roles: [], regions: [] } }),
 			fixture());
 		expect(res.status).toBe(403);
-		expect((await res.json()).denied[0].reasons).toEqual(['authentication_required']);
+		expect((await res.json()).reason).toBe('authentication_required');
 	});
 
 	it('denies an anonymous caller', async () => {

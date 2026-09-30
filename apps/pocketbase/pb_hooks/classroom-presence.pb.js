@@ -8,9 +8,9 @@
 // Seat:        BITS-CODEGEN, C-ONE (the SFU echo on read)
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-23
-// Depends:     apps/pocketbase/pb_hooks/classroom-media.js, apps/pocketbase/pb_hooks/classroom-realtime-lib.js, apps/pocketbase/pb_migrations/1790600000_classroom_presence.js, apps/pocketbase/pb_hooks/telemetry.js
+// Depends:     apps/pocketbase/pb_hooks/classroom-media.js, apps/pocketbase/pb_hooks/classroom-realtime-lib.js, apps/pocketbase/pb_migrations/1790600000_classroom_presence.js, apps/pocketbase/pb_hooks/telemetry.js, apps/pocketbase/pb_hooks/estate-lib.js
 // EnumType:    Route
-// EnumEdges:   CONSUMES apps/pocketbase/pb_hooks/classroom-media.js; CONSUMES apps/pocketbase/pb_hooks/classroom-realtime-lib.js; DEPENDS_ON apps/pocketbase/pb_migrations/1790600000_classroom_presence.js; CONSUMES apps/pocketbase/pb_hooks/telemetry.js
+// EnumEdges:   CONSUMES apps/pocketbase/pb_hooks/classroom-media.js; CONSUMES apps/pocketbase/pb_hooks/classroom-realtime-lib.js; DEPENDS_ON apps/pocketbase/pb_migrations/1790600000_classroom_presence.js; CONSUMES apps/pocketbase/pb_hooks/telemetry.js; CONSUMES apps/pocketbase/pb_hooks/estate-lib.js
 // Intent:      Advertise only owned published tracks to current classroom participants without granting room access from a global publisher allowlist, and call a track verified only when the SFU echoes it.
 // ----------------------------------------------------------------
 
@@ -140,6 +140,9 @@ routerAdd('GET', '/api/classroom/presence', (e) => {
 }, $apis.requireAuth('users'));
 
 routerAdd('GET', '/api/classroom/presence/health', (e) => {
+    e.response.header().set('Cache-Control', 'no-store');
+    e.response.header().set('Vary', 'Authorization');
+    if (!e.auth) return e.json(404, { error: 'not found' });
     let installed = false;
     try {
         e.app.findCollectionByNameOrId('classroom_presence');
@@ -152,9 +155,11 @@ routerAdd('GET', '/api/classroom/presence/health', (e) => {
         try { require(`${__hooks}/classroom-media.js`).schema(e.app); }
         catch (_) { installed = false; /* The media schema guard already reports this failure. */ }
     }
+    if (!require(`${__hooks}/estate-lib.js`).isMasterSeat(e))
+        return e.json(installed ? 200 : 503, { ok: installed, reason: installed ? null : 'Classroom presence is unavailable.' });
     const publishers = ($os.getenv('BUILDANDDO_CLASSROOM_PUBLISHERS') || '').split(',').filter((item) => item.trim());
     e.response.header().set('Cache-Control', 'no-store');
     return e.json(installed ? 200 : 503, { ok: installed, route: 'classroom-presence/v1', collection_installed: installed,
         publishers_configured: publishers.length, max_ttl_ms: 120000, max_rows: 50,
         verification: 'ECHO_ON_READ', reason: installed ? null : 'Classroom presence/session migrations required.' });
-});
+}, $apis.requireAuth('users'));

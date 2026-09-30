@@ -1,0 +1,19 @@
+# ─── CGRF Header ───────────────────────────────────────────────
+# File:        .bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-short-introduction-draft.json.cgrf.yaml
+# Stage:       11_COMMIT
+# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# CAPS:        pending
+# CK:          pending
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+# Seat:        BITS-CODEGEN
+# Owner:       Citadel Nexus Inc.
+# Created:     2026-09-30
+# Depends:     .bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-short-introduction-draft.json, .bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-onboarding-preview.json
+# EnumType:    Schema
+# EnumEdges:   VALIDATES .bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-short-introduction-draft.json; CONSUMES .bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-onboarding-preview.json
+# Intent:      Import the selected source-bound script into Content studio as a draft while retaining human publication authority.
+# ───────────────────────────────────────────────────────────────
+schema_version: buildanddo.content-draft/v1
+artifact: .bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-short-introduction-draft.json
+source_authority: VCC-BUILDANDDO-UPGRADE-001
+runtime_acceptance: unmeasured

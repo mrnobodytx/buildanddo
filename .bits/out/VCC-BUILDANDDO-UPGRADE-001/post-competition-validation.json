@@ -1,0 +1,293 @@
+{
+  "schema": "buildanddo.local-source-validation/v1",
+  "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+  "srs": "SRS-BUILDANDDO-UPGRADE-001",
+  "recorded_at": "2026-09-30T19:50:12.490483+00:00",
+  "scope": "Local source observations with explicit fixtures; not pipeline, browser, native, provider or deployment acceptance.",
+  "materialized_baseline": "2d0e4ae1d806de258aa08b7db38bf1bcfcd42dad",
+  "source_sha256": {
+    "apps/edge/src/__tests__/graph.test.js": "44222d3f4f8bc37ca2a1f2b062caa9886d160d1cccf417b193dcf7bf092dbff7",
+    "apps/edge/src/graph.js": "5787808ebd150e59ff1a7553807045660b2f3a8fb41df194a565248398c12a36",
+    "apps/edge/src/index.js": "664ad2eb240e1ec57c9e641a1bcf647a4e95623e8ff0b262ac046759c7615809",
+    "apps/pocketbase/pb_hooks/assistant-policy.js": "9db43ef11d27d09274a0f948cb5510556c25ab8a07a255730eb187bd2c8c3cba",
+    "apps/pocketbase/pb_hooks/assistant-systems.js": "cb01e13844e19dc92f50fa90ac0717e807ee1074085f66eb271d0077315e8cc9",
+    "apps/pocketbase/pb_hooks/classroom-presence.pb.js": "6470c91438bfbafa6f25decf28eac9d1c4eb0d9ed7c0215da67d96d5a1637ea9",
+    "apps/pocketbase/pb_hooks/classroom-realtime.pb.js": "3d4bf00fe1598b48b8665f762a1ed93ffffa651920bb151ec4012925f7d3ce57",
+    "apps/pocketbase/pb_hooks/estate-lib.js": "7b8ae834533d75ba580255dc88c0e2bf5c3cc7a3bd9ce203caaf4ddf83adb681",
+    "apps/pocketbase/pb_hooks/estate.pb.js": "61d9ff6a325395a8334c6cb87e75193e57e5c10a438fbbdaead1d7c17095af9e",
+    "apps/pocketbase/pb_hooks/ocn-login.pb.js": "3692559b639f63896efee345d00a6f818027fb71bfc4eee294909636fcd1fc91",
+    "apps/pocketbase/pb_hooks/public-api.js": "21b28e42589ae5b1015ca13b6c8041df79e7fca0de847c6084f34fb7fc69b716",
+    "apps/pocketbase/pb_hooks/workspace-assistant.js": "6def1770d0a5e429c760af11b0633ee43ff7f3eacde05a43b71e4584347e9b1a",
+    "apps/pocketbase/pb_migrations/1792200000_private_operational_evidence.js": "1cc7db0c9605cb0b559a9cf53d368092101b485b16483e4bea7ce34d256e58ac",
+    "apps/web/public/llms.txt": "99d249237299e6d5443f6bcc2f4c3c821d046f731d01b75cc453511ee7b30216",
+    "apps/web/public/sitemap.xml": "c98177f91df492fec96ef50608aee7326aa62bb003372e40484e840188489a03",
+    "apps/web/src/App.jsx": "8573d9eb091a4f9284aa828e84a9d1a335931e6f9aea62a38398022f12babe75",
+    "apps/web/src/__tests__/AppRoutes.test.jsx": "9b2f6a9dfb58fffd40af9f30e0222a93b4661cf05ad698f8c0614e19ad154657",
+    "apps/web/src/__tests__/PlatformHealthAccess.test.jsx": "216bcaedfd0ac0efe1aed8d29e900b64628bacf256a28c5d23a35f108f8d39be",
+    "apps/web/src/components/workspace/WorkspaceAssistant.jsx": "1890ed651a13e95e585cd8250478bcbf6e8b1059fa8094c547a7c6c3853d4119",
+    "apps/web/src/components/workspace/WorkspaceLayout.jsx": "b52a4f3eb7af6a8a86fc5ea1c6342454afa4ac7d8b2ffbea9fb8aff0dc3bb963",
+    "apps/web/src/components/workspace/__tests__/WorkspaceAssistant.test.jsx": "52c34413aa29ed61d15873377fc5fcc29bd0d04fa546ffbc47bb46f917a978c2",
+    "apps/web/src/hooks/useClassroomMedia.js": "d19fbafcb3681177c8820a0124f14f40f6d4994096b46ea2e1d9fb5e0069b706",
+    "apps/web/src/lib/classroomRealtime.js": "397030303ca4c39fd186bd18a1b7fa4587ba532ac21fa68e31e6b7b0c62fc901",
+    "apps/web/src/lib/publicExposure.js": "e123ca9972728b9b1842d9b596e64653d35a2baa7bc02d8c56b8d7ce4a019e91",
+    "apps/web/src/lib/publicPages.js": "fa7b7659ac13f8eefc624b4d4714d0179b0b36bb0e3fac2378f711a40d68c037",
+    "apps/web/src/pages/HostingerChallengePage.jsx": "65bc5804a5cc13a03ebc3f1de0d911da0b6c56c0fa83380c09b3f8827037f5bf",
+    "apps/web/src/pages/PracticePage.jsx": "6238271ed21a287d261c67fd35e28f3fb1d590853c6776fcd5993753e5fa5a27",
+    "apps/web/src/pages/StatusPage.jsx": "0b1a537c506c313c0375e2701866b9c1fd948fad67ea2943b5e2880268b90e30",
+    "apps/web/src/pages/__tests__/StatusPage.test.jsx": "9207556dce256d6c858f3ddef1b68064a1106ca95b688a5f102e404c762957ed",
+    "apps/web/src/pages/workspace/FleetPage.jsx": "30a90a036eecf1fa74ea3d72e32753a384f86508e1b5ffc4abf47bd40e4528c7",
+    "apps/web/src/pages/workspace/SpecialistWorkPage.jsx": "674ed1909b972813589c77098724eabb104277169e7807be9f1935d76c7a52ca",
+    "apps/web/tools/build.mjs": "5a768943cc5933059719c3cf9b4569e90cd9c97878db4cb33363f9035d7f71bc",
+    "apps/web/tools/public-delivery.mjs": "d173fa64baef91e42c65929e03b6fb81fe4e544be1cbcbebb242f1600f1ec0f5",
+    "scripts/ci/fleet_report.py": "4168ce509740e0f95f608a83686062af6fa3d81ccc68a0fa3c00578c03756863",
+    "scripts/discordbot/public_data.py": "fa94f4c35c0e35c41806101d289344009481688f72288a51daef75668d1dcddb",
+    "scripts/discordbot/service.py": "90699fb23fa74ca22133c69f404b3c3d3d479916a5278cbadc0cae93075cf29b",
+    "tests/upgrade/assistant-awareness.test.mjs": "5853f1573b447c0bd382ef89f321775ee1b2240f52e1ca603b326301784a3db3",
+    "tests/upgrade/assistant-fixture.mjs": "8e5821c97b665e06c30d24c7b340beae14592834c44fe4533196d5305d472ab0",
+    "tests/upgrade/build.test.mjs": "f19eaa259bd0549dc14f7860343d9570d9016829f662ae2248227840776b0689",
+    "tests/upgrade/classroom-media-client.test.mjs": "53461b7833937c9a6eb9db809d1be9f4cc801409e78619105c6b0af04ebb4f54",
+    "tests/upgrade/classroom-presence.test.mjs": "2a817cfbe6fefc177522640c82bcd46fa382bfdfa4325203a51475448ca1b140",
+    "tests/upgrade/post-competition-privacy.test.mjs": "476f2707910ed0789562057fa580747f1be3b7c1e7a91450e73eb4adc03a87e7",
+    "tests/upgrade/private-evidence.test.mjs": "69bf3c7e9e3ce923cb8cf0e1ef403aae12a18e0f9509b70e9b74c93e1a5df61a",
+    "tests/upgrade/read-failure-telemetry.test.mjs": "60ddbf1d4075f5b571d6bbc1f4a3c24557bb23898f1afe718867630881707929",
+    "tests/upgrade/telemetry-backend.test.mjs": "725bc7dad736d4f626e72aafb9ceb36339383551ec086337ef883b25c15786f6",
+    "tests/upgrade/test_discordbot_commands.py": "e0baebdd93fe88a057b9552caaa2851dc981c56558da58b043e684a035c99553",
+    "tests/upgrade/test_platform_health_public_projection.py": "df693518afd58109819b13ac5dbbb4d3b0996d9d8ce9298e4d283eb1b63489da",
+    "tests/upgrade/test_public_api_native.py": "b6b6a4d5c35b6b5189ee76284a36e8eb5637e8ad25ed1484fceedd224670c88b",
+    "tests/upgrade/test_public_redaction.py": "6ea64a6ffc4ab82fe3f696c8e74cf7206f3b531d6045b916fa53d11ca0a78ea2"
+  },
+  "checks": [
+    {
+      "name": "privacy_and_awareness",
+      "state": "PASS",
+      "command": "node --test --experimental-test-coverage --test-reporter=tap tests/upgrade/post-competition-privacy.test.mjs tests/upgrade/private-evidence.test.mjs tests/upgrade/assistant-awareness.test.mjs tests/upgrade/workspace-assistant.test.mjs tests/upgrade/public-api.test.mjs tests/upgrade/classroom-presence.test.mjs tests/upgrade/telemetry-backend.test.mjs tests/upgrade/read-failure-telemetry.test.mjs",
+      "observed_at": "2026-09-30T19:44:46.683379+00:00",
+      "output_sha256": "9dfa6e05cac0d7b537b08e1283650154e04e855bbd6896d37e55a63daf2e6a22",
+      "counts": {
+        "tests": 201,
+        "pass": 201,
+        "fail": 0,
+        "skipped": 0
+      }
+    },
+    {
+      "name": "connected_regressions",
+      "state": "PARTIAL",
+      "command": "node --test --test-reporter=tap tests/upgrade/build.test.mjs tests/upgrade/discord-catalogue.test.mjs tests/upgrade/community-catalogue-check-projection.test.mjs tests/upgrade/classroom-telemetry.test.mjs tests/upgrade/classroom-system.test.mjs tests/upgrade/classroom-media.test.mjs tests/upgrade/classroom-media-lifetime.test.mjs tests/upgrade/classroom-media-client.test.mjs tests/upgrade/classroom-client.test.mjs tests/upgrade/public-lessons.test.mjs tests/upgrade/public-action-telemetry.test.mjs tests/upgrade/media-draft-import.test.mjs",
+      "observed_at": "2026-09-30T19:38:17.063914+00:00",
+      "output_sha256": "93824a33e94c754e3afc3683c6c6daa099d40b8f4feb840d2bc95c0a48af2df6",
+      "counts": {
+        "tests": 316,
+        "pass": 315,
+        "fail": 0,
+        "skipped": 1
+      }
+    },
+    {
+      "name": "python_privacy",
+      "state": "PARTIAL",
+      "command": "python -m unittest tests.upgrade.test_discordbot_commands tests.upgrade.test_discordbot_public tests.upgrade.test_platform_health_public_projection tests.upgrade.test_estate_private_routes tests.upgrade.test_public_redaction",
+      "observed_at": "2026-09-30T19:44:48.730413+00:00",
+      "output_sha256": "c19a10de7fce5f8e15bfd10b0e3e5427072f366423c3e855ca5107205f3706ed",
+      "counts": {
+        "tests": 53,
+        "pass": 51,
+        "fail": 0,
+        "skipped": 2
+      },
+      "skip_reasons": [
+        "Private exact-name fleet map unavailable",
+        "No built dist artifact"
+      ]
+    },
+    {
+      "name": "media_corpus",
+      "state": "PASS",
+      "command": "python tests/upgrade/check_media_corpus.py",
+      "observed_at": "2026-09-30T19:36:19.738966+00:00",
+      "output_sha256": "cf06acf1fb58303cad7dbe2abda239a4cfd5f243cc711d3d95224021629aa6ca",
+      "counts": {
+        "tests": 25,
+        "pass": 25,
+        "fail": 0,
+        "skipped": 0
+      },
+      "coverage": {
+        "scripts/publish/media_contracts.py": {
+          "covered": 277,
+          "statements": 277,
+          "percent": 100.0,
+          "missing": []
+        },
+        "scripts/publish/media_corpus.py": {
+          "covered": 537,
+          "statements": 547,
+          "percent": 98.17,
+          "missing": [
+            128,
+            129,
+            130,
+            394,
+            514,
+            671,
+            674,
+            676,
+            681,
+            714
+          ]
+        },
+        "scripts/publish/media_library.py": {
+          "covered": 219,
+          "statements": 221,
+          "percent": 99.1,
+          "missing": [
+            208,
+            293
+          ]
+        }
+      },
+      "coverage_kind": "Python trace statement lines; no branch-coverage claim"
+    },
+    {
+      "name": "native_public_api",
+      "state": "UNAVAILABLE",
+      "command": "python -m unittest tests.upgrade.test_public_api_native",
+      "observed_at": "2026-09-30T19:38:07.001747+00:00",
+      "output_sha256": "f840d36e47c16697d3bb96ac4b1936cd10f4aef7b3c845db913f95582b03ba43",
+      "counts": {
+        "tests": 13,
+        "pass": 0,
+        "fail": 0,
+        "skipped": 13
+      },
+      "reason": "No configured native PocketBase executable; no native acceptance was observed."
+    },
+    {
+      "name": "web_build",
+      "state": "UNAVAILABLE",
+      "command": "npm run build --prefix apps/web",
+      "observed_at": "2026-09-30T19:38:10.473804+00:00",
+      "output_sha256": "7da3a0eb7f365339bb4a9e4ad0be6cce5334684974f8b7128a6c4297faa6aedf",
+      "reason": "Vite is absent"
+    },
+    {
+      "name": "web_lint",
+      "state": "UNAVAILABLE",
+      "command": "npm run lint --prefix apps/web",
+      "observed_at": "2026-09-30T19:38:14.581872+00:00",
+      "output_sha256": "fbba9070b3dd170c9772238aa166af4e3a3ce8048adc407a48f6420b54da77f2",
+      "reason": "Required eslint-plugin-import is absent"
+    },
+    {
+      "name": "react_tests",
+      "state": "UNAVAILABLE",
+      "command": "npm run test --prefix apps/web -- src/__tests__/AppRoutes.test.jsx src/__tests__/PlatformHealthAccess.test.jsx src/components/workspace/__tests__/WorkspaceAssistant.test.jsx src/pages/__tests__/StatusPage.test.jsx",
+      "observed_at": "2026-09-30T19:38:11.068814+00:00",
+      "output_sha256": "7844a6600e7a7dc1b97e44e8c3f8e77efdd38c6beaaa499dbd4adeaa8ce089b4",
+      "reason": "Vitest is absent"
+    },
+    {
+      "name": "edge_tests",
+      "state": "UNAVAILABLE",
+      "command": "npm run test --prefix apps/edge -- src/__tests__/graph.test.js",
+      "observed_at": "2026-09-30T19:44:38.656246+00:00",
+      "output_sha256": "dafb1759aaab23152bf43ec288223eefaeb01fbb2e6acb51a5ce3dec4a7e21b6",
+      "reason": "Vitest is absent"
+    },
+    {
+      "name": "python_lint",
+      "state": "PASS",
+      "command": "ruff check scripts/ci/fleet_report.py scripts/discordbot/service.py scripts/discordbot/public_data.py tests/upgrade/test_discordbot_commands.py tests/upgrade/test_platform_health_public_projection.py tests/upgrade/test_public_redaction.py tests/upgrade/test_public_api_native.py",
+      "observed_at": "2026-09-30T19:44:32.415143+00:00",
+      "output_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "files": 7
+    },
+    {
+      "name": "python_strict_types",
+      "state": "FAIL",
+      "command": "mypy --strict scripts/discordbot/service.py scripts/discordbot/public_data.py scripts/ci/fleet_report.py",
+      "observed_at": "2026-09-30T19:44:36.635213+00:00",
+      "output_sha256": "cc8566131f44de41544a0552fa7eb765786992e0da7e0ad615a9ec4a4f643ad3",
+      "errors": 19,
+      "reason": "Strict typing is not clean; the separate baseline shadow check also fails, on duplicate module discovery, so no clean baseline or clean strict typing is claimed."
+    },
+    {
+      "name": "repository_static_diagnostic",
+      "state": "FAIL",
+      "command": "node .bits/out/VCC-BUILDANDDO-UPGRADE-001/check-source.cjs",
+      "observed_at": "2026-09-30T19:32:05.716751+00:00",
+      "output_sha256": "9d52520b5c5d62036a385a5c26716d426fad9665486eccc715b28c2001d56d23",
+      "modules": 377,
+      "errors": 6,
+      "reason": "Six duplicate keys in unchanged HomePage.test.jsx; the baseline version produces the same six diagnostics. This is not repository lint or rendered UI execution."
+    },
+    {
+      "name": "changed_static_diagnostic",
+      "state": "PASS",
+      "command": "Use exported inspectSource from .bits/out/VCC-BUILDANDDO-UPGRADE-001/check-source.cjs on changed apps/web/src and apps/edge/src JS/JSX modules.",
+      "observed_at": "2026-09-30T19:39:18.853939+00:00",
+      "output_sha256": "682f8805a75e373057723b08bd5c465fc5ee501d65810aec66b68bfb3edf6c5e",
+      "modules": 19,
+      "errors": 0,
+      "limits": "No rendered browser evidence or repository lint claim."
+    },
+    {
+      "name": "media_replay",
+      "state": "PASS",
+      "command": "Replay both commands in docs/elevenlabs-starter-batch.md into fresh directories, then compare read_corpus() results.",
+      "observed_at": "2026-09-30T19:39:16.950907+00:00",
+      "output_sha256": "d32a72a58a0ad4d652e90cb022c6f1ef9ec1b0de6a5ad223c6f344059f68a0b9",
+      "batches": 2,
+      "external_effects": 0
+    }
+  ],
+  "new_modules_coverage": {
+    "kind": "Node V8 source coverage, including VM policy/migration harnesses",
+    "line_percent": {
+      "apps/pocketbase/pb_hooks/assistant-systems.js": 100,
+      "apps/pocketbase/pb_migrations/1792200000_private_operational_evidence.js": 100,
+      "apps/web/src/lib/publicExposure.js": 100,
+      "apps/web/tools/public-delivery.mjs": 100
+    },
+    "branch_percent": {
+      "apps/pocketbase/pb_hooks/assistant-systems.js": 95.83,
+      "apps/pocketbase/pb_migrations/1792200000_private_operational_evidence.js": 90.48,
+      "apps/web/src/lib/publicExposure.js": 66.67,
+      "apps/web/tools/public-delivery.mjs": 100
+    }
+  },
+  "red_green": {
+    "initial_failing_cases": 12,
+    "initial_passing_cases": 0,
+    "initial_output_sha256": "e16dd10e17e59a7fe5af4c8df55acc48f66637c4d6c6904a0e3d852f9a2a2b2b",
+    "final_targeted_pass": 201
+  },
+  "content": {
+    "scripts": 3,
+    "planned_speech_characters": 1891,
+    "validated_draft_body_characters": [
+      974,
+      815,
+      634
+    ],
+    "source_state": "REPORTED_SOURCE",
+    "requested_model": "eleven_v4",
+    "model_availability": "unverified",
+    "provider_calls": 0,
+    "audio_artifacts": 0,
+    "publications": 0
+  },
+  "external_effects": 0,
+  "remaining": [
+    "Locked web/edge/browser acceptance",
+    "Both declared native PocketBase profiles",
+    "Clean strict typing and inherited full-source diagnostics",
+    "Private release and origin/cache readback",
+    "Connected ElevenLabs generation with actual receipt, media hash and cost",
+    "Human publication and external readback"
+  ],
+  "deleted_sources": [
+    "apps/web/public/activity-status.json",
+    "apps/web/public/capabilities.json"
+  ]
+}

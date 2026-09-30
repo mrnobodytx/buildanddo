@@ -90,7 +90,7 @@ const NAV_GROUPS = [
         { to: '/app/career', label: 'Career Passport', icon: BookOpen },
         { to: '/app/evidence', label: 'Evidence Ledger', icon: FileSearch },
         { to: '/app/replay', label: 'Execution replay', icon: Workflow },
-        { to: '/app/passport', label: 'Capability Passport', icon: ShieldCheck },
+        { to: '/app/passport', label: 'Capability Passport', icon: ShieldCheck, estate: true },
         { to: '/app/corrections', label: 'Corrections', icon: Scale },
         { to: '/app/dossier', label: 'My dossier', icon: BookOpen },
     ] },

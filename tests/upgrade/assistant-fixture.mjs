@@ -22,8 +22,9 @@ export const assistantSurface = { id: 'current-surface', route: '/app/erp', cont
     { id: 'control-1', label: 'Save task', kind: 'button', options: [], max_length: 0 },
 ] };
 export function assistantFixture() {
-    const config = { reply: { reply: 'Review a proposed task title.', steps: [{ kind: 'fill', control: 'control-0', value: 'Customer follow-up' }] }, calls: [], during: null, enabled: true, envelope: {} };
-    const f = fixture({ runtime: { $os: { getenv: (key) => !config.enabled ? '' : ({ BUILDANDDO_ASSISTANT_URL: 'https://agent.example.org/chat', BUILDANDDO_ASSISTANT_MODEL: 'configured-model' }[key] || '') },
+    const config = { reply: { reply: 'Review a proposed task title.', steps: [{ kind: 'fill', control: 'control-0', value: 'Customer follow-up' }] }, calls: [], during: null, enabled: true, envelope: {},
+        url: 'https://agent.example.org/chat', model: 'configured-model' };
+    const f = fixture({ runtime: { $os: { getenv: (key) => !config.enabled ? '' : ({ BUILDANDDO_ASSISTANT_URL: config.url, BUILDANDDO_ASSISTANT_MODEL: config.model }[key] || '') },
         $http: { send: (request) => { config.calls.push(JSON.parse(request.body)); config.during?.();
             return { statusCode: 200, raw: JSON.stringify({ choices: [{ message: { content: JSON.stringify(config.reply) } }], ...config.envelope }) }; } } } });
     f.migration(assistantMigration).up(); const service = f.load('workspace-assistant.js');

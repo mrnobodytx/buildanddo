@@ -22,7 +22,7 @@ presentation only: routes, collections, environment variables and code
 identifiers keep the `assistant` name used below.
 
 The persistent Buddi panel uses the existing BuildAndDo pages as its action
-surface. It can navigate to each registered workspace desk, propose values for
+surface. It can navigate to permitted registered workspace desks, propose values for
 visible ordinary fields, and activate a supported control after the user reviews
 the plan. It uses the existing authenticated application paths to save records.
 It does not receive a superuser client or a separate authorization path.
@@ -64,6 +64,21 @@ losing the draft. A failed reload also pauses sending until a successful recheck
 Reported configuration permits an attempt; the actual response establishes
 whether inference worked. History and personal retention controls stay available.
 
+## Workspace connections
+
+Open **Workspace connections** to inspect the integration observations available
+to Buddi. Each entry keeps its last observation time and distinguishes current,
+expired, unverified and unconfigured readings. Requested enablement and a pending
+check are not proof of a working connection. **Refresh connections** reloads
+observations; it does not apply settings or start a provider probe.
+
+**Explain connections** and **Plan my next step** place a suggested question in
+an empty composer. They do not send it or overwrite a draft. The inference
+request receives only bounded observations for the current workspace, not
+provider configuration, endpoints, private receipt contents or other workspaces.
+Missing or ambiguous observations leave the assistant available with explicitly
+partial context. The retained reply includes the dated system context it used.
+
 ## Tenant and account boundaries
 
 | Surface | Effective authority |
@@ -73,11 +88,14 @@ whether inference worked. History and personal retention controls stay available
 | Personal knowledge | Same owner/workspace filters, even when the reader is a workspace administrator |
 | Viewer assistance | Navigation and explanations; no inferred form writes |
 | Editor/administrator/owner assistance | Ordinary permitted form assistance; native backend permissions still decide each save |
+| Global Capability Passport, fleet and platform diagnostics | Current backend-owned master seat in addition to workspace membership; owning a workspace is insufficient |
 | Approval, TEVV, permissions, publishing, deletion and secrets | Direct human controls, excluded from inferred plans |
 
 This is PocketBase's native record-rule isolation, not a new SQL RLS layer.
 Membership and relevant source-record visibility are checked again after inference.
 Revocation or a role change prevents the old plan from being returned as usable.
+Estate authority is also checked again after inference and when recovering a
+retained plan. Suggested routes and captured page surfaces use that same rule.
 A browser response from a different account/workspace is discarded. Application
 administrators cannot browse another member's personal conversation through these
 routes. Database superuser access remains an infrastructure authority outside this
@@ -108,6 +126,10 @@ missions/evidence/signals/research/wiki graph; private conversations do not beco
 shared workspace nodes. The receiving operator must approve the provider's data
 handling and workspace export policy before activation.
 
+Availability and execution share the same HTTPS endpoint and nonblank model
+validation. Passing that configuration check permits an attempt; it cannot
+establish current provider availability.
+
 One inference request is bounded to 30 seconds and a 40,000-character response.
 Messages are limited to 4,000 characters; replies to 8,000. A session permits
 100 turns, with at most 30 new turns per account/workspace in one hour and three
@@ -126,7 +148,7 @@ pattern projection omits those values. There is no claim of automatic timed
 retention or model training. The account can explicitly forget each session.
 
 Run the production-policy/client tests with
-`node --test tests/upgrade/workspace-assistant.test.mjs`. The rendered
+`node --test tests/upgrade/workspace-assistant.test.mjs tests/upgrade/assistant-awareness.test.mjs`. The rendered
 `AssistantSurface` and `WorkspaceAssistant` suites test actual React controls,
 review-before-action, privacy, retries and scope changes; the required native
 workspace suite exercises real authentication, locked collections, restart and

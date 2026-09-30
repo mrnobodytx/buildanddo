@@ -1,0 +1,19 @@
+# ─── CGRF Header ───────────────────────────────────────────────
+# File:        .bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-buddi-preview.json.cgrf.yaml
+# Stage:       11_COMMIT
+# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# CAPS:        pending
+# CK:          pending
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+# Seat:        BITS-CODEGEN
+# Owner:       Citadel Nexus Inc.
+# Created:     2026-09-30
+# Depends:     .bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-buddi-preview.json, .bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-source.json, .bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-buddi-options.json
+# EnumType:    Schema
+# EnumEdges:   VALIDATES .bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-buddi-preview.json; CONSUMES .bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-source.json; CONSUMES .bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-buddi-options.json
+# Intent:      Retain the exact prepared scripts, hashes and production holds while no provider connection is available.
+# ───────────────────────────────────────────────────────────────
+schema_version: buildanddo.media-corpus/v1
+artifact: .bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-buddi-preview.json
+source_authority: VCC-BUILDANDDO-UPGRADE-001
+runtime_acceptance: unmeasured

@@ -8,7 +8,7 @@
       "id": "HS-01",
       "day": 1,
       "title": "Sprint kickoff - foundations",
-      "why": "A repeatable candidate and visible failed gates are prerequisites for every demo claim.",
+      "why": "A repeatable candidate and visible failed gates are prerequisites for product release claims; the completed competition window does not complete acceptance.",
       "owner": "BITS-CODEGEN / repository owner",
       "sources": [
         "AGENTS.md",
@@ -74,7 +74,7 @@
       "id": "HS-02",
       "day": 3,
       "title": "Auth and onboarding hardening",
-      "why": "A judge must enter and resume the workspace using real account authority.",
+      "why": "A user must enter and resume the workspace using real account authority; public links cannot grant estate access.",
       "owner": "BITS-CODEGEN / IDE1",
       "sources": [
         "apps/web/src/components/auth",
@@ -112,7 +112,8 @@
         "Rollback of the objective migration disables new objective setup while retaining existing goals, workspace links and receipts. Failure to load a confirmed workspace can be retried without resubmitting setup.",
         "Persisted sessions require native refresh; delayed account responses cannot restore old identity. Named onboarding selects the exact returned readable workspace.",
         "Government content and tools require current operator-approved paid membership in addition to native account and workspace access; account changes and expiry cannot reuse a stale grant.",
-        "Controller-owned same-account authentication refresh preserves in-progress work; actual session replacement, logout/relogin and identity changes fence old responses and clear private drafts."
+        "Controller-owned same-account authentication refresh preserves in-progress work; actual session replacement, logout/relogin and identity changes fence old responses and clear private drafts.",
+        "Public roadmap links require workspace sign-in, and global capability, fleet and platform views require the current backend-owned master seat. Curated lessons remain public."
       ],
       "next_step": "Execute rendered objective-first onboarding and both native profiles, then demonstrate signup, an explicit intent/objective, the saved workspace's first lesson, setup recovery, password recovery and return navigation on the accepted candidate."
     },
@@ -140,7 +141,8 @@
         "apps/pocketbase/pb_hooks/metrics.pb.js",
         "apps/pocketbase/pb_hooks/business-actions.js",
         "apps/web/src/lib/workspaceRecords.js",
-        "apps/pocketbase/pb_migrations/1791200000_government_membership.js"
+        "apps/pocketbase/pb_migrations/1791200000_government_membership.js",
+        ".bits/handoffs/2026-09-30-bits-codegen-post-competition-activation.md"
       ],
       "checks": [
         "source_node",
@@ -162,9 +164,10 @@
         "Collection queries group extra predicates under the workspace filter. Foreign targets and stale account/workspace read or write results cannot appear current.",
         "Government membership records deny ordinary raw CRUD; down/up migrations preserve receipts and keep restricted lessons fenced.",
         "Media sessions bind native account, workspace, live room and attendance revision. Signalling/presence reject stale, revoked, foreign, unbound or closed sessions and unknown tracks; publishing additionally requires room management plus the configured allowlist. Both native profiles load media, attendance, usage and learning migrations rather than the old classroom subset.",
-        "Raw writes to legacy tutorial progress and the seven claim/editorial collections stay locked even without request hooks. Current native commands own guided completion, author/admin draft changes, publication stamps and submitting-account attribution. New browser seat reports bind seat to the authenticated account and actor_type to human; retained legacy data acquires no fabricated provenance."
+        "Raw writes to legacy tutorial progress and the seven claim/editorial collections stay locked even without request hooks. Current native commands own guided completion, author/admin draft changes, publication stamps and submitting-account attribution. New browser seat reports bind seat to the authenticated account and actor_type to human; retained legacy data acquires no fabricated provenance.",
+        "Global operational evidence, experience, governance, epoch and anchor list/view reads require native master authority; null or stronger existing rules and all records survive retries and rollback. Ordinary accounts cannot promote their own seat or expand restricted relations."
       ],
-      "next_step": "Migration rollout is now validated on BOTH environments: preflighted against a disposable copy of live data, applied behind a database backup, and confirmed by an authenticated readback from a second box (production at 72 applied migrations, 79 collections, 33 lessons). Recovery is still unexercised - backups were taken but no restore has been performed, so rollback remains a claim rather than an observation. Exercise a restore onto a disposable profile and record it. The later classroom migrations (media sessions and the broadcast lesson) are not rolled out yet: execute both expanded native runtime profiles, including media-session and lesson installation, typed track responses, ownership/revocation and rollback. Have the release owner install matching backend migrations/hooks before the frontend and measure actual provider delivery and stream revocation on staging."
+      "next_step": "Migration rollout is now validated on BOTH environments: preflighted against a disposable copy of live data, applied behind a database backup, and confirmed by an authenticated readback from a second box (production at 72 applied migrations, 79 collections, 33 lessons). Recovery is still unexercised - backups were taken but no restore has been performed, so rollback remains a claim rather than an observation. Exercise a restore onto a disposable profile and record it. The later classroom migrations (media sessions and the broadcast lesson) are not rolled out yet: execute both expanded native runtime profiles, including media-session and lesson installation, typed track responses, ownership/revocation and rollback. Have the release owner install matching backend migrations/hooks before the frontend and measure actual provider delivery and stream revocation on staging. Apply the post-competition migration and matching hooks through the receiving release owner; retain anonymous/ordinary/master direct-read, expansion, realtime and rollback controls on both native profiles. Do not reopen old public read rules on rollback."
     },
     {
       "id": "HS-04",
@@ -289,7 +292,7 @@
         "A durable run link reloads the current saved snapshot and revision; unavailable and foreign runs are never opened for a decision.",
         "Action receipt polling cannot replace newer dispatch/readback with an older result or another run/step; failed reads pause dispatch until recovery. Mission and evidence links retain their saved record identity, and parent cancellation waits for in-flight dispatch."
       ],
-      "next_step": "Run rendered action readback, cancellation-lock and mission/evidence navigation checks; execute frozen approved steps, exercise cancellation and HOLD reconciliation, and retain the actual native result alongside the run event. Execute frozen approved steps, exercise cancellation and HOLD reconciliation, and retain the actual native result alongside the run event."
+      "next_step": "Run rendered action readback, cancellation-lock and mission/evidence navigation checks; execute frozen approved steps, exercise cancellation and HOLD reconciliation, and retain the actual native result alongside the run event."
     },
     {
       "id": "HS-07",
@@ -310,7 +313,8 @@
         "apps/web/src/lib/connectorReadiness.js",
         "apps/web/src/components/voice",
         "apps/web/src/lib/voiceAgent.js",
-        ".bits/handoffs/2026-09-30-bits-codegen-cmax-b-buddi-activation.md"
+        ".bits/handoffs/2026-09-30-bits-codegen-cmax-b-buddi-activation.md",
+        ".bits/handoffs/2026-09-30-bits-codegen-post-competition-activation.md"
       ],
       "checks": [
         "source_node",
@@ -335,9 +339,10 @@
         "Action forms select current configured bindings and visibly expire observed health while retaining backend registration and revision checks.",
         "Public Buddi voice starts only after visitor consent; cancellation, startup timeout, failed hang-up and navigation cannot revive an obsolete attempt. A completed SDK startup promise alone does not establish a connection.",
         "The accepted website candidate has rendered voice recovery checks and one authorized real conversation with current public-tool and post-call readback. Source tests and a report from another repository cannot establish live activation.",
-        "An open integration desk expires observations on the same fifteen-minute rule as action forms and offers an explicit read-only refresh, including for viewers; refreshing never applies configuration or requests a health probe."
+        "An open integration desk expires observations on the same fifteen-minute rule as action forms and offers an explicit read-only refresh, including for viewers; refreshing never applies configuration or requests a health probe.",
+        "Workspace Buddi uses dated current-workspace integration observations, excludes provider configuration and private receipts, and labels stale, missing or requested states explicitly. Ordinary classroom clients send native auth and receive availability only; detailed health and OCN probes remain estate-only."
       ],
-      "next_step": "Bind both Firecrawl and n8n through the receiving owner; prove each configuration revision, health probe, bounded effect and uncertainty recovery. For Buddi, execute locked React/build/browser checks, then have the receiving owner confirm the public tools, microphone policy and private post-call receipt on the same deployed candidate; follow the dated Buddi activation handoff. Include open-page observation expiry and viewer refresh in rendered acceptance; use the workspace-connection handoff for provider readback."
+      "next_step": "Bind both Firecrawl and n8n through the receiving owner; prove each configuration revision, health probe, bounded effect and uncertainty recovery. For Buddi, execute locked React/build/browser checks, then have the receiving owner confirm the public tools, microphone policy and private post-call receipt on the same deployed candidate; follow the dated Buddi activation handoff. Include open-page observation expiry and viewer refresh in rendered acceptance; use the workspace-connection handoff for provider readback. Follow the post-competition activation handoff for minimal classroom health, estate-only diagnostics, same-origin microphone consent and one real scoped assistant conversation."
     },
     {
       "id": "HS-12",
@@ -434,7 +439,8 @@
         ".bits/handoffs/2026-09-30-bits-codegen-cscc-work-exchange.md",
         "scripts/publish/media_contracts.py",
         "scripts/publish/media_library.py",
-        "docs/media-corpus.md"
+        "docs/media-corpus.md",
+        ".bits/handoffs/2026-09-30-bits-codegen-post-competition-activation.md"
       ],
       "checks": [
         "semantic_twin",
@@ -462,9 +468,10 @@
         "Assessment evidence replays answers against its issuing bank and unique candidate/capability context. Passport headline wording, verification, dates and application references use compatible support; unchecked bank revisions and contradictory serialized headlines fail closed.",
         "Integrity disagreement survives stale replay and ordering changes. Knowledge Unit mastery binds exact version/content and boolean outcomes. World review excludes known action/result actors, participants and guildmasters, including hidden predecessors, without excluding unrelated attempts.",
         "Returned work rehashes retained artifacts and candidate provenance. Only a separate receiving-pinned review can admit a passing outcome; missing deployment/runtime evidence remains HOLD. Epoch inclusion provides integrity only. Derived worker history deduplicates retries and later reviews without suppressing failures or granting identity, capability or release authority.",
-        "Media observations bind exact corpus jobs and retained receipt/media bytes. Unknown attempts remain unresolved; duplicates cannot multiply deliveries, overlapping engagement windows are never summed, and imported receipts remain reported until independently authenticated."
+        "Media observations bind exact corpus jobs and retained receipt/media bytes. Unknown attempts remain unresolved; duplicates cannot multiply deliveries, overlapping engagement windows are never summed, and imported receipts remain reported until independently authenticated.",
+        "Public voice evidence contains authored lesson references and digests only. Global operational records and authenticated graph responses cannot enter public feeds or shared caches; every graph query pattern is independently scoped."
       ],
-      "next_step": "Attempt denied evidence mutations, inspect frozen reviews, and reconcile the exact native result and release context with controller/provider captures. Supply scoped canonical owner mappings and retained captures for developmental queries; resolve identity and evidence gaps before independent progression review. Bind the real applicant identity and independently review exact career participation before compiling any personal application. The Citadel/CSEG receiver must authenticate world-event identity/read/share scope and exact review pins before connecting live provider references or publishing a projection. Follow the CSCC work exchange handoff: authenticate canonical worker and reviewer mappings, return actual job/artifact/readback evidence, independently admit it, then retain the selected sanitized bundle in the existing epoch and derived history. Attempt denied evidence mutations, inspect frozen reviews, and reconcile the exact native result and release context with controller/provider captures. Supply scoped canonical owner mappings and retained captures for developmental queries; resolve identity and evidence gaps before independent progression review. Bind the real applicant identity and independently review exact career participation before compiling any personal application. The Citadel/CSEG receiver must authenticate world-event identity/read/share scope and exact review pins before connecting live provider references or publishing a projection. For media work, retain actual generation and publication bytes, authenticate provider observations independently and bind engagement to the same publication and interval before recording a verified outcome."
+      "next_step": "Attempt denied evidence mutations and global read/expansion/realtime requests as anonymous and ordinary users; inspect permitted master reads and frozen reviews without widening existing restrictions. Reconcile exact native results and release context with controller/provider captures. Supply scoped canonical owner mappings and retained captures for developmental queries; resolve identity and evidence gaps before independent progression review. Bind the real applicant identity and independently review exact career participation before compiling a personal application. The Citadel/CSEG receiver must authenticate world-event identity, read/share scope and exact review pins before connecting live references; every graph pattern needs an entitled literal graph. Follow the CSCC exchange handoff for authenticated workers/reviewers and actual job/artifact/readback evidence, independently admit the result, then retain selected sanitized evidence in the existing epoch and derived history. For media, bind actual provider receipt and media bytes to the exact asset and independently authenticated publication/engagement interval before claiming an outcome."
     },
     {
       "id": "HS-10",
@@ -519,7 +526,11 @@
         "scripts/publish/activity_publish.py",
         "apps/web/src/lib/contentMedia.js",
         "apps/web/src/components/workspace/ContentStudio.jsx",
-        "docs/media-corpus.md"
+        "docs/media-corpus.md",
+        ".bits/handoffs/2026-09-30-bits-codegen-post-competition-activation.md",
+        "docs/elevenlabs-starter-batch.md",
+        "apps/pocketbase/pb_hooks/assistant-systems.js",
+        "apps/web/tools/public-delivery.mjs"
       ],
       "checks": [
         "source_node",
@@ -551,15 +562,16 @@
         "Catalogue completion derives from canonical guided states, not editable reading history; unavailable aggregates do not block individually authorized tutorials or imply zero completion. Open-book/self-reported limits, pending correction review, absent payment ingestion and claimed agent labels remain visible. The authority-repair lesson and source capture cannot create workspace outcomes or learner awards.",
         "Browser views, failed reads, rendered degradation and validated action outcomes use bounded private section names. Receipt and lifetime checks precede success; obsolete responses, demo and cancellation cannot become backend-failure events. Native diagnostics omit personal content and stdout remains separately activated. Full coverage requires exact-release arrival in both vendors, not passing source doubles.",
         "Workspace Buddi preserves drafts and personal history while connection settings are loading, unconfigured or unavailable. New session/chat sends wait for a configured endpoint; an explicit recheck restores use without inventing provider health.",
-        "Media drafts preserve exact selected evidence excerpts, source time/revision and limitations. Unsupported languages and provider/account facts stay held. Import opens an unsaved draft through the existing editorial permissions; account, workspace, role and later user selections fence pending imports. Source compilation never implies audio generation or publication."
+        "Media drafts preserve exact selected evidence excerpts, source time/revision and limitations. Unsupported languages and provider/account facts stay held. Import opens an unsaved draft through the existing editorial permissions; account, workspace, role and later user selections fence pending imports. Source compilation never implies audio generation or publication.",
+        "Public operational projections are excluded before Vite copies assets and refused at the edge, including compressed/encoded aliases. Retained origin/CDN copies are removed through the release owner. The three ElevenLabs starter scripts import without granting review or publication authority; generated audio requires actual provider receipts and artifact hashes."
       ],
-      "next_step": "Run actual browser and native isolation tests, bind the existing inference endpoint under approved data authority, and observe scoped chat-to-form-to-personal-knowledge behavior. Validate value-card drill-downs against one real reviewed mission and exact provider/release receipts; collect comparable cost, effort and eligible-work baselines before displaying ROI. Exercise career export/import with the actual native account, ten real job dossiers and reviewed draft documents; obtain separate receiving authority for one permitted ATS browser submission and retain its actual receipt. Include unconfigured, failed-read and reconnected Buddi states with draft preservation before the real inferred action. Run actual browser and native isolation tests, bind the existing inference endpoint under approved data authority, and observe scoped chat-to-form-to-personal-knowledge behavior. Validate value-card drill-downs against one real reviewed mission and exact provider/release receipts; collect comparable cost, effort and eligible-work baselines before displaying ROI. Exercise career export/import with the actual native account, ten real job dossiers and reviewed draft documents; obtain separate receiving authority for one permitted ATS browser submission and retain its actual receipt. The content and private ElevenLabsBridge owners must verify requested provider/account terms, approved voices and funding, then demonstrate the existing draft/review flow and one real generation, human publication, independent readback and measured engagement. Reconcile the missing PR 119 work-exchange revision before connecting CSCC mission authority."
+      "next_step": "Run native/browser isolation and connection recovery, bind the existing inference endpoint under approved data authority, and observe scoped chat-to-form-to-personal-knowledge behavior. Exercise stale/missing connection observations, draft-preserving starters, current role/estate route restrictions and authority revocation during inference. Validate value-card drill-downs against one real reviewed mission and exact receipts; collect comparable cost/effort baselines before displaying ROI. Exercise career import/export with actual native accounts, real job dossiers and reviewed drafts; ATS submission requires its separate receiving authority and receipt. The content and private ElevenLabsBridge owners must confirm provider/account terms, voice and funding, import the three starter drafts, and retain one real generation, human publication, independent readback and measured engagement. Source compilation is not generated audio. Confirm same-revision private acceptance of the now-materialized work-exchange source before connecting CSCC mission authority."
     },
     {
       "id": "HS-11",
       "day": 21,
       "title": "Sprint review - verified replay",
-      "why": "Competition readiness requires an evidence-backed learning-through-work journey, a reproducible replay and actual submission criteria.",
+      "why": "Retain the historical competition and learning-through-work evidence without inventing acceptance, a result or a submission after the owner reports the competition ended.",
       "owner": "Repository owner / independent verifier",
       "sources": [
         "tests/upgrade",
@@ -577,7 +589,8 @@
         "apps/web/src/pages/HostingerChallengePage.jsx",
         "apps/web/src/data/hostingerChallenge.js",
         "docs/day21/JUDGE_STORY.md",
-        "docs/day21/VIDEO_SHOTLIST.md"
+        "docs/day21/VIDEO_SHOTLIST.md",
+        ".bits/handoffs/2026-09-30-bits-codegen-post-competition-activation.md"
       ],
       "checks": [
         "source_node",
@@ -600,9 +613,10 @@
         "The owner checks official judging, hosting and submission requirements against the final demonstration.",
         "The submission package includes the exact native business receipt, all six materials and an actual official-rule capture reviewed by the selected owner.",
         "Complete bounded mission capture uses one native read transaction and the existing action read policy, checks content and record digests, and does not confer independent verification or submission admission.",
-        "Public and submission materials identify educational collaboration as the platform, show objective, learning, collaboration, work, evidence, verification and reflection, and retain business automation as one domain with its existing acceptance requirements."
+        "Public and submission materials identify educational collaboration as the platform, show objective, learning, collaboration, work, evidence, verification and reflection, and retain business automation as one domain with its existing acceptance requirements.",
+        "Competition closure is attributed to the owner statement. Historical missing evidence remains missing, and no award, submission or runtime success is inferred."
       ],
-      "next_step": "Capture one actual objective-to-reflection journey on the accepted candidate, retaining the existing business/provider lane requirements. Validate replay/native exports and all eleven owner decisions, supply six dated materials and captured official requirements, then have the owner perform submission."
+      "next_step": "Archive the competition materials and their unresolved official-rule, submission and replay evidence. Keep existing validation gates and capture a real objective-to-reflection product journey on the accepted candidate. No new competition submission is directed; any reuse needs a separately reviewed owner context."
     }
   ],
   "external_requirements": [
@@ -617,7 +631,7 @@
       "id": "release",
       "why": "Merged source is not proof of an installed version or successful release.",
       "owner": "Private release owner",
-      "next_step": "The release readback now exists: the governed lane captured staging and production probes at 200 with /_version reporting the same commit on both, and evidence epochs EPOCH-20260921-01 and -02 fingerprinted the serving artifact set. What remains: bind the previous verified SHA, manifest and artifact digest before promotion, verify restoration on failure, and bind these receipts to a GitLab or Datadog export (RUM, deploy and the DORA acknowledgment) under the same SHA. See the Day-21 activation handoff.",
+      "next_step": "The release readback now exists: the governed lane captured staging and production probes at 200 with /_version reporting the same commit on both, and evidence epochs EPOCH-20260921-01 and -02 fingerprinted the serving artifact set. What remains: bind the previous verified SHA, manifest and artifact digest before promotion, verify restoration on failure, and bind these receipts to a GitLab or Datadog export (RUM, deploy and the DORA acknowledgment) under the same SHA. See the Day-21 activation handoff. Historical September 21 probes do not validate this privacy change. Follow the post-competition handoff to install matching backend/edge/frontend, remove retired cached feeds, and verify denied public reads plus permitted scoped use on the exact released candidate.",
       "evidence_required": "Existing controller receipts and GitLab/Datadog exports bound to the same SHA/artifact; verified rollback target and actual restored external identity/health receipt. ROLLED_BACK_UNVERIFIED is not a successful recovery. Public sanitized references only."
     },
     {
@@ -631,7 +645,7 @@
       "id": "migrations",
       "why": "A source migration may not be installed or compatible with the running backend.",
       "owner": "IDE1 / backend release owner",
-      "next_step": "A disposable-profile preflight now exists and is wired: it copies the live database, runs the pinned binary against the pending set and requires the serving line, with a control proving it refuses a broken set rather than merely surviving one. It cleared 33 pending migrations onto production and one onto both environments on 2026-09-21, each confirmed by readback. Still owed: an isolation observation and an actual rollback, neither of which a preflight can establish.",
+      "next_step": "A disposable-profile preflight now exists and is wired: it copies the live database, runs the pinned binary against the pending set and requires the serving line, with a control proving it refuses a broken set rather than merely surviving one. It cleared 33 pending migrations onto production and one onto both environments on 2026-09-21, each confirmed by readback. Still owed: an isolation observation and an actual rollback, neither of which a preflight can establish. The new operational-evidence restriction requires both native profiles, installed master-seat guards and direct/expanded/realtime read controls before release. Its down migration locks reads and retains records rather than republishing them.",
       "evidence_required": "Native runtime/version results plus installed migration, restart, isolation and rollback observations."
     },
     {
@@ -659,7 +673,7 @@
       "id": "connectors",
       "why": "Configuration and requested enablement do not establish health.",
       "owner": "Private integration owner",
-      "next_step": "Bind the reviewed provider and write a fresh health observation for its current revision through the existing runtime.",
+      "next_step": "Bind the reviewed provider and write a fresh health observation for its current revision through the existing runtime. For content, use the existing ElevenLabsBridge or ElevenCreative with the three source-bound scripts and retain actual model/voice/request, output hash and charge. No connector was available in this source session.",
       "evidence_required": "Current provider/binding/configuration revision, observation time and actual readback; no credentials in exports."
     },
     {
@@ -671,16 +685,16 @@
     },
     {
       "id": "competition_rules",
-      "why": "The repository's internal day-21 plan is not an official competition rubric or deadline.",
+      "why": "Historical official criteria and submission evidence remain distinct from the internal sprint and the owner statement that the competition has ended.",
       "owner": "Repository owner",
-      "next_step": "Attach the official Hostinger rules, deadline, hosting requirements and submission checklist; review the final entry against them.",
+      "next_step": "Archive the actual official references and any existing submission receipt if available; leave their absence explicit. Do not infer eligibility, a deadline, an award or a new submission obligation.",
       "evidence_required": "Authoritative rule/source references and dated owner review; no inferred deadline or eligibility."
     },
     {
       "id": "assistant_runtime",
       "why": "Source tests and a configured URL do not establish that the existing agent is available or permitted to receive workspace data.",
       "owner": "CMAX-B / IDE1 / workspace data owner",
-      "next_step": "Bind the approved existing endpoint/model, confirm data handling and complete native/browser plan, save, retry, revoke and personal-knowledge journeys.",
+      "next_step": "Bind the approved existing endpoint/model, confirm data handling and complete native/browser plan, save, retry, revoke and personal-knowledge journeys. Verify current workspace system observations and estate route filtering before and after inference, and ensure provider configuration, receipt contents and foreign workspace observations never enter model context.",
       "evidence_required": "Candidate-bound real inference and native save observations, permission denials for foreign accounts/workspaces, scoped citations and user session retention/forget outcomes; no secrets in exports."
     }
   ]

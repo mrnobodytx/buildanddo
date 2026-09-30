@@ -2,20 +2,22 @@
 # ─── CGRF Header ───────────────────────────────────────────────
 # File:        tests/upgrade/test_public_api_native.py
 # Stage:       08_TEST
-# SRS:         SRS-BUILDANDDO-BUDDI-002
+# SRS:         SRS-BUILDANDDO-BUDDI-002, SRS-BUILDANDDO-UPGRADE-001
 # CAPS:        pending
 # CK:          pending
-# Dispatch:    VCC-BUILDANDDO-BUDDI-002
+# Dispatch:    VCC-BUILDANDDO-BUDDI-002, VCC-BUILDANDDO-UPGRADE-001
 # Seat:        C-ONE
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-22
 # Depends:     tests/upgrade/test_dossier_native.py, apps/pocketbase/pb_hooks/public-api.pb.js,
 #              apps/pocketbase/pb_hooks/public-api.js, apps/pocketbase/pb_hooks/buddi-intake.js,
-#              apps/pocketbase/pb_migrations/1792100000_buddi_intake.js
+#              apps/pocketbase/pb_migrations/1792100000_buddi_intake.js,
+#              apps/pocketbase/pb_migrations/1792200000_private_operational_evidence.js
 # EnumType:    Test
 # EnumEdges:   CONSUMES tests/upgrade/test_dossier_native.py; VALIDATES apps/pocketbase/pb_hooks/public-api.pb.js;
 #              VALIDATES apps/pocketbase/pb_hooks/public-api.js; VALIDATES apps/pocketbase/pb_hooks/buddi-intake.js;
-#              VALIDATES apps/pocketbase/pb_migrations/1792100000_buddi_intake.js
+#              VALIDATES apps/pocketbase/pb_migrations/1792100000_buddi_intake.js;
+#              VALIDATES apps/pocketbase/pb_migrations/1792200000_private_operational_evidence.js
 # DAG Node:    none
 # Intent:      Require the voice agent's eight routes to answer from public data only, refuse writes in the declared
 #              order, and keep received requests across a rollback, on the real PocketBase binary.
@@ -67,6 +69,13 @@ migrate((app) => {
     alice.set('verified', true);
     alice.setPassword('local-fixture-password-only');
     app.save(alice);
+    const master = new Record(users);
+    master.id = 'accountmaster01';
+    master.set('email', 'master@fixture.invalid');
+    master.set('verified', true);
+    master.set('cnwb_seat_level', 'master');
+    master.setPassword('local-fixture-password-only');
+    app.save(master);
     const save = (name, id, values) => {
         const record = new Record(app.findCollectionByNameOrId(name));
         if (id) record.id = id;
@@ -88,13 +97,13 @@ migrate((app) => {
         slug: 'private-sentinel-draft', category: 'Operations', lesson, order: 998 });
     save('tutorials', 'privatenoslug01', { title: 'PRIVATE-SENTINEL unslugged lesson', summary: 'PRIVATE-SENTINEL unslugged',
         curriculum_version: '2026.09.1', category: 'Operations', lesson, order: 999 });
-    save('knowledge_sources', '', { display_id: 'SRC-FIX-0001', source_type: 'WEB', title: 'Fixture public source', url: 'https://example.org/source' });
-    save('knowledge_claims', '', { display_id: 'CLM-FIX-0001', subject: 'a fixture claim', predicate: 'is', object: 'unverified',
-        domain: 'fixture.public', epistemic_state: 'USER_ASSERTED', confidence: 0.2 });
+    const source = save('knowledge_sources', 'sourcesprivate1', { display_id: 'SRC-FIX-0001', source_type: 'WEB', title: 'PRIVATE-SENTINEL source', url: 'https://example.org/source' });
+    save('knowledge_claims', 'privateclaim001', { display_id: 'CLM-FIX-0001', subject: 'PRIVATE-SENTINEL claim', predicate: 'is', object: 'unverified',
+        domain: 'fixture.private', epistemic_state: 'USER_ASSERTED', confidence: 0.2, supporting_sources: [source.id] });
     save('governance_research_quests', '', { display_id: 'RQ-FIX-0001', trigger_reason: 'NEW_DOMAIN_INSUFFICIENT', subject_type: 'CLAIM',
         subject_id: 'CLM-FIX-0001', status: 'OPEN', question: 'Is the fixture claim reproducible?' });
-    save('evidence_epochs', '', { display_id: 'EPOCH-FIX-01', root_algorithm: 'sha256-merkle-v1', status: 'SEALED',
-        root_digest: 'ab'.repeat(32), artifact_count: 3 });
+    save('evidence_epochs', 'privateepoch001', { display_id: 'EPOCH-FIX-01', root_algorithm: 'sha256-merkle-v1', status: 'SEALED',
+        root_digest: 'ab'.repeat(32), artifact_count: 3, notes: 'PRIVATE-SENTINEL operational evidence' });
     // An operator locks one fabric collection down. Its record must stop being served the same minute.
     const audits = app.findCollectionByNameOrId('governance_audits');
     audits.listRule = null;
@@ -187,11 +196,10 @@ class PublicApiServer(NativeServer):
             hooks = self.root / "pb_hooks"
             hooks.mkdir()
             for name in ("public-api.pb.js", "public-api.js", "buddi-intake.js", "workspace-access.js", "workflow-policy.js",
-                         "tutorial-learning.pb.js", "tutorial-learning.js"):
+                         "tutorial-learning.pb.js", "tutorial-learning.js", "estate.pb.js", "estate-lib.js"):
                 shutil.copyfile(ROOT / "apps/pocketbase/pb_hooks" / name, hooks / name)
             lesson = json.loads((ROOT / "apps/pocketbase/pb_migrations/data/starter-tutorials.json").read_text(encoding="utf-8"))["lessons"][0]
-            # Sorts after every product migration it depends on and before 1792100000_buddi_intake.js,
-            # so a one-step rollback reverts exactly the intake migration.
+            # Seed before intake/privacy migrations so their real native rules apply to retained rows.
             (self.root / "pb_migrations" / "1792000000_public_api_fixture.js").write_text(
                 FIXTURE.replace("__LESSON__", json.dumps(json.dumps(lesson["lesson"]))), encoding="utf-8")
             with socket.socket() as reservation:
@@ -355,22 +363,19 @@ class NativePublicReadTests(unittest.TestCase):
             self.assertFalse(keys(document) & {"answer", "explanation"})
             self.assertNotIn(explanation[:60], json.dumps(document))
 
-    def test_product_context_measures_published_files_and_refuses_the_html_shell(self) -> None:
+    def test_product_context_preserves_help_without_operational_measurements(self) -> None:
         _, context = self.get("/product-context")
         sections = context["sections"]
-        self.assertEqual(sections["capabilities"]["state"], "MEASURED")
-        self.assertEqual(sections["capabilities"]["public_pages"], [{"label": "Home", "path": "/", "state": "LIVE"}])
-        self.assertEqual(sections["roadmap"]["state"], "MEASURED")
-        self.assertEqual(sections["roadmap"]["milestones"], [{"day": 1, "title": "Kickoff", "status": "verified"}])
-        # A 200 carrying the site's HTML shell is not data, however healthy the status code looks.
-        self.assertEqual(sections["platform_health"]["state"], "UNAVAILABLE")
-        self.assertIn("text/html", sections["platform_health"]["reason"])
+        self.assertEqual(sections["capabilities"]["state"], "AUTHORED")
+        self.assertTrue(sections["capabilities"]["public_pages"])
+        self.assertEqual(sections["roadmap"]["state"], "PRIVATE")
+        self.assertEqual(sections["platform_health"]["state"], "PRIVATE")
+        self.assertFalse(keys(context) & {"deployed", "totals", "gate_state", "milestones"})
         status, only = self.get("/product-context?section=use_cases")
         self.assertEqual((status, list(only["sections"])), (200, ["use_cases"]))
         self.assertTrue(only["sections"]["use_cases"]["learning_paths"])
         status, missing = self.get("/product-context?section=pricing_sheet")
         self.assertEqual((status, missing["state"]), (404, "UNKNOWN"))
-        self.assertIn("capabilities", missing["sections"])
         self.assertEqual(self.get("/product-context?section=Bad!")[0], 400)
 
     def test_demo_filters_narrow_cap_and_say_why_when_empty(self) -> None:
@@ -456,31 +461,43 @@ class NativePublicReadTests(unittest.TestCase):
         self.assertFalse(listed & {"private-sentinel-draft", *PRIVATE_IDS})
         self.assertEqual(self.get("/product-context?section=curriculum")[1]["sections"]["curriculum"]["lessons"], 33)
 
-    def test_evidence_serves_only_collections_whose_rules_are_public(self) -> None:
-        status, claim = self.get("/evidence?evidence_id=CLM-FIX-0001")
-        self.assertEqual(status, 200)
-        # The record's own label comes back as-is: an unverified claim is never upgraded.
-        self.assertEqual((claim["items"][0]["type"], claim["items"][0]["state"]), ("claim", "USER_ASSERTED"))
-        status, listed = self.get("/evidence?evidence_type=claim")
-        self.assertEqual((status, listed["items"][0]["evidence_id"]), (200, "CLM-FIX-0001"))
-        self.assertEqual(self.get("/evidence?evidence_id=EPOCH-FIX-01")[1]["items"][0]["state"], "SEALED")
-        # CONTROL: the locked audit row exists; a superuser reads it.
-        status, _, raw, _ = self.server.call("GET", "/api/collections/governance_audits/records?filter=(display_id='AUD-FIX-0001')",
-                                             headers={"Authorization": self.server.admin()})
-        self.assertEqual(status, 200)
-        self.assertIn(b"AUD-FIX-0001", raw)
-        # Locked by its rules, so it is not served, by id or by type, and the summary says so.
-        self.assertEqual(self.get("/evidence?evidence_id=AUD-FIX-0001")[0], 404)
-        status, audits = self.get("/evidence?evidence_type=audit")
-        self.assertEqual((status, audits["state"], audits["items"]), (200, "EMPTY", []))
-        summary = {entry["type"]: entry for entry in self.get("/evidence")[1]["types"]}
-        self.assertFalse(summary["audit"]["published"])
-        self.assertTrue(summary["claim"]["published"])
-        status, unsupported = self.get("/evidence?evidence_type=readback")
-        self.assertEqual((status, unsupported["state"]), (200, "EMPTY"))
-        self.assertIn("claim", unsupported["supported_types"])
-        # Fabric evidence is not linked to lessons, so asking for it under a lesson finds nothing.
+    def test_only_lesson_references_and_digests_are_public(self) -> None:
+        for evidence_id in ("CLM-FIX-0001", "EPOCH-FIX-01", "AUD-FIX-0001"):
+            self.assertEqual(self.get("/evidence?evidence_id=" + evidence_id)[0], 404)
+        for kind in ("claim", "epoch", "audit", "readback"):
+            status, value = self.get("/evidence?evidence_type=" + kind)
+            self.assertEqual((status, value["state"], value["items"]), (200, "EMPTY", []))
+            self.assertEqual(value["supported_types"], ["reference", "digest"])
+        self.assertEqual([item["type"] for item in self.get("/evidence")[1]["types"]], ["reference", "digest"])
         self.assertEqual(self.get("/evidence?challenge_id=release-with-evidence&evidence_id=CLM-FIX-0001")[0], 404)
+
+    def test_native_global_reads_and_expansion_require_master_authority(self) -> None:
+        def token(email: str) -> str:
+            status, _, _, data = self.server.call("POST", "/api/collections/users/auth-with-password",
+                {"identity": email, "password": "local-fixture-password-only"})
+            self.assertEqual(status, 200)
+            return data["token"]
+
+        member = {"Authorization": token("alice@fixture.invalid")}
+        master = {"Authorization": token("master@fixture.invalid")}
+        for collection, record in (("knowledge_sources", "sourcesprivate1"), ("knowledge_claims", "privateclaim001"),
+                                   ("evidence_epochs", "privateepoch001")):
+            route = "/api/collections/" + collection + "/records"
+            for headers in ({}, member):
+                status, _, raw, data = self.server.call("GET", route + "?expand=supporting_sources", headers=headers)
+                self.assertEqual((status, data["items"]), (200, []))
+                self.assertNotIn(SENTINEL.encode(), raw)
+                self.assertEqual(self.server.call("GET", route + "/" + record, headers=headers)[0], 404)
+            status, _, raw, data = self.server.call("GET", route + "/" + record + "?expand=supporting_sources", headers=master)
+            self.assertEqual(status, 200)
+            self.assertIn(SENTINEL.encode(), raw)
+            if collection == "knowledge_claims":
+                self.assertIn("supporting_sources", data["expand"])
+        # An operator's pre-existing null rules remain stricter than a master seat.
+        status, _, _, data = self.server.call("GET", "/api/collections/governance_audits/records", headers=master)
+        self.assertEqual(status, 403)
+        self.assertEqual(self.server.call("PATCH", "/api/collections/users/records/accountalice001",
+            {"cnwb_seat_level": "master"}, headers=member)[0], 403)
 
 
 @unittest.skipUnless(BINARY and Path(BINARY).is_file(), "Native PocketBase unavailable; public API acceptance remains open.")
@@ -623,7 +640,7 @@ class NativeBuddiIntakeTests(unittest.TestCase):
         status, kept = self.post(server, "/feedback", self.FEEDBACK, tool_headers("conv_down_1"))
         self.assertEqual(status, 201)
         server.stop()
-        self.assertEqual(server.revert("1"), ["1792100000_buddi_intake.js"])
+        self.assertEqual(server.revert("2"), ["1792200000_private_operational_evidence.js", "1792100000_buddi_intake.js"])
         server.start()
         status, closed = self.post(server, "/feedback", {**self.FEEDBACK, "summary": "during rollback"}, tool_headers("conv_down_2"))
         self.assertEqual((status, closed["state"]), (503, "UNAVAILABLE"))

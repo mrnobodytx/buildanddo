@@ -168,8 +168,10 @@ test('token rotation preserves completed and pending subscriptions while future 
 
 test('health and presence clients use the installed bound-session contract, not a client advertisement assertion', async (t) => {
     const f = browser(t);
-    assert.equal((await classroomHealth()).sessions_installed, true);
-    assert.equal((await presenceHealth()).collection_installed, true);
+    await assert.rejects(classroomHealth(), /authentication required/);
+    await assert.rejects(presenceHealth(), /authentication required/);
+    assert.deepEqual(await classroomHealth('owner'), { ok: true, reason: null });
+    assert.deepEqual(await presenceHealth('owner'), { ok: true, reason: null });
     const host = await joinClassroom({ room: f.room, role: 'teach', seatId: 'owner', authToken: 'owner',
         localStream: { getTracks: () => [{ kind: 'audio', stop() {} }] } });
     const receipt = await publishPresence({ room: f.room, sessionId: host.sessionId, tracks: host.published,

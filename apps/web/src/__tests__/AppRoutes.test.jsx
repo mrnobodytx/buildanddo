@@ -37,7 +37,7 @@ afterEach(() => vi.unstubAllGlobals());
 const LAZY_ROUTE_TIMEOUT = 20000;
 
 describe('lazy route entry points', () => {
-    it.each(['/hostinger-challenge', '/pricing', '/about', '/docs', '/classrooms', '/blog', '/contact',
+    it.each(['/hostinger-challenge', '/practice', '/pricing', '/about', '/docs', '/classrooms', '/blog', '/contact',
         '/guild', '/guild/forge', '/status'])(
         'loads %s without an authenticated account',
         async (route) => {

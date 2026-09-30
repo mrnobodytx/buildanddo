@@ -1,0 +1,68 @@
+{
+  "schema": "buildanddo.media-source/v1",
+  "event_id": "BD-MEDIA-ONBOARDING-20260930",
+  "scope_id": "buildanddo-public-product",
+  "kind": "lesson",
+  "revision": "2d0e4ae1d806de258aa08b7db38bf1bcfcd42dad",
+  "producer": "cni://agent/BITS-CODEGEN",
+  "authors": [],
+  "observed_at": "2026-09-30T19:30:38.137086+00:00",
+  "expires_at": "2026-10-07T19:30:38.137086+00:00",
+  "title": "Start with one useful project",
+  "audience": "New BuildAndDo members",
+  "language": "en",
+  "source_url": "https://buildanddo.com/docs",
+  "disclosure_ref": "public-product-review-pending",
+  "artifacts": [
+    {
+      "artifact_id": "product-guide",
+      "path": "apps/web/src/pages/DocsPage.jsx",
+      "sha256": "71334d1e7df0a00f970b539a549a3ccce19f505f26092c31f7d4e4db001c5205",
+      "size": 10553,
+      "observed_at": "2026-09-30T19:30:38.137086+00:00"
+    }
+  ],
+  "claims": [
+    {
+      "claim_id": "problem",
+      "section": "problem",
+      "text": "Start with one real question, keep the source visible, and verify the result before calling the work done.",
+      "evidence_ids": [
+        "product-guide"
+      ]
+    },
+    {
+      "claim_id": "action",
+      "section": "action",
+      "text": "Create an account, choose an intent and objective, then name your workspace.",
+      "evidence_ids": [
+        "product-guide"
+      ]
+    },
+    {
+      "claim_id": "outcome",
+      "section": "outcome",
+      "text": "Your starting path links to a lesson and your saved objective.",
+      "evidence_ids": [
+        "product-guide"
+      ]
+    },
+    {
+      "claim_id": "lesson",
+      "section": "lesson",
+      "text": "The Evidence Ledger stores the measurements, decisions and source references behind work.",
+      "evidence_ids": [
+        "product-guide"
+      ]
+    },
+    {
+      "claim_id": "limitation",
+      "section": "limitation",
+      "text": "Verified means evidence exists; a completed checkbox alone is not proof.",
+      "evidence_ids": [
+        "product-guide"
+      ]
+    }
+  ],
+  "visibility": "public"
+}

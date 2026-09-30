@@ -231,10 +231,9 @@ export function isUnreadablePresence(row, nowMs) {
     return Number.isFinite(expires) && expires > nowMs;
 }
 
-/** Reports signalling-backend configuration without exposing any secret. */
-export async function classroomHealth() {
-    const res = await fetch(API.health, { headers: { Accept: 'application/json' } });
-    return readJson(res);
+/** Read classroom availability using the caller's existing native account session. */
+export async function classroomHealth(authToken) {
+    return send('GET', API.health, undefined, authToken);
 }
 
 /**
@@ -245,9 +244,8 @@ export async function classroomHealth() {
  *
  * @returns {Promise<object>} { ok, collection_installed, publishers_configured, reason }
  */
-export async function presenceHealth() {
-    const res = await fetch(API.presenceHealth, { headers: { Accept: 'application/json' } });
-    return readJson(res);
+export async function presenceHealth(authToken) {
+    return send('GET', API.presenceHealth, undefined, authToken);
 }
 
 /**

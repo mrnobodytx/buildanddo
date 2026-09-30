@@ -1,10 +1,10 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/src/pages/__tests__/StatusPage.test.jsx
 // Stage:       08_TEST
-// SRS:         SRS-BUILDANDDO-COMMUNITY-WEB-001
-// CAPS:        B
+// SRS:         SRS-BUILDANDDO-COMMUNITY-WEB-001, SRS-BUILDANDDO-UPGRADE-001
+// CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-COMMUNITY-WEB-001
+// Dispatch:    VCC-BUILDANDDO-COMMUNITY-WEB-001, VCC-BUILDANDDO-UPGRADE-001
 // Seat:        C-ONE
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-22
@@ -87,19 +87,17 @@ describe('/status', () => {
             expect(badgeOf(link.id).getByRole('link', { name: link.label })).toHaveAttribute('href', link.url);
         }
         expect(screen.queryByText('UP')).not.toBeInTheDocument();
-        expect(screen.getByText(/UNMEASURED · The published reading has no measurement time/)).toBeInTheDocument();
         await waitFor(() => expect(document.title).toBe('Service status | BuildAndDo'));
         expect(document.querySelector('link[rel="canonical"]')).toHaveAttribute('href', `${SITE_ORIGIN}/status`);
     }, LAZY);
 
-    it('dates the platform assessment and calls an old one STALE rather than connected', async () => {
+    it('never fetches or renders the retired platform assessment even when an old origin still serves it', async () => {
         serve({ '/community-status.json': SEED, '/platform-health.json': PLATFORM });
         await renderRoute('/status');
-        const platform = await screen.findByTestId('platform-datadog');
-        expect(within(platform).getByText('connected')).toBeInTheDocument();
-        expect(screen.getByText(/Observed 2026-09-11T00:00:00\+00:00 \(\d+ d ago\)/)).toBeInTheDocument();
-        expect(screen.getByText(/STALE: a recorded assessment, not a live probe/)).toBeInTheDocument();
-        expect(within(screen.getByTestId('platform-hostinger')).getByText('unverified')).toBeInTheDocument();
+        await screen.findByTestId('community-surface-forum');
+        expect(screen.queryByTestId('platform-datadog')).not.toBeInTheDocument();
+        expect(screen.queryByText('Agents reporting.')).not.toBeInTheDocument();
+        expect(globalThis.fetch.mock.calls.some(([url]) => String(url).includes('platform-health.json'))).toBe(false);
     }, LAZY);
 
     it('shows UP only for what a fresh reading says is up', async () => {
@@ -109,7 +107,6 @@ describe('/status', () => {
         expect(badgeOf('forum').getByText('UP')).toBeInTheDocument();
         expect(badgeOf('discord').getByText('DOWN')).toBeInTheDocument();
         expect(badgeOf('youtube').getByText('DEGRADED')).toBeInTheDocument();
-        expect(screen.getByText(/UNMEASURED · platform-health.json was not served/)).toBeInTheDocument();
     }, LAZY);
 
     it('shows nothing as up when neither file can be read', async () => {
@@ -122,13 +119,11 @@ describe('/status', () => {
 });
 
 describe('/roadmap', () => {
-    it('carries a community group read from the same file', async () => {
-        serve({ '/community-status.json': fresh({ wiki: 'DOWN' }) });
-        await renderRoute('/roadmap');
-        expect(screen.getByText('Activity · community')).toBeInTheDocument();
-        await screen.findByTestId('community-surface-wiki');
-        expect(badgeOf('wiki').getByText('DOWN')).toBeInTheDocument();
-        expect(badgeOf('forum').getByText('UP')).toBeInTheDocument();
-        expect(screen.getByRole('link', { name: 'service status' })).toHaveAttribute('href', '/status');
+    it('requires sign-in rather than rendering an old public operational feed', async () => {
+        serve({ '/roadmap-status.json': { state: 'MEASURED', private: 'PRIVATE-SENTINEL' } });
+        renderWithProviders(<AppRoutes />, { route: '/roadmap', auth: { isAuthed: false, user: null } });
+        expect(await screen.findByLabelText(/email/i, {}, { timeout: LAZY })).toBeVisible();
+        expect(screen.queryByText('PRIVATE-SENTINEL')).not.toBeInTheDocument();
+        expect(globalThis.fetch.mock.calls.some(([url]) => String(url).includes('roadmap-status.json'))).toBe(false);
     }, LAZY);
 });

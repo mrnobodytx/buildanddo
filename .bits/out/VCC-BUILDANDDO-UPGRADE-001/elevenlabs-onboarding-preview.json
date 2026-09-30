@@ -1,0 +1,323 @@
+{
+  "schema": "buildanddo.media-corpus/v1",
+  "compiled_at": "2026-09-30T19:30:38.137086+00:00",
+  "source": {
+    "schema": "buildanddo.media-source/v1",
+    "event_id": "BD-MEDIA-ONBOARDING-20260930",
+    "scope_id": "buildanddo-public-product",
+    "kind": "lesson",
+    "revision": "2d0e4ae1d806de258aa08b7db38bf1bcfcd42dad",
+    "producer": "cni://agent/BITS-CODEGEN",
+    "authors": [],
+    "observed_at": "2026-09-30T19:30:38.137086+00:00",
+    "expires_at": "2026-10-07T19:30:38.137086+00:00",
+    "title": "Start with one useful project",
+    "audience": "New BuildAndDo members",
+    "language": "en",
+    "source_url": "https://buildanddo.com/docs",
+    "disclosure_ref": "public-product-review-pending",
+    "artifacts": [
+      {
+        "artifact_id": "product-guide",
+        "path": "apps/web/src/pages/DocsPage.jsx",
+        "sha256": "71334d1e7df0a00f970b539a549a3ccce19f505f26092c31f7d4e4db001c5205",
+        "size": 10553,
+        "observed_at": "2026-09-30T19:30:38.137086+00:00"
+      }
+    ],
+    "claims": [
+      {
+        "claim_id": "problem",
+        "section": "problem",
+        "text": "Start with one real question, keep the source visible, and verify the result before calling the work done.",
+        "evidence_ids": [
+          "product-guide"
+        ]
+      },
+      {
+        "claim_id": "action",
+        "section": "action",
+        "text": "Create an account, choose an intent and objective, then name your workspace.",
+        "evidence_ids": [
+          "product-guide"
+        ]
+      },
+      {
+        "claim_id": "outcome",
+        "section": "outcome",
+        "text": "Your starting path links to a lesson and your saved objective.",
+        "evidence_ids": [
+          "product-guide"
+        ]
+      },
+      {
+        "claim_id": "lesson",
+        "section": "lesson",
+        "text": "The Evidence Ledger stores the measurements, decisions and source references behind work.",
+        "evidence_ids": [
+          "product-guide"
+        ]
+      },
+      {
+        "claim_id": "limitation",
+        "section": "limitation",
+        "text": "Verified means evidence exists; a completed checkbox alone is not proof.",
+        "evidence_ids": [
+          "product-guide"
+        ]
+      }
+    ],
+    "visibility": "public"
+  },
+  "source_digest": "c85c4f7574218ef67789a7ed4ac2bdc0199e3fdc11a05ad7bfde7258e6c397fe",
+  "source_state": "REPORTED_SOURCE",
+  "source_review_digest": null,
+  "options": {
+    "schema": "buildanddo.media-options/v1",
+    "formats": [
+      "onboarding",
+      "short_video"
+    ],
+    "languages": [
+      "en"
+    ],
+    "styles": [
+      "neutral"
+    ],
+    "requested_model": "eleven_v4",
+    "chunk_characters": 3000,
+    "character_budget": 10000,
+    "max_assets": 3
+  },
+  "assets": [
+    {
+      "asset_id": "ed1f6feff8da7f055a26422992bc3e4295cc5eb24b36242e724a40368dfe00f0",
+      "request_digest": "b696d69b2ea14151c765383da809060d727a4b5fbe68a88de48a5410975e08e5",
+      "request": {
+        "source_digest": "c85c4f7574218ef67789a7ed4ac2bdc0199e3fdc11a05ad7bfde7258e6c397fe",
+        "format": "onboarding",
+        "language": "en",
+        "style": "neutral",
+        "part": 1,
+        "parts": 1,
+        "script": "Start with one useful project. Source report dated 2026-09-30. Inspect the recorded example and its lesson before trying the procedure.\n\nProblem reported: Start with one real question, keep the source visible, and verify the result before calling the work done.\n\nAction recorded: Create an account, choose an intent and objective, then name your workspace.\n\nOutcome reported: Your starting path links to a lesson and your saved objective.\n\nLesson recorded: The Evidence Ledger stores the measurements, decisions and source references behind work.\n\nLimitations recorded: Verified means evidence exists; a completed checkbox alone is not proof.",
+        "requested_model": "eleven_v4",
+        "speaker_roles": [
+          "narrator"
+        ]
+      },
+      "script_sha256": "f06db15bf7d83cdf533d59c46ea4686cd6091d66b5313e74bf22cf56d7b8dc91",
+      "characters": 642,
+      "draft": {
+        "schema": "buildanddo.content-draft/v1",
+        "asset_id": "ed1f6feff8da7f055a26422992bc3e4295cc5eb24b36242e724a40368dfe00f0",
+        "source_digest": "c85c4f7574218ef67789a7ed4ac2bdc0199e3fdc11a05ad7bfde7258e6c397fe",
+        "language": "en",
+        "title": "Onboarding: Start with one useful project (1/1)",
+        "format": "tutorial",
+        "audience": "New BuildAndDo members",
+        "brief": "Imported media draft ed1f6feff8da7f055a26422992bc3e4295cc5eb24b36242e724a40368dfe00f0.\nSource event: BD-MEDIA-ONBOARDING-20260930; scope: buildanddo-public-product.\nReview the source, rights and exact script before production or publication.",
+        "body": "Start with one useful project. Source report dated 2026-09-30. Inspect the recorded example and its lesson before trying the procedure.\n\nProblem reported: Start with one real question, keep the source visible, and verify the result before calling the work done.\n\nAction recorded: Create an account, choose an intent and objective, then name your workspace.\n\nOutcome reported: Your starting path links to a lesson and your saved objective.\n\nLesson recorded: The Evidence Ledger stores the measurements, decisions and source references behind work.\n\nLimitations recorded: Verified means evidence exists; a completed checkbox alone is not proof.\n\nSource: https://buildanddo.com/docs\nRevision: 2d0e4ae1d806de258aa08b7db38bf1bcfcd42dad\nEvidence selection: c85c4f7574218ef67789a7ed4ac2bdc0199e3fdc11a05ad7bfde7258e6c397fe",
+        "body_sha256": "47cb2a0cd846faacbb8df612850acf4064d5c66d17472f495c37f4baf5825b36",
+        "channel": "Onboarding",
+        "call_to_action": "Inspect the cited source and its limitations."
+      },
+      "claim_ids": [
+        "problem",
+        "action",
+        "outcome",
+        "lesson",
+        "limitation"
+      ],
+      "target_seconds": [
+        30,
+        120
+      ],
+      "estimated_seconds": 37.6,
+      "duration_basis": "planning estimate at 150 words/minute, not measured audio",
+      "duration_state": "IN_RANGE",
+      "clip_plan": [
+        {
+          "order": 1,
+          "claim_id": "problem",
+          "evidence_ids": [
+            "product-guide"
+          ],
+          "timing": "align_after_actual_audio"
+        },
+        {
+          "order": 2,
+          "claim_id": "action",
+          "evidence_ids": [
+            "product-guide"
+          ],
+          "timing": "align_after_actual_audio"
+        },
+        {
+          "order": 3,
+          "claim_id": "outcome",
+          "evidence_ids": [
+            "product-guide"
+          ],
+          "timing": "align_after_actual_audio"
+        },
+        {
+          "order": 4,
+          "claim_id": "lesson",
+          "evidence_ids": [
+            "product-guide"
+          ],
+          "timing": "align_after_actual_audio"
+        },
+        {
+          "order": 5,
+          "claim_id": "limitation",
+          "evidence_ids": [
+            "product-guide"
+          ],
+          "timing": "align_after_actual_audio"
+        }
+      ]
+    },
+    {
+      "asset_id": "7959182b82bd60eb9b7ca3fc7ef8a074291eba2c42b55a8e1105279675fa5404",
+      "request_digest": "993eb268a820917ae9d4295270705e7352c7bced90099bae74369db3462bfbe8",
+      "request": {
+        "source_digest": "c85c4f7574218ef67789a7ed4ac2bdc0199e3fdc11a05ad7bfde7258e6c397fe",
+        "format": "short_video",
+        "language": "en",
+        "style": "neutral",
+        "part": 1,
+        "parts": 1,
+        "script": "Start with one useful project. Source report dated 2026-09-30.\n\nProblem reported: Start with one real question, keep the source visible, and verify the result before calling the work done.\n\nAction recorded: Create an account, choose an intent and objective, then name your workspace.\n\nOutcome reported: Your starting path links to a lesson and your saved objective.\n\nLimitations recorded: Verified means evidence exists; a completed checkbox alone is not proof.",
+        "requested_model": "eleven_v4",
+        "speaker_roles": [
+          "narrator"
+        ]
+      },
+      "script_sha256": "880d26510af31d93fccb55d0f5ab661c712fb5702fa36b693e58af04878b0ae0",
+      "characters": 461,
+      "draft": {
+        "schema": "buildanddo.content-draft/v1",
+        "asset_id": "7959182b82bd60eb9b7ca3fc7ef8a074291eba2c42b55a8e1105279675fa5404",
+        "source_digest": "c85c4f7574218ef67789a7ed4ac2bdc0199e3fdc11a05ad7bfde7258e6c397fe",
+        "language": "en",
+        "title": "Short video: Start with one useful project (1/1)",
+        "format": "blog",
+        "audience": "New BuildAndDo members",
+        "brief": "Imported media draft 7959182b82bd60eb9b7ca3fc7ef8a074291eba2c42b55a8e1105279675fa5404.\nSource event: BD-MEDIA-ONBOARDING-20260930; scope: buildanddo-public-product.\nReview the source, rights and exact script before production or publication.",
+        "body": "Start with one useful project. Source report dated 2026-09-30.\n\nProblem reported: Start with one real question, keep the source visible, and verify the result before calling the work done.\n\nAction recorded: Create an account, choose an intent and objective, then name your workspace.\n\nOutcome reported: Your starting path links to a lesson and your saved objective.\n\nLimitations recorded: Verified means evidence exists; a completed checkbox alone is not proof.\n\nSource: https://buildanddo.com/docs\nRevision: 2d0e4ae1d806de258aa08b7db38bf1bcfcd42dad\nEvidence selection: c85c4f7574218ef67789a7ed4ac2bdc0199e3fdc11a05ad7bfde7258e6c397fe",
+        "body_sha256": "31b9bd3d30231df804b007f7857a25e49aedd6f070ed93b8104ad63a6f8d857b",
+        "channel": "Short video",
+        "call_to_action": "Inspect the cited source and its limitations."
+      },
+      "claim_ids": [
+        "problem",
+        "action",
+        "outcome",
+        "limitation"
+      ],
+      "target_seconds": [
+        20,
+        45
+      ],
+      "estimated_seconds": 27.6,
+      "duration_basis": "planning estimate at 150 words/minute, not measured audio",
+      "duration_state": "IN_RANGE",
+      "clip_plan": [
+        {
+          "order": 1,
+          "claim_id": "problem",
+          "evidence_ids": [
+            "product-guide"
+          ],
+          "timing": "align_after_actual_audio"
+        },
+        {
+          "order": 2,
+          "claim_id": "action",
+          "evidence_ids": [
+            "product-guide"
+          ],
+          "timing": "align_after_actual_audio"
+        },
+        {
+          "order": 3,
+          "claim_id": "outcome",
+          "evidence_ids": [
+            "product-guide"
+          ],
+          "timing": "align_after_actual_audio"
+        },
+        {
+          "order": 5,
+          "claim_id": "limitation",
+          "evidence_ids": [
+            "product-guide"
+          ],
+          "timing": "align_after_actual_audio"
+        }
+      ]
+    }
+  ],
+  "translation_tasks": [],
+  "production_plans": {
+    "elevencreative": {
+      "state": "HOLD",
+      "mode": "manual_studio",
+      "holds": [
+        "human_script_approval",
+        "voice_rights_confirmation",
+        "provider_capability_confirmation",
+        "current_independent_source_review",
+        "account_and_studio_terms_confirmation"
+      ],
+      "jobs": [
+        {
+          "asset_id": "ed1f6feff8da7f055a26422992bc3e4295cc5eb24b36242e724a40368dfe00f0",
+          "request_digest": "b696d69b2ea14151c765383da809060d727a4b5fbe68a88de48a5410975e08e5",
+          "characters": 642
+        },
+        {
+          "asset_id": "7959182b82bd60eb9b7ca3fc7ef8a074291eba2c42b55a8e1105279675fa5404",
+          "request_digest": "993eb268a820917ae9d4295270705e7352c7bced90099bae74369db3462bfbe8",
+          "characters": 461
+        }
+      ],
+      "promotion_eligibility": "UNKNOWN",
+      "cost": null
+    },
+    "api": {
+      "state": "HOLD",
+      "transport_owner": "existing_private_ElevenLabsBridge",
+      "holds": [
+        "human_script_approval",
+        "voice_rights_confirmation",
+        "provider_capability_confirmation",
+        "current_independent_source_review",
+        "funding_authorization",
+        "private_bridge_activation"
+      ],
+      "jobs": [
+        {
+          "asset_id": "ed1f6feff8da7f055a26422992bc3e4295cc5eb24b36242e724a40368dfe00f0",
+          "request_digest": "b696d69b2ea14151c765383da809060d727a4b5fbe68a88de48a5410975e08e5",
+          "characters": 642
+        },
+        {
+          "asset_id": "7959182b82bd60eb9b7ca3fc7ef8a074291eba2c42b55a8e1105279675fa5404",
+          "request_digest": "993eb268a820917ae9d4295270705e7352c7bced90099bae74369db3462bfbe8",
+          "characters": 461
+        }
+      ],
+      "grant_balance": null,
+      "studio_promotion_covers_api": null,
+      "cost": null
+    }
+  },
+  "generation_characters_per_lane": 1103,
+  "lane_selection": "choose one lane per job; producing in both incurs both lanes' usage",
+  "publication_authority": false,
+  "external_effects": 0,
+  "corpus_digest": "32808919e0dd15b14615ffb83d54e928acc64770a2b6893f03f00691e0051c3c"
+}

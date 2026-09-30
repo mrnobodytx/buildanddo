@@ -1,9 +1,10 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/src/__tests__/PlatformHealthAccess.test.jsx
 // Stage:       08_TEST
-// SRS:         SRS-BUILDANDDO-WORKSPACE-001
+// SRS:         SRS-BUILDANDDO-WORKSPACE-001, SRS-BUILDANDDO-UPGRADE-001
 // CAPS:        pending
 // CK:          pending
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
 // Seat:        C-ONE
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-24
@@ -95,6 +96,12 @@ describe('where the platform reading comes from', () => {
 });
 
 describe('who /app/platforms exists for', () => {
+    it('keeps the global capability passport out of normal workspace navigation and direct visits', async () => {
+        renderWithProviders(<AppRoutes />, { route: '/app/passport' });
+        const heading = await screen.findByRole('heading', { level: 1 }, { timeout: LAZY_ROUTE_TIMEOUT });
+        expect(heading).not.toHaveTextContent(/capability passport/i);
+        expect(screen.queryByRole('link', { name: 'Capability Passport' })).not.toBeInTheDocument();
+    }, LAZY_ROUTE_TIMEOUT);
     it(
         'does not render it for an authenticated user who is not a master seat',
         async () => {

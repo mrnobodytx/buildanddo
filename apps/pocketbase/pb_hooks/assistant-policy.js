@@ -32,14 +32,18 @@ const ROUTES = [
 ];
 const sensitive = /password|passcode|secret|credential|token|api.?key|private.?key|credit.?card|card.?number|security.?code|payment|bank.?account/i;
 const human = /approv|verif|publish|delete|remove|forget|grant|invite|deploy|sign.?out|log.?out|revoke|billing|payment|submit.?bid|\brole\b|permission|authority|add.?member/i;
-function route(value, role) {
+function routes(role, estate = false) {
+    return ROUTES.filter(([path]) => (path !== '/app/admin' || ['owner', 'admin'].includes(role)) &&
+        (!['/app/fleet', '/app/platforms', '/app/passport'].includes(path) || estate));
+}
+function route(value, role, estate = false) {
     const path = access.bounded(value, 300);
-    if (!(ROUTES.some((item) => item[0] === path) || /^\/app\/classrooms\/[a-zA-Z0-9_-]{1,64}$/.test(path)) ||
-        path === '/app/admin' && !['owner', 'admin'].includes(role)) access.invalid('Choose an accessible platform route.');
+    if (!(routes(role, estate).some((item) => item[0] === path) || /^\/app\/classrooms\/[a-zA-Z0-9_-]{1,64}$/.test(path)))
+        access.invalid('Choose an accessible platform route.');
     return path;
 }
-function surface(value, role) {
-    access.exact(value, ['id', 'route', 'controls']); access.id(value.id); route(value.route, role);
+function surface(value, role, estate = false) {
+    access.exact(value, ['id', 'route', 'controls']); access.id(value.id); route(value.route, role, estate);
     if (access.canonical(value).length > 12000) access.invalid('Inspect a smaller visible form before requesting assistance.');
     if (!Array.isArray(value.controls) || value.controls.length > 60) access.invalid('Provide at most sixty visible controls.');
     const ids = new Set();
@@ -56,7 +60,7 @@ function surface(value, role) {
     });
     return { id: value.id, route: value.route, controls };
 }
-function plan(value, captured, role) {
+function plan(value, captured, role, estate = false) {
     access.exact(value, ['reply', 'steps']); const reply = access.bounded(value.reply, 8000);
     if (access.canonical(value).length > 16000) access.invalid('The proposed plan exceeds its bounded response budget.');
     if (!Array.isArray(value.steps) || value.steps.length > 8) access.invalid('A plan may contain at most eight bounded steps.');
@@ -65,7 +69,7 @@ function plan(value, captured, role) {
         if (navigated) access.invalid('Inspect the destination before proposing its controls.');
         if (step.kind === 'navigate') {
             access.exact(step, ['kind', 'path']); navigated = true;
-            return { kind: 'navigate', path: route(step.path, role) };
+            return { kind: 'navigate', path: route(step.path, role, estate) };
         }
         if (role === 'viewer') throw new ForbiddenError('A viewer can navigate and read; form assistance requires write access.');
         const control = captured.controls.find((item) => item.id === step.control);
@@ -85,4 +89,4 @@ function plan(value, captured, role) {
     });
     return { reply, steps, surface_id: captured.id, route: captured.route };
 }
-module.exports = { ROUTES, sensitive, human, route, surface, plan };
+module.exports = { ROUTES, sensitive, human, routes, route, surface, plan };

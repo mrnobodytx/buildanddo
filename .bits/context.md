@@ -8,9 +8,9 @@
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-10
-# Depends:     AGENTS.md, .bits/srs_registry.yml, scripts/ci/agent_context.py
+# Depends:     AGENTS.md, .bits/srs_registry.yml, scripts/ci/agent_context.py, .bits/handoffs/2026-09-30-bits-codegen-post-competition-activation.md, docs/elevenlabs-starter-batch.md
 # EnumType:    ConfigDoc
-# EnumEdges:   GATES bits/SRS-* branches; VALIDATES .bits/srs_registry.yml; CONSUMES .bits/hostinger-readiness.json
+# EnumEdges:   GATES bits/SRS-* branches; VALIDATES .bits/srs_registry.yml; CONSUMES .bits/hostinger-readiness.json; CONSUMES .bits/handoffs/2026-09-30-bits-codegen-post-competition-activation.md; CONSUMES docs/elevenlabs-starter-batch.md
 # Intent:      The durable brief an agent reads first; measured facts live in the lock beside it.
 # ───────────────────────────────────────────────────────────────
 
@@ -81,6 +81,20 @@ These are not style preferences. Each one exists because it broke something.
 
 ## Current plan
 
+The September 30 owner continuation prioritizes post-competition privacy,
+usable Buddi connections and source-bound content under the existing upgrade
+dispatch. The owner states that the competition is over. Preserve historical
+acceptance and missing evidence; do not infer a submission, award or successful
+deployment. Public learning remains available, while operational projections,
+global evidence and diagnostic details require their native authority.
+
+The current source change retires public operational feeds, adds a restrictive
+read migration, and grounds workspace Buddi in bounded dated integration
+observations. The three scripts in `docs/elevenlabs-starter-batch.md` are prepared
+copy, not generated audio. Follow the private activation and provider handoff in
+`.bits/handoffs/2026-09-30-bits-codegen-post-competition-activation.md`; actual
+native/browser acceptance, provider receipts and deployment remain open.
+
 The September 22 owner continuation also authorizes the restricted government
 research desk and eight-category assurance matrix under the existing upgrade
 dispatch. `docs/research-sprint.md` defines the provisional $100/month plus
@@ -91,8 +105,8 @@ The native/browser, billing, official-notice, model and GPU receiving work is
 recorded in `.bits/handoffs/2026-09-22-bits-codegen-research-assurance.md`.
 This continuation does not complete or replace the existing acceptance gates.
 
-The owner prioritizes the 21-day Hostinger demo under the existing upgrade
-SRS/dispatch. Run `python scripts/ci/hostinger_readiness.py --check` and
+The historical 21-day Hostinger contract remains the acceptance record under
+the existing upgrade SRS/dispatch. Run `python scripts/ci/hostinger_readiness.py --check` and
 `python scripts/ci/submission_readiness.py --check` before
 choosing work and before handoff. Read `docs/hostinger-sprint-closure.md` and
 `.bits/hostinger-readiness.json`: every canonical milestone has rationale,
@@ -125,8 +139,8 @@ acceptance. The contract does not assert a percentage or rewrite sprint state.
 3. Capture release/provider readback, reconcile it with the semantic twin and
    obtain owner review of the milestone evidence. A passing source test, prepared
    packet or synthetic replay cannot establish live deployment or competition
-   readiness. Official competition rules and the submission deadline still need
-   a cited owner confirmation.
+   readiness. Keep unresolved official competition rules and submission evidence
+   in the archive; the current product work does not require a new submission.
 
 `docs/submission-guide.md`, `docs/business-execution.md` and
 `docs/workspace-assistant.md` explain the implemented paths, personal-data

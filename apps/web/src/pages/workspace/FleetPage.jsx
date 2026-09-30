@@ -12,7 +12,7 @@
 //              apps/web/src/components/workspace/workspaceHelpers.jsx,
 //              apps/web/src/components/site/ui.jsx, apps/web/src/lib/observability/runtime.js, apps/web/src/lib/navigationIntent.js
 // EnumType:    Widget
-// EnumEdges:   CONSUMES apps/web/public/fleet-status.json;
+// EnumEdges:   CONSUMES apps/pocketbase/pb_hooks/estate.pb.js;
 //              DEPENDS_ON scripts/ci/fleet_report.py; CONSUMES apps/web/src/lib/observability/runtime.js; CONSUMES apps/web/src/lib/navigationIntent.js
 // Intent:      Show the Citadel NNC as three planes of hosts with what actually
 //              runs on each, and label the reading as a recorded observation
@@ -53,7 +53,7 @@ const REPORT_ROUTE = '/api/buildanddo/estate/fleet-status';
 
 // Regenerate with: python scripts/ci/fleet_report.py
 const MISSING_REPORT =
-    'fleet-status.json was not served. It is written at build time by scripts/ci/fleet_report.py, so an absent file means the projection did not run — not that the fleet is empty. Nothing is drawn below rather than invented.';
+    'The operator report is unavailable. Refresh the private snapshot and try again. Missing data does not establish fleet health.';
 
 // Container taxonomy. The kind string is set once, in fleet_report.py; this map
 // is the presentation layer over it and nothing else may introduce a new kind.

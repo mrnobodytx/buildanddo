@@ -58,6 +58,29 @@ async function compose(user) {
     await user.click(screen.getByRole('button', { name: 'Buddi', exact: true }));
     await user.type(screen.getByLabelText('What would you like to do?'), 'Help me with the customer task');
 }
+it('shows scoped connection evidence and task starters only prepare a draft', async () => {
+    backend.seed('workspace_integrations', { id: 'connection1', workspace: 'ws1', provider: 'datadog', desired_enabled: true,
+        revision: 2, applied_revision: 2, observed_state: 'healthy', observed_at: new Date().toISOString(),
+        receipt_ref: 'private-receipt', configuration: { binding: 'PRIVATE-SENTINEL' } });
+    const user = userEvent.setup(); render(<Page />);
+    await user.click(screen.getByRole('button', { name: 'Buddi', exact: true }));
+    await user.click(await screen.findByText('Workspace connections'));
+    expect(screen.getByText(/Healthy when checked/)).toBeVisible();
+    expect(screen.queryByText('PRIVATE-SENTINEL')).not.toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: 'Explain connections' }));
+    expect(screen.getByLabelText('What would you like to do?').value).toContain('current observations');
+    expect(backend.agentConfig.calls).toHaveLength(0);
+    expect(screen.getByRole('button', { name: 'Plan my next step' })).toBeDisabled();
+});
+it('keeps normal assistance available when connection observations cannot be read', async () => {
+    delete backend.collections.workspace_integrations;
+    const user = userEvent.setup(); render(<Page />); await compose(user);
+    await user.click(await screen.findByText('Workspace connections'));
+    expect(screen.getByText(/Connection observations are unavailable/)).toBeVisible();
+    await user.click(screen.getByRole('button', { name: 'Ask Buddi' }));
+    await screen.findByRole('region', { name: 'Proposed actions' });
+    expect(backend.agentConfig.calls).toHaveLength(1);
+});
 it('keeps inference separate from reviewed form interaction and retains personal patterns afterward', async () => {
     const user = userEvent.setup(); render(<Page />); await compose(user);
     await user.click(screen.getByRole('button', { name: 'Ask Buddi' }));

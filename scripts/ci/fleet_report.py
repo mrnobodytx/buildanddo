@@ -2,9 +2,10 @@
 # ─── CGRF Header ───────────────────────────────────────────────
 # File:        scripts/ci/fleet_report.py
 # Stage:       11_COMMIT
-# SRS:         SRS-BUILDANDDO-WORKSPACE-001, SRS-BUILDANDDO-PUBLIC-REDACTION-001
+# SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-WORKSPACE-001, SRS-BUILDANDDO-PUBLIC-REDACTION-001
 # CAPS:        pending
 # CK:          pending
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-11
@@ -13,36 +14,15 @@
 # EnumEdges:   USES_TEMPLATE scripts/deploy/roadmap_status.py;
 #              PRODUCES state/estate/fleet-status.json;
 #              PRODUCES state/estate/platform-health.json;
-#              PRODUCES apps/web/public/platform-health.json;
 #              VERIFIED_BY apps/web/src/pages/workspace/FleetPage.jsx;
 #              VERIFIED_BY apps/web/src/pages/workspace/PlatformHealthPage.jsx
-# Intent:      Project the recorded NNC fleet snapshot and platform assessment
-#              into the files the workspace pages read, carrying the
-#              measurement timestamp so the pages can state staleness instead
-#              of implying the numbers are live, and publish only a closed set
-#              of fields to the one of those files that anyone can fetch.
+# Intent:      Retain dated fleet and platform observations for authorized operators while removing retired public copies.
 # ───────────────────────────────────────────────────────────────
-"""fleet_report.py - writes the JSON the Fleet and Platform Health workspace
-pages read: two estate-only documents under ``state/estate/``, and one public
-projection under ``apps/web/public/``.
+"""Write recorded fleet and platform reports only under state/estate.
 
-The public file follows ``scripts/deploy/roadmap_status.py``: run before the
-build, write into ``apps/web/public/``, let Vite copy ``public/`` verbatim into
-``dist``. No separate publish step, no runtime backend dependency. The two
-estate documents are the operator's full reports and are never copied into the
-build; the backend serves them to master seats from ``BUILDANDDO_ESTATE_DIR``.
-
-What this script is NOT: a live poller. The host, container and platform
-figures below are a *recorded observation* of the Citadel NNC taken from
-Datadog on ``OBSERVED_AT``, transcribed here by hand. ``observed_at`` travels
-with the payload so the pages can label the age of the reading rather than
-present a transcription as a live gauge. When the assessment tooling in the
-private plane is reachable from CI, replace the two ``_snapshot`` functions
-with reads against it - the emitted schema is the contract, not the constants.
-
-stdlib only, by design: this runs in the build image before ``npm ci`` has
-necessarily finished, and a report generator that can fail the build on a
-dependency resolution is worse than no report.
+The backend serves these documents to master seats from BUILDANDDO_ESTATE_DIR.
+These are historical recorded observations, not live probes. The generator no
+longer runs as part of the public web build and removes its old public copies.
 """
 from __future__ import annotations
 
@@ -50,11 +30,6 @@ import argparse
 import datetime as dt
 import json
 from pathlib import Path
-
-try:  # imported as part of the repository (the tests), or run as a script from scripts/ci (the build)
-    from scripts.ci import public_redaction
-except ImportError:
-    import public_redaction  # type: ignore[no-redef]
 
 ROOT = Path(__file__).resolve().parents[2]
 PUBLIC_DIR = ROOT / "apps" / "web" / "public"
@@ -69,14 +44,6 @@ PLATFORM_PRIVATE_OUT = ROOT / "state" / "estate" / "platform-health.json"
 PLATFORM_OUT = PUBLIC_DIR / "platform-health.json"
 
 SCHEMA_VERSION = 1
-
-# What the public projection is allowed to carry, named field by field. SELECTED, never subtracted:
-# a denylist publishes every field a later change adds, and that is precisely how this file grew
-# from a status line into 11kB of infrastructure assessment. apps/web/src/lib/communityStatus.js
-# readPlatformHealth already drops everything outside this set - but it does that in the BROWSER, on
-# the way to the screen, which does nothing for a caller that fetches the file directly.
-PUBLIC_SCHEMA = "buildanddo.platform-health.public/v1"
-PUBLIC_PLATFORM_FIELDS = ("id", "label", "state", "verified")
 
 # Wall-clock of the Datadog reading transcribed below. Bump this and the
 # figures together, never one without the other - a fresh timestamp over stale
@@ -613,42 +580,8 @@ def _platform_snapshot() -> dict:
     }
 
 
-def _public_platform_projection(document: dict) -> dict:
-    """Select the public projection of the platform report.
-
-    Every field the site serves at /platform-health.json is named here. A field added to the full
-    report reaches the public file only when someone adds it to PUBLIC_PLATFORM_FIELDS or to the
-    literal below - which is the whole point, and what tests/upgrade/
-    test_platform_health_public_projection.py holds this function to.
-
-    Args:
-        document: The full platform report from _platform_snapshot.
-
-    Returns:
-        A document carrying only the closed set: the two timestamps the reader ages the reading by,
-        and per platform an id, a label, a state and whether the reading was verified.
-    """
-    platforms = []
-    for platform in document.get("platforms", []):
-        entry = {field: platform.get(field) for field in PUBLIC_PLATFORM_FIELDS}
-        # Coerced, so the published value stays a scalar of the declared type even if the full
-        # report later carries something richer under one of these names.
-        entry["id"] = str(entry["id"] or "")
-        entry["label"] = str(entry["label"] or "")
-        entry["state"] = str(entry["state"] or "unknown")
-        entry["verified"] = entry["verified"] is True
-        platforms.append(entry)
-
-    return {
-        "schema": PUBLIC_SCHEMA,
-        "generated_at": document["generated_at"],
-        "observed_at": document["observed_at"],
-        "platforms": platforms,
-    }
-
-
 def _write(path: Path, payload: dict) -> None:
-    """Write one JSON document, creating the public directory if needed.
+    """Write one operator document, creating its destination directory if needed.
 
     Args:
         path: Destination file.
@@ -703,25 +636,21 @@ def main(argv: list[str] | None = None) -> int:
             "actual": actual,
         }, indent=2))
 
-    # Both full reports stay in state/ for the operator. Only the closed-set projection is published,
-    # and the rule still runs over it as defence in depth: the projection decides WHICH fields ship,
-    # the rule scrubs what is inside the ones that do.
-    public_platform = _public_platform_projection(platform)
-    rule = public_redaction.Rule()
-    public_platform, withheld = rule.redact_document(public_platform)
-    public_redaction.report_withheld(rule, withheld, PLATFORM_OUT.name)
+    # Both reports are operator data. The competition projection has been retired;
+    # running this generator must also remove an older public copy left on disk.
     _write(FLEET_OUT, fleet)
     _write(PLATFORM_PRIVATE_OUT, platform)
-    _write(PLATFORM_OUT, public_platform)
+    PLATFORM_OUT.unlink(missing_ok=True)
+    (PUBLIC_DIR / "fleet-status.json").unlink(missing_ok=True)
 
     print(json.dumps({
         "fleet_status": str(FLEET_OUT.relative_to(ROOT)),
         "platform_health_private": str(PLATFORM_PRIVATE_OUT.relative_to(ROOT)),
-        "platform_health_public": str(PLATFORM_OUT.relative_to(ROOT)),
+        "public_projection": "retired",
         "observed_at": OBSERVED_AT,
         "fleet_totals": fleet["totals"],
         "platform_totals": platform["totals"],
-        "published_platforms": len(public_platform["platforms"]),
+        "published_platforms": 0,
     }, indent=2))
     return 0
 

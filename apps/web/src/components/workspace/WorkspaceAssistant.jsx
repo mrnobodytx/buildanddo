@@ -33,6 +33,21 @@ import { observeMutation } from '@/lib/observability/mutations';
 import { createAssistantClient, captureAssistantSurface, applyAssistantPlan } from '@/lib/workspaceAssistant';
 import { workspaceLifecycleKey } from '@/lib/workspaceControl';
 
+const connectionLabels = { healthy: 'Healthy when checked', degraded: 'Degraded when checked', failed: 'Failed when checked',
+    disabled: 'Disabled when checked', stale: 'Reading expired', unknown: 'Unverified', not_configured: 'Not configured' };
+function SystemContext({ value }) {
+    return <>
+        <p className="text-xs text-muted-foreground">Read {value.as_of || 'at an unknown time'}. Requested settings do not prove a connection works.</p>
+        {value.state !== 'available' ? <p>Connection observations are unavailable. Buddi can still help with your current page.</p> :
+            <ul className="space-y-2">{value.items.map((item) => <li key={item.provider}>
+                <span className="font-medium">{item.label}</span> · {connectionLabels[item.state] || 'Unverified'}
+                {item.observed_at && <span className="block text-xs text-muted-foreground">Checked {item.observed_at}</span>}
+                {item.check_pending && <span className="block text-xs">A new check is pending.</span>}
+                {item.desired_enabled === true && !item.current && <span className="block text-xs">Enablement requested; current operation is unverified.</span>}
+            </li>)}</ul>}
+    </>;
+}
+
 function AssistantDesk({ accountId, workspaceId, demo, sessionEpoch, isSessionCurrent, scopeKey, currentScope }) {
     const location = useLocation(), navigate = useNavigate(), access = useWorkspaceAccess();
     const [open, setOpen] = useState(false), [session, setSession] = useState(''), [snapshot, setSnapshot] = useState(null);
@@ -198,6 +213,12 @@ function AssistantDesk({ accountId, workspaceId, demo, sessionEpoch, isSessionCu
                     {connection === 'unconfigured' && <p role="status" className="border border-border p-2">Buddi isn't connected yet. Your workspace operator must bind the existing agent endpoint. Your draft stays here.</p>}
                     {connection === 'unavailable' && <p role="status">Buddi connection settings could not be checked. Your draft stays here.</p>}
                     {['unconfigured', 'unavailable'].includes(connection) && <Button type="button" size="sm" variant="secondary" disabled={!ready || busy} onClick={() => load()}>Recheck connection</Button>}
+                    {snapshot?.systems && <details className="space-y-2 border border-border p-2">
+                        <summary className="cursor-pointer font-medium">Workspace connections</summary>
+                        <SystemContext value={snapshot.systems} />
+                        <div className="flex flex-wrap items-center gap-3 pt-2"><Link className="underline" to="/app/integrations">Manage connections</Link>
+                            <Button type="button" size="sm" variant="ghost" disabled={!ready || busy} onClick={() => load()}>Refresh connections</Button></div>
+                    </details>}
                     <ol className="space-y-3" aria-label="Conversation">{history.map((item) => <li key={item.id} className="space-y-2 border-b border-border pb-3">
                         <p className="whitespace-pre-wrap"><strong>You:</strong> {item.message}</p><p className="whitespace-pre-wrap"><strong>Buddi:</strong> {item.reply || 'Response pending…'}</p>
                         <p className="text-xs text-muted-foreground">{item.status}</p>
@@ -205,6 +226,7 @@ function AssistantDesk({ accountId, workspaceId, demo, sessionEpoch, isSessionCu
                             <p>{item.plan.context.complete ? 'Readable source context was included.' : 'Source coverage is partial; inspect the original records.'}</p>
                             <ul>{item.plan.context.citations.map((source) => <li key={source.citation}>{source.title} · {source.updated_at || 'Date unavailable'}</li>)}</ul>
                             {!item.plan.context.citations.length && <p>No matching workspace sources were included.</p>}
+                            {item.plan.context.systems && <SystemContext value={item.plan.context.systems} />}
                         </details>}</li>)}</ol>
                     {snapshot?.turns?.has_more && <Button type="button" size="sm" variant="ghost" disabled={!ready || busy} onClick={() => load(session, { turnPage: snapshot.turns.page + 1, append: 'turns' })}>Load earlier messages</Button>}
                     {turn?.status === 'ready' && turn.plan?.steps.length > 0 && <section className="space-y-2 border border-border p-3" aria-label="Proposed actions">
@@ -220,6 +242,12 @@ function AssistantDesk({ accountId, workspaceId, demo, sessionEpoch, isSessionCu
                         try { await retain(recordPending); } finally { lock.current = false; if (alive.current) setBusy(false); }
                     }}>Retry saving interaction record</Button>}
                     {closed && <p>This session is retained for reading. Start a new session to continue.</p>}
+                    {!closed && <div className="flex flex-wrap gap-2" aria-label="Buddi task starters">
+                        {[['Explain connections', 'Explain which connections in this workspace have current observations and which need a check.'],
+                            ['Plan my next step', 'Help me choose a useful next step on the current page using the workspace sources I can access.']].map(([label, draft]) =>
+                            <Button key={label} type="button" size="sm" variant="secondary" disabled={!ready || busy || Boolean(recordPending) || Boolean(message.trim())}
+                                onClick={() => { setMessage(draft); composer.current?.focus(); }}>{label}</Button>)}
+                    </div>}
                     <form onSubmit={send} className="space-y-2"><label htmlFor="assistant-message" className="font-medium">What would you like to do?</label>
                         <Textarea ref={composer} id="assistant-message" value={message} onChange={(event) => { setMessage(event.target.value); }} maxLength={4000} rows={3} disabled={!ready || busy || closed || Boolean(recordPending)} />
                         <Button type="submit" size="sm" disabled={!ready || !canChat || busy || closed || !message.trim() || Boolean(recordPending)}>{busy ? 'Working…' : pending.current ? 'Retry message' : 'Ask Buddi'}</Button></form>

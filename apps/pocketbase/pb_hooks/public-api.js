@@ -1,21 +1,16 @@
-// CGRF: SRS=SRS-BUILDANDDO-BUDDI-002 | CAPS=B | Seat=C-ONE
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/pocketbase/pb_hooks/public-api.js
 // Stage:       07_BUILD
-// SRS:         SRS-BUILDANDDO-BUDDI-002
+// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-BUDDI-002
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-BUDDI-002
-// Seat:        C-ONE
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+// Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-22
-// Depends:     apps/pocketbase/pb_hooks/workspace-access.js, apps/pocketbase/pb_migrations/1789700000_expand_business_learning.js,
-//              apps/pocketbase/pb_migrations/1788800000_create_praxis_evidence_fabric.js,
-//              apps/pocketbase/pb_migrations/1788940000_create_evidence_witness.js
+// Depends:     apps/pocketbase/pb_hooks/workspace-access.js, apps/pocketbase/pb_migrations/1789700000_expand_business_learning.js
 // EnumType:    Service
-// EnumEdges:   DEPENDS_ON apps/pocketbase/pb_hooks/workspace-access.js; CONSUMES tutorials; CONSUMES knowledge_sources;
-//              CONSUMES knowledge_claims; CONSUMES governance_audits; CONSUMES governance_research_quests;
-//              CONSUMES evidence_epochs; CONSUMES anchor_manifests; SERVED_BY apps/pocketbase/pb_hooks/public-api.pb.js
+// EnumEdges:   DEPENDS_ON apps/pocketbase/pb_hooks/workspace-access.js; CONSUMES tutorials; SERVED_BY apps/pocketbase/pb_hooks/public-api.pb.js
 // DAG Node:    none
 // Intent:      Answer the public voice agent's read tools from public platform data only, and say so when there is none.
 // ───────────────────────────────────────────────────────────────
@@ -30,9 +25,8 @@
 // into a response. The knowledge check's ANSWER is never returned: handing it out would turn the
 // verification step into a formality.
 //
-// Evidence is served only from a collection whose list AND view rules are the empty string, checked
-// on every request. If an operator locks one of them down, this module stops serving it the same
-// minute, instead of publishing around the platform's own rule.
+// Public evidence is restricted to authored lesson references and content digests. Global operational
+// collections are never queried here, even if an older backend still has permissive read rules.
 //
 // Runs are never public. A lesson run is the learner's own `tutorial_learning` record and a Challenge
 // Desk run is a workspace mission; neither collection is queried anywhere in this file. A mission id
@@ -62,25 +56,6 @@ const STOP = new Set(['the', 'and', 'for', 'with', 'want', 'need', 'how', 'what'
     'them', 'they', 'who', 'which', 'when', 'where', 'why', 'its', 'than', 'then', 'there', 'these', 'those', 'use',
     'using', 'used', 'per', 'before', 'after', 'better', 'improve', 'way', 'ways', 'thing', 'things', 'work', 'real']);
 
-// type -> the public collection it reads and the fields it publishes. Actor references
-// (auditor, submitted_by) are deliberately left out: they are opaque ids nobody here needs.
-const EVIDENCE = {
-    source: { collection: 'knowledge_sources', state: 'source_type',
-        fields: ['title', 'publisher', 'url', 'source_type', 'captured_at', 'content_hash'] },
-    claim: { collection: 'knowledge_claims', state: 'epistemic_state',
-        fields: ['subject', 'predicate', 'object', 'domain', 'epistemic_state', 'confidence', 'observed_at', 'valid_until'] },
-    audit: { collection: 'governance_audits', state: 'result',
-        fields: ['target_type', 'target_id', 'action', 'result', 'independent', 'observed_at'] },
-    research_quest: { collection: 'governance_research_quests', state: 'status',
-        fields: ['question', 'trigger_reason', 'subject_type', 'subject_id', 'status'] },
-    epoch: { collection: 'evidence_epochs', state: 'status',
-        fields: ['root_algorithm', 'root_digest', 'previous_root', 'artifact_count', 'status', 'sealed_at'] },
-    anchor: { collection: 'anchor_manifests', state: 'verification_state',
-        fields: ['schema', 'root_digest', 'manifest_digest', 'anchor_network', 'anchor_reference', 'anchor_url',
-            'anchored_at', 'observed_public_root', 'observed_at', 'verification_state'] },
-};
-const NUMBERS = new Set(['confidence', 'artifact_count']);
-const BOOLEANS = new Set(['independent']);
 const LESSON_EVIDENCE = ['reference', 'digest'];
 
 // Mirrors of repository-owned public text. tests/upgrade/public-api.test.mjs fails if any of these
@@ -101,10 +76,9 @@ const COMMUNITY = {
 };
 const PAGES = [
     { path: '/', label: 'Home', description: 'BuildAndDo is an educational collaboration platform. Learn with people and AI through real projects, verify what happened, and share what you learned.' },
-    { path: '/practice', label: 'Practice', description: 'Community-audited methods for real objectives, with evidence, knowledge states and lessons from each attempt.' },
+    { path: '/practice', label: 'Practice', description: 'Practice with authored lessons, follow a checklist and continue learning in your workspace.' },
     { path: '/classrooms', label: 'Classrooms', description: 'Learn together in workspace classrooms with host-led Field Manual lessons, attendance and saved discussion.' },
     { path: '/docs', label: 'Docs', description: 'Get started with workspaces, signals, missions, workflows and the evidence ledger. Learn what each state means.' },
-    { path: '/roadmap', label: 'Roadmap', description: 'Follow the BuildAndDo plan, its current state and the evidence needed to call work complete.' },
     { path: '/pricing', label: 'Pricing', description: 'Discuss a managed paid pilot for one workspace and one approved operation, or explore early access and team rollouts.' },
     { path: '/contact', label: 'Contact', description: 'Request a scoped paid pilot, discuss commercial licensing with Citadel Nexus Inc., or ask a product question.' },
 ];
@@ -114,7 +88,7 @@ const OPERATING_MODEL = {
         'Bring a challenge: a signed-in member submits one on the Challenge Desk of their workspace. Submitting a challenge does not start an automation or create a verified result.',
         'Plan a mission: the work is scoped as a mission, and a workspace owner or admin approves it before it starts.',
         'Keep the evidence: what happened is recorded in the workspace evidence ledger, and nothing is called verified without evidence.',
-        'Learn together: classrooms run host-led shared lessons, and the practice library publishes community-audited methods.',
+        'Learn together: classrooms run host-led shared lessons, and the practice library introduces authored learning activities.',
     ],
     authority: {
         A0: 'Read public information. No account data, no workspace data.',
@@ -127,10 +101,11 @@ const BOUNDARIES = {
     can: [
         'Explain BuildAndDo from its public information.',
         'List the public lessons and how each one is verified.',
-        'Show public evidence with the label it carries.',
+        'Show authored lesson references and content digests.',
         'Submit feedback, a human-handoff request or a demo-challenge request, each with a receipt.',
     ],
     cannot: [
+        'Observe critical system health, internal plans, global governance records or infrastructure.',
         'See or change anyone\'s account, workspace, missions or learning progress.',
         'Start work, approve a mission or mark anything verified.',
         'Quote prices, dates or outcomes the platform has not published.',
@@ -144,7 +119,6 @@ const SECTIONS = ['purpose', 'operating_model', 'capabilities', 'use_cases', 'cu
 function now() { return new Date().toISOString(); }
 function iso(value) { const text = String(value || ''); return text ? text.replace(' ', 'T') : null; }
 function text(value, max = 300) { return typeof value === 'string' ? value.slice(0, max) : ''; }
-function number(value) { const parsed = Number(value); return Number.isFinite(parsed) ? parsed : null; }
 
 /** @returns {string} Site origin for public links and published files; an operator may point staging at itself. */
 function origin() {
@@ -182,20 +156,6 @@ function guard(e, authority, source, handler) {
 function param(e, name) {
     const value = e.request.url.query().get(name);
     return typeof value === 'string' ? value.trim() : '';
-}
-
-function ruleOf(value) { return value === null || value === undefined ? null : String(value); }
-
-/** @returns {object|null} The collection, only while both of its read rules are public. */
-function publicCollection(app, name) {
-    let collection;
-    try {
-        collection = app.findCollectionByNameOrId(name);
-    } catch (error) {
-        if (String(error).includes('no rows in result set')) return null;
-        throw error;
-    }
-    return ruleOf(collection.listRule) === '' && ruleOf(collection.viewRule) === '' ? collection : null;
 }
 
 // ---- lessons ------------------------------------------------------------------------------------
@@ -327,105 +287,22 @@ function vocabulary(item) {
 }
 function matched(words, prefixes) { return prefixes.filter((prefix) => words.some((word) => word.startsWith(prefix))).length; }
 
-// ---- published site files ---------------------------------------------------------------------------
-
-/**
- * One file the site publishes (capabilities.json, roadmap-status.json, platform-health.json), cached
- * for five minutes and a failure for one. A 200 is not accepted as proof: the site answers every
- * unknown path with its HTML shell and a 200, so only a JSON content type that parses counts.
- */
-function published(name, deadline) {
-    const key = `buildanddo.public-api.${name}`;
-    const store = $app.store();
-    try {
-        const cached = JSON.parse(store.get(key) || 'null');
-        if (cached && Date.now() - cached.fetched_ms < (cached.ok ? 300000 : 60000)) return cached;
-    } catch (_) { /* a cache entry that does not parse is refetched */ }
-    let result;
-    if (Date.now() > deadline) {
-        return { ok: false, reason: 'Not fetched within this request\'s time budget.', fetched_at: now() };
-    }
-    let response = null;
-    try {
-        response = $http.send({
-            url: `${origin()}/${name}`,
-            method: 'GET',
-            headers: { Accept: 'application/json', 'User-Agent': 'BuildAndDo-PublicAPI/1.0 (+https://buildanddo.com)' },
-            timeout: 2,
-        });
-    } catch (_) {
-        result = { ok: false, reason: 'The published file could not be fetched.' };
-    }
-    if (response) {
-        const type = String(((response.headers || {})['Content-Type'] || [''])[0] || '');
-        if (response.statusCode !== 200) result = { ok: false, reason: `The site answered ${response.statusCode}.` };
-        else if (!type.includes('application/json')) result = { ok: false, reason: `The site served ${type || 'no content type'}, not JSON.` };
-        else {
-            try { result = { ok: true, doc: JSON.parse(toString(response.body)) }; }
-            catch (_) { result = { ok: false, reason: 'The site served JSON that does not parse.' }; }
-        }
-    }
-    result.fetched_ms = Date.now();
-    result.fetched_at = now();
-    store.set(key, JSON.stringify(result));
-    return result;
-}
-
-function section(name, deadline, summarize) {
-    const file = published(name, deadline);
-    const base = { source: `${origin()}/${name}`, fetched_at: file.fetched_at };
-    if (!file.ok || !file.doc || typeof file.doc !== 'object') return Object.assign(base, { state: 'UNAVAILABLE', reason: file.reason || 'Not a JSON object.' });
-    return Object.assign(base, { state: 'MEASURED' }, summarize(file.doc));
-}
-
-function capabilitiesOf(doc) {
-    const all = Array.isArray(doc.capabilities) ? doc.capabilities.filter((item) => item && typeof item === 'object') : [];
-    const counts = {};
-    for (const key of Object.keys(doc.counts || {})) if (number(doc.counts[key]) !== null) counts[text(key, 40)] = number(doc.counts[key]);
-    return {
-        generated_at: text(doc.generated_at, 40), file_state: text(doc.state, 40),
-        deployed: { production: text((doc.deployed || {}).production, 40), staging: text((doc.deployed || {}).staging, 40) },
-        counts, total: number(doc.total),
-        public_pages: all.filter((item) => item.surface === 'public').slice(0, 40)
-            .map((item) => ({ label: text(item.label, 80), path: text(item.path, 200), state: text(item.state, 20) })),
-        workspace_surfaces: all.filter((item) => item.surface !== 'public').length,
-    };
-}
-function roadmapOf(doc) {
-    return {
-        generated_at: text(doc.generated_at, 40), file_state: text(doc.state, 40), campaign_id: text(doc.campaign_id, 80),
-        sprint_day: number(doc.sprint_day), sprint_days: number(doc.sprint_days),
-        planned_pct: number(doc.planned_pct), actual_pct: number(doc.actual_pct), gate_state: text(doc.gate_state, 40),
-        milestones: (Array.isArray(doc.milestones) ? doc.milestones : []).slice(0, 40).filter((item) => item && typeof item === 'object')
-            .map((item) => ({ day: number(item.day), title: text(item.title, 200), status: text(item.status, 40) })),
-    };
-}
-function platformHealthOf(doc) {
-    const totals = doc.totals || {};
-    return {
-        generated_at: text(doc.generated_at, 40), observed_at: text(doc.observed_at, 40), file_state: text(doc.state, 40),
-        totals: { platforms: number(totals.platforms), connected: number(totals.connected), unverified: number(totals.unverified) },
-        platforms: (Array.isArray(doc.platforms) ? doc.platforms : []).slice(0, 20).filter((item) => item && typeof item === 'object')
-            .map((item) => ({ label: text(item.label, 80), state: text(item.state, 40), verified: item.verified === true })),
-    };
-}
-
 // ---- handlers ----------------------------------------------------------------------------------------
 
 /** GET /api/v1/public/product-context?section= */
 function productContext(e) {
-    const source = 'BuildAndDo product context: reviewed repository statements, the live lesson catalogue and files the site publishes';
+    const source = 'BuildAndDo product context: reviewed product statements and authored lessons';
     return guard(e, 'A0', source, () => {
         const requested = param(e, 'section').toLowerCase();
         if (requested && !NAME.test(requested)) return invalid(e, source, 'section must be one lowercase word, such as capabilities.', 'section');
         if (requested && !SECTIONS.includes(requested)) return unknown(e, source, `There is no product-context section named ${requested}.`, { sections: SECTIONS });
         const base = origin();
-        const deadline = Date.now() + 5000;
         const lessons = () => catalogue(e.app) || [];
         const build = {
             purpose: () => PURPOSE,
             operating_model: () => OPERATING_MODEL,
-            capabilities: () => section('capabilities.json', deadline, capabilitiesOf),
+            capabilities: () => ({ state: 'AUTHORED', public_pages: PAGES.map((page) => ({ ...page, url: base + page.path })),
+                source: 'apps/web/src/lib/publicPages.js', note: 'Product descriptions, not operational measurements.' }),
             use_cases: () => {
                 const items = lessons();
                 return {
@@ -445,8 +322,8 @@ function productContext(e) {
                 };
             },
             community: () => COMMUNITY,
-            roadmap: () => section('roadmap-status.json', deadline, roadmapOf),
-            platform_health: () => section('platform-health.json', deadline, platformHealthOf),
+            roadmap: () => ({ state: 'PRIVATE', reason: 'Operational planning is available only in an authorized workspace.' }),
+            platform_health: () => ({ state: 'PRIVATE', reason: 'Critical system observations require operator authority.' }),
             boundaries: () => BOUNDARIES,
         };
         const sections = {};
@@ -560,91 +437,43 @@ function challengeState(e) {
     });
 }
 
-/** @returns {object} One public evidence record in the shape every type shares. */
-function evidenceOf(type, record) {
-    const spec = EVIDENCE[type];
-    const item = { evidence_id: record.getString('display_id'), type, collection: spec.collection,
-        state: record.getString(spec.state) || 'UNLABELLED' };
-    for (const field of spec.fields) {
-        if (NUMBERS.has(field)) item[field] = number(record.get(field));
-        else if (BOOLEANS.has(field)) item[field] = record.getBool(field);
-        else item[field] = text(record.getString(field), 2048);
-    }
-    return item;
-}
-
-/** @returns {object|null} The public evidence item with this id, lesson evidence included; null otherwise. */
+/** @returns {object|null} A reference or digest of an intentionally authored public lesson. */
 function findEvidence(app, id) {
     const lessonMatch = /^(.+)\.(?:ref\.([0-9]{1,2})|digest)$/.exec(id);
-    if (lessonMatch) {
-        const item = findLesson(app, lessonMatch[1]);
-        return item ? lessonEvidence(item).find((entry) => entry.evidence_id === id) || null : null;
-    }
-    for (const type of Object.keys(EVIDENCE)) {
-        const collection = publicCollection(app, EVIDENCE[type].collection);
-        if (!collection) continue;
-        const rows = app.findRecordsByFilter(collection.name, 'display_id = {:id}', '', 1, 0, { id });
-        if (rows.length) return evidenceOf(type, rows[0]);
-    }
-    return null;
+    if (!lessonMatch) return null;
+    const item = findLesson(app, lessonMatch[1]);
+    return item ? lessonEvidence(item).find((entry) => entry.evidence_id === id) || null : null;
 }
 
 /** GET /api/v1/public/evidence?challenge_id=&mission_id=&evidence_id=&evidence_type= */
 function evidence(e) {
-    const source = 'BuildAndDo public evidence: lesson references and digests, and fabric records whose read rules are public';
+    const source = 'BuildAndDo public lesson references and content digests';
     return guard(e, 'A0', source, () => {
-        const challenge = param(e, 'challenge_id');
-        const mission = param(e, 'mission_id');
-        const id = param(e, 'evidence_id');
-        const type = param(e, 'evidence_type').toLowerCase();
+        const challenge = param(e, 'challenge_id'), mission = param(e, 'mission_id');
+        const id = param(e, 'evidence_id'), type = param(e, 'evidence_type').toLowerCase();
         if (challenge && !CHALLENGE_ID.test(challenge)) return invalid(e, source, 'challenge_id must be a lesson slug or record id.', 'challenge_id');
         if (mission && !MISSION_ID.test(mission)) return invalid(e, source, 'mission_id is not a valid identifier.', 'mission_id');
         if (id && !EVIDENCE_ID.test(id)) return invalid(e, source, 'evidence_id is not a valid identifier.', 'evidence_id');
-        if (type && !NAME.test(type)) return invalid(e, source, 'evidence_type must be one lowercase word, such as claim.', 'evidence_type');
+        if (type && !NAME.test(type)) return invalid(e, source, 'evidence_type must be one lowercase word, such as reference.', 'evidence_type');
         if (mission) return unknown(e, source, RUNS_PRIVATE);
-        const types = [...LESSON_EVIDENCE, ...Object.keys(EVIDENCE)];
-        const legend = 'Each item keeps the state its own record carries. This API never upgrades a label, so an unverified claim is returned as unverified.';
-        if (type && !types.includes(type)) {
-            return reply(e, 200, 'A0', source, { state: 'EMPTY', reason: `BuildAndDo publishes no evidence of type ${type}.`, supported_types: types, items: [] });
-        }
-        const empty = (reason, extra = {}) => reply(e, 200, 'A0', source, Object.assign({ state: 'EMPTY', reason, legend, items: [] }, extra));
+        const legend = 'References and digests describe authored lessons. Operational evidence and verification records are private.';
+        const empty = (reason) => reply(e, 200, 'A0', source, { state: 'EMPTY', reason, legend, items: [], supported_types: LESSON_EVIDENCE });
+        if (type && !LESSON_EVIDENCE.includes(type)) return empty('Only authored lesson references and digests are public.');
         const lesson = challenge ? findLesson(e.app, challenge) : null;
-        if (challenge && !lesson) return unknown(e, source, `No public challenge has the id ${challenge}.`);
+        if (challenge && !lesson) return unknown(e, source, 'No public challenge has that id.');
         if (id) {
             const item = findEvidence(e.app, id);
-            // With a challenge named, the evidence must belong to it: fabric records are not linked to
-            // lessons, and a lesson's evidence ids all start with its slug.
-            if (!item || (type && item.type !== type) || (lesson && !item.evidence_id.startsWith(`${lesson.challenge_id}.`))) {
-                return unknown(e, source, `No public evidence has the id ${id}${type ? ` and type ${type}` : ''}${lesson ? ` for challenge ${lesson.challenge_id}` : ''}.`);
-            }
+            if (!item || (type && item.type !== type) || (lesson && !item.evidence_id.startsWith(`${lesson.challenge_id}.`)))
+                return unknown(e, source, 'No public lesson evidence matches that request.');
             return reply(e, 200, 'A0', source, { state: 'OK', legend, items: [item] });
         }
         if (lesson) {
-            if (type && !LESSON_EVIDENCE.includes(type)) {
-                return empty(`Lessons carry reference and digest evidence. The public evidence fabric (${type}) is not linked to lessons.`);
-            }
             const items = lessonEvidence(lesson).filter((entry) => !type || entry.type === type);
-            if (!items.length) return empty('This lesson publishes no evidence of that type.');
-            return reply(e, 200, 'A0', source, { state: 'OK', legend, items });
+            return items.length ? reply(e, 200, 'A0', source, { state: 'OK', legend, items }) : empty('This lesson publishes no evidence of that type.');
         }
-        if (type && LESSON_EVIDENCE.includes(type)) return empty(`Lesson ${type} evidence is listed per challenge; pass challenge_id.`);
-        if (type) {
-            const collection = publicCollection(e.app, EVIDENCE[type].collection);
-            if (!collection) return empty(`No public ${type} evidence is published on this server.`);
-            const total = e.app.countRecords(collection.name);
-            if (!total) return empty(`No ${type} evidence has been published yet.`, { total });
-            const rows = e.app.findRecordsByFilter(collection.name, "display_id != ''", '-created', LIMIT_MAX, 0);
-            return reply(e, 200, 'A0', source, { state: 'OK', legend, total, items: rows.map((record) => evidenceOf(type, record)) });
-        }
-        const summary = Object.keys(EVIDENCE).map((name) => {
-            const collection = publicCollection(e.app, EVIDENCE[name].collection);
-            return { type: name, published: Boolean(collection), records: collection ? e.app.countRecords(collection.name) : 0 };
-        });
-        return reply(e, 200, 'A0', source, { state: 'OK', legend, types: [
-            { type: 'reference', published: true, records: null, note: 'Per lesson; pass challenge_id.' },
-            { type: 'digest', published: true, records: null, note: 'Per lesson; pass challenge_id.' },
-            ...summary,
-        ] });
+        if (type) return empty('Lesson evidence is listed per challenge; pass challenge_id.');
+        return reply(e, 200, 'A0', source, { state: 'OK', legend, types: LESSON_EVIDENCE.map((name) =>
+            ({ type: name, published: true, records: null, note: 'Per lesson; pass challenge_id.' })) });
     });
 }
 
@@ -673,5 +502,5 @@ function replay(e) {
     });
 }
 
-module.exports = { API, CHALLENGE_ID, SECTIONS, PURPOSE, COMMUNITY, PAGES, OPERATING_MODEL, BOUNDARIES, EVIDENCE, terms,
+module.exports = { API, CHALLENGE_ID, SECTIONS, PURPOSE, COMMUNITY, PAGES, OPERATING_MODEL, BOUNDARIES, terms,
     stamp, reply, guard, findLesson, productContext, demoChallenges, challengeState, evidence, replay };

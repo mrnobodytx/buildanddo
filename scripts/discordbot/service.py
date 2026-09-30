@@ -25,9 +25,9 @@ import logging
 import math
 import time
 
-from .catalogue import Catalogue, mapping, release_identity, text
+from .catalogue import Catalogue, release_identity
 from .contracts import (
-    Caller, DataFault, DataUnavailable, DISPATCH, Limiter, Option, Page, Quiz, Reply,
+    Caller, DataUnavailable, DISPATCH, Limiter, Option, Page, Quiz, Reply,
     Settings, SITE_ORIGIN, SRS, paginate,
 )
 from .grading import Grader
@@ -41,7 +41,7 @@ COMMANDS = {
     "ping": "Check whether this bot can respond.",
     "status": "Read the public site's HTTP reachability and observation time.",
     "release": "Read the version and source revision served by the public site.",
-    "roadmap": "Read dated roadmap progress without inventing missing results.",
+    "roadmap": "Open planning in your authorized BuildAndDo workspace.",
     "docs": "Search the site's public documentation and product pages.",
     "learn": "Search authored lessons, including government submissions, by topic or category.",
     "lesson": "Read a complete starter lesson in private pages.",
@@ -115,15 +115,6 @@ def _time(value: datetime) -> str:
 
 def _note(observed: Observation) -> str:
     return ("Cached observation: " if observed.cached else "Observed: ") + _time(observed.observed_at)
-
-
-def _number(value: object, maximum: float) -> str:
-    if isinstance(value, bool) or not isinstance(value, (int, float)):
-        raise DataUnavailable(DataFault.INVALID)
-    number = float(value)
-    if not math.isfinite(number) or not 0 <= number <= maximum:
-        raise DataUnavailable(DataFault.INVALID)
-    return f"{number:g}"
 
 
 class CommandService:
@@ -282,37 +273,11 @@ class CommandService:
         return await self._learning(name, query)
 
     async def _roadmap(self) -> Reply:
-        observed = await self.client.get("roadmap")
-        source = mapping(observed.data)
-        if source.get("state") != "MEASURED":
-            return Reply((Page(
-                "Roadmap unmeasured",
-                "The public projection has no measured progress. Open the roadmap to inspect the plan.",
-                SITE_ORIGIN + "/roadmap", _note(observed),
-            ),), outcome="unmeasured")
-        try:
-            generated = datetime.fromisoformat(text(source.get("generated_at"), 80).replace("Z", "+00:00"))
-            if generated.tzinfo is None or generated > self.utcnow():
-                raise ValueError
-        except ValueError:
-            raise DataUnavailable(DataFault.INVALID) from None
-        stale = (self.utcnow() - generated).total_seconds() > 48 * 3600
-        day = source.get("sprint_day")
-        if type(day) is not int or not 1 <= day <= 21:
-            raise DataUnavailable(DataFault.INVALID)
-        gate = source.get("gate_state")
-        gate_text = text(gate, 60) if gate is not None else "Unknown"
-        body = (
-            "Generated: " + _time(generated) + f"\nSprint day: {day}"
-            + "\nPlanned: " + _number(source.get("planned_pct"), 100) + "%"
-            + "\nActual: " + _number(source.get("actual_pct"), 100) + "%"
-            + "\nReported last gate: " + gate_text
-            + ("\n\nThis snapshot is older than 48 hours; it does not establish current progress." if stale else "")
-        )
         return Reply((Page(
-            "Roadmap snapshot (stale)" if stale else "Roadmap snapshot",
-            body, SITE_ORIGIN + "/roadmap", _note(observed),
-        ),), outcome="stale" if stale else "success")
+            "Workspace roadmap",
+            "Operational planning is private. Sign in to BuildAndDo and choose a workspace you can access.",
+            SITE_ORIGIN + "/app/roadmap",
+        ),))
 
     async def _learning(self, name: str, query: str) -> Reply:
         observed = await self.client.get("catalogue")

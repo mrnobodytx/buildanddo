@@ -19,7 +19,7 @@
 from __future__ import annotations
 
 import copy
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timezone
 import json
 from pathlib import Path
 import subprocess
@@ -182,46 +182,16 @@ class CommandTests(unittest.IsolatedAsyncioTestCase):
             missing = await self.service.execute(name, "unmatched-sequence", CALLER)
             self.assertIn("No matching", missing.pages[0].title)
 
-    async def test_fresh_roadmap_uses_real_percentages_including_zero(self) -> None:
-        self.feeds["/roadmap-status.json"]["actual_pct"] = 0
-        reply = await self.service.execute("roadmap", "", CALLER)
-        self.assertEqual(reply.outcome, "success")
-        self.assertIn("Actual: 0%", reply.pages[0].body)
-        self.assertIn("Planned: 60.5%", reply.pages[0].body)
-
-    async def test_stale_roadmap_is_labelled_with_its_generation_time(self) -> None:
-        self.feeds["/roadmap-status.json"]["generated_at"] = (NOW - timedelta(days=3)).isoformat()
-        reply = await self.service.execute("roadmap", "", CALLER)
-        self.assertEqual(reply.outcome, "stale")
-        self.assertIn("(stale)", reply.pages[0].title)
-        self.assertIn("48 hours", reply.pages[0].body)
-
-    async def test_unmeasured_roadmap_does_not_fabricate_zero_progress(self) -> None:
-        self.feeds["/roadmap-status.json"] = {"state": "UNMEASURED"}
-        reply = await self.service.execute("roadmap", "", CALLER)
-        self.assertEqual(reply.outcome, "unmeasured")
-        self.assertNotIn("Actual:", reply.pages[0].body)
-        self.assertNotIn("0%", reply.pages[0].body)
-
-    async def test_future_or_invalid_roadmap_numbers_fail_without_claiming_success(self) -> None:
-        for values in [
-            {"generated_at": (NOW + timedelta(seconds=1)).isoformat()},
-            {"generated_at": "2026-09-15"},
-            {"generated_at": "not-a-date"},
-            {"sprint_day": True},
-            {"sprint_day": 0},
-            {"actual_pct": -1},
-            {"actual_pct": True},
-            {"actual_pct": float("nan")},
-            {"planned_pct": 101},
-        ]:
-            with self.subTest(values=values):
-                self.client._cache.clear()
-                original = copy.deepcopy(self.feeds["/roadmap-status.json"])
-                self.feeds["/roadmap-status.json"].update(values)
-                reply = await self.service.execute("roadmap", "", Caller(hash(str(values)), 20, 30))
-                self.assertEqual(reply.outcome, "unavailable")
-                self.feeds["/roadmap-status.json"] = original
+    async def test_roadmap_is_an_authenticated_workspace_link_without_a_public_feed_read(self) -> None:
+        for value in [self.feeds["/roadmap-status.json"], {"state": "UNMEASURED"},
+                      DataUnavailable(DataFault.TIMEOUT), {"private": "PRIVATE-SENTINEL"}]:
+            self.feeds["/roadmap-status.json"] = value
+            reply = await self.service.execute("roadmap", "", Caller(id(value), 20, 30))
+            self.assertEqual(reply.outcome, "success")
+            self.assertEqual(reply.pages[0].url, SITE_ORIGIN + "/app/roadmap")
+            self.assertIn("private", reply.pages[0].body)
+            self.assertNotIn("PRIVATE-SENTINEL", reply.pages[0].body)
+            self.assertEqual(self.reads, [])
 
     async def test_mismatched_release_and_failed_http_are_unavailable(self) -> None:
         self.feeds["/version.json"]["version"] = "38+deadbee"

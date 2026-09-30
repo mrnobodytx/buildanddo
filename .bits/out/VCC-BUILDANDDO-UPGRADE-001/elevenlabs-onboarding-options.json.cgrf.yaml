@@ -1,0 +1,19 @@
+# ─── CGRF Header ───────────────────────────────────────────────
+# File:        .bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-onboarding-options.json.cgrf.yaml
+# Stage:       11_COMMIT
+# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# CAPS:        pending
+# CK:          pending
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+# Seat:        BITS-CODEGEN
+# Owner:       Citadel Nexus Inc.
+# Created:     2026-09-30
+# Depends:     .bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-onboarding-options.json, .bits/out/VCC-BUILDANDDO-UPGRADE-001/onboarding-media-source.json
+# EnumType:    Schema
+# EnumEdges:   VALIDATES .bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-onboarding-options.json; CONSUMES .bits/out/VCC-BUILDANDDO-UPGRADE-001/onboarding-media-source.json
+# Intent:      Bound the requested narration batch without treating model choice or account funding as provider evidence.
+# ───────────────────────────────────────────────────────────────
+schema_version: buildanddo.media-options/v1
+artifact: .bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-onboarding-options.json
+source_authority: VCC-BUILDANDDO-UPGRADE-001
+runtime_acceptance: unmeasured

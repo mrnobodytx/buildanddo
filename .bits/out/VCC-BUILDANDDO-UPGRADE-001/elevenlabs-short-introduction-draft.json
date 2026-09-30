@@ -1,0 +1,14 @@
+{
+  "schema": "buildanddo.content-draft/v1",
+  "asset_id": "7959182b82bd60eb9b7ca3fc7ef8a074291eba2c42b55a8e1105279675fa5404",
+  "source_digest": "c85c4f7574218ef67789a7ed4ac2bdc0199e3fdc11a05ad7bfde7258e6c397fe",
+  "language": "en",
+  "title": "Short video: Start with one useful project (1/1)",
+  "format": "blog",
+  "audience": "New BuildAndDo members",
+  "brief": "Imported media draft 7959182b82bd60eb9b7ca3fc7ef8a074291eba2c42b55a8e1105279675fa5404.\nSource event: BD-MEDIA-ONBOARDING-20260930; scope: buildanddo-public-product.\nReview the source, rights and exact script before production or publication.",
+  "body": "Start with one useful project. Source report dated 2026-09-30.\n\nProblem reported: Start with one real question, keep the source visible, and verify the result before calling the work done.\n\nAction recorded: Create an account, choose an intent and objective, then name your workspace.\n\nOutcome reported: Your starting path links to a lesson and your saved objective.\n\nLimitations recorded: Verified means evidence exists; a completed checkbox alone is not proof.\n\nSource: https://buildanddo.com/docs\nRevision: 2d0e4ae1d806de258aa08b7db38bf1bcfcd42dad\nEvidence selection: c85c4f7574218ef67789a7ed4ac2bdc0199e3fdc11a05ad7bfde7258e6c397fe",
+  "body_sha256": "31b9bd3d30231df804b007f7857a25e49aedd6f070ed93b8104ad63a6f8d857b",
+  "channel": "Short video",
+  "call_to_action": "Inspect the cited source and its limitations."
+}

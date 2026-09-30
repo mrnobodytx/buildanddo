@@ -1,10 +1,10 @@
 # ─── CGRF Header ───────────────────────────────────────────────
 # File:        tests/upgrade/test_public_redaction.py
 # Stage:       11_COMMIT
-# SRS:         SRS-BUILDANDDO-PUBLIC-REDACTION-001
+# SRS:         SRS-BUILDANDDO-PUBLIC-REDACTION-001, SRS-BUILDANDDO-UPGRADE-001
 # CAPS:        pending
 # CK:          pending
-# Dispatch:    VCC-BUILDANDDO-PUBLIC-REDACTION-001
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
 # Seat:        C-ONE
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-23
@@ -19,8 +19,8 @@
 
 Measured 2026-09-23 on the live site: platform-health.json named the host the GitLab runner is on,
 and the Operator page's bundle carried another fleet machine as a system id. These tests build
-platform-health.json the way the build does and scan it, the web source that can ship, and the built
-site in dist/apps/web.
+operator reports in isolation, require their absence from public output, and scan the web source
+that can ship and the built site in dist/apps/web.
 
 Every name and address below is made up or from a documentation range. This repository is public, so
 a real machine name in a fixture would itself be the leak. Exact fleet names reach the rule only
@@ -52,21 +52,27 @@ DOC_IP = "203.0.113.9"              # documentation range (RFC 5737)
 UNSPECIFIED_IP = "0.0.0.0"          # the unspecified address (RFC 1122): it names no machine
 
 
-def build_platform_health(env: dict[str, str] | None = None) -> dict:
-    """Run fleet_report as the build does, into a temporary directory, and return what it wrote."""
+def build_operator_health(env: dict[str, str] | None = None) -> tuple[list[str], dict]:
+    """Generate an operator report and observe its public output in an isolated tree."""
     with tempfile.TemporaryDirectory() as tmp:
         root = Path(tmp)
+        public = root / "public"
+        public.mkdir()
+        for name in ("platform-health.json", "fleet-status.json"):
+            (public / name).write_text(FAMILY_NAME, encoding="utf-8")
+        private = root / "state/estate/platform-health.json"
         out = io.StringIO()
         with mock.patch.dict(os.environ, env or {}), \
                 mock.patch.object(fleet_report, "ROOT", root), \
-                mock.patch.object(fleet_report, "PLATFORM_OUT", root / "platform-health.json"), \
-                mock.patch.object(fleet_report, "FLEET_OUT", root / "fleet-status.json"), \
-                mock.patch.object(fleet_report, "PLATFORM_PRIVATE_OUT", root / "estate-platform-health.json"), \
+                mock.patch.object(fleet_report, "PUBLIC_DIR", public), \
+                mock.patch.object(fleet_report, "PLATFORM_OUT", public / "platform-health.json"), \
+                mock.patch.object(fleet_report, "FLEET_OUT", root / "state/estate/fleet-status.json"), \
+                mock.patch.object(fleet_report, "PLATFORM_PRIVATE_OUT", private), \
                 contextlib.redirect_stdout(out), contextlib.redirect_stderr(out):
             status = fleet_report.main([])
         if status != 0:
             raise AssertionError(f"fleet_report exited {status}: {out.getvalue()[-400:]}")
-        return json.loads((root / "platform-health.json").read_text(encoding="utf-8"))
+        return sorted(path.name for path in public.iterdir()), json.loads(private.read_text(encoding="utf-8"))
 
 
 def families_only() -> dict[str, str]:
@@ -91,18 +97,17 @@ def ships(path: Path) -> bool:
 class PublishedFilesTests(unittest.TestCase):
     """What the build writes and ships."""
 
-    def test_platform_health_carries_no_family_name_or_address(self):
-        document = build_platform_health(families_only())
-        self.assertEqual(redaction.Rule("").find_leaks(json.dumps(document)), {"ips": [], "machines": []})
+    def test_platform_health_remains_private_and_old_public_copies_are_removed(self):
+        public, private = build_operator_health(families_only())
+        self.assertEqual(public, [])
+        self.assertTrue(private["platforms"])
 
     @unittest.skipUnless(os.environ.get(redaction.FLEET_MAP_ENV),
                          "exact fleet names need the private map named by CITADEL_FLEET_MAP")
-    def test_platform_health_carries_no_exact_fleet_name(self):
+    def test_public_assets_carry_no_exact_fleet_name(self):
         rule = redaction.Rule()
         self.assertTrue(rule.names, rule.source)  # the map was read: a zero below is not vacuous
-        document = build_platform_health()
-        leaks = rule.find_leaks(json.dumps(document))
-        self.assertEqual((len(leaks["ips"]), len(leaks["machines"])), (0, 0), "platform-health.json leaks")
+        self.assertEqual(redaction.scan_tree(WEB_PUBLIC, rule), {}, "public assets leak exact fleet names")
 
     def test_web_source_that_can_ship_names_no_machine(self):
         rule = redaction.Rule()
@@ -126,16 +131,16 @@ class PublishedFilesTests(unittest.TestCase):
 class ControlTests(unittest.TestCase):
     """Each kind of leak, planted, is caught; what is not a leak is left alone."""
 
-    def test_the_generator_withholds_a_name_planted_in_its_platforms(self):
-        # Planted in `label`, not `detail`: since 2026-09-24 the public artifact is a closed-set
-        # projection and `detail` is not in it, so a name planted there would be withheld by the
-        # projection and this test would no longer measure the rule at all.
+    def test_private_diagnostics_are_retained_without_any_public_projection(self):
+        # Publication is now retired altogether. Redaction itself is exercised by
+        # the independent planted-data controls below, not by a missing artifact.
         planted = copy.deepcopy(fleet_report.PLATFORMS)
         planted[0]["label"] = f"{planted[0]['label']} on {FAMILY_NAME} at {DOC_IP}"
         with mock.patch.object(fleet_report, "PLATFORMS", planted):
-            document = build_platform_health(families_only())
-        self.assertEqual(redaction.Rule("").find_leaks(json.dumps(document)), {"ips": [], "machines": []})
-        self.assertIn(redaction.BAR, document["platforms"][0]["label"])
+            public, private = build_operator_health(families_only())
+        self.assertEqual(public, [])
+        self.assertIn(FAMILY_NAME, private["platforms"][0]["label"])
+        self.assertIn(DOC_IP, private["platforms"][0]["label"])
 
     def test_a_planted_family_name_and_address_are_caught_and_withheld(self):
         rule = redaction.Rule("")

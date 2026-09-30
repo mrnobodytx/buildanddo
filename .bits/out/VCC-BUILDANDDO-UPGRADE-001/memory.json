@@ -10,7 +10,7 @@
       "enum_type": "ConfigDoc",
       "functions": [],
       "dependencies": [],
-      "lines": 1701,
+      "lines": 1702,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Keep the registered mission research continuation and measured repository inventory reviewable while retaining earlier runtime and governance findings.",
@@ -50,7 +50,9 @@
         "pr112-integration",
         "buddi-connection-recovery",
         "workspace-connection-recovery",
-        "mutual-development-exchange"
+        "mutual-development-exchange",
+        "post-competition-privacy",
+        "buddi-awareness"
       ],
       "tenant_id": null
     },
@@ -67,9 +69,11 @@
       "dependencies": [
         "AGENTS.md",
         ".bits/srs_registry.yml",
-        "scripts/ci/agent_context.py"
+        "scripts/ci/agent_context.py",
+        ".bits/handoffs/2026-09-30-bits-codegen-post-competition-activation.md",
+        "docs/elevenlabs-starter-batch.md"
       ],
-      "lines": 152,
+      "lines": 166,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "The durable brief an agent reads first; measured facts live in the lock beside it.",
@@ -87,7 +91,9 @@
         "sprint-user-journey",
         "educational-collaboration",
         "government-research-assurance",
-        "test-isolation-and-claim-authority"
+        "test-isolation-and-claim-authority",
+        "post-competition-privacy",
+        "buddi-awareness"
       ],
       "tenant_id": null
     },
@@ -544,7 +550,7 @@
       "dependencies": [
         ".bits/out/VCC-BUILDANDDO-UPGRADE-001/report.md"
       ],
-      "lines": 67863,
+      "lines": 70454,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Describe the public memory payload that carries this dispatch into the post-merge ingest flow.",
@@ -565,7 +571,9 @@
         "career-passport",
         "buddi-connection-recovery",
         "workspace-connection-recovery",
-        "mutual-development-exchange"
+        "mutual-development-exchange",
+        "post-competition-privacy",
+        "buddi-awareness"
       ],
       "tenant_id": null
     },
@@ -684,7 +692,7 @@
       "dependencies": [
         ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md"
       ],
-      "lines": 1875,
+      "lines": 1898,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Track the authorized eight-area implementation and its verification gates.",
@@ -712,7 +720,9 @@
         "pr112-integration",
         "buddi-connection-recovery",
         "workspace-connection-recovery",
-        "mutual-development-exchange"
+        "mutual-development-exchange",
+        "post-competition-privacy",
+        "buddi-awareness"
       ],
       "tenant_id": null
     },
@@ -1016,7 +1026,7 @@
       "dependencies": [
         ".bits/srs_registry.yml"
       ],
-      "lines": 2550,
+      "lines": 2587,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Define acceptance evidence for the eight owner-authorized BuildAndDo upgrades.",
@@ -1044,7 +1054,9 @@
         "pr112-integration",
         "buddi-connection-recovery",
         "workspace-connection-recovery",
-        "mutual-development-exchange"
+        "mutual-development-exchange",
+        "post-competition-privacy",
+        "buddi-awareness"
       ],
       "tenant_id": null
     },
@@ -4544,9 +4556,11 @@
       "enum_type": "Doc",
       "functions": [],
       "dependencies": [
-        "apps/web/src/lib/publicPages.js"
+        "apps/web/src/lib/publicPages.js",
+        "apps/web/src/lib/communityLinks.js",
+        "apps/web/src/data/personas.js"
       ],
-      "lines": 62,
+      "lines": 61,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Publish the same public route catalogue for text-based discovery.",
@@ -4562,7 +4576,9 @@
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
         "objective-first-onboarding",
-        "educational-collaboration"
+        "educational-collaboration",
+        "post-competition-privacy",
+        "buddi-awareness"
       ],
       "tenant_id": null
     },
@@ -4605,12 +4621,12 @@
       "enum_type": "Widget",
       "functions": [],
       "dependencies": [],
-      "lines": 25,
+      "lines": 24,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "List only canonical public routes from the shared navigation catalogue.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "partial",
+      "outcome": "stored",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -4620,7 +4636,9 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "buildanddo-upgrade"
+        "buildanddo-upgrade",
+        "post-competition-privacy",
+        "buddi-awareness"
       ],
       "tenant_id": null
     },
@@ -4743,12 +4761,12 @@
         "apps/web/src/hooks/useFailureTelemetry.js",
         "apps/web/src/components/workspace/PageBoundary.jsx"
       ],
-      "lines": 315,
+      "lines": 314,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Route public and workspace views only after native session validation.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "partial",
+      "outcome": "stored",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -4761,7 +4779,9 @@
         "sprint-user-journey",
         "government-research-assurance",
         "career-passport",
-        "telemetry-coverage"
+        "telemetry-coverage",
+        "post-competition-privacy",
+        "buddi-awareness"
       ],
       "tenant_id": null
     },
@@ -4782,7 +4802,7 @@
       "ck_stamp": "pending",
       "intent_statement": "Load every real workspace route and the five public entries while preserving authentication gates.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "partial",
+      "outcome": "stored",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -4792,7 +4812,9 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "buildanddo-upgrade"
+        "buildanddo-upgrade",
+        "post-competition-privacy",
+        "buddi-awareness"
       ],
       "tenant_id": null
     },
@@ -6433,9 +6455,10 @@
         "groupFor",
         "NavItem",
         "NavList",
-        "BrandMark",
+        "BrandLockup",
         "WorkspaceSwitcher",
-        "WorkspacePages"
+        "WorkspacePages",
+        "WorkspaceLayout"
       ],
       "dependencies": [
         "apps/web/src/contexts/WorkspaceAccessContext.jsx",
@@ -6447,7 +6470,7 @@
       "ck_stamp": "pending",
       "intent_statement": "Keep workspace navigation tied to observed account and government membership while preserving ordinary work areas.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "partial",
+      "outcome": "stored",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -6466,7 +6489,9 @@
         "workspace-assistant",
         "government-research-assurance",
         "career-passport",
-        "audited-evidence-repairs"
+        "audited-evidence-repairs",
+        "post-competition-privacy",
+        "buddi-awareness"
       ],
       "tenant_id": null
     },
@@ -8397,7 +8422,7 @@
       "dependencies": [
         ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md"
       ],
-      "lines": 144,
+      "lines": 137,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Keep public navigation, canonical metadata and crawler output on the same route catalogue.",
@@ -8413,7 +8438,9 @@
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
         "objective-first-onboarding",
-        "educational-collaboration"
+        "educational-collaboration",
+        "post-competition-privacy",
+        "buddi-awareness"
       ],
       "tenant_id": null
     },
@@ -9111,18 +9138,19 @@
         "SRS-BUILDANDDO-UPGRADE-001"
       ],
       "enum_type": "Widget",
-      "functions": [],
-      "dependencies": [
-        "apps/web/src/lib/pocketbaseClient.js",
-        "apps/web/src/lib/observability/runtime.js",
-        "apps/web/src/lib/navigationIntent.js"
+      "functions": [
+        "PracticePage"
       ],
-      "lines": 135,
+      "dependencies": [
+        "apps/web/src/components/site/PublicPage.jsx",
+        "apps/web/src/components/workspace/TutorialCatalog.jsx"
+      ],
+      "lines": 27,
       "caps_grade": "pending",
       "ck_stamp": "pending",
-      "intent_statement": "Keep an unavailable practice library distinct from a successfully read empty collection.",
+      "intent_statement": "Offer authored public learning without anonymously reading the global operational evidence fabric. ----------------------------------------------------------------",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "partial",
+      "outcome": "stored",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -9133,7 +9161,9 @@
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
         "buildanddo-upgrade",
-        "telemetry-coverage"
+        "telemetry-coverage",
+        "post-competition-privacy",
+        "buddi-awareness"
       ],
       "tenant_id": null
     },
@@ -9601,7 +9631,7 @@
       "lines": 400,
       "caps_grade": "pending",
       "ck_stamp": "pending",
-      "intent_statement": "Show the day the edition is about \u2014 today's priorities, what was",
+      "intent_statement": "Show the day the edition is about — today's priorities, what was",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
       "outcome": "partial",
       "supersedes": false,
@@ -9832,7 +9862,7 @@
       "lines": 718,
       "caps_grade": "pending",
       "ck_stamp": "pending",
-      "intent_statement": "Make a list of missions triageable \u2014 priority, progress, due dates, editing and deletion \u2014 instead of an append-only stack.",
+      "intent_statement": "Make a list of missions triageable — priority, progress, due dates, editing and deletion — instead of an append-only stack.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
       "outcome": "partial",
       "supersedes": false,
@@ -9873,7 +9903,7 @@
       "lines": 628,
       "caps_grade": "pending",
       "ck_stamp": "pending",
-      "intent_statement": "Give the operations surface the two things it was missing \u2014 the runbook text and the record of each time a human ran it.",
+      "intent_statement": "Give the operations surface the two things it was missing — the runbook text and the record of each time a human ran it.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
       "outcome": "partial",
       "supersedes": false,
@@ -9908,7 +9938,7 @@
       "lines": 526,
       "caps_grade": "pending",
       "ck_stamp": "pending",
-      "intent_statement": "Answer \"what is happening in this workspace\" in one screen \u2014 one merged activity feed, counts that mean something, and an honest statement when the data layer cannot be read.",
+      "intent_statement": "Answer \"what is happening in this workspace\" in one screen — one merged activity feed, counts that mean something, and an honest statement when the data layer cannot be read.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
       "outcome": "partial",
       "supersedes": false,
@@ -9983,7 +10013,7 @@
       "lines": 625,
       "caps_grade": "pending",
       "ck_stamp": "pending",
-      "intent_statement": "Make the roadmap answer \"how far along is this workspace, and on what evidence\" \u2014 a status distribution, a filterable ledger, and in-place status changes that still cannot fake a verification.",
+      "intent_statement": "Make the roadmap answer \"how far along is this workspace, and on what evidence\" — a status distribution, a filterable ledger, and in-place status changes that still cannot fake a verification.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
       "outcome": "partial",
       "supersedes": false,
@@ -10254,7 +10284,7 @@
       "lines": 733,
       "caps_grade": "pending",
       "ck_stamp": "pending",
-      "intent_statement": "Give a workflow the sequence that makes it one \u2014 ordered, editable steps \u2014 so activating it says what would run.",
+      "intent_statement": "Give a workflow the sequence that makes it one — ordered, editable steps — so activating it says what would run.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
       "outcome": "partial",
       "supersedes": false,
@@ -10835,14 +10865,15 @@
       "enum_type": "Adapter",
       "functions": [],
       "dependencies": [
-        "apps/web/tools/release-telemetry.mjs"
+        "apps/web/tools/release-telemetry.mjs",
+        "apps/web/tools/public-delivery.mjs"
       ],
-      "lines": 94,
+      "lines": 92,
       "caps_grade": "pending",
       "ck_stamp": "pending",
-      "intent_statement": "Keep offline builds usable while binding designated release telemetry to the actual build.",
+      "intent_statement": "Keep offline builds usable while binding designated release telemetry to the actual build. ---------------------------------------------------------------- Cross-platform replacement for the old inline npm script: \"node tools/generate-llms.js || true && vite build --outDir ../../dist/apps/web\" That relied on shell \"||\"/\"&&\" chaining, which is NOT portable: Windows cmd.exe parses \"A || B && C\" as \"A || (B && C)\", so a SUCCESSFUL generate-llms.js run skipped vite entirely (measured 2026-09-07 - real builds silently produced zero output for weeks). The follow-up fix (.npmrc script-shell=git-bash) then broke this same script on Linux CI runners, which have no such path. A plain Node script has no shell-dialect dependence at all - the correct, durable fix, not another shell-specific patch. import { mkdtempSync, rmSync } from 'node:fs'; import { tmpdir } from 'node:os'; import { join } from 'node:path'; import { fileURLToPath } from 'node:url'; import { resolveBuildRelease } from '../../../scripts/ci/release.mjs'; import { generatePublicAssets, generatePageHeads } from './generate-seo.mjs'; import { generateCommunityCatalogue } from './generate-community.mjs'; import { findLessonAnswers } from './check-public-lessons.mjs'; import { releaseTelemetryContract, releaseTelemetryPlugin, TELEMETRY_MANIFEST } from './release-telemetry.mjs'; import { copyPublicAssets, assertPublicDelivery } from './public-delivery.mjs';",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "partial",
+      "outcome": "stored",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -10854,7 +10885,9 @@
         "SRS-BUILDANDDO-UPGRADE-001",
         "buildanddo-upgrade",
         "telemetry-coverage",
-        "pr112-integration"
+        "pr112-integration",
+        "post-competition-privacy",
+        "buddi-awareness"
       ],
       "tenant_id": null
     },
@@ -16638,7 +16671,7 @@
       "dependencies": [
         "scripts/discordbot/contracts.py"
       ],
-      "lines": 211,
+      "lines": 210,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Keep public source reads off the Discord event loop and bound their traffic, lifetime and failure evidence.",
@@ -16653,7 +16686,9 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "discord-community"
+        "discord-community",
+        "post-competition-privacy",
+        "buddi-awareness"
       ],
       "tenant_id": null
     },
@@ -16711,14 +16746,14 @@
         "log_outcome",
         "_time",
         "_note",
-        "_number"
+        "CommandService"
       ],
       "dependencies": [
         "scripts/discordbot/catalogue.py",
         "scripts/discordbot/public_data.py",
         "scripts/discordbot/grading.py"
       ],
-      "lines": 357,
+      "lines": 322,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Connect useful community commands to dated public evidence and the site's authored teaching content.",
@@ -16735,7 +16770,9 @@
         "SRS-BUILDANDDO-UPGRADE-001",
         "discord-community",
         "telemetry-coverage",
-        "pr112-integration"
+        "pr112-integration",
+        "post-competition-privacy",
+        "buddi-awareness"
       ],
       "tenant_id": null
     },
@@ -17317,14 +17354,15 @@
       ],
       "dependencies": [
         "apps/web/tools/generate-seo.mjs",
-        "apps/web/tools/release-telemetry.mjs"
+        "apps/web/tools/release-telemetry.mjs",
+        "apps/web/tools/public-delivery.mjs"
       ],
-      "lines": 436,
+      "lines": 442,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Verify release identity and real generated crawler artifacts without network dependencies.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "success",
+      "outcome": "stored",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -17336,7 +17374,9 @@
         "SRS-BUILDANDDO-UPGRADE-001",
         "buildanddo-upgrade",
         "telemetry-coverage",
-        "pr112-integration"
+        "pr112-integration",
+        "post-competition-privacy",
+        "buddi-awareness"
       ],
       "tenant_id": null
     },
@@ -18837,7 +18877,7 @@
         "scripts/discordbot/catalogue.py",
         "apps/web/tools/generate-community.mjs"
       ],
-      "lines": 298,
+      "lines": 268,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Verify real generated learning content, scope enforcement, dated evidence and useful bot command outcomes without private access.",
@@ -18852,7 +18892,9 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "discord-community"
+        "discord-community",
+        "post-competition-privacy",
+        "buddi-awareness"
       ],
       "tenant_id": null
     },
@@ -34547,7 +34589,7 @@
       "type": "C",
       "event_type": "smoke_run",
       "file_path": "apps/mission_suite/bundle.py",
-      "description": "The extended portable source passed 256 Node and 192 Python cases with nine explicit native skips. Existing mission-suite coverage passed 23 cases at 87.96\u201399.55% statement coverage. Strict typing passed six source modules, Ruff passed changed Python source/tests, and the JavaScript diagnostic parsed 239 modules without errors.",
+      "description": "The extended portable source passed 256 Node and 192 Python cases with nine explicit native skips. Existing mission-suite coverage passed 23 cases at 87.96–99.55% statement coverage. Strict typing passed six source modules, Ruff passed changed Python source/tests, and the JavaScript diagnostic parsed 239 modules without errors.",
       "caps_before": null,
       "caps_after": null,
       "dag_impact": null,
@@ -34703,7 +34745,7 @@
       "type": "C",
       "event_type": "test_pass",
       "file_path": "tests/upgrade/check_blueprint_pipeline.py",
-      "description": "Blueprint pipeline continuation: 44 focused cases: 42 pass, two native PDF skips; 94.17\u2013100% statement coverage per new Python module. Strict source typing and Ruff pass.",
+      "description": "Blueprint pipeline continuation: 44 focused cases: 42 pass, two native PDF skips; 94.17–100% statement coverage per new Python module. Strict source typing and Ruff pass.",
       "caps_before": null,
       "caps_after": null,
       "dag_impact": null,
@@ -38404,7 +38446,7 @@
       "dependencies": [
         ".bits/hostinger-readiness.json"
       ],
-      "lines": 687,
+      "lines": 701,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Identify the mandatory sprint contract without embedding comments in JSON.",
@@ -38431,7 +38473,9 @@
         "telemetry-coverage",
         "buddi-connection-recovery",
         "workspace-connection-recovery",
-        "mutual-development-exchange"
+        "mutual-development-exchange",
+        "post-competition-privacy",
+        "buddi-awareness"
       ],
       "tenant_id": null
     },
@@ -38478,7 +38522,7 @@
       "dependencies": [
         ".bits/hostinger-readiness.lock.json"
       ],
-      "lines": 1366,
+      "lines": 1373,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Distinguish reviewed source fingerprints from execution or deployment evidence.",
@@ -38506,7 +38550,9 @@
         "pr112-integration",
         "buddi-connection-recovery",
         "workspace-connection-recovery",
-        "mutual-development-exchange"
+        "mutual-development-exchange",
+        "post-competition-privacy",
+        "buddi-awareness"
       ],
       "tenant_id": null
     },
@@ -38722,9 +38768,11 @@
         "docs/sprint-user-journey.md",
         "docs/development-loop.md",
         "docs/mutual-development.md",
-        "docs/media-corpus.md"
+        "docs/media-corpus.md",
+        ".bits/handoffs/2026-09-30-bits-codegen-post-competition-activation.md",
+        "docs/elevenlabs-starter-batch.md"
       ],
-      "lines": 427,
+      "lines": 461,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Make the reason, acceptance boundary and next action for every sprint piece a required source review rather than a remembered plan.",
@@ -38743,7 +38791,9 @@
         "developmental-twin",
         "evidence-backed-value",
         "educational-collaboration",
-        "mutual-development-exchange"
+        "mutual-development-exchange",
+        "post-competition-privacy",
+        "buddi-awareness"
       ],
       "tenant_id": null
     },
@@ -39749,6 +39799,7 @@
       ],
       "enum_type": "Service",
       "functions": [
+        "routes",
         "route",
         "surface",
         "plan"
@@ -39756,12 +39807,12 @@
       "dependencies": [
         "apps/pocketbase/pb_hooks/workspace-access.js"
       ],
-      "lines": 88,
+      "lines": 92,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Constrain inferred assistant plans to known routes and current nonsensitive controls while preserving human authority decisions.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "partial",
+      "outcome": "stored",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -39772,7 +39823,9 @@
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
         "sprint-completion",
-        "workspace-assistant"
+        "workspace-assistant",
+        "post-competition-privacy",
+        "buddi-awareness"
       ],
       "tenant_id": null
     },
@@ -39965,14 +40018,16 @@
         "apps/pocketbase/pb_hooks/knowledge-graph.js",
         "apps/pocketbase/pb_migrations/1790900000_workspace_assistant.js",
         "apps/pocketbase/pb_hooks/workspace-knowledge.js",
-        "apps/pocketbase/pb_hooks/telemetry.js"
+        "apps/pocketbase/pb_hooks/telemetry.js",
+        "apps/pocketbase/pb_hooks/assistant-systems.js",
+        "apps/pocketbase/pb_hooks/estate-lib.js"
       ],
-      "lines": 291,
+      "lines": 306,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Keep conversation, inferred plans and personal action knowledge isolated while using configured inference and current native authority.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "partial",
+      "outcome": "stored",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -39985,7 +40040,9 @@
         "sprint-completion",
         "workspace-assistant",
         "broadcast-repairs-and-lessons",
-        "telemetry-coverage"
+        "telemetry-coverage",
+        "post-competition-privacy",
+        "buddi-awareness"
       ],
       "tenant_id": null
     },
@@ -40239,6 +40296,7 @@
       ],
       "enum_type": "Widget",
       "functions": [
+        "SystemContext",
         "AssistantDesk",
         "WorkspaceAssistant"
       ],
@@ -40249,12 +40307,12 @@
         "apps/web/src/contexts/WorkspaceAccessContext.jsx",
         "apps/web/src/hooks/useFailureTelemetry.js"
       ],
-      "lines": 242,
+      "lines": 270,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Offer a persistent account-scoped assistant with visible plans, form assistance, retryable outcomes and personal session history.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "partial",
+      "outcome": "stored",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -40268,7 +40326,9 @@
         "workspace-assistant",
         "audited-evidence-repairs",
         "telemetry-coverage",
-        "workspace-connection-recovery"
+        "workspace-connection-recovery",
+        "post-competition-privacy",
+        "buddi-awareness"
       ],
       "tenant_id": null
     },
@@ -40323,7 +40383,7 @@
         "apps/web/src/components/workspace/WorkspaceAssistant.jsx",
         "tests/upgrade/assistant-fixture.mjs"
       ],
-      "lines": 272,
+      "lines": 295,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Require rendered conversation recovery, reviewed form effects, current-account isolation and honest unavailable-provider states.",
@@ -40341,7 +40401,9 @@
         "sprint-completion",
         "workspace-assistant",
         "audited-evidence-repairs",
-        "workspace-connection-recovery"
+        "workspace-connection-recovery",
+        "post-competition-privacy",
+        "buddi-awareness"
       ],
       "tenant_id": null
     },
@@ -40756,17 +40818,18 @@
       ],
       "enum_type": "Widget",
       "functions": [
-        "WorkDesks"
+        "WorkDesks",
+        "SpecialistWorkPage"
       ],
       "dependencies": [
         "apps/web/src/hooks/useWorkspaceRecords.js"
       ],
-      "lines": 107,
+      "lines": 108,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Restore scoped specialist work desks while retaining the separate Capability Passport and existing work tools.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "partial",
+      "outcome": "stored",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -40778,7 +40841,9 @@
         "SRS-BUILDANDDO-UPGRADE-001",
         "sprint-completion",
         "workspace-assistant",
-        "test-isolation-and-claim-authority"
+        "test-isolation-and-claim-authority",
+        "post-competition-privacy",
+        "buddi-awareness"
       ],
       "tenant_id": null
     },
@@ -40903,12 +40968,12 @@
         "apps/web/src/lib/workspaceAssistant.js",
         "apps/web/src/components/workspace/WorkspaceAssistant.jsx"
       ],
-      "lines": 149,
+      "lines": 171,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Explain personal assistant isolation, inferred browser actions, scoped context and receiving acceptance without granting model authority.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "success",
+      "outcome": "stored",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -40920,7 +40985,9 @@
         "SRS-BUILDANDDO-UPGRADE-001",
         "sprint-completion",
         "workspace-assistant",
-        "workspace-connection-recovery"
+        "workspace-connection-recovery",
+        "post-competition-privacy",
+        "buddi-awareness"
       ],
       "tenant_id": null
     },
@@ -41017,12 +41084,12 @@
         "tests/upgrade/admin-fixture.mjs",
         "apps/pocketbase/pb_hooks/workspace-assistant.js"
       ],
-      "lines": 37,
+      "lines": 38,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Exercise real assistant policies through explicit storage and inference doubles, without live model or database claims.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "success",
+      "outcome": "stored",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -41033,7 +41100,9 @@
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
         "sprint-completion",
-        "workspace-assistant"
+        "workspace-assistant",
+        "post-competition-privacy",
+        "buddi-awareness"
       ],
       "tenant_id": null
     },
@@ -47951,12 +48020,12 @@
         "apps/web/src/data/hostingerChallenge.js",
         "apps/web/src/components/site/Footer.jsx"
       ],
-      "lines": 167,
+      "lines": 171,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Close Hostinger Day-21 runtime evidence and submission packaging gaps without granting deployment authority.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "partial",
+      "outcome": "stored",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -47966,7 +48035,9 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "educational-collaboration"
+        "educational-collaboration",
+        "post-competition-privacy",
+        "buddi-awareness"
       ],
       "tenant_id": null
     },
@@ -55485,14 +55556,15 @@
         "apps/pocketbase/pb_hooks/classroom-media.js",
         "apps/pocketbase/pb_hooks/classroom-realtime-lib.js",
         "apps/pocketbase/pb_migrations/1790600000_classroom_presence.js",
-        "apps/pocketbase/pb_hooks/telemetry.js"
+        "apps/pocketbase/pb_hooks/telemetry.js",
+        "apps/pocketbase/pb_hooks/estate-lib.js"
       ],
-      "lines": 160,
+      "lines": 165,
       "caps_grade": "pending",
       "ck_stamp": "pending",
-      "intent_statement": "Advertise only owned published tracks to current classroom participants without granting room access from a global publisher allowlist, and call a track verified only when the SFU echoes it.",
+      "intent_statement": "Advertise only owned published tracks to current classroom participants without granting room access from a global publisher allowlist, and call a track verified only when the SFU echoes it. ----------------------------------------------------------------",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "partial",
+      "outcome": "stored",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -55503,7 +55575,9 @@
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
         "broadcast-repairs-and-lessons",
-        "telemetry-coverage"
+        "telemetry-coverage",
+        "post-competition-privacy",
+        "buddi-awareness"
       ],
       "tenant_id": null
     },
@@ -55519,14 +55593,15 @@
       "dependencies": [
         "apps/pocketbase/pb_hooks/classroom-media.js",
         "apps/pocketbase/pb_hooks/classroom-realtime-lib.js",
-        "apps/pocketbase/pb_hooks/telemetry.js"
+        "apps/pocketbase/pb_hooks/telemetry.js",
+        "apps/pocketbase/pb_hooks/estate-lib.js"
       ],
-      "lines": 50,
+      "lines": 57,
       "caps_grade": "pending",
       "ck_stamp": "pending",
-      "intent_statement": "Expose room-bound signalling without allowing caller-supplied session identifiers to grant media access.",
+      "intent_statement": "Expose room-bound signalling without allowing caller-supplied session identifiers to grant media access. ----------------------------------------------------------------",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "partial",
+      "outcome": "stored",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -55537,7 +55612,9 @@
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
         "broadcast-repairs-and-lessons",
-        "telemetry-coverage"
+        "telemetry-coverage",
+        "post-competition-privacy",
+        "buddi-awareness"
       ],
       "tenant_id": null
     },
@@ -55969,7 +56046,7 @@
       "ck_stamp": "pending",
       "intent_statement": "Carry the live-classroom media behaviour of the retired ClassroomPage into the routed room.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "partial",
+      "outcome": "stored",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -55980,7 +56057,9 @@
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
         "broadcast-repairs-and-lessons",
-        "telemetry-coverage"
+        "telemetry-coverage",
+        "post-competition-privacy",
+        "buddi-awareness"
       ],
       "tenant_id": null
     },
@@ -56052,12 +56131,12 @@
         "apps/pocketbase/pb_hooks/classroom-realtime.pb.js",
         "apps/pocketbase/pb_hooks/classroom-presence.pb.js"
       ],
-      "lines": 741,
+      "lines": 739,
       "caps_grade": "pending",
       "ck_stamp": "pending",
       "intent_statement": "Join, publish to and subscribe from a Cloudflare Realtime classroom, completing the pull's renegotiation leg and discovering what to pull from the presence advertisement.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "partial",
+      "outcome": "stored",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -56068,7 +56147,9 @@
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
         "broadcast-repairs-and-lessons",
-        "telemetry-coverage"
+        "telemetry-coverage",
+        "post-competition-privacy",
+        "buddi-awareness"
       ],
       "tenant_id": null
     },
@@ -56162,12 +56243,12 @@
         "apps/web/src/lib/classroomTelemetry.js",
         "tests/upgrade/classroom-media-fixture.mjs"
       ],
-      "lines": 297,
+      "lines": 299,
       "caps_grade": "pending",
       "ck_stamp": "pending",
-      "intent_statement": "Exercise real browser signalling against registered scoped handlers with explicit WebRTC and provider doubles and cancellation controls.",
+      "intent_statement": "Exercise real browser signalling against registered scoped handlers with explicit WebRTC and provider doubles and cancellation controls. ----------------------------------------------------------------",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "partial",
+      "outcome": "stored",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -56178,7 +56259,9 @@
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
         "broadcast-repairs-and-lessons",
-        "telemetry-coverage"
+        "telemetry-coverage",
+        "post-competition-privacy",
+        "buddi-awareness"
       ],
       "tenant_id": null
     },
@@ -56301,12 +56384,12 @@
         "tests/upgrade/classroom-media-fixture.mjs",
         "apps/pocketbase/pb_hooks/classroom-presence.pb.js"
       ],
-      "lines": 777,
+      "lines": 782,
       "caps_grade": "pending",
       "ck_stamp": "pending",
-      "intent_statement": "Exercise presence through bound session and publication sources while rejecting stale or foreign authority and retaining expiry, privacy and migration regressions.",
+      "intent_statement": "Exercise presence through bound session and publication sources while rejecting stale or foreign authority and retaining expiry, privacy and migration regressions. ---------------------------------------------------------------- The shared fixture executes the registered routes and native command sources. Storage, configuration and HTTP are explicit local doubles, not live providers or evidence of native PocketBase/SFU acceptance. import assert from 'node:assert/strict'; import test from 'node:test'; import { plain, root, source } from './admin-fixture.mjs'; import { mediaFixture, MEDIA_MIGRATION } from './classroom-media-fixture.mjs';",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "partial",
+      "outcome": "stored",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -56317,7 +56400,9 @@
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
         "broadcast-repairs-and-lessons",
-        "telemetry-coverage"
+        "telemetry-coverage",
+        "post-competition-privacy",
+        "buddi-awareness"
       ],
       "tenant_id": null
     },
@@ -60537,7 +60622,8 @@
       "enum_type": "Widget",
       "functions": [
         "HostTile",
-        "HostDetail"
+        "HostDetail",
+        "FleetPage"
       ],
       "dependencies": [
         "scripts/ci/fleet_report.py",
@@ -60551,7 +60637,7 @@
       "ck_stamp": "pending",
       "intent_statement": "Show the Citadel NNC as three planes of hosts with what actually runs on each, and label the reading as a recorded observation rather than dressing a transcription up as a live gauge.",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "partial",
+      "outcome": "stored",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -60561,7 +60647,9 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "telemetry-coverage"
+        "telemetry-coverage",
+        "post-competition-privacy",
+        "buddi-awareness"
       ],
       "tenant_id": null
     },
@@ -61184,12 +61272,12 @@
         "apps/web/src/components/site/StatusPanels.jsx",
         "apps/web/src/pages"
       ],
-      "lines": 619,
+      "lines": 618,
       "caps_grade": "pending",
       "ck_stamp": "pending",
-      "intent_statement": "Exercise real read clients and hook closures with local transport, hook, clock and telemetry sink doubles, without vendor or API access.",
+      "intent_statement": "Exercise real read clients and hook closures with local transport, hook, clock and telemetry sink doubles, without vendor or API access. ----------------------------------------------------------------",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "partial",
+      "outcome": "stored",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -61200,7 +61288,9 @@
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
         "telemetry-coverage",
-        "pr112-integration"
+        "pr112-integration",
+        "post-competition-privacy",
+        "buddi-awareness"
       ],
       "tenant_id": null
     },
@@ -61225,9 +61315,9 @@
       "lines": 487,
       "caps_grade": "pending",
       "ck_stamp": "pending",
-      "intent_statement": "Exercise content-free backend failure reporting and request-independent log forwarding with synthetic storage, logger and transport doubles.",
+      "intent_statement": "Exercise content-free backend failure reporting and request-independent log forwarding with synthetic storage, logger and transport doubles. ----------------------------------------------------------------",
       "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "outcome": "partial",
+      "outcome": "stored",
       "supersedes": false,
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "seat": "BITS-CODEGEN",
@@ -61237,7 +61327,9 @@
         "VCC-BUILDANDDO-UPGRADE-001",
         "BITS-CODEGEN",
         "SRS-BUILDANDDO-UPGRADE-001",
-        "telemetry-coverage"
+        "telemetry-coverage",
+        "post-competition-privacy",
+        "buddi-awareness"
       ],
       "tenant_id": null
     },
@@ -62596,36 +62688,6 @@
     },
     {
       "type": "B",
-      "source": "apps/web/src/pages/PracticePage.jsx",
-      "target": "apps/web/src/lib/navigationIntent.js",
-      "edge_type": "CONSUMES",
-      "weight": 0.8,
-      "description": "apps/web/src/pages/PracticePage.jsx CONSUMES apps/web/src/lib/navigationIntent.js",
-      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "created_by": "BITS-CODEGEN"
-    },
-    {
-      "type": "B",
-      "source": "apps/web/src/pages/PracticePage.jsx",
-      "target": "apps/web/src/lib/observability/runtime.js",
-      "edge_type": "CONSUMES",
-      "weight": 0.8,
-      "description": "apps/web/src/pages/PracticePage.jsx CONSUMES apps/web/src/lib/observability/runtime.js",
-      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "created_by": "BITS-CODEGEN"
-    },
-    {
-      "type": "B",
-      "source": "apps/web/src/pages/PracticePage.jsx",
-      "target": "apps/web/src/lib/pocketbaseClient.js",
-      "edge_type": "CONSUMES",
-      "weight": 0.8,
-      "description": "apps/web/src/pages/PracticePage.jsx CONSUMES apps/web/src/lib/pocketbaseClient.js",
-      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "created_by": "BITS-CODEGEN"
-    },
-    {
-      "type": "B",
       "source": "apps/web/src/pages/ResetPasswordPage.jsx",
       "target": "apps/web/src/lib/authErrors.js",
       "edge_type": "CONSUMES",
@@ -62671,16 +62733,6 @@
       "edge_type": "CONSUMES",
       "weight": 0.8,
       "description": "apps/web/src/pages/RoadmapPage.jsx CONSUMES apps/web/src/lib/observability/runtime.js",
-      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
-      "created_by": "BITS-CODEGEN"
-    },
-    {
-      "type": "B",
-      "source": "apps/web/src/pages/workspace/FleetPage.jsx",
-      "target": "apps/web/public/fleet-status.json",
-      "edge_type": "CONSUMES",
-      "weight": 0.8,
-      "description": "apps/web/src/pages/workspace/FleetPage.jsx CONSUMES apps/web/public/fleet-status.json",
       "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
       "created_by": "BITS-CODEGEN"
     },
@@ -67846,12 +67898,2551 @@
       "timestamp": "2026-09-30T17:45:49.194492+00:00",
       "commit_sha": null,
       "smoke_result": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/handoffs/2026-09-30-bits-codegen-post-competition-activation.md",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "apps/pocketbase/pb_migrations/1792200000_private_operational_evidence.js",
+        "apps/pocketbase/pb_hooks/assistant-systems.js",
+        "apps/web/tools/public-delivery.mjs",
+        "docs/elevenlabs-starter-batch.md"
+      ],
+      "lines": 112,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Give the existing private release and content owners a concrete acceptance sequence for restricted operations, grounded Buddi and actual ElevenLabs delivery.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "post-competition-privacy",
+        "buddi-awareness"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-buddi-options.json",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Schema",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-buddi-options.json",
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-source.json"
+      ],
+      "lines": 16,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Bound the requested narration batch without treating model choice or account funding as provider evidence.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "post-competition-privacy",
+        "buddi-awareness"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-buddi-options.json.cgrf.yaml",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Schema",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-buddi-options.json",
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-source.json"
+      ],
+      "lines": 19,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Bound the requested narration batch without treating model choice or account funding as provider evidence.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "post-competition-privacy",
+        "buddi-awareness"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-buddi-preview.json",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Schema",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-buddi-preview.json",
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-source.json",
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-buddi-options.json"
+      ],
+      "lines": 232,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Retain the exact prepared scripts, hashes and production holds while no provider connection is available.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "post-competition-privacy",
+        "buddi-awareness"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-buddi-preview.json.cgrf.yaml",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Schema",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-buddi-preview.json",
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-source.json",
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-buddi-options.json"
+      ],
+      "lines": 19,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Retain the exact prepared scripts, hashes and production holds while no provider connection is available.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "post-competition-privacy",
+        "buddi-awareness"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-buddi-update-draft.json",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Schema",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-buddi-update-draft.json",
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-buddi-preview.json"
+      ],
+      "lines": 14,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Import the selected source-bound script into Content studio as a draft while retaining human publication authority.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "post-competition-privacy",
+        "buddi-awareness"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-buddi-update-draft.json.cgrf.yaml",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Schema",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-buddi-update-draft.json",
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-buddi-preview.json"
+      ],
+      "lines": 19,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Import the selected source-bound script into Content studio as a draft while retaining human publication authority.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "post-competition-privacy",
+        "buddi-awareness"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-first-workspace-draft.json",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Schema",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-first-workspace-draft.json",
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-onboarding-preview.json"
+      ],
+      "lines": 14,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Import the selected source-bound script into Content studio as a draft while retaining human publication authority.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "post-competition-privacy",
+        "buddi-awareness"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-first-workspace-draft.json.cgrf.yaml",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Schema",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-first-workspace-draft.json",
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-onboarding-preview.json"
+      ],
+      "lines": 19,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Import the selected source-bound script into Content studio as a draft while retaining human publication authority.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "post-competition-privacy",
+        "buddi-awareness"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-onboarding-options.json",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Schema",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-onboarding-options.json",
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/onboarding-media-source.json"
+      ],
+      "lines": 17,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Bound the requested narration batch without treating model choice or account funding as provider evidence.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "post-competition-privacy",
+        "buddi-awareness"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-onboarding-options.json.cgrf.yaml",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Schema",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-onboarding-options.json",
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/onboarding-media-source.json"
+      ],
+      "lines": 19,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Bound the requested narration batch without treating model choice or account funding as provider evidence.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "post-competition-privacy",
+        "buddi-awareness"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-onboarding-preview.json",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Schema",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-onboarding-preview.json",
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/onboarding-media-source.json",
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-onboarding-options.json"
+      ],
+      "lines": 323,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Retain the exact prepared scripts, hashes and production holds while no provider connection is available.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "post-competition-privacy",
+        "buddi-awareness"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-onboarding-preview.json.cgrf.yaml",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Schema",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-onboarding-preview.json",
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/onboarding-media-source.json",
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-onboarding-options.json"
+      ],
+      "lines": 19,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Retain the exact prepared scripts, hashes and production holds while no provider connection is available.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "post-competition-privacy",
+        "buddi-awareness"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-short-introduction-draft.json",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Schema",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-short-introduction-draft.json",
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-onboarding-preview.json"
+      ],
+      "lines": 14,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Import the selected source-bound script into Content studio as a draft while retaining human publication authority.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "post-competition-privacy",
+        "buddi-awareness"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-short-introduction-draft.json.cgrf.yaml",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Schema",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-short-introduction-draft.json",
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-onboarding-preview.json"
+      ],
+      "lines": 19,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Import the selected source-bound script into Content studio as a draft while retaining human publication authority.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "post-competition-privacy",
+        "buddi-awareness"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/onboarding-media-source.json",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Schema",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/onboarding-media-source.json",
+        "apps/web/src/pages/DocsPage.jsx"
+      ],
+      "lines": 68,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Bind onboarding narration to exact authored public product statements without claiming runtime verification.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "post-competition-privacy",
+        "buddi-awareness"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/onboarding-media-source.json.cgrf.yaml",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Schema",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/onboarding-media-source.json",
+        "apps/web/src/pages/DocsPage.jsx"
+      ],
+      "lines": 19,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Bind onboarding narration to exact authored public product statements without claiming runtime verification.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "post-competition-privacy",
+        "buddi-awareness"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/post-competition-report.md",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/post-competition-validation.json",
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/memory.json",
+        ".bits/handoffs/2026-09-30-bits-codegen-post-competition-activation.md",
+        "docs/elevenlabs-starter-batch.md"
+      ],
+      "lines": 145,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Retain reproducible privacy, Buddi and content results while separating source verification from unavailable provider and release acceptance.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "post-competition-privacy",
+        "buddi-awareness"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/post-competition-validation.json",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Schema",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/post-competition-validation.json"
+      ],
+      "lines": 293,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Describe retained local source observations and their unavailable runtime and provider acceptance without treating test fixtures as deployment evidence.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "post-competition-privacy",
+        "buddi-awareness"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/post-competition-validation.json.cgrf.yaml",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Schema",
+      "functions": [],
+      "dependencies": [
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/post-competition-validation.json"
+      ],
+      "lines": 19,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Describe retained local source observations and their unavailable runtime and provider acceptance without treating test fixtures as deployment evidence.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "post-competition-privacy",
+        "buddi-awareness"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/edge/src/__tests__/graph.test.js",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "d1",
+        "fixture",
+        "mint"
+      ],
+      "dependencies": [],
+      "lines": 269,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Fail if a caller can read a gated graph without a signed principal.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "post-competition-privacy",
+        "buddi-awareness"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/edge/src/graph.js",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "b64url",
+        "verifyPrincipal",
+        "entitled",
+        "projection",
+        "termId",
+        "compileAndQuery",
+        "handleGraphMatch",
+        "graphReply"
+      ],
+      "dependencies": [
+        "apps/edge/wrangler.toml (CNI_GRAPH binding)"
+      ],
+      "lines": 274,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Serve bounded CSEG graph reads from the worker that already fronts the domain.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "post-competition-privacy",
+        "buddi-awareness"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/edge/src/index.js",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "contentSecurityPolicy"
+      ],
+      "dependencies": [
+        "apps/edge/src/graph.js",
+        "apps/edge/src/public-api.js",
+        "apps/web/src/lib/publicExposure.js"
+      ],
+      "lines": 140,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Set the response security headers for buildanddo.com and www at the edge.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "post-competition-privacy",
+        "buddi-awareness"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/pocketbase/pb_hooks/assistant-systems.js",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "inferenceBinding",
+        "snapshot"
+      ],
+      "dependencies": [
+        "apps/pocketbase/pb_hooks/workspace-access.js",
+        "apps/pocketbase/pb_hooks/workspace-administration.js"
+      ],
+      "lines": 51,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Ground Buddi in dated workspace connection observations without transmitting integration configuration or private receipts to inference.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "post-competition-privacy",
+        "buddi-awareness"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/pocketbase/pb_hooks/estate-lib.js",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "isSuperuser",
+        "isMasterSeat"
+      ],
+      "dependencies": [
+        "apps/pocketbase/pb_migrations/1789200000_add_users_cnwb_seat_level.js"
+      ],
+      "lines": 25,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Reuse backend-owned estate authority for private diagnostic reads.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "post-competition-privacy",
+        "buddi-awareness"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/pocketbase/pb_hooks/estate.pb.js",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [],
+      "dependencies": [
+        "apps/pocketbase/pb_migrations/1789200000_add_users_cnwb_seat_level.js"
+      ],
+      "lines": 118,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Keep the CNWB seat level backend-owned and serve the estate fleet snapshot and platform assessment only to master seats.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "post-competition-privacy",
+        "buddi-awareness"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/pocketbase/pb_hooks/ocn-login.pb.js",
+      "cket_stage": "09_RUNTIME",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [],
+      "dependencies": [
+        "services/buildanddo_visual_substrate/server.py (POST /api/rooms/verify)",
+        "apps/pocketbase/pb_migrations/1789100000_ocn_seat_users.js"
+      ],
+      "lines": 167,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Let a Citadel Nexus seat log into BuildAndDo with its CitadelKey instead of a password: PocketBase never verifies Ed25519 itself, it asks the loopback rooms sidecar and only then mints a token for the seat's pre-provisioned service identity.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "post-competition-privacy",
+        "buddi-awareness"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/pocketbase/pb_hooks/public-api.js",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "now",
+        "iso",
+        "text",
+        "origin",
+        "stamp",
+        "reply",
+        "invalid",
+        "unknown",
+        "guard",
+        "param",
+        "strings",
+        "lessonOf",
+        "catalogue",
+        "findLesson",
+        "digestOf",
+        "links",
+        "summaryOf",
+        "references",
+        "lessonEvidence",
+        "tracks",
+        "terms",
+        "vocabulary",
+        "matched",
+        "productContext",
+        "demoChallenges",
+        "resolve",
+        "challengeState",
+        "findEvidence",
+        "evidence",
+        "replay"
+      ],
+      "dependencies": [
+        "apps/pocketbase/pb_hooks/workspace-access.js",
+        "apps/pocketbase/pb_migrations/1789700000_expand_business_learning.js"
+      ],
+      "lines": 506,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Answer the public voice agent's read tools from public platform data only, and say so when there is none.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "post-competition-privacy",
+        "buddi-awareness"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/pocketbase/pb_migrations/1792200000_private_operational_evidence.js",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Migration",
+      "functions": [],
+      "dependencies": [
+        "apps/pocketbase/pb_migrations/1788800000_create_praxis_evidence_fabric.js",
+        "apps/pocketbase/pb_migrations/1788940000_create_evidence_witness.js",
+        "apps/pocketbase/pb_migrations/1789200000_add_users_cnwb_seat_level.js"
+      ],
+      "lines": 50,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Close global operational evidence reads after the competition without changing tenant data, writes or stronger existing restrictions.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "post-competition-privacy",
+        "buddi-awareness"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/__tests__/PlatformHealthAccess.test.jsx",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [],
+      "dependencies": [
+        "apps/web/src/App.jsx",
+        "apps/web/src/pages/workspace/PlatformHealthPage.jsx",
+        "apps/web/src/lib/estateAccess.js"
+      ],
+      "lines": 136,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Hold the Platform Health surface to the two things that made it a leak: it rendered the operating company's vendor readings to every authenticated workspace user, and it read them from a file served to anyone who typed the URL.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "post-competition-privacy",
+        "buddi-awareness"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/lib/publicExposure.js",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "ConfigDoc",
+      "functions": [
+        "retiredPublicFeed"
+      ],
+      "dependencies": [
+        ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md"
+      ],
+      "lines": 27,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Keep build output and edge denial aligned when retiring public operational projections.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "post-competition-privacy",
+        "buddi-awareness"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/pages/StatusPage.jsx",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Page",
+      "functions": [
+        "StatusPage"
+      ],
+      "dependencies": [
+        "apps/web/src/components/site/StatusPanels.jsx",
+        "apps/web/src/components/site/PublicPage.jsx"
+      ],
+      "lines": 47,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Keep \"is it up\" on the site's own domain, and make every answer carry its age.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "post-competition-privacy",
+        "buddi-awareness"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/src/pages/__tests__/StatusPage.test.jsx",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "fresh",
+        "serve",
+        "renderRoute"
+      ],
+      "dependencies": [
+        "apps/web/src/pages/StatusPage.jsx",
+        "apps/web/src/pages/RoadmapPage.jsx",
+        "apps/web/src/components/site/StatusPanels.jsx"
+      ],
+      "lines": 129,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Prove the same-domain status page and the roadmap's community group show UNMEASURED whenever there is no fresh reading, and can show UP when there is one.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "post-competition-privacy",
+        "buddi-awareness"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "apps/web/tools/public-delivery.mjs",
+      "cket_stage": "07_BUILD",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Adapter",
+      "functions": [
+        "copyPublicAssets",
+        "assertPublicDelivery"
+      ],
+      "dependencies": [
+        "apps/web/src/lib/publicExposure.js"
+      ],
+      "lines": 29,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Exclude retired operational projections from a fresh public asset copy before Vite can publish stale files.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "post-competition-privacy",
+        "buddi-awareness"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "docs/elevenlabs-starter-batch.md",
+      "cket_stage": "06_PLAN",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Doc",
+      "functions": [],
+      "dependencies": [
+        "docs/media-corpus.md",
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-source.json",
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-buddi-options.json",
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/onboarding-media-source.json",
+        ".bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-onboarding-options.json"
+      ],
+      "lines": 119,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Provide three source-bound narration scripts ready for the existing ElevenLabs production lane without inventing audio or publication receipts.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "post-competition-privacy",
+        "buddi-awareness"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "scripts/ci/fleet_report.py",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Service",
+      "functions": [
+        "_c",
+        "_utilization",
+        "_fleet_snapshot",
+        "_platform_snapshot",
+        "_write",
+        "main"
+      ],
+      "dependencies": [
+        "scripts/deploy/roadmap_status.py"
+      ],
+      "lines": 659,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Retain dated fleet and platform observations for authorized operators while removing retired public copies.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "post-competition-privacy",
+        "buddi-awareness"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/assistant-awareness.test.mjs",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "master"
+      ],
+      "dependencies": [
+        "tests/upgrade/assistant-fixture.mjs",
+        "apps/pocketbase/pb_hooks/workspace-assistant.js"
+      ],
+      "lines": 113,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Keep Buddi's connection claims, route suggestions and system context bounded by current workspace evidence and native authority.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "post-competition-privacy",
+        "buddi-awareness"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/post-competition-privacy.test.mjs",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "publicFixture",
+        "graphRequest"
+      ],
+      "dependencies": [
+        "tests/upgrade/admin-fixture.mjs",
+        "apps/pocketbase/pb_hooks/public-api.js",
+        "apps/edge/src/index.js",
+        "apps/edge/src/graph.js"
+      ],
+      "lines": 200,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Reject public operational reads even when historical files or permissive data rules remain present.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "post-competition-privacy",
+        "buddi-awareness"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/private-evidence.test.mjs",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "installed"
+      ],
+      "dependencies": [
+        "tests/upgrade/admin-fixture.mjs",
+        "apps/pocketbase/pb_migrations/1792200000_private_operational_evidence.js",
+        "apps/web/tools/public-delivery.mjs"
+      ],
+      "lines": 95,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Retain operational records and stronger read policies across migration retries and rollback, and exclude stale static copies from delivered assets.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "post-competition-privacy",
+        "buddi-awareness"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/test_platform_health_public_projection.py",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "generate",
+        "PrivateArtifactTests"
+      ],
+      "dependencies": [
+        "scripts/ci/fleet_report.py",
+        "scripts/ci/public_redaction.py",
+        "apps/web/src/lib/communityStatus.js"
+      ],
+      "lines": 89,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Prevent the fleet generator from recreating public operational observations while preserving complete operator reports.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "post-competition-privacy",
+        "buddi-awareness"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/test_public_api_native.py",
+      "cket_stage": "08_TEST",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "Site",
+        "SiteHandler",
+        "PublicApiServer",
+        "stamped",
+        "keys",
+        "tool_headers",
+        "NativePublicReadTests",
+        "NativeBuddiIntakeTests"
+      ],
+      "dependencies": [
+        "tests/upgrade/test_dossier_native.py",
+        "apps/pocketbase/pb_hooks/public-api.pb.js",
+        "apps/pocketbase/pb_hooks/public-api.js",
+        "apps/pocketbase/pb_hooks/buddi-intake.js",
+        "apps/pocketbase/pb_migrations/1792100000_buddi_intake.js",
+        "apps/pocketbase/pb_migrations/1792200000_private_operational_evidence.js"
+      ],
+      "lines": 661,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Require the voice agent's eight routes to answer from public data only, refuse writes in the declared order, and keep received requests across a rollback, on the real PocketBase binary.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "post-competition-privacy",
+        "buddi-awareness"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "A",
+      "file_path": "tests/upgrade/test_public_redaction.py",
+      "cket_stage": "11_COMMIT",
+      "srs_codes": [
+        "SRS-BUILDANDDO-UPGRADE-001"
+      ],
+      "enum_type": "Test",
+      "functions": [
+        "build_operator_health",
+        "families_only",
+        "run_scan",
+        "ships",
+        "PublishedFilesTests",
+        "ControlTests"
+      ],
+      "dependencies": [
+        "scripts/ci/public_redaction.py",
+        "scripts/ci/fleet_report.py"
+      ],
+      "lines": 285,
+      "caps_grade": "pending",
+      "ck_stamp": "pending",
+      "intent_statement": "Prove that nothing the build publishes names a fleet machine or carries an IP address, with controls that plant each kind of leak and show it is caught.",
+      "objective_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "outcome": "stored",
+      "supersedes": false,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "seat": "BITS-CODEGEN",
+      "domain": "engineering",
+      "source_type": "seat_dispatch",
+      "tags": [
+        "VCC-BUILDANDDO-UPGRADE-001",
+        "BITS-CODEGEN",
+        "SRS-BUILDANDDO-UPGRADE-001",
+        "post-competition-privacy",
+        "buddi-awareness"
+      ],
+      "tenant_id": null
+    },
+    {
+      "type": "B",
+      "source": ".bits/context.md",
+      "target": ".bits/handoffs/2026-09-30-bits-codegen-post-competition-activation.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/context.md consumes .bits/handoffs/2026-09-30-bits-codegen-post-competition-activation.md under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/context.md",
+      "target": "docs/elevenlabs-starter-batch.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/context.md consumes docs/elevenlabs-starter-batch.md under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/PracticePage.jsx",
+      "target": "apps/web/src/components/site/PublicPage.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/pages/PracticePage.jsx consumes apps/web/src/components/site/PublicPage.jsx under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/PracticePage.jsx",
+      "target": "apps/web/src/components/workspace/TutorialCatalog.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/pages/PracticePage.jsx consumes apps/web/src/components/workspace/TutorialCatalog.jsx under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/tools/build.mjs",
+      "target": "apps/web/tools/public-delivery.mjs",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/tools/build.mjs consumes apps/web/tools/public-delivery.mjs under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/build.test.mjs",
+      "target": "apps/web/tools/public-delivery.mjs",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/build.test.mjs validates apps/web/tools/public-delivery.mjs under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/hostinger-sprint-closure.md",
+      "target": ".bits/handoffs/2026-09-30-bits-codegen-post-competition-activation.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/hostinger-sprint-closure.md consumes .bits/handoffs/2026-09-30-bits-codegen-post-competition-activation.md under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/hostinger-sprint-closure.md",
+      "target": "docs/elevenlabs-starter-batch.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/hostinger-sprint-closure.md consumes docs/elevenlabs-starter-batch.md under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_hooks/workspace-assistant.js",
+      "target": "apps/pocketbase/pb_hooks/assistant-systems.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/pocketbase/pb_hooks/workspace-assistant.js consumes apps/pocketbase/pb_hooks/assistant-systems.js under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_hooks/workspace-assistant.js",
+      "target": "apps/pocketbase/pb_hooks/estate-lib.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/pocketbase/pb_hooks/workspace-assistant.js consumes apps/pocketbase/pb_hooks/estate-lib.js under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_hooks/classroom-presence.pb.js",
+      "target": "apps/pocketbase/pb_hooks/estate-lib.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/pocketbase/pb_hooks/classroom-presence.pb.js consumes apps/pocketbase/pb_hooks/estate-lib.js under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_hooks/classroom-realtime.pb.js",
+      "target": "apps/pocketbase/pb_hooks/estate-lib.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/pocketbase/pb_hooks/classroom-realtime.pb.js consumes apps/pocketbase/pb_hooks/estate-lib.js under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/workspace/FleetPage.jsx",
+      "target": "apps/pocketbase/pb_hooks/estate.pb.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/pages/workspace/FleetPage.jsx consumes apps/pocketbase/pb_hooks/estate.pb.js under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-30-bits-codegen-post-competition-activation.md",
+      "target": "apps/pocketbase/pb_migrations/1792200000_private_operational_evidence.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/handoffs/2026-09-30-bits-codegen-post-competition-activation.md consumes apps/pocketbase/pb_migrations/1792200000_private_operational_evidence.js under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-30-bits-codegen-post-competition-activation.md",
+      "target": "apps/pocketbase/pb_hooks/assistant-systems.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/handoffs/2026-09-30-bits-codegen-post-competition-activation.md consumes apps/pocketbase/pb_hooks/assistant-systems.js under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-30-bits-codegen-post-competition-activation.md",
+      "target": "apps/web/tools/public-delivery.mjs",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/handoffs/2026-09-30-bits-codegen-post-competition-activation.md consumes apps/web/tools/public-delivery.mjs under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/handoffs/2026-09-30-bits-codegen-post-competition-activation.md",
+      "target": "docs/elevenlabs-starter-batch.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/handoffs/2026-09-30-bits-codegen-post-competition-activation.md consumes docs/elevenlabs-starter-batch.md under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-buddi-options.json.cgrf.yaml",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-buddi-options.json",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-buddi-options.json.cgrf.yaml validates .bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-buddi-options.json under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-buddi-options.json.cgrf.yaml",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-source.json",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-buddi-options.json.cgrf.yaml consumes .bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-source.json under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-buddi-preview.json.cgrf.yaml",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-buddi-preview.json",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-buddi-preview.json.cgrf.yaml validates .bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-buddi-preview.json under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-buddi-preview.json.cgrf.yaml",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-source.json",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-buddi-preview.json.cgrf.yaml consumes .bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-source.json under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-buddi-preview.json.cgrf.yaml",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-buddi-options.json",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-buddi-preview.json.cgrf.yaml consumes .bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-buddi-options.json under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-buddi-update-draft.json.cgrf.yaml",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-buddi-update-draft.json",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-buddi-update-draft.json.cgrf.yaml validates .bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-buddi-update-draft.json under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-buddi-update-draft.json.cgrf.yaml",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-buddi-preview.json",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-buddi-update-draft.json.cgrf.yaml consumes .bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-buddi-preview.json under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-first-workspace-draft.json.cgrf.yaml",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-first-workspace-draft.json",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-first-workspace-draft.json.cgrf.yaml validates .bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-first-workspace-draft.json under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-first-workspace-draft.json.cgrf.yaml",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-onboarding-preview.json",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-first-workspace-draft.json.cgrf.yaml consumes .bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-onboarding-preview.json under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-onboarding-options.json.cgrf.yaml",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-onboarding-options.json",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-onboarding-options.json.cgrf.yaml validates .bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-onboarding-options.json under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-onboarding-options.json.cgrf.yaml",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/onboarding-media-source.json",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-onboarding-options.json.cgrf.yaml consumes .bits/out/VCC-BUILDANDDO-UPGRADE-001/onboarding-media-source.json under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-onboarding-preview.json.cgrf.yaml",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-onboarding-preview.json",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-onboarding-preview.json.cgrf.yaml validates .bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-onboarding-preview.json under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-onboarding-preview.json.cgrf.yaml",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/onboarding-media-source.json",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-onboarding-preview.json.cgrf.yaml consumes .bits/out/VCC-BUILDANDDO-UPGRADE-001/onboarding-media-source.json under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-onboarding-preview.json.cgrf.yaml",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-onboarding-options.json",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-onboarding-preview.json.cgrf.yaml consumes .bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-onboarding-options.json under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-short-introduction-draft.json.cgrf.yaml",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-short-introduction-draft.json",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-short-introduction-draft.json.cgrf.yaml validates .bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-short-introduction-draft.json under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-short-introduction-draft.json.cgrf.yaml",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-onboarding-preview.json",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-short-introduction-draft.json.cgrf.yaml consumes .bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-onboarding-preview.json under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/onboarding-media-source.json.cgrf.yaml",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/onboarding-media-source.json",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/onboarding-media-source.json.cgrf.yaml validates .bits/out/VCC-BUILDANDDO-UPGRADE-001/onboarding-media-source.json under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/onboarding-media-source.json.cgrf.yaml",
+      "target": "apps/web/src/pages/DocsPage.jsx",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/onboarding-media-source.json.cgrf.yaml consumes apps/web/src/pages/DocsPage.jsx under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/post-competition-report.md",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/post-competition-validation.json",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/post-competition-report.md consumes .bits/out/VCC-BUILDANDDO-UPGRADE-001/post-competition-validation.json under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/post-competition-report.md",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/memory.json",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/post-competition-report.md consumes .bits/out/VCC-BUILDANDDO-UPGRADE-001/memory.json under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/post-competition-report.md",
+      "target": ".bits/handoffs/2026-09-30-bits-codegen-post-competition-activation.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/post-competition-report.md consumes .bits/handoffs/2026-09-30-bits-codegen-post-competition-activation.md under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/post-competition-report.md",
+      "target": "docs/elevenlabs-starter-batch.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/post-competition-report.md consumes docs/elevenlabs-starter-batch.md under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/post-competition-validation.json.cgrf.yaml",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/post-competition-validation.json",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/post-competition-validation.json.cgrf.yaml validates .bits/out/VCC-BUILDANDDO-UPGRADE-001/post-competition-validation.json under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/edge/src/__tests__/graph.test.js",
+      "target": "apps/edge/src/graph.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "apps/edge/src/__tests__/graph.test.js validates apps/edge/src/graph.js under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/edge/src/graph.js",
+      "target": "cni-edge-graph (D1)",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/edge/src/graph.js consumes cni-edge-graph (D1) under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/edge/src/index.js",
+      "target": "apps/edge/src/graph.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/edge/src/index.js consumes apps/edge/src/graph.js under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/edge/src/index.js",
+      "target": "apps/edge/src/public-api.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/edge/src/index.js consumes apps/edge/src/public-api.js under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/edge/src/index.js",
+      "target": "apps/web/src/lib/publicExposure.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/edge/src/index.js consumes apps/web/src/lib/publicExposure.js under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_hooks/assistant-systems.js",
+      "target": "apps/pocketbase/pb_hooks/workspace-access.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/pocketbase/pb_hooks/assistant-systems.js depends on apps/pocketbase/pb_hooks/workspace-access.js under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_hooks/assistant-systems.js",
+      "target": "apps/pocketbase/pb_hooks/workspace-administration.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/pocketbase/pb_hooks/assistant-systems.js consumes apps/pocketbase/pb_hooks/workspace-administration.js under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_hooks/estate-lib.js",
+      "target": "apps/pocketbase/pb_migrations/1789200000_add_users_cnwb_seat_level.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/pocketbase/pb_hooks/estate-lib.js consumes apps/pocketbase/pb_migrations/1789200000_add_users_cnwb_seat_level.js under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_hooks/estate.pb.js",
+      "target": "apps/pocketbase/pb_migrations/1789200000_add_users_cnwb_seat_level.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/pocketbase/pb_hooks/estate.pb.js depends on apps/pocketbase/pb_migrations/1789200000_add_users_cnwb_seat_level.js under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_hooks/estate.pb.js",
+      "target": "apps/web/src/pages/workspace/FleetPage.jsx",
+      "edge_type": "VERIFIED_BY",
+      "weight": 1.0,
+      "description": "apps/pocketbase/pb_hooks/estate.pb.js verified by apps/web/src/pages/workspace/FleetPage.jsx under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_hooks/estate.pb.js",
+      "target": "apps/web/src/pages/workspace/PlatformHealthPage.jsx",
+      "edge_type": "VERIFIED_BY",
+      "weight": 1.0,
+      "description": "apps/pocketbase/pb_hooks/estate.pb.js verified by apps/web/src/pages/workspace/PlatformHealthPage.jsx under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_hooks/ocn-login.pb.js",
+      "target": "POST /api/ocn/login, GET /api/ocn/health",
+      "edge_type": "PRODUCES",
+      "weight": 1.0,
+      "description": "apps/pocketbase/pb_hooks/ocn-login.pb.js produces POST /api/ocn/login, GET /api/ocn/health under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_hooks/ocn-login.pb.js",
+      "target": "http://127.0.0.1:8092/api/rooms/verify",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/pocketbase/pb_hooks/ocn-login.pb.js consumes http://127.0.0.1:8092/api/rooms/verify under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_hooks/ocn-login.pb.js",
+      "target": "tools/citadel_staging_error_corpus.py (LOGIN_OCN_*)",
+      "edge_type": "VERIFIED_BY",
+      "weight": 1.0,
+      "description": "apps/pocketbase/pb_hooks/ocn-login.pb.js verified by tools/citadel_staging_error_corpus.py (LOGIN_OCN_*) under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_hooks/public-api.js",
+      "target": "apps/pocketbase/pb_hooks/workspace-access.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/pocketbase/pb_hooks/public-api.js depends on apps/pocketbase/pb_hooks/workspace-access.js under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_hooks/public-api.js",
+      "target": "tutorials",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/pocketbase/pb_hooks/public-api.js consumes tutorials under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_migrations/1792200000_private_operational_evidence.js",
+      "target": "apps/pocketbase/pb_migrations/1788800000_create_praxis_evidence_fabric.js",
+      "edge_type": "EXTENDS",
+      "weight": 1.0,
+      "description": "apps/pocketbase/pb_migrations/1792200000_private_operational_evidence.js extends apps/pocketbase/pb_migrations/1788800000_create_praxis_evidence_fabric.js under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_migrations/1792200000_private_operational_evidence.js",
+      "target": "apps/pocketbase/pb_migrations/1788940000_create_evidence_witness.js",
+      "edge_type": "EXTENDS",
+      "weight": 1.0,
+      "description": "apps/pocketbase/pb_migrations/1792200000_private_operational_evidence.js extends apps/pocketbase/pb_migrations/1788940000_create_evidence_witness.js under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/pocketbase/pb_migrations/1792200000_private_operational_evidence.js",
+      "target": "apps/pocketbase/pb_migrations/1789200000_add_users_cnwb_seat_level.js",
+      "edge_type": "DEPENDS_ON",
+      "weight": 1.0,
+      "description": "apps/pocketbase/pb_migrations/1792200000_private_operational_evidence.js depends on apps/pocketbase/pb_migrations/1789200000_add_users_cnwb_seat_level.js under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/__tests__/PlatformHealthAccess.test.jsx",
+      "target": "apps/web/src/App.jsx",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "apps/web/src/__tests__/PlatformHealthAccess.test.jsx validates apps/web/src/App.jsx under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/__tests__/PlatformHealthAccess.test.jsx",
+      "target": "apps/web/src/pages/workspace/PlatformHealthPage.jsx",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "apps/web/src/__tests__/PlatformHealthAccess.test.jsx validates apps/web/src/pages/workspace/PlatformHealthPage.jsx under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/lib/publicExposure.js",
+      "target": ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/lib/publicExposure.js consumes .bits/srs/SRS-BUILDANDDO-UPGRADE-001.md under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/StatusPage.jsx",
+      "target": "apps/web/public/community-status.json",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/src/pages/StatusPage.jsx consumes apps/web/public/community-status.json under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/__tests__/StatusPage.test.jsx",
+      "target": "apps/web/src/pages/StatusPage.jsx",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "apps/web/src/pages/__tests__/StatusPage.test.jsx validates apps/web/src/pages/StatusPage.jsx under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/__tests__/StatusPage.test.jsx",
+      "target": "apps/web/src/pages/RoadmapPage.jsx",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "apps/web/src/pages/__tests__/StatusPage.test.jsx validates apps/web/src/pages/RoadmapPage.jsx under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/src/pages/__tests__/StatusPage.test.jsx",
+      "target": "apps/web/src/components/site/StatusPanels.jsx",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "apps/web/src/pages/__tests__/StatusPage.test.jsx validates apps/web/src/components/site/StatusPanels.jsx under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "apps/web/tools/public-delivery.mjs",
+      "target": "apps/web/src/lib/publicExposure.js",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "apps/web/tools/public-delivery.mjs consumes apps/web/src/lib/publicExposure.js under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/elevenlabs-starter-batch.md",
+      "target": "docs/media-corpus.md",
+      "edge_type": "EXTENDS",
+      "weight": 1.0,
+      "description": "docs/elevenlabs-starter-batch.md extends docs/media-corpus.md under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/elevenlabs-starter-batch.md",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-source.json",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/elevenlabs-starter-batch.md consumes .bits/out/VCC-BUILDANDDO-UPGRADE-001/media-corpus-source.json under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/elevenlabs-starter-batch.md",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-buddi-options.json",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/elevenlabs-starter-batch.md consumes .bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-buddi-options.json under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/elevenlabs-starter-batch.md",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/onboarding-media-source.json",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/elevenlabs-starter-batch.md consumes .bits/out/VCC-BUILDANDDO-UPGRADE-001/onboarding-media-source.json under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "docs/elevenlabs-starter-batch.md",
+      "target": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-onboarding-options.json",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "docs/elevenlabs-starter-batch.md consumes .bits/out/VCC-BUILDANDDO-UPGRADE-001/elevenlabs-onboarding-options.json under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "scripts/ci/fleet_report.py",
+      "target": "scripts/deploy/roadmap_status.py",
+      "edge_type": "USES_TEMPLATE",
+      "weight": 1.0,
+      "description": "scripts/ci/fleet_report.py uses template scripts/deploy/roadmap_status.py under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "scripts/ci/fleet_report.py",
+      "target": "state/estate/fleet-status.json",
+      "edge_type": "PRODUCES",
+      "weight": 1.0,
+      "description": "scripts/ci/fleet_report.py produces state/estate/fleet-status.json under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "scripts/ci/fleet_report.py",
+      "target": "state/estate/platform-health.json",
+      "edge_type": "PRODUCES",
+      "weight": 1.0,
+      "description": "scripts/ci/fleet_report.py produces state/estate/platform-health.json under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "scripts/ci/fleet_report.py",
+      "target": "apps/web/src/pages/workspace/FleetPage.jsx",
+      "edge_type": "VERIFIED_BY",
+      "weight": 1.0,
+      "description": "scripts/ci/fleet_report.py verified by apps/web/src/pages/workspace/FleetPage.jsx under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "scripts/ci/fleet_report.py",
+      "target": "apps/web/src/pages/workspace/PlatformHealthPage.jsx",
+      "edge_type": "VERIFIED_BY",
+      "weight": 1.0,
+      "description": "scripts/ci/fleet_report.py verified by apps/web/src/pages/workspace/PlatformHealthPage.jsx under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/assistant-awareness.test.mjs",
+      "target": "tests/upgrade/assistant-fixture.mjs",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "tests/upgrade/assistant-awareness.test.mjs consumes tests/upgrade/assistant-fixture.mjs under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/assistant-awareness.test.mjs",
+      "target": "apps/pocketbase/pb_hooks/workspace-assistant.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/assistant-awareness.test.mjs validates apps/pocketbase/pb_hooks/workspace-assistant.js under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/post-competition-privacy.test.mjs",
+      "target": "tests/upgrade/admin-fixture.mjs",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "tests/upgrade/post-competition-privacy.test.mjs consumes tests/upgrade/admin-fixture.mjs under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/post-competition-privacy.test.mjs",
+      "target": "apps/pocketbase/pb_hooks/public-api.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/post-competition-privacy.test.mjs validates apps/pocketbase/pb_hooks/public-api.js under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/post-competition-privacy.test.mjs",
+      "target": "apps/edge/src/index.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/post-competition-privacy.test.mjs validates apps/edge/src/index.js under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/post-competition-privacy.test.mjs",
+      "target": "apps/edge/src/graph.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/post-competition-privacy.test.mjs validates apps/edge/src/graph.js under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/private-evidence.test.mjs",
+      "target": "tests/upgrade/admin-fixture.mjs",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "tests/upgrade/private-evidence.test.mjs consumes tests/upgrade/admin-fixture.mjs under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/private-evidence.test.mjs",
+      "target": "apps/pocketbase/pb_migrations/1792200000_private_operational_evidence.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/private-evidence.test.mjs validates apps/pocketbase/pb_migrations/1792200000_private_operational_evidence.js under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/private-evidence.test.mjs",
+      "target": "apps/web/tools/public-delivery.mjs",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/private-evidence.test.mjs validates apps/web/tools/public-delivery.mjs under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_platform_health_public_projection.py",
+      "target": "scripts/ci/fleet_report.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_platform_health_public_projection.py validates scripts/ci/fleet_report.py under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_platform_health_public_projection.py",
+      "target": "apps/web/public/platform-health.json",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_platform_health_public_projection.py validates apps/web/public/platform-health.json under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_platform_health_public_projection.py",
+      "target": "state/estate/platform-health.json",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_platform_health_public_projection.py validates state/estate/platform-health.json under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_public_api_native.py",
+      "target": "tests/upgrade/test_dossier_native.py",
+      "edge_type": "CONSUMES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_public_api_native.py consumes tests/upgrade/test_dossier_native.py under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_public_api_native.py",
+      "target": "apps/pocketbase/pb_hooks/public-api.pb.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_public_api_native.py validates apps/pocketbase/pb_hooks/public-api.pb.js under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_public_api_native.py",
+      "target": "apps/pocketbase/pb_hooks/public-api.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_public_api_native.py validates apps/pocketbase/pb_hooks/public-api.js under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_public_api_native.py",
+      "target": "apps/pocketbase/pb_hooks/buddi-intake.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_public_api_native.py validates apps/pocketbase/pb_hooks/buddi-intake.js under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_public_api_native.py",
+      "target": "apps/pocketbase/pb_migrations/1792100000_buddi_intake.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_public_api_native.py validates apps/pocketbase/pb_migrations/1792100000_buddi_intake.js under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_public_api_native.py",
+      "target": "apps/pocketbase/pb_migrations/1792200000_private_operational_evidence.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_public_api_native.py validates apps/pocketbase/pb_migrations/1792200000_private_operational_evidence.js under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_public_redaction.py",
+      "target": "scripts/ci/public_redaction.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_public_redaction.py validates scripts/ci/public_redaction.py under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_public_redaction.py",
+      "target": "scripts/ci/fleet_report.py",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_public_redaction.py validates scripts/ci/fleet_report.py under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "B",
+      "source": "tests/upgrade/test_public_redaction.py",
+      "target": "apps/web/src/lib/operatorPlane.js",
+      "edge_type": "VALIDATES",
+      "weight": 1.0,
+      "description": "tests/upgrade/test_public_redaction.py validates apps/web/src/lib/operatorPlane.js under its declared CGRF relationship.",
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "created_by": "BITS-CODEGEN"
+    },
+    {
+      "type": "C",
+      "event_type": "test_fail",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/post-competition-validation.json",
+      "description": "Post-competition controls initially fail 12 of 12 source cases against the materialized behavior; this red result is retained before the repair.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-30T19:12:40.542416+00:00",
+      "commit_sha": null,
+      "smoke_result": "0/12"
+    },
+    {
+      "type": "C",
+      "event_type": "smoke_run",
+      "file_path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/post-competition-validation.json",
+      "description": "Post-competition source verification: 201 targeted Node cases pass; connected Node suites pass 315 with one Vite skip; Python privacy passes 51 with two explicit skips; media contracts pass 25. The four new executable modules each have 100 percent V8 line coverage. Fixtures do not establish native/browser/provider/deployment acceptance.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-30T19:44:46.683379+00:00",
+      "commit_sha": null,
+      "smoke_result": "592/595"
+    },
+    {
+      "type": "C",
+      "event_type": "smoke_run",
+      "file_path": "docs/elevenlabs-starter-batch.md",
+      "description": "Three source-bound English narration drafts are prepared (1891 planned speech characters); both compiler batches replay exactly and all three actual content imports validate. No provider calls, generated audio or publications were observed.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-30T19:39:16.950907+00:00",
+      "commit_sha": null,
+      "smoke_result": null
+    },
+    {
+      "type": "C",
+      "event_type": "failure",
+      "file_path": ".bits/handoffs/2026-09-30-bits-codegen-post-competition-activation.md",
+      "description": "Declared web/edge build and rendered checks lack Vite, Vitest and a lint plugin; all 13 native cases skip without PocketBase. The repository static diagnostic retains six baseline duplicate keys and strict Python typing is not clean. ElevenLabs is not connected. The source handoff preserves these limits; no external effect was attempted.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-30T19:44:36.635213+00:00",
+      "commit_sha": null,
+      "smoke_result": null
+    },
+    {
+      "type": "C",
+      "event_type": "smoke_run",
+      "file_path": "docs/hostinger-sprint-closure.md",
+      "description": "Post-competition source governance passes readiness, provisional submission, measured context, public boundary and memory checks. All 260 historical events remain intact; 62 repository findings and 32 unwired gates stay visible. Local checks do not establish a PR actor label, private execution or deployment.",
+      "caps_before": null,
+      "caps_after": null,
+      "dag_impact": null,
+      "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",
+      "timestamp": "2026-09-30T19:56:50.917259+00:00",
+      "commit_sha": null,
+      "smoke_result": "5/5"
     }
   ],
   "summary": {
-    "type_a_count": 1029,
-    "type_b_count": 2726,
-    "type_c_count": 260,
+    "type_a_count": 1071,
+    "type_b_count": 2820,
+    "type_c_count": 265,
     "ioo_compliance": true,
     "dkg_orphans": 0,
     "dispatch_id": "VCC-BUILDANDDO-UPGRADE-001",

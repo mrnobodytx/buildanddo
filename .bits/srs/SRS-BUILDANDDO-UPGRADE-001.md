@@ -2548,3 +2548,40 @@ Acceptance:
    for the retired page, and an id the canon does not know is still named.
 4. The web suite, lint, the classroom node suites and the repository gates pass. Deploying to staging
    is a separate, staging-only step; nothing here promotes to production.
+
+## Post-competition privacy, Buddi and content — 2026-09-30
+
+The owner requested closing public observation of critical systems after the
+competition, improving Buddi's usage and system awareness, and using ElevenLabs
+for content. This continuation uses the existing A2 source dispatch. Historical
+competition acceptance and deployment evidence remain unchanged.
+
+Acceptance:
+
+1. Retire operational static feeds from the shipped site and public navigation.
+   Enforce the boundary at the backend as well as the edge: global evidence and
+   governance records require the existing estate authority, and public Buddi
+   tools disclose only reviewed product help and authored lesson material.
+   Preserve tenant-scoped work, lessons, support intake and historical evidence.
+2. Restrict graph reads to a verified existing principal and the projection's
+   existing entitlement rules. Every queried pattern must name an entitled
+   graph; cache policy must not disclose authenticated results.
+3. Give signed-in Buddi bounded, dated integration observations from the current
+   workspace, without provider endpoints, credentials, private receipt content
+   or another workspace's records. Missing, stale and requested states must not
+   become verified health. Apply current native estate permissions to routes,
+   captured surfaces and plans, including a final authority recheck.
+4. Use one inference configuration check for availability and execution. Make
+   connection rechecks and useful grounded starters visible, and allow same-
+   origin microphone use subject to browser consent and origin restrictions.
+5. Prepare a small reproducible public-safe narration batch through the existing
+   media compiler. Generate audio only through an available authorized provider
+   connection; retain actual receipts and hashes. Scripts alone are not audio,
+   and an unavailable connection stays an explicit delivery gap.
+6. Verify disclosure denials, preserved public learning, authority separation,
+   stale/missing observations and output exclusion with targeted tests. Record
+   actual results, runtime limitations, source handoff and rollback behaviour.
+
+Live migration, cache removal, deployment and external publication remain with
+the private release owner. No completion of those steps is inferred from local
+source verification or the owner's statement that the competition has ended.

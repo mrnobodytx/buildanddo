@@ -3,9 +3,10 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/pocketbase/pb_hooks/ocn-login.pb.js
 // Stage:       09_RUNTIME
-// SRS:         SRS-BUILDANDDO-LIVE-UTILIZATION-001
-// CAPS:        B
+// SRS:         SRS-BUILDANDDO-LIVE-UTILIZATION-001, SRS-BUILDANDDO-UPGRADE-001
+// CAPS:        pending
 // CK:          pending
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
 // Seat:        C-ONE
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-11
@@ -138,6 +139,9 @@ routerAdd("POST", "/api/ocn/login", (e) => {
 });
 
 routerAdd("GET", "/api/ocn/health", (e) => {
+    e.response.header().set('Cache-Control', 'no-store');
+    e.response.header().set('Vary', 'Authorization');
+    if (!require(`${__hooks}/estate-lib.js`).isMasterSeat(e)) return e.json(404, { error: 'not found' });
     const SIDECAR = $os.getenv("BUILDANDDO_ROOMS_SIDECAR_URL") || "http://127.0.0.1:8092";
     let reachable = false;
     let verifier = "UNMEASURED";

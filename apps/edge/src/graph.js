@@ -1,7 +1,7 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/edge/src/graph.js
 // Stage:       11_COMMIT
-// SRS:         SRS-CN-ENTITY-CATALOGUE-001
+// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-CN-ENTITY-CATALOGUE-001
 // CAPS:        pending
 // CK:          pending
 // Dispatch:    VCC-BUILDANDDO-UPGRADE-001
@@ -10,7 +10,7 @@
 // Created:     2026-09-22
 // Depends:     apps/edge/wrangler.toml (CNI_GRAPH binding)
 // EnumType:    Service
-// EnumEdges:   READS cni-edge-graph (D1)
+// EnumEdges:   CONSUMES cni-edge-graph (D1)
 // DAG Node:    none
 // Intent:      Serve bounded CSEG graph reads from the worker that already fronts the domain.
 // ───────────────────────────────────────────────────────────────
@@ -36,8 +36,9 @@
  * module never writes. The principal comes ONLY from a signed bearer token — the reference worker
  * read `body.principal`, which let a caller state their own authority: measured against the Atlas
  * staffing graph's real gates (tp70 / A2 / cnwb), an honest A0 caller was denied and a caller who
- * typed {"authority":"A5","trust_points":9999} read it. Without a token the caller is anonymous
- * and only public_read graphs answer, which is the correct default for the teaching surface.
+ * typed {"authority":"A5","trust_points":9999} read it. After the competition every projection
+ * requires that existing signed principal and its declared entitlement gates, even if a historical
+ * projection retains public_read. Product illustrations do not grant operational read authority.
  */
 
 const AUTHORITY_ORDER = { A0: 0, A1: 1, A2: 2, A3: 3, A4: 4, A5: 5 };
@@ -57,7 +58,9 @@ function b64url(s) {
 export async function verifyPrincipal(request, env) {
 	const m = /^Bearer\s+(\S+)$/.exec(request.headers.get('Authorization') || '');
 	if (!m || !env || !env.CSEG_PRINCIPAL_SECRET) return null;
-	const [h, pl, sig] = m[1].split('.');
+	const parts = m[1].split('.');
+	if (parts.length !== 3) return null;
+	const [h, pl, sig] = parts;
 	if (!h || !pl || !sig) return null;
 	try {
 		const header = JSON.parse(new TextDecoder().decode(b64url(h)));
@@ -81,8 +84,9 @@ export async function verifyPrincipal(request, env) {
 		const c = JSON.parse(new TextDecoder().decode(b64url(pl)));
 		if (c.iss !== 'buildanddo') return null;
 		// An unexpiring principal token is a permanent credential in a URL-safe string.
-		if (typeof c.exp !== 'number' || c.exp <= Math.floor(Date.now() / 1000)) return null;
+		if (!Number.isFinite(c.exp) || c.exp <= Math.floor(Date.now() / 1000)) return null;
 		if (!Object.prototype.hasOwnProperty.call(AUTHORITY_ORDER, String(c.authority))) return null;
+		if (c.trust_points !== undefined && (!Number.isFinite(c.trust_points) || c.trust_points < 0)) return null;
 		return {
 			principal_id: String(c.sub || 'unknown'),
 			authority: c.authority,
@@ -99,7 +103,6 @@ export async function verifyPrincipal(request, env) {
 /** Trust may unlock disclosure. It never manufactures authority. */
 export function entitled(meta, principal) {
 	if (!meta) return { ok: false, reasons: ['projection_unregistered'] };
-	if (meta.public_read) return { ok: true, reasons: [] };
 	if (!principal) return { ok: false, reasons: ['authentication_required'] };
 	const reasons = [];
 	if (principal.trust_points < Number(meta.required_tp || 0)) {
@@ -223,44 +226,49 @@ export async function handleGraphMatch(request, env) {
 	const url = new URL(request.url);
 	if (url.pathname !== '/api/graph/match') return null;
 	if (request.method !== 'POST') {
-		return Response.json({ state: 'DENIED', reason: 'method_not_allowed' }, { status: 405 });
+		return graphReply({ state: 'DENIED', reason: 'method_not_allowed' }, 405);
 	}
+	// Authenticate before even disclosing whether a projection or its storage exists.
+	const principal = await verifyPrincipal(request, env);
+	if (!principal) return graphReply({ state: 'DENIED', reason: 'authentication_required' }, 403);
 	if (!env || !env.CNI_GRAPH) {
 		// The binding is absent rather than the data — say which, or this reads as an empty graph.
-		return Response.json({ state: 'UNAVAILABLE', reason: 'no_graph_binding' }, { status: 503 });
+		return graphReply({ state: 'UNAVAILABLE', reason: 'no_graph_binding' }, 503);
 	}
 
 	let body;
 	try {
 		body = await request.json();
 	} catch {
-		return Response.json({ state: 'DENIED', reason: 'invalid_json' }, { status: 400 });
+		return graphReply({ state: 'DENIED', reason: 'invalid_json' }, 400);
 	}
 	const patterns = Array.isArray(body && body.patterns) ? body.patterns : [];
 	if (!patterns.length) {
-		return Response.json({ state: 'DENIED', reason: 'patterns_required' }, { status: 400 });
+		return graphReply({ state: 'DENIED', reason: 'patterns_required' }, 400);
 	}
-	// body.principal is deliberately NOT read. See verifyPrincipal.
-	const principal = await verifyPrincipal(request, env);
+	if (patterns.length > MAX_PATTERNS) return graphReply({ state: 'DENIED', reason: 'too_many_patterns' }, 400);
+	// Every pattern needs a literal graph. One allowed graph must not authorize an
+	// unqualified second pattern, which would join private data across projections.
+	if (patterns.some((p) => !p || typeof p !== 'object' || Array.isArray(p) ||
+		typeof p.g !== 'string' || !p.g.trim() || p.g.startsWith('?'))) {
+		return graphReply({ state: 'DENIED', reason: 'graph_required' }, 400);
+	}
 
-	const graphs = [
-		...new Set(patterns.map((p) => p.g).filter((g) => !!g && !String(g).startsWith('?'))),
-	];
-	if (!graphs.length) {
-		// An unqualified pattern would read across every projection in the database, gates and all.
-		return Response.json({ state: 'DENIED', reason: 'graph_required' }, { status: 400 });
-	}
-	const denied = [];
-	for (const g of graphs) {
-		const decision = entitled(await projection(env.CNI_GRAPH, g), principal);
-		if (!decision.ok) denied.push({ graph: g, reasons: decision.reasons });
-	}
-	if (denied.length) return Response.json({ state: 'DENIED', denied }, { status: 403 });
-
+	const graphs = [...new Set(patterns.map((p) => p.g))];
 	try {
+		const denied = [];
+		for (const g of graphs) {
+			const decision = entitled(await projection(env.CNI_GRAPH, g), principal);
+			if (!decision.ok) denied.push({ graph: g, reasons: decision.reasons });
+		}
+		if (denied.length) return graphReply({ state: 'DENIED', denied }, 403);
 		const rows = await compileAndQuery(env.CNI_GRAPH, patterns, body.limit || 250);
-		return Response.json({ state: 'PASS', rows });
-	} catch (err) {
-		return Response.json({ state: 'ERROR', reason: String(err.message || err) }, { status: 400 });
+		return graphReply({ state: 'PASS', rows });
+	} catch {
+		return graphReply({ state: 'ERROR', reason: 'graph_unavailable' }, 503);
 	}
+}
+
+function graphReply(body, status = 200) {
+	return Response.json(body, { status, headers: { 'Cache-Control': 'no-store', Vary: 'Authorization' } });
 }

@@ -1,0 +1,17 @@
+{
+  "schema": "buildanddo.media-options/v1",
+  "formats": [
+    "onboarding",
+    "short_video"
+  ],
+  "languages": [
+    "en"
+  ],
+  "styles": [
+    "neutral"
+  ],
+  "requested_model": "eleven_v4",
+  "chunk_characters": 3000,
+  "character_budget": 10000,
+  "max_assets": 3
+}

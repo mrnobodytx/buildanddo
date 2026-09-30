@@ -33,13 +33,17 @@ export default function HostingerChallengePage() {
     return (
         <div className="min-h-screen bg-background text-foreground">
             <Helmet>
-                <title>BuildAndDo — Hostinger 21-Day Challenge</title>
+                <title>BuildAndDo — Hostinger challenge archive</title>
                 <meta name="description" content={C.promise} />
             </Helmet>
             <Header ctaHref="/#challenge-desk" ctaLabel="Try the challenge desk" />
             <main id="main-content" tabIndex={-1}>
                 <Section className="pt-28 sm:pt-32">
                     <SectionLabel icon={Target}>{C.campaign}</SectionLabel>
+                    <p className="mt-3 border border-border p-3 text-sm" role="note">
+                        Competition archive. The competition has ended. This page preserves the entry narrative;
+                        it does not report current operations or certify that the original acceptance checks passed.
+                    </p>
                     <div className="mt-4 grid gap-8 lg:grid-cols-12 lg:items-end">
                         <div className="lg:col-span-8">
                             <h1 className="font-display text-4xl font-semibold tracking-tight sm:text-6xl">
@@ -59,7 +63,7 @@ export default function HostingerChallengePage() {
                         </div>
                         <Card className="lg:col-span-4 p-5">
                             <p className="font-evidence text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-                                Submission deadline
+                                Historical entry date
                             </p>
                             <p className="mt-2 font-display text-2xl font-semibold">September 24, 2026</p>
                             <p className="mt-3 text-sm text-muted-foreground">
@@ -90,7 +94,7 @@ export default function HostingerChallengePage() {
 
                 <Section className="border-t border-border">
                     <SectionLabel icon={BadgeCheck}>90-second demonstration</SectionLabel>
-                    <h2 className="mt-2 font-display text-3xl font-semibold">What the judge should see</h2>
+                    <h2 className="mt-2 font-display text-3xl font-semibold">The planned demonstration</h2>
                     <p className="mt-4 max-w-3xl text-base leading-relaxed text-muted-foreground">{C.demo}</p>
                     <ol className="mt-7 grid gap-4 md:grid-cols-4">
                         {[

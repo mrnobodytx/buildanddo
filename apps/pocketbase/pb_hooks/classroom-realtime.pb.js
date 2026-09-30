@@ -8,9 +8,9 @@
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-23
-// Depends:     apps/pocketbase/pb_hooks/classroom-media.js, apps/pocketbase/pb_hooks/classroom-realtime-lib.js, apps/pocketbase/pb_hooks/telemetry.js
+// Depends:     apps/pocketbase/pb_hooks/classroom-media.js, apps/pocketbase/pb_hooks/classroom-realtime-lib.js, apps/pocketbase/pb_hooks/telemetry.js, apps/pocketbase/pb_hooks/estate-lib.js
 // EnumType:    Route
-// EnumEdges:   CONSUMES apps/pocketbase/pb_hooks/classroom-media.js; CONSUMES apps/pocketbase/pb_hooks/classroom-realtime-lib.js; CONSUMES apps/pocketbase/pb_hooks/telemetry.js
+// EnumEdges:   CONSUMES apps/pocketbase/pb_hooks/classroom-media.js; CONSUMES apps/pocketbase/pb_hooks/classroom-realtime-lib.js; CONSUMES apps/pocketbase/pb_hooks/telemetry.js; CONSUMES apps/pocketbase/pb_hooks/estate-lib.js
 // Intent:      Expose room-bound signalling without allowing caller-supplied session identifiers to grant media access.
 // ----------------------------------------------------------------
 
@@ -36,10 +36,17 @@ routerAdd('POST', '/api/classroom/close', (e) => {
 }, $apis.requireAuth('users'), $apis.bodyLimit(2000));
 
 routerAdd('GET', '/api/classroom/health', (e) => {
+    e.response.header().set('Cache-Control', 'no-store');
+    e.response.header().set('Vary', 'Authorization');
+    if (!e.auth) return e.json(404, { error: 'not found' });
     const config = require(`${__hooks}/classroom-realtime-lib.js`).realtimeConfig();
     let installed = false;
     try { require(`${__hooks}/classroom-media.js`).schema(e.app); installed = true; }
     catch (_) { /* The media schema guard owns its diagnostic; health only reports availability. */ }
+    if (!require(`${__hooks}/estate-lib.js`).isMasterSeat(e)) {
+        const ok = !config.reason && installed;
+        return e.json(ok ? 200 : 503, { ok, reason: ok ? null : 'Classroom media is unavailable.' });
+    }
     const publishers = ($os.getenv('BUILDANDDO_CLASSROOM_PUBLISHERS') || '').split(',').filter((item) => item.trim());
     e.response.header().set('Cache-Control', 'no-store');
     return e.json(!config.reason && installed ? 200 : 503, { ok: !config.reason && installed, route: 'classroom-realtime/v2',
@@ -47,4 +54,4 @@ routerAdd('GET', '/api/classroom/health', (e) => {
         app_secret_configured: !!$os.getenv('CLOUDFLARE_REALTIME_APP_SECRET'),
         publishers_configured: publishers.length, sessions_installed: installed,
         reason: !installed ? 'classroom media session migration required' : config.reason || null });
-});
+}, $apis.requireAuth('users'));

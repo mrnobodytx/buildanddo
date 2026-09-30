@@ -1873,3 +1873,26 @@ correlated Datadog logs were found. The unchanged npm lock has ten failures
 also present on main; local npm build stops because concurrently is absent.
 The root cause of the hosted Workers failure is not inferred from those local
 limitations. The report preserves both histories and their receiving contracts.
+
+## Post-competition privacy, Buddi and content continuation — 2026-09-30
+
+Owner-authorized A2 source work under SRS-BUILDANDDO-UPGRADE-001. Close public
+operational observation while preserving curated product learning and current
+workspace authority. Competition closure is an owner statement, not new
+acceptance evidence. No live seat is available, so no seat event is fabricated.
+
+| Phase | Task | Gate command | Status |
+|---|---|---|---|
+| CX | Close public operational reads and shipped feeds | Public API, graph, native privacy and build-output tests | source verified — native installation, edge rollout and cache readback remain receiving work |
+| CY | Ground Buddi in permitted routes and dated workspace observations | Assistant backend/client/component tests | source verified — rendered/native/provider use remains unmeasured |
+| CZ | Prepare public-safe ElevenLabs content and retain provider evidence if available | Media corpus compilation and artifact validation | partial — three drafts prepared and replayed; no ElevenLabs connection, audio or publication |
+| DA | Verify source, preserve memory and hand off private activation | Readiness, submission, context, boundary and dispatch-memory checks | done — source checks and handoff recorded; historical events retained; runtime and audio remain open |
+
+Memory brief: the materialized baseline contains work-exchange and media-corpus
+source plus Buddi retry handling. Operational static projections, permissive
+global evidence read rules and public voice tools still expose system details.
+The inherited readiness binding is stale; submission policy check passes. The
+existing private estate routes require a backend-owned master seat. BuildAndDo
+already has a media compiler and ElevenCreative import flow; previously retained
+scripts do not constitute generated audio. The current tool inventory exposes
+no ElevenLabs generation connector, and shell network access is unavailable.

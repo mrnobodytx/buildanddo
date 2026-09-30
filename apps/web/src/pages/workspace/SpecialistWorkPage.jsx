@@ -21,6 +21,7 @@ import { Button, Card } from '@/components/site/ui';
 import { PageHeader } from '@/components/workspace/workspaceHelpers';
 import { useWorkspaceRecords } from '@/hooks/useWorkspaceRecords';
 import { useAuth } from '@/contexts/AuthContext';
+import { isMasterSeat } from '@/lib/estateAccess';
 import { useWorkspace } from '@/contexts/WorkspaceContext';
 import { useDemoMode } from '@/hooks/useDemoMode';
 import { describeAccess } from '@/hooks/useWorkspaceControl';
@@ -59,7 +60,7 @@ function WorkDesks() {
         if (result.ok) setEditing(''); else setError(result.error || 'The desk could not be saved.'); setBusy(false);
     };
     return <div className="space-y-5"><PageHeader title="Specialist desks" description="Assign a scope to each kind of work and open its existing tools. Desk status is an operator record, not a claim of an active agent." />
-        <Link to="/app/passport" className="text-sm underline">Capability Passport</Link>
+        {isMasterSeat(user) && <Link to="/app/passport" className="text-sm underline">Capability Passport</Link>}
         {accessNotice && <p role="status" className="text-sm text-muted-foreground">{accessNotice}</p>}
         {control.degraded ? <p role="alert">Desk records are unavailable. <button className="underline" onClick={control.refresh}>Retry</button></p> : control.loading ? <p role="status">Loading desk records…</p> :
             <div className="grid gap-4 md:grid-cols-2">{Object.entries(DESKS).map(([id, [label, href, purpose]]) => {

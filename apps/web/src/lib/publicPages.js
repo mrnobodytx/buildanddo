@@ -34,11 +34,12 @@ export const PUBLIC_PAGES = [
     },
     {
         path: '/hostinger-challenge',
-        label: 'Challenge',
-        title: 'BuildAndDo — Hostinger 21-Day Challenge',
+        label: 'Challenge archive',
+        title: 'BuildAndDo — Hostinger challenge archive',
         description:
-            'See the learning-platform idea, the verified mission story and the Hostinger product roles behind the BuildAndDo challenge entry.',
+            'Read the historical BuildAndDo challenge entry. The competition has ended; this archive does not report current system health or acceptance.',
         type: 'WebPage',
+        nav: false,
     },
     {
         path: '/platform',
@@ -53,15 +54,7 @@ export const PUBLIC_PAGES = [
         label: 'Practice',
         title: 'BuildAndDo — Practice library',
         description:
-            'Community-audited methods for real objectives, with evidence, knowledge states and lessons from each attempt.',
-        type: 'CollectionPage',
-    },
-    {
-        path: '/roadmap',
-        label: 'Roadmap',
-        title: 'BuildAndDo — Public roadmap',
-        description:
-            'Follow the BuildAndDo plan, its current state and the evidence needed to call work complete.',
+            'Practice with authored lessons, follow a checklist and continue learning in your workspace.',
         type: 'CollectionPage',
     },
     {
@@ -129,7 +122,7 @@ export const PUBLIC_PAGES = [
         label: 'Status',
         title: 'Service status | BuildAndDo',
         description:
-            'Platform health and community reachability, each with the time it was measured and its age. Nothing is shown as up without a fresh reading.',
+            'Community reachability with dated observations and help links. Critical system health is available only to authorized operators.',
         type: 'WebPage',
         nav: false,
     },

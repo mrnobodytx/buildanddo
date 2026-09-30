@@ -8,9 +8,9 @@
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-20
-# Depends:     .bits/hostinger-readiness.json, scripts/ci/hostinger_readiness.py, scripts/ci/hostinger_replay.py, tools/day21/day21_acceptance.py, .bits/handoffs/2026-09-21-bits-codegen-cmax-b-governance-execution.md, docs/sprint-user-journey.md, docs/development-loop.md, docs/mutual-development.md, docs/media-corpus.md
+# Depends:     .bits/hostinger-readiness.json, scripts/ci/hostinger_readiness.py, scripts/ci/hostinger_replay.py, tools/day21/day21_acceptance.py, .bits/handoffs/2026-09-21-bits-codegen-cmax-b-governance-execution.md, docs/sprint-user-journey.md, docs/development-loop.md, docs/mutual-development.md, docs/media-corpus.md, .bits/handoffs/2026-09-30-bits-codegen-post-competition-activation.md, docs/elevenlabs-starter-batch.md
 # EnumType:    Doc
-# EnumEdges:   CONSUMES .bits/hostinger-readiness.json; CONSUMES scripts/ci/hostinger_readiness.py; CONSUMES scripts/ci/hostinger_replay.py; CONSUMES tools/day21/day21_acceptance.py; EXTENDS docs/operator-plane.md; EXTENDS docs/mission-system.md; CONSUMES .bits/handoffs/2026-09-21-bits-codegen-cmax-b-governance-execution.md; CONSUMES docs/sprint-user-journey.md; CONSUMES docs/development-loop.md; CONSUMES docs/mutual-development.md; CONSUMES docs/media-corpus.md
+# EnumEdges:   CONSUMES .bits/hostinger-readiness.json; CONSUMES scripts/ci/hostinger_readiness.py; CONSUMES scripts/ci/hostinger_replay.py; CONSUMES tools/day21/day21_acceptance.py; EXTENDS docs/operator-plane.md; EXTENDS docs/mission-system.md; CONSUMES .bits/handoffs/2026-09-21-bits-codegen-cmax-b-governance-execution.md; CONSUMES docs/sprint-user-journey.md; CONSUMES docs/development-loop.md; CONSUMES docs/mutual-development.md; CONSUMES docs/media-corpus.md; CONSUMES .bits/handoffs/2026-09-30-bits-codegen-post-competition-activation.md; CONSUMES docs/elevenlabs-starter-batch.md
 # Intent:      Make the reason, acceptance boundary and next action for every sprint piece a required source review rather than a remembered plan.
 # ───────────────────────────────────────────────────────────────
 
@@ -51,12 +51,46 @@ reported source excerpts, not audio artifacts, live outcomes or worker experienc
 Spanish remains held for translated source, an authored template and review.
 
 Follow `docs/media-corpus.md` and the receiving handoff at
-`.bits/handoffs/2026-09-30-bits-codegen-cmax-b-media-corpus.md`. CMAX-B must
-reconcile the absent PR 119 work-exchange source; the content and bridge owners
-then confirm current source review, provider capability, account terms, rights
+`.bits/handoffs/2026-09-30-bits-codegen-cmax-b-media-corpus.md`. Work-exchange
+source is now present in the materialized repository; its same-revision private
+acceptance remains open. The content and bridge owners confirm current source
+review, provider capability, account terms, rights
 and funding. Browser/native import acceptance and one real reviewed generation,
 human publication, external readback and engagement observation remain open.
 This source continuation does not advance a deployment or sprint milestone.
+
+## Post-competition product continuation — 2026-09-30
+
+The owner reports that the competition has ended and requests closing public
+observation of critical systems. Current priorities are private operational
+access, usable workspace Buddi and useful content. Historical milestone dates,
+requirements, incomplete checks and missing submission evidence remain intact;
+none becomes accepted merely because the competition ended.
+
+The source boundary now excludes five operational feeds from edge delivery and
+the web build, redirects the public roadmap into the workspace, and restricts
+global evidence reads to native estate authority. Public voice tools retain
+authored learning material and product help. Community reachability remains
+public; platform diagnostics do not. Historical reports must remain in private
+storage, and older origin/CDN copies require receiving-owner removal.
+
+HS-03 and HS-09 require real native migration, ordinary-account denial,
+master-seat read, expansion/realtime and rollback observations. HS-07 and HS-10
+require a real browser conversation with dated workspace observations, current
+role/estate authority and consented microphone access. HS-11 is an archive and
+replay obligation; it does not direct a new competition submission.
+
+`docs/elevenlabs-starter-batch.md` adds three source-bound draft candidates
+(1,891 planned speech characters) through the existing media compiler. Both
+batches replay exactly and all three drafts pass the existing import validator.
+No ElevenLabs connection is exposed here, so provider generation, cost, audio
+hashes, human publication and readback remain unobserved. Requested model names
+and promotional terms are not evidence of provider capability or price.
+
+Follow `.bits/handoffs/2026-09-30-bits-codegen-post-competition-activation.md`
+for ordered native, edge, frontend and content acceptance. Local source evidence
+is retained in `.bits/out/VCC-BUILDANDDO-UPGRADE-001/post-competition-report.md`.
+The readiness refresh records this source review, not a runtime success.
 
 ## Continuous Semantic Twin progression lane
 

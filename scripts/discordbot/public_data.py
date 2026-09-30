@@ -47,7 +47,6 @@ class Resource:
 
 RESOURCES = {
     "site": Resource("/", 10, 0, False),
-    "roadmap": Resource("/roadmap-status.json", 30, 128_000),
     "release": Resource("/version.json", 30, 8192),
     "catalogue": Resource("/community-catalog.json", 300, 512_000),
 }

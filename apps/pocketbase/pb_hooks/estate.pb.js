@@ -1,9 +1,10 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/pocketbase/pb_hooks/estate.pb.js
 // Stage:       11_COMMIT
-// SRS:         SRS-BUILDANDDO-WORKSPACE-001
+// SRS:         SRS-BUILDANDDO-WORKSPACE-001, SRS-BUILDANDDO-UPGRADE-001
 // CAPS:        pending
 // CK:          pending
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
 // Seat:        C-ONE
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-18
@@ -46,6 +47,8 @@ onRecordUpdateRequest((e) => {
 }, 'users');
 
 routerAdd('GET', '/api/buildanddo/estate/fleet-status', (e) => {
+    e.response.header().set('Cache-Control', 'no-store');
+    e.response.header().set('Vary', 'Authorization');
     const { SEAT_FIELD, MASTER } = require(`${__hooks}/estate-lib.js`);
     const level = e.auth ? String(e.auth.getString(SEAT_FIELD) || '').trim().toLowerCase() : '';
     if (level !== MASTER) {
@@ -82,6 +85,8 @@ routerAdd('GET', '/api/buildanddo/estate/fleet-status', (e) => {
 // be read - is estate-only. Same gate, same 404, same UNMEASURED answer when the file has not been
 // published to this instance.
 routerAdd('GET', '/api/buildanddo/estate/platform-health', (e) => {
+    e.response.header().set('Cache-Control', 'no-store');
+    e.response.header().set('Vary', 'Authorization');
     const { SEAT_FIELD, MASTER } = require(`${__hooks}/estate-lib.js`);
     const level = e.auth ? String(e.auth.getString(SEAT_FIELD) || '').trim().toLowerCase() : '';
     if (level !== MASTER) {

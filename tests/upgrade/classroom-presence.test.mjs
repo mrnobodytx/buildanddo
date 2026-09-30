@@ -586,11 +586,14 @@ test('an unknown room is a 404 and never leaks whether rows exist', () => {
     }
 });
 
-test('the health route answers without a room, a credential or a publisher name', () => {
+test('health is authenticated and only a master seat can inspect diagnostic configuration', () => {
     const f = mediaFixture({ publishers: 'teacher@example.com,forge@citadel-nexus.com' });
     delete f.env.CLOUDFLARE_REALTIME_APP_ID;
     delete f.env.CLOUDFLARE_REALTIME_APP_SECRET;
-    const out = f.request('GET', '/api/classroom/presence/health', { actor: null });
+    assert.equal(f.request('GET', '/api/classroom/presence/health', { actor: null }).status, 401);
+    assert.deepEqual(f.request('GET', '/api/classroom/presence/health').body, { ok: true, reason: null });
+    const owner = f.app.findRecordById('users', 'owner'); owner.set('cnwb_seat_level', 'master'); f.app.save(owner);
+    const out = f.request('GET', '/api/classroom/presence/health');
     assert.equal(out.status, 200);
     assert.equal(out.body.ok, true);
     assert.equal(out.body.collection_installed, true);
@@ -599,8 +602,9 @@ test('the health route answers without a room, a credential or a publisher name'
 
     for (const migration of [MIGRATION, MEDIA_MIGRATION]) {
         const missing = mediaFixture();
+        const master = missing.app.findRecordById('users', 'owner'); master.set('cnwb_seat_level', 'master'); missing.app.save(master);
         missing.migration(migration).down();
-        const down = missing.request('GET', '/api/classroom/presence/health', { actor: null });
+        const down = missing.request('GET', '/api/classroom/presence/health');
         assert.equal(down.status, 503);
         assert.equal(down.body.ok, false);
         assert.equal(down.body.collection_installed, false);
@@ -622,8 +626,9 @@ test('all signalling and presence routes register authentication and bounded wri
     assert.deepEqual(plain(f.routes.get('GET /api/classroom/presence').auth), { auth: 'users' });
     assert.equal(read(f, '', null).status, 401);
     for (const path of ['/api/classroom/health', '/api/classroom/presence/health']) {
-        assert.equal(f.routes.get(`GET ${path}`).auth, undefined);
-        assert.equal(f.request('GET', path, { actor: null }).status, 200);
+        assert.deepEqual(plain(f.routes.get(`GET ${path}`).auth), { auth: 'users' });
+        assert.equal(f.request('GET', path, { actor: null }).status, 401);
+        assert.deepEqual(f.request('GET', path).body, { ok: true, reason: null });
     }
     assert.equal(f.requests.length, 0);
 });
@@ -636,7 +641,7 @@ test('missing provider configuration refuses current advertisements without cont
         delete f.env[name];
         assert.equal(advertise(f, body).status, 503, name);
         assert.equal(read(f, room).status, 503, name);
-        assert.equal(f.request('GET', '/api/classroom/health', { actor: null }).body.ok, false);
+        assert.equal(f.request('GET', '/api/classroom/health').body.ok, false);
         assert.deepEqual(f.data, stored);
         assert.equal(f.requests.length, before);
     }
@@ -751,7 +756,7 @@ test('presence writes and health never call the provider, a read asks it once, a
     const f = mediaFixture(), room = f.start(), body = published(f, room);
     const before = f.requests.length;
     assert.equal(advertise(f, body).status, 200);
-    assert.equal(f.request('GET', '/api/classroom/presence/health', { actor: null }).status, 200);
+    assert.equal(f.request('GET', '/api/classroom/presence/health').status, 200);
     assert.equal(f.requests.length, before, 'a write and the health route never call the provider');
     // The read's only provider call is the echo, made through the shared lib: one bodiless GET of
     // the session, with the credential only in the lib's Authorization header, never in the reply.

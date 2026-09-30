@@ -1,0 +1,232 @@
+{
+  "schema": "buildanddo.media-corpus/v1",
+  "compiled_at": "2026-09-30T19:30:38.137086+00:00",
+  "source": {
+    "schema": "buildanddo.media-source/v1",
+    "event_id": "BD-MEDIA-BUDDI-20260930",
+    "scope_id": "buildanddo-public-source",
+    "kind": "source_change",
+    "revision": "a07457759e31c30aad15ece2351e681d7bc5727e",
+    "producer": "cni://agent/BITS-CODEGEN",
+    "authors": [],
+    "observed_at": "2026-09-30T17:24:05.274457+00:00",
+    "expires_at": "2026-10-07T17:24:05.274457+00:00",
+    "title": "Buddi connection recovery: what the source tests establish",
+    "audience": "BuildAndDo contributors and operators",
+    "language": "en",
+    "source_url": "https://github.com/mrnobodytx/buildanddo",
+    "disclosure_ref": "public-source-review-pending",
+    "artifacts": [
+      {
+        "artifact_id": "buddi-source-report",
+        "path": ".bits/out/VCC-BUILDANDDO-UPGRADE-001/buddi-connection-report.md",
+        "sha256": "08cffe3b3729006940f3abf1342a16afb4692897710d266716d0b8808b5a2c47",
+        "size": 7438,
+        "observed_at": "2026-09-30T17:24:05.274457+00:00"
+      }
+    ],
+    "claims": [
+      {
+        "claim_id": "problem",
+        "section": "problem",
+        "text": "The user requested improved\nconnections, integrations and Buddi usage after a supporting-system handoff.",
+        "evidence_ids": [
+          "buddi-source-report"
+        ]
+      },
+      {
+        "claim_id": "action",
+        "section": "action",
+        "text": "Fixes bind\npermission completion to the current attempt, fence SDK callbacks after a\nterminal event or unmount, catch asynchronous SDK errors, release a transport\nthat finishes opening late, and distinguish confirmed hang-up from failure.",
+        "evidence_ids": [
+          "buddi-source-report"
+        ]
+      },
+      {
+        "claim_id": "outcome",
+        "section": "outcome",
+        "text": "PASS: 23 cases",
+        "evidence_ids": [
+          "buddi-source-report"
+        ]
+      },
+      {
+        "claim_id": "lesson",
+        "section": "lesson",
+        "text": "Source repair and source-binding refresh do not mark the sprint or live\nintegration complete.",
+        "evidence_ids": [
+          "buddi-source-report"
+        ]
+      },
+      {
+        "claim_id": "limitation",
+        "section": "limitation",
+        "text": "The handler harness executes production closures with hook/SDK/clock doubles;\nit is not rendered browser evidence. No native PocketBase suite ran.",
+        "evidence_ids": [
+          "buddi-source-report"
+        ]
+      }
+    ],
+    "visibility": "public"
+  },
+  "source_digest": "d0128f072d12606c87a34c1681ad5c04f0d8968bb522f4e11d7628c5a7879e2f",
+  "source_state": "REPORTED_SOURCE",
+  "source_review_digest": null,
+  "options": {
+    "schema": "buildanddo.media-options/v1",
+    "formats": [
+      "daily_audio"
+    ],
+    "languages": [
+      "en"
+    ],
+    "styles": [
+      "neutral"
+    ],
+    "requested_model": "eleven_v4",
+    "chunk_characters": 3000,
+    "character_budget": 10000,
+    "max_assets": 3
+  },
+  "assets": [
+    {
+      "asset_id": "56857f2168b6ae5af574ebf4f43981be8e516b6d6579c3e08d96be21fad2adc1",
+      "request_digest": "e3c88ac85f507367d7ae66b69985de02f7a2b4eeccacdf0e4ec6af5c101885e1",
+      "request": {
+        "source_digest": "d0128f072d12606c87a34c1681ad5c04f0d8968bb522f4e11d7628c5a7879e2f",
+        "format": "daily_audio",
+        "language": "en",
+        "style": "neutral",
+        "part": 1,
+        "parts": 1,
+        "script": "Buddi connection recovery: what the source tests establish. Source report dated 2026-09-30.\n\nProblem reported: The user requested improved\nconnections, integrations and Buddi usage after a supporting-system handoff.\n\nAction recorded: Fixes bind\npermission completion to the current attempt, fence SDK callbacks after a\nterminal event or unmount, catch asynchronous SDK errors, release a transport\nthat finishes opening late, and distinguish confirmed hang-up from failure.\n\nOutcome reported: PASS: 23 cases\n\nLesson recorded: Source repair and source-binding refresh do not mark the sprint or live\nintegration complete.\n\nLimitations recorded: The handler harness executes production closures with hook/SDK/clock doubles;\nit is not rendered browser evidence. No native PocketBase suite ran.",
+        "requested_model": "eleven_v4",
+        "speaker_roles": [
+          "narrator"
+        ]
+      },
+      "script_sha256": "b4d59e2cff22b3d847167e07dac81df6d7f58c8a9870e4be5851553b6ee4940b",
+      "characters": 788,
+      "draft": {
+        "schema": "buildanddo.content-draft/v1",
+        "asset_id": "56857f2168b6ae5af574ebf4f43981be8e516b6d6579c3e08d96be21fad2adc1",
+        "source_digest": "d0128f072d12606c87a34c1681ad5c04f0d8968bb522f4e11d7628c5a7879e2f",
+        "language": "en",
+        "title": "Daily Edition: Buddi connection recovery: what the source tests establish (1/1)",
+        "format": "blog",
+        "audience": "BuildAndDo contributors and operators",
+        "brief": "Imported media draft 56857f2168b6ae5af574ebf4f43981be8e516b6d6579c3e08d96be21fad2adc1.\nSource event: BD-MEDIA-BUDDI-20260930; scope: buildanddo-public-source.\nReview the source, rights and exact script before production or publication.",
+        "body": "Buddi connection recovery: what the source tests establish. Source report dated 2026-09-30.\n\nProblem reported: The user requested improved\nconnections, integrations and Buddi usage after a supporting-system handoff.\n\nAction recorded: Fixes bind\npermission completion to the current attempt, fence SDK callbacks after a\nterminal event or unmount, catch asynchronous SDK errors, release a transport\nthat finishes opening late, and distinguish confirmed hang-up from failure.\n\nOutcome reported: PASS: 23 cases\n\nLesson recorded: Source repair and source-binding refresh do not mark the sprint or live\nintegration complete.\n\nLimitations recorded: The handler harness executes production closures with hook/SDK/clock doubles;\nit is not rendered browser evidence. No native PocketBase suite ran.\n\nSource: https://github.com/mrnobodytx/buildanddo\nRevision: a07457759e31c30aad15ece2351e681d7bc5727e\nEvidence selection: d0128f072d12606c87a34c1681ad5c04f0d8968bb522f4e11d7628c5a7879e2f",
+        "body_sha256": "0a45c9dca7061af86a3f3cb12aca82dfecb48e704944db316171691f2ae2e2ae",
+        "channel": "Daily Edition",
+        "call_to_action": "Inspect the cited source and its limitations."
+      },
+      "claim_ids": [
+        "problem",
+        "action",
+        "outcome",
+        "lesson",
+        "limitation"
+      ],
+      "target_seconds": [
+        30,
+        90
+      ],
+      "estimated_seconds": 42.4,
+      "duration_basis": "planning estimate at 150 words/minute, not measured audio",
+      "duration_state": "IN_RANGE",
+      "clip_plan": [
+        {
+          "order": 1,
+          "claim_id": "problem",
+          "evidence_ids": [
+            "buddi-source-report"
+          ],
+          "timing": "align_after_actual_audio"
+        },
+        {
+          "order": 2,
+          "claim_id": "action",
+          "evidence_ids": [
+            "buddi-source-report"
+          ],
+          "timing": "align_after_actual_audio"
+        },
+        {
+          "order": 3,
+          "claim_id": "outcome",
+          "evidence_ids": [
+            "buddi-source-report"
+          ],
+          "timing": "align_after_actual_audio"
+        },
+        {
+          "order": 4,
+          "claim_id": "lesson",
+          "evidence_ids": [
+            "buddi-source-report"
+          ],
+          "timing": "align_after_actual_audio"
+        },
+        {
+          "order": 5,
+          "claim_id": "limitation",
+          "evidence_ids": [
+            "buddi-source-report"
+          ],
+          "timing": "align_after_actual_audio"
+        }
+      ]
+    }
+  ],
+  "translation_tasks": [],
+  "production_plans": {
+    "elevencreative": {
+      "state": "HOLD",
+      "mode": "manual_studio",
+      "holds": [
+        "human_script_approval",
+        "voice_rights_confirmation",
+        "provider_capability_confirmation",
+        "current_independent_source_review",
+        "account_and_studio_terms_confirmation"
+      ],
+      "jobs": [
+        {
+          "asset_id": "56857f2168b6ae5af574ebf4f43981be8e516b6d6579c3e08d96be21fad2adc1",
+          "request_digest": "e3c88ac85f507367d7ae66b69985de02f7a2b4eeccacdf0e4ec6af5c101885e1",
+          "characters": 788
+        }
+      ],
+      "promotion_eligibility": "UNKNOWN",
+      "cost": null
+    },
+    "api": {
+      "state": "HOLD",
+      "transport_owner": "existing_private_ElevenLabsBridge",
+      "holds": [
+        "human_script_approval",
+        "voice_rights_confirmation",
+        "provider_capability_confirmation",
+        "current_independent_source_review",
+        "funding_authorization",
+        "private_bridge_activation"
+      ],
+      "jobs": [
+        {
+          "asset_id": "56857f2168b6ae5af574ebf4f43981be8e516b6d6579c3e08d96be21fad2adc1",
+          "request_digest": "e3c88ac85f507367d7ae66b69985de02f7a2b4eeccacdf0e4ec6af5c101885e1",
+          "characters": 788
+        }
+      ],
+      "grant_balance": null,
+      "studio_promotion_covers_api": null,
+      "cost": null
+    }
+  },
+  "generation_characters_per_lane": 788,
+  "lane_selection": "choose one lane per job; producing in both incurs both lanes' usage",
+  "publication_authority": false,
+  "external_effects": 0,
+  "corpus_digest": "c6bcda1a1c534e3f28fb30aa79d8397ea8cb418872b0ac2d10a8af4a0309657a"
+}

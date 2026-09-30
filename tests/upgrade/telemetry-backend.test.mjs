@@ -255,9 +255,9 @@ test('classroom health returns 503 when its existing installation/config checks 
         h.load(hook);
         const path = hook === 'classroom-realtime.pb.js' ? '/api/classroom/health' : '/api/classroom/presence/health';
         const route = h.routes.get(`GET ${path}`);
-        const event = { app: { findCollectionByNameOrId() { if (!installed) throw new Error(PRIVATE); } }, auth: null,
+        const event = { app: { findCollectionByNameOrId() { if (!installed) throw new Error(PRIVATE); } }, auth: { getString: (key) => key === 'cnwb_seat_level' ? 'master' : '' },
             response: { header: () => ({ set() {} }) }, json: (status, body) => ({ status, body: plain(body) }) };
-        assert.equal(route.middleware.length, 0, 'retain existing public health scope rather than inventing a bypass');
+        assert.equal(route.middleware.length, 1, 'diagnostic routes require native authentication');
         assert.equal(route.callback(event).status, 200);
         installed = false;
         const down = route.callback(event);
@@ -289,7 +289,7 @@ for (const [hook, path] of [
                 const route = h.routes.get(`GET ${path}`);
                 const headers = new Map();
                 let sends = 0;
-                const event = { app: f.app, auth: null,
+                const event = { app: f.app, auth: { getString: (key) => key === 'cnwb_seat_level' ? 'master' : '' },
                     response: { header: () => ({ set: (key, value) => headers.set(key, value) }) },
                     json(status, body) { sends++; return { status, body: plain(body) }; } };
                 assert.equal(route.callback(event).status, 200);
@@ -313,7 +313,7 @@ for (const [hook, path] of [
                     max_ttl_ms: 120000, max_rows: 50, verification: 'ECHO_ON_READ',
                     reason: 'Classroom presence/session migrations required.',
                 });
-                assert.equal(route.middleware.length, 0);
+                assert.equal(route.middleware.length, 1);
                 assert.equal(headers.get('Cache-Control'), 'no-store');
                 assert.deepEqual(plain(f.data), before);
                 assert.equal(h.calls.length, 0);
@@ -331,7 +331,7 @@ test('presence storage lookup keeps its own single diagnostic before the real me
     // Both stores are absent, but the first failed prerequisite remains the owner.
     delete f.collections.classroom_media_sessions;
     let sends = 0;
-    const result = h.routes.get('GET /api/classroom/presence/health').callback({ app: f.app, auth: null,
+    const result = h.routes.get('GET /api/classroom/presence/health').callback({ app: f.app, auth: { getString: (key) => key === 'cnwb_seat_level' ? 'master' : '' },
         response: { header: () => ({ set() {} }) }, json(status, body) { sends++; return { status, body }; } });
     assert.equal(result.status, 503);
     assert.equal(result.body.collection_installed, false);

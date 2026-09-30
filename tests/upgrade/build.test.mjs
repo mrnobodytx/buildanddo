@@ -8,9 +8,9 @@
 // Seat:        BITS-CODEGEN, C-ONE (community links, sameAs and guildmaster profiles)
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-14
-// Depends:     apps/web/tools/generate-seo.mjs, apps/web/tools/release-telemetry.mjs
+// Depends:     apps/web/tools/generate-seo.mjs, apps/web/tools/release-telemetry.mjs, apps/web/tools/public-delivery.mjs
 // EnumType:    Test
-// EnumEdges:   DEPENDS_ON apps/web/tools/generate-seo.mjs; VALIDATES apps/web/tools/release-telemetry.mjs
+// EnumEdges:   DEPENDS_ON apps/web/tools/generate-seo.mjs; VALIDATES apps/web/tools/release-telemetry.mjs; VALIDATES apps/web/tools/public-delivery.mjs
 // DAG Node:    none
 // Intent:      Verify release identity and real generated crawler artifacts without network dependencies.
 // ───────────────────────────────────────────────────────────────
@@ -44,37 +44,43 @@ test('the actual build wrapper scans generated feeds before finalizing release t
     const wrapper = readFileSync(new URL('../../apps/web/tools/build.mjs', import.meta.url), 'utf8')
         .replace(/^#!.*\n/, '').replace(/^import .*;$/gm, '')
         .replaceAll('import.meta.url', '__moduleUrl').replace("await import('vite')", '__vite');
-    for (const mode of ['release', 'ordinary', 'build_failure', 'answer_leak']) {
-        const calls = [], original = new Error('Synthetic bundler failure');
+    for (const mode of ['release', 'ordinary', 'build_failure', 'retired_feed', 'answer_leak']) {
+        const calls = [], original = new Error('Synthetic bundler failure'), retired = new Error('Retired publication');
         const contract = mode === 'ordinary' ? null : { publicConfig: {} };
         const release = { commit_sha: 'a'.repeat(40), version: '38+aaaaaaa' };
         const finish = () => { calls.push('telemetry'); };
         const context = {
-            URL, fileURLToPath, TELEMETRY_MANIFEST,
+            URL, fileURLToPath, TELEMETRY_MANIFEST, join, tmpdir,
             __moduleUrl: new URL('../../apps/web/tools/build.mjs', import.meta.url).href,
             process: { env: {}, exit: (code) => { throw Object.assign(new Error('Build refused'), { exitCode: code }); } },
             console: { error() {} },
-            rmSync: () => calls.push('clear_manifest'),
+            rmSync: (path) => calls.push(path.endsWith(TELEMETRY_MANIFEST) ? 'clear_manifest' : 'clear_public_assets'),
+            mkdtempSync: () => { calls.push('temporary_public_assets'); return '/temporary/filtered-public'; },
+            copyPublicAssets: (_source, destination) => { calls.push('public_copy'); assert.equal(destination, '/temporary/filtered-public'); },
             resolveBuildRelease: () => release,
             releaseTelemetryContract: () => contract,
             releaseTelemetryPlugin: () => ({ plugin: { name: 'synthetic-observer' }, finish }),
             generatePublicAssets: () => calls.push('public_assets'),
-            spawnSync: () => { calls.push('projection'); return { status: 0 }; },
             __vite: { build: async (options) => {
                 calls.push('build');
+                assert.equal(options.publicDir, '/temporary/filtered-public');
                 assert.equal(options.build.emptyOutDir, true);
                 assert.equal(options.plugins.length, contract ? 1 : 0);
                 if (mode === 'build_failure') throw original;
             } },
             generatePageHeads: () => calls.push('page_heads'),
             generateCommunityCatalogue: () => calls.push('community_feed'),
+            assertPublicDelivery: () => { calls.push('privacy_scan'); if (mode === 'retired_feed') throw retired; },
             findLessonAnswers: () => { calls.push('answer_scan'); return mode === 'answer_leak' ? [{ slug: 'synthetic', file: 'community-catalog.json' }] : []; },
         };
         const run = vm.runInNewContext(`(async () => { ${wrapper}\n })()`, context);
-        if (mode === 'build_failure' || mode === 'answer_leak') await assert.rejects(run, (error) => error.exitCode === 1);
+        if (mode === 'build_failure') await assert.rejects(run, (error) => error === original);
+        else if (mode === 'retired_feed') await assert.rejects(run, (error) => error === retired);
+        else if (mode === 'answer_leak') await assert.rejects(run, (error) => error.exitCode === 1);
         else await run;
-        assert.deepEqual(calls, ['clear_manifest', 'public_assets', 'projection', 'build',
-            ...(mode === 'build_failure' ? [] : ['page_heads', 'community_feed', 'answer_scan']),
+        assert.deepEqual(calls, ['clear_manifest', 'public_assets', 'temporary_public_assets', 'public_copy', 'build', 'clear_public_assets',
+            ...(mode === 'build_failure' ? [] : ['page_heads', 'community_feed', 'privacy_scan']),
+            ...(['build_failure', 'retired_feed'].includes(mode) ? [] : ['answer_scan']),
             ...(mode === 'release' ? ['telemetry'] : [])], mode);
     }
 });

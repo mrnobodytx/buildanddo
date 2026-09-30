@@ -120,7 +120,7 @@ export function useClassroomMedia(roomId, { enabled = true } = {}) {
             if (!current()) return;
             try { Promise.resolve(readFailed('/app/classrooms/:room', 'classroom_media', reason, status)).catch(() => {}); } catch { /* Configuration still renders. */ }
         };
-        classroomHealth()
+        classroomHealth(pocketbaseClient.authStore.token)
             .then((result) => {
                 if (result?.ok !== true) failed('unavailable');
                 update({ health: result }, current);

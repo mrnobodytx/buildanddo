@@ -36,7 +36,6 @@ import { useFailureTelemetry } from '@/hooks/useFailureTelemetry';
 
 const HomePage = lazy(() => import('./pages/HomePage'));
 const HostingerChallengePage = lazy(() => import('./pages/HostingerChallengePage'));
-const RoadmapPage = lazy(() => import('./pages/RoadmapPage'));
 const PracticePage = lazy(() => import('./pages/PracticePage'));
 const PlatformPage = lazy(() => import('./pages/PlatformPage'));
 const LoginPage = lazy(() => import('./pages/LoginPage'));
@@ -134,7 +133,7 @@ const WORKSPACE_ROUTES = [
     { path: 'edition', label: 'Daily Edition', element: DailyEditionPage },
     { path: 'desks', label: 'Specialist desks', element: SpecialistWorkPage },
     { path: 'replay', label: 'Execution replay', element: ExecutionReplayPage },
-    { path: 'passport', label: 'Capability Passport', element: CapabilityPassportPage },
+    { path: 'passport', label: 'Capability Passport', element: CapabilityPassportPage, estate: true },
     { path: 'career', label: 'Career Passport', element: CareerPage },
     { path: 'corrections', label: 'Corrections', element: CorrectionsPage },
     { path: 'support', label: 'Support & Revenue', element: SupportRevenuePage },
@@ -203,7 +202,7 @@ export function AppRoutes() {
                 {/* Public marketing site */}
                 <Route path="/" element={<HomePage />} />
                 <Route path="/hostinger-challenge" element={<HostingerChallengePage />} />
-                <Route path="/roadmap" element={<RoadmapPage />} />
+                <Route path="/roadmap" element={<Navigate to="/app/roadmap" replace />} />
                 <Route path="/practice" element={<PracticePage />} />
                 <Route path="/platform" element={<PlatformPage />} />
                 <Route path="/pricing" element={<PricingPage />} />

@@ -384,7 +384,6 @@ function page(f, name) {
 const pageCases = {
     FleetPage: { path: '/app/fleet', source: 'estate', good: { state: 'MEASURED', hosts: [], planes: [], totals: { agent_versions: [] } }, failed: 'failed' },
     PlatformHealthPage: { path: '/app/platforms', source: 'estate', good: { state: 'MEASURED', platforms: [], totals: {} }, failed: 'failed' },
-    PracticePage: { path: '/practice', source: 'practice', good: { items: [] }, failed: 'error' },
 };
 for (const [name, config] of Object.entries(pageCases)) {
     test(`${name}: empty is valid, malformed 200 and HTTP failures keep the existing error state and bounded source`, async () => {

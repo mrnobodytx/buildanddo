@@ -1,0 +1,14 @@
+{
+  "schema": "buildanddo.content-draft/v1",
+  "asset_id": "56857f2168b6ae5af574ebf4f43981be8e516b6d6579c3e08d96be21fad2adc1",
+  "source_digest": "d0128f072d12606c87a34c1681ad5c04f0d8968bb522f4e11d7628c5a7879e2f",
+  "language": "en",
+  "title": "Daily Edition: Buddi connection recovery: what the source tests establish (1/1)",
+  "format": "blog",
+  "audience": "BuildAndDo contributors and operators",
+  "brief": "Imported media draft 56857f2168b6ae5af574ebf4f43981be8e516b6d6579c3e08d96be21fad2adc1.\nSource event: BD-MEDIA-BUDDI-20260930; scope: buildanddo-public-source.\nReview the source, rights and exact script before production or publication.",
+  "body": "Buddi connection recovery: what the source tests establish. Source report dated 2026-09-30.\n\nProblem reported: The user requested improved\nconnections, integrations and Buddi usage after a supporting-system handoff.\n\nAction recorded: Fixes bind\npermission completion to the current attempt, fence SDK callbacks after a\nterminal event or unmount, catch asynchronous SDK errors, release a transport\nthat finishes opening late, and distinguish confirmed hang-up from failure.\n\nOutcome reported: PASS: 23 cases\n\nLesson recorded: Source repair and source-binding refresh do not mark the sprint or live\nintegration complete.\n\nLimitations recorded: The handler harness executes production closures with hook/SDK/clock doubles;\nit is not rendered browser evidence. No native PocketBase suite ran.\n\nSource: https://github.com/mrnobodytx/buildanddo\nRevision: a07457759e31c30aad15ece2351e681d7bc5727e\nEvidence selection: d0128f072d12606c87a34c1681ad5c04f0d8968bb522f4e11d7628c5a7879e2f",
+  "body_sha256": "0a45c9dca7061af86a3f3cb12aca82dfecb48e704944db316171691f2ae2e2ae",
+  "channel": "Daily Edition",
+  "call_to_action": "Inspect the cited source and its limitations."
+}

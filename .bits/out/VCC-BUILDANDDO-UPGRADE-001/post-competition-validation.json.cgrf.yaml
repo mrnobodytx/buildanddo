@@ -1,0 +1,19 @@
+# ─── CGRF Header ───────────────────────────────────────────────
+# File:        .bits/out/VCC-BUILDANDDO-UPGRADE-001/post-competition-validation.json.cgrf.yaml
+# Stage:       11_COMMIT
+# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# CAPS:        pending
+# CK:          pending
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+# Seat:        BITS-CODEGEN
+# Owner:       Citadel Nexus Inc.
+# Created:     2026-09-30
+# Depends:     .bits/out/VCC-BUILDANDDO-UPGRADE-001/post-competition-validation.json
+# EnumType:    Schema
+# EnumEdges:   VALIDATES .bits/out/VCC-BUILDANDDO-UPGRADE-001/post-competition-validation.json
+# Intent:      Describe retained local source observations and their unavailable runtime and provider acceptance without treating test fixtures as deployment evidence.
+# ───────────────────────────────────────────────────────────────
+schema_version: buildanddo.local-source-validation/v1
+artifact: .bits/out/VCC-BUILDANDDO-UPGRADE-001/post-competition-validation.json
+authority: VCC-BUILDANDDO-UPGRADE-001
+runtime_acceptance: unmeasured

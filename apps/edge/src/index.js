@@ -9,9 +9,9 @@
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-22
-// Depends:     apps/edge/src/graph.js, apps/edge/src/public-api.js
+// Depends:     apps/edge/src/graph.js, apps/edge/src/public-api.js, apps/web/src/lib/publicExposure.js
 // EnumType:    Service
-// EnumEdges:   FRONTS apps/web; PROXIES /api/v1/public/* VIA apps/edge/src/public-api.js
+// EnumEdges:   CONSUMES apps/edge/src/graph.js; CONSUMES apps/edge/src/public-api.js; CONSUMES apps/web/src/lib/publicExposure.js
 // DAG Node:    none
 // Intent:      Set the response security headers for buildanddo.com and www at the edge.
 // ───────────────────────────────────────────────────────────────
@@ -40,6 +40,7 @@
 
 import { handleGraphMatch } from './graph.js';
 import { handlePublicApi } from './public-api.js';
+import { retiredPublicFeed } from '../../web/src/lib/publicExposure.js';
 
 const ALLOW_POSTHOG = ['https://us.i.posthog.com', 'https://us-assets.i.posthog.com'];
 
@@ -86,6 +87,10 @@ function contentSecurityPolicy() {
 
 export default {
 	async fetch(request, env) {
+		if (retiredPublicFeed(new URL(request.url).pathname)) {
+			return new Response('Not found', { status: 404,
+				headers: { 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff', 'Content-Type': 'text/plain; charset=utf-8' } });
+		}
 		// One bounded route this worker OWNS, answered before anything is fetched from the origin.
 		// It returns null for every other request, so the header path below is unchanged — and a
 		// graph read never pays for a round trip to an origin that would 404 it anyway.
@@ -121,7 +126,7 @@ export default {
 			headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
 		}
 		if (!headers.get('Permissions-Policy')) {
-			headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+			headers.set('Permissions-Policy', 'camera=(), microphone=(self), geolocation=()');
 		}
 		return new Response(response.body, {
 			status: response.status,
