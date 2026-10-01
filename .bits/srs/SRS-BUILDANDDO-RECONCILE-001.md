@@ -163,7 +163,9 @@ PostHog identity, the URL scrubber and the OCN seat session's capture.
       twenty-five acceptance profiles. The Day-21 messages count the profiles instead of saying eighteen.
     - three web tests: the Buddi stall test gets the fake-clock fix `EditorialReels.test.jsx` already documents;
       the workflow receipt and the daily-edition editor tests assert what the product deliberately renders (a
-      receipt link inside its label; no Publish control for an editor).
+      receipt link inside its label; no Publish control for an editor). The tutorials page test's partial mock of
+      the observability runtime now includes `readFailed`, which the page calls; without it every run of the suite
+      ended with four unhandled rejections and a non-zero exit, on `main` too.
 
     `test_system_growth` is left alone: `growth.lock.json` is refreshed on `main` by the owner's choice (GROWTH-001).
 

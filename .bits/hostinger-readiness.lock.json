@@ -765,7 +765,7 @@
     "apps/web/src/pages/workspace/__tests__/SignalsPage.test.jsx": "b282778a6d17ef0edceff0e4689d4448901925dfbccdb4c1f0a37d71b8ab5334",
     "apps/web/src/pages/workspace/__tests__/SuiteFlow.test.jsx": "aad7d8a30b263f91ad07a26c061e32ad016f607fe85e4e06c0b0cdee2d8d5319",
     "apps/web/src/pages/workspace/__tests__/SupportRevenuePage.test.jsx": "bd330e152baeb01d0f30b620b16d6df45cd2823dfd82478c3cd7bdc27f0f24c2",
-    "apps/web/src/pages/workspace/__tests__/TutorialsPage.test.jsx": "1686c847c19b08bf313dde26e6f26a79b47aff05cedbb4ad1c9c0c2fedf7f7f3",
+    "apps/web/src/pages/workspace/__tests__/TutorialsPage.test.jsx": "25747e3290fad317920ff13e3398674b4398a81a7fd93d8507ab6b294b9a7a6a",
     "apps/web/src/pages/workspace/__tests__/WorkflowsPage.test.jsx": "be96975782b8b30760b07bb59f35a1293dfc44b18f6cf809be1e4ccd759f9e59",
     "apps/web/src/pages/workspace/__tests__/WorkspaceClaimsPages.test.jsx": "051bce174094532567a223665a60d5a498ebeb73b0b56b93cca40e7b98d50bff",
     "apps/web/src/test/__tests__/scriptsCarrying.test.js": "56f8bcc65459195c25761b6f556b3b66286a8c7a0db6138e9b152e0b13d32a88",
