@@ -167,6 +167,9 @@ PostHog identity, the URL scrubber and the OCN seat session's capture.
       the observability runtime now includes `readFailed`, which the page calls; without it every run of the suite
       ended with four unhandled rejections and a non-zero exit, on `main` too.
 
+    - `CHANGELOG.md` is regenerated with `scripts/ci/changelog_gen.py`. GitHub's changelog workflow has not run on
+      `main` since the Actions billing lock, so `changelog_gen.py --check` failed on `main` and on every pull request.
+
     `test_system_growth` is left alone: `growth.lock.json` is refreshed on `main` by the owner's choice (GROWTH-001).
 
 ## Out of scope
