@@ -35,8 +35,9 @@
 | 5 | Repository gates | `submission_readiness.py --check`, `verify_public_boundary.py` | done |
 | 6 | Pull request to the staging line, merged only on the operator's OK | the gates again on a trial merge into the current head | done: #106, merged as `ea97e3b` |
 | 7 | Staging-only deploy of web and backend | readback from staging | done: staging serves `ea97e3b`; backend at 109 migrations |
-| 8 | Converge main after #105 by R14, as a pull request to the staging line | `git merge-base --is-ancestor origin/main HEAD`; the suites and gates again | in progress |
-| 9 | Pull request taking the staging line into `main`, merged only on the operator's OK | GitHub reports it mergeable without conflicts | pending |
+| 8 | Converge main after #105 by R14, as a pull request to the staging line | `git merge-base --is-ancestor origin/main HEAD`; the suites and gates again | done: #107, merged as `def2bfb` |
+| 9 | Pull request taking the staging line into `main`, merged only on the operator's OK | GitHub reports it mergeable without conflicts | done: #108, merged as `21ffb6b` |
+| 10 | Follow-up merge by R15: the staging line after #110, #111 and #117 into `main`, merged only on the operator's OK | `git merge-base --is-ancestor <staging line> HEAD`; no conflict markers; the touched suites and the gates | in progress: staging line at `5805bc9`, main at `c540085` |
 
 ## Evidence (2026-09-24, release workstation, Windows, LF checkout)
 

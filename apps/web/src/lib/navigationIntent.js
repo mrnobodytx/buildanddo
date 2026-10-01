@@ -106,10 +106,10 @@ export function classroomTelemetryLocation(value) {
     return value.startsWith('/') && !value.startsWith('//') ? path : `${url.origin}${path}`;
 }
 
-/** @param {object|null} event Analytics event. @returns {object|null} Event scrubbed before capture, including persisted and nested properties. */
+/** @param {object|null} event Analytics event. @returns {object|null} Event scrubbed before capture, including persisted, nested and identify-time person properties. */
 export function scrubClassroomProperties(event) {
-    if (!event?.properties) return event;
-    const seen = new WeakSet();
+    if (!event || typeof event !== 'object') return event;
+    let seen;
     const scrub = (properties) => {
         seen.add(properties);
         const result = { ...properties };
@@ -134,5 +134,14 @@ export function scrubClassroomProperties(event) {
         }
         return result;
     };
-    try { event.properties = scrub(event.properties); return event; } catch { return null; }
+    try {
+        // posthog-js sends identify-time person properties beside `properties`, not inside it:
+        // `$set_once` carries the session's first URL, which can be a room or a reset link.
+        for (const key of ['properties', '$set', '$set_once']) {
+            if (!event[key] || typeof event[key] !== 'object') continue;
+            seen = new WeakSet();
+            event[key] = scrub(event[key]);
+        }
+        return event;
+    } catch { return null; }
 }

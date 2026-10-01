@@ -129,6 +129,29 @@ conflicts differently, so the lines still differed in 52 files.
 
     Afterwards main is an ancestor of the staging line, so the pull request into main merges without conflicts.
 
+## Follow-up merge (2026-10-01)
+
+After #108 the staging line took #110 (OCN-TELEMETRY-001), #111 (TELEMETRY-001) and #117 (MAIL-001), and main took
+#104 and #113-#121. A trial merge of the staging line at `5805bc9` into main at `c540085` had 12 conflicting files.
+Both lines had built their own telemetry for the same things: the failure event behind the shared notices,
+PostHog identity, the URL scrubber and the OCN seat session's capture.
+
+15. **R15 - telemetry, by area.** Operator decision, 2026-10-01:
+    - **Web.** main's form stays: `useFailureTelemetry`/`readFailed`, `identifyTelemetryUser` and its scrubber,
+      which the rest of the app already uses. The staging line's duplicate `useSectionFailure` and its second
+      identify call go, so each failure and each sign-in is reported once. Two of its guarantees are kept: the
+      scrubber also cleans the top-level `$set` and `$set_once` that PostHog sends on identify, and its test
+      against the real SDK stays, now driving main's API. What is lost is the ten-second window that
+      reported several failed cards in one section as one event.
+    - **PostHog init.** That test showed main's `initTelemetry` never started PostHog: posthog-js has no
+      `get_config()`, the call threw inside a `try`, and no event was ever captured. It now reads `config`;
+      the fakes in the node suites and in `release-telemetry.mjs` lose `get_config` so they match the SDK.
+    - **OCN seat session.** The staging line's form stays: nothing on the box sends anything (OCN-TELEMETRY-001).
+      main's privacy changes come with it: no egress address lookup and no `egress_ip` in the receipt, and
+      the receipt and the refusal both say `actor_type`, `traffic_type` and `probe_type`.
+    - **Deploy gates.** Both stay. Each path checks the bundle's keys from the bytes (the staging line), and
+      admits the pinned telemetry build contract (main). Each gate's tests stub the other gate.
+
 ## Out of scope
 
 - Production, and any server change other than the staging-only deploy in R8.

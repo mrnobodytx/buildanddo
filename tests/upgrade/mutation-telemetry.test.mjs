@@ -70,7 +70,7 @@ test('a connected control receipt keeps its starting section through the actual 
     let analytics;
     const t = telemetry({ event: (...args) => analytics.trackEvent(...args) }), emitted = [], module = { exports: {} };
     const posthog = {
-        get_config(name) { return this.config?.[name]; }, has_opted_out_capturing: () => false,
+        has_opted_out_capturing: () => false,
         init(key, config) { this.config = { ...config, token: key }; },
         capture(event, properties) {
             emitted.push(this.config.before_send({ event, properties: { ...properties, $current_url: `https://fixture.invalid${t.window.location.pathname}` } }));

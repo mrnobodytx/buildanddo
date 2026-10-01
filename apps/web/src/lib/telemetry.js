@@ -82,11 +82,12 @@ export function initTelemetry() {
 		before_send: beforeSend,
 	};
 	try {
-		const existingKey = posthog.get_config('token');
+		// posthog-js has no get_config(); its live configuration is the `config` property.
+		const existingKey = posthog.config?.token;
 		if (existingKey && existingKey !== KEY) return;
 		if (existingKey) posthog.set_config(config);
 		else posthog.init(KEY, config);
-		initialized = posthog.get_config('token') === KEY && posthog.get_config('before_send') === beforeSend;
+		initialized = posthog.config?.token === KEY && posthog.config?.before_send === beforeSend;
 	} catch { /* Missing or blocked analytics must not block rendering. */ }
 }
 

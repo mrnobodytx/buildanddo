@@ -400,7 +400,7 @@ test('real Vite builds the REAL adapters with SDK stubs, minification on/off and
         ...Object.fromEntries(ADAPTER_MODULES.map((name) => [name, readFileSync(new URL(`../../apps/web/${name}`, import.meta.url), 'utf8')])),
         'src/lib/observability/network.js': 'export const networkSummary=()=>({});',
         'src/lib/observability/report.js': 'export const enableReporting=()=>{};',
-        'node_modules/posthog-js/index.js': 'export default {config:null,get_config(key){return this.config?.[key]},init(key,config){this.config={...config,token:key}}};',
+        'node_modules/posthog-js/index.js': 'export default {config:null,init(key,config){this.config={...config,token:key}}};',
         'node_modules/@datadog/browser-rum/index.js': 'export const datadogRum={config:null,getInitConfiguration(){return this.config},init(config){this.config=config}};',
         'node_modules/@datadog/browser-logs/index.js': 'export const datadogLogs={config:null,getInitConfiguration(){return this.config},init(config){this.config=config}};',
     };

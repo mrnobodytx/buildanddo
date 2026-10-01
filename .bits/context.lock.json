@@ -53,7 +53,7 @@
     },
     {
       "area": "ci",
-      "evidence": "run only by GitHub (.github/workflows/citadel-stack-telemetry.yml); referenced by: apps/federal_foundry/operator.py, tests/upgrade/test_datadog_metrics.py",
+      "evidence": "run only by GitHub (.github/workflows/citadel-stack-telemetry.yml); referenced by: apps/federal_foundry/operator.py, tests/upgrade/test_datadog_metrics.py, tests/upgrade/test_ocn_telemetry.py",
       "severity": "high",
       "srs": "",
       "statement": "scripts/ci/emit_datadog_metrics.py is not configured in reachable GitLab jobs"
@@ -95,7 +95,7 @@
     },
     {
       "area": "ci",
-      "evidence": "referenced by: nothing in this repo",
+      "evidence": "referenced by: tests/upgrade/test_ocn_telemetry.py",
       "severity": "high",
       "srs": "",
       "statement": "scripts/ci/ocn_classroom_live.py is not configured in reachable GitLab jobs"
@@ -165,7 +165,7 @@
     },
     {
       "area": "ci",
-      "evidence": "referenced by: tests/upgrade/test_ocn_seat_session.py",
+      "evidence": "referenced by: tests/upgrade/test_ocn_seat_session.py, tests/upgrade/test_ocn_telemetry.py",
       "severity": "high",
       "srs": "",
       "statement": "scripts/ci/ocn_seat_session.py is not configured in reachable GitLab jobs"
@@ -333,6 +333,13 @@
     },
     {
       "area": "governance",
+      "evidence": ".bits/queue/VCC-BUILDANDDO-OCN-TELEMETRY-001.md: 10/10 tasks done; mark SRS-BUILDANDDO-OCN-TELEMETRY-001 delivered once merged and verified, or add the task that remains",
+      "severity": "medium",
+      "srs": "SRS-BUILDANDDO-OCN-TELEMETRY-001",
+      "statement": "VCC-BUILDANDDO-OCN-TELEMETRY-001 has every task done but SRS-BUILDANDDO-OCN-TELEMETRY-001 is still in_progress"
+    },
+    {
+      "area": "governance",
       "evidence": ".bits/queue/VCC-BUILDANDDO-PRESENCE-001.md: 3/3 tasks done; mark SRS-BUILDANDDO-PRESENCE-001 delivered once merged and verified, or add the task that remains",
       "severity": "medium",
       "srs": "SRS-BUILDANDDO-PRESENCE-001",
@@ -358,6 +365,13 @@
       "severity": "medium",
       "srs": "SRS-BUILDANDDO-QUIZ-001",
       "statement": "VCC-BUILDANDDO-QUIZ-001 has every task done but SRS-BUILDANDDO-QUIZ-001 is still in_progress"
+    },
+    {
+      "area": "governance",
+      "evidence": ".bits/queue/VCC-BUILDANDDO-RECONCILE-001.md: 3/3 tasks done; mark SRS-BUILDANDDO-RECONCILE-001 delivered once merged and verified, or add the task that remains",
+      "severity": "medium",
+      "srs": "SRS-BUILDANDDO-RECONCILE-001",
+      "statement": "VCC-BUILDANDDO-RECONCILE-001 has every task done but SRS-BUILDANDDO-RECONCILE-001 is still in_progress"
     },
     {
       "area": "governance",
@@ -539,7 +553,8 @@
       "path": "scripts/ci/emit_datadog_metrics.py",
       "referenced_by": [
         "apps/federal_foundry/operator.py",
-        "tests/upgrade/test_datadog_metrics.py"
+        "tests/upgrade/test_datadog_metrics.py",
+        "tests/upgrade/test_ocn_telemetry.py"
       ],
       "wired_into_ci": false
     },
@@ -615,7 +630,9 @@
     {
       "configured_providers": [],
       "path": "scripts/ci/ocn_classroom_live.py",
-      "referenced_by": [],
+      "referenced_by": [
+        "tests/upgrade/test_ocn_telemetry.py"
+      ],
       "wired_into_ci": false
     },
     {
@@ -631,7 +648,8 @@
       "path": "scripts/ci/ocn_feature_sweep.py",
       "referenced_by": [
         "scripts/ci/hostinger_checks.py",
-        "scripts/deploy/apply_production_runtime_config.py"
+        "scripts/deploy/apply_production_runtime_config.py",
+        "tests/upgrade/test_ocn_telemetry.py"
       ],
       "wired_into_ci": true
     },
@@ -653,7 +671,8 @@
       ],
       "path": "scripts/ci/ocn_journey_report.py",
       "referenced_by": [
-        "scripts/ci/hostinger_checks.py"
+        "scripts/ci/hostinger_checks.py",
+        "tests/upgrade/test_ocn_telemetry.py"
       ],
       "wired_into_ci": true
     },
@@ -697,7 +716,8 @@
       "configured_providers": [],
       "path": "scripts/ci/ocn_seat_session.py",
       "referenced_by": [
-        "tests/upgrade/test_ocn_seat_session.py"
+        "tests/upgrade/test_ocn_seat_session.py",
+        "tests/upgrade/test_ocn_telemetry.py"
       ],
       "wired_into_ci": false
     },
@@ -715,6 +735,17 @@
     },
     {
       "configured_providers": [
+        "gitlab"
+      ],
+      "path": "scripts/ci/ocn_telemetry.py",
+      "referenced_by": [
+        "scripts/ci/hostinger_checks.py",
+        "tests/upgrade/test_ocn_telemetry.py"
+      ],
+      "wired_into_ci": true
+    },
+    {
+      "configured_providers": [
         "gitlab",
         "github"
       ],
@@ -722,6 +753,7 @@
       "referenced_by": [
         "scripts/publish/media_contracts.py",
         "tests/upgrade/test_hygiene.py",
+        "tests/upgrade/test_ocn_telemetry.py",
         "tests/upgrade/test_platform_health_public_projection.py",
         "tests/upgrade/test_public_redaction.py"
       ],
@@ -878,7 +910,7 @@
       "wired_into_ci": true
     }
   ],
-  "generated_at": "2026-09-30T18:50:56.035356+00:00",
+  "generated_at": "2026-10-01T16:47:24.378820+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -1136,6 +1168,20 @@
         "spec": ".bits/srs/SRS-BUILDANDDO-LEARNING-NATIVE-001.md",
         "status": "in_progress",
         "title": "Native learning summary and migration replay on declared PocketBase"
+      },
+      {
+        "code": "SRS-BUILDANDDO-MAIL-001",
+        "risk": "A2",
+        "spec": ".bits/srs/SRS-BUILDANDDO-MAIL-001.md",
+        "status": "in_progress",
+        "title": "Account mail (password reset, verification) through Customer.io's transactional API"
+      },
+      {
+        "code": "SRS-BUILDANDDO-OCN-TELEMETRY-001",
+        "risk": "A2",
+        "spec": ".bits/srs/SRS-BUILDANDDO-OCN-TELEMETRY-001.md",
+        "status": "in_progress",
+        "title": "OCN probe receipts become marked PostHog and Datadog telemetry, published from the release workstation and proven by readback"
       },
       {
         "code": "SRS-BUILDANDDO-PB-METRICS-001",
@@ -1515,6 +1561,7 @@
         "scripts/ci/hostinger_readiness.py",
         "scripts/ci/ocn_feature_sweep.py",
         "scripts/ci/ocn_journey_report.py",
+        "scripts/ci/ocn_telemetry.py",
         "scripts/ci/submission_readiness.py",
         "scripts/ci/supply_chain.py",
         "scripts/ci/verify_public_boundary.py",
@@ -1527,6 +1574,7 @@
         "scripts/ci/hostinger_readiness.py",
         "scripts/ci/ocn_feature_sweep.py",
         "scripts/ci/ocn_journey_report.py",
+        "scripts/ci/ocn_telemetry.py",
         "scripts/ci/submission_readiness.py",
         "scripts/ci/supply_chain.py",
         "scripts/ci/verify_public_boundary.py",
@@ -1586,17 +1634,18 @@
       "apps/web/tools/release-telemetry.mjs",
       "apps/web/vite.config.js",
       "scripts/deploy/apply_production_runtime_config.py",
+      "scripts/deploy/bundle_telemetry_check.py",
       "scripts/deploy/roadmap_status.py",
       "scripts/deploy/ship.py",
       "scripts/deploy/staging-readback.sh"
     ],
     "migrations": 77,
-    "python_files": 466,
+    "python_files": 471,
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 1863,
-    "web_source_files": 384
+    "tracked_files": 1879,
+    "web_source_files": 385
   },
   "schema_version": 1,
   "sprint_readiness": {
@@ -1675,22 +1724,22 @@
         "why": "Competition readiness requires an evidence-backed learning-through-work journey, a reproducible replay and actual submission criteria."
       }
     ],
-    "source_sha256": "671dad8a2b8409b0e6689c3649dc63de7a42dac9442876143a7587d7fa2de648",
+    "source_sha256": "d028310a30aabb29a7426e74521b7bfc71a1a13c0aa68c67fd62177e79bff121",
     "state": "PASS"
   },
   "summary": {
-    "findings": 62,
+    "findings": 64,
     "findings_high": 32,
     "pipelines": 12,
-    "srs_open": 53,
-    "srs_total": 57,
+    "srs_open": 55,
+    "srs_total": 59,
     "unwired_gates": 32
   },
   "tests": {
     "js_runners": [
       "vitest"
     ],
-    "js_test_files": 107,
+    "js_test_files": 108,
     "js_test_script": true,
     "junit_configured": true,
     "python_suite_entrypoints": [
