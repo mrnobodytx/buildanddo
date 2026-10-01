@@ -400,9 +400,9 @@ def validate_acceptance(
     observed = utc(data.get("observed_at"))
     if not now - MAX_AGE <= observed <= now:
         raise Day21Error("acceptance summary is stale or observed in the future")
-    if data.get("state") != "PASS":
-        raise Day21Error("all 18 required acceptance profiles must PASS")
     required = required_profiles()
+    if data.get("state") != "PASS":
+        raise Day21Error(f"all {len(required)} required acceptance profiles must PASS")
     if data.get("expected_profiles") != len(required):
         raise Day21Error("acceptance summary must cover every required profile")
     profiles = data.get("profiles")
@@ -1069,7 +1069,7 @@ def compile_bundle(
 
 ## Test
 
-The final candidate `{manifest["candidate_sha"]}` is bound to an 18-profile acceptance summary in which every required source/rendered/build/native profile is PASS.
+The final candidate `{manifest["candidate_sha"]}` is bound to a {len(required_profiles())}-profile acceptance summary in which every required source/rendered/build/native profile is PASS.
 
 ## Evaluation
 
@@ -1158,7 +1158,7 @@ The full native/browser acceptance requires the dependencies and authorized test
 - [ ] Public URL is the intended canonical challenge URL and is accessible without private credentials.
 - [ ] Problem, solution, pitch and target audience match the current public product.
 - [ ] All four Hostinger products have evidence-backed meaningful use.
-- [ ] 18-profile acceptance summary is PASS for the same candidate shown in browser/replay evidence.
+- [ ] Every required profile in the acceptance summary is PASS for the same candidate shown in browser/replay evidence.
 - [ ] Browser journey and nonsynthetic replay are inspectable.
 - [ ] Architecture and build-journey artifacts are included.
 - [ ] Cover/video assets requested by the current Hostinger form are attached if required.

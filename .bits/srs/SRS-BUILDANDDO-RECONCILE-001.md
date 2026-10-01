@@ -152,6 +152,21 @@ PostHog identity, the URL scrubber and the OCN seat session's capture.
     - **Deploy gates.** Both stay. Each path checks the bundle's keys from the bytes (the staging line), and
       admits the pinned telemetry build contract (main). Each gate's tests stub the other gate.
 
+16. **R16 - the suites are green on the merged tree, not only "no worse than a parent".** Operator decision,
+    2026-10-01: repair in this pull request the ten tests that failed on both parents. Each is fixed at its cause:
+    - `submission_readiness.audit()` still required exactly eleven verified milestones after `caa5ee4` made the
+      policy a subset of the twelve-milestone plan, so a fully reviewed entry could never be ready and one with
+      the final decision missing could. It now requires every checkpoint the policy gates, matched by day, and
+      the policy must still end on the plan's final day so the submission checkpoint cannot be dropped. Rooms
+      (HS-12) stays ungated, as `caa5ee4` left it.
+    - the readiness tests compare the contract with the plan rather than with eleven, and pin the current
+      twenty-five acceptance profiles. The Day-21 messages count the profiles instead of saying eighteen.
+    - three web tests: the Buddi stall test gets the fake-clock fix `EditorialReels.test.jsx` already documents;
+      the workflow receipt and the daily-edition editor tests assert what the product deliberately renders (a
+      receipt link inside its label; no Publish control for an editor).
+
+    `test_system_growth` is left alone: `growth.lock.json` is refreshed on `main` by the owner's choice (GROWTH-001).
+
 ## Out of scope
 
 - Production, and any server change other than the staging-only deploy in R8.

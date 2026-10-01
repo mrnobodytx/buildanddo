@@ -70,12 +70,14 @@ it('saves only a draft and publishes the selected saved version, not current for
     expect(state.sources.daily_editions.update).toHaveBeenCalledWith('edition1', { status: 'published' }, edition);
 });
 
-it('keeps publication disabled for an editor and exposes a publication failure outside the new-edition form', () => {
+it('offers an editor no publication control and exposes a publication failure outside the new-edition form', () => {
     state.access.data = { role: 'editor', can_write: true, can_admin: false };
     state.sources.daily_editions.records = [{ id: 'edition1', owner: 'account1', status: 'draft', title: 'Saved draft' }];
     state.sources.daily_editions.writeError = 'The saved version changed. Reload before publishing.';
     render(<Page />);
-    expect(screen.getByRole('button', { name: 'Publish' })).toBeDisabled();
+    // Publishing needs a workspace administrator; the page hides the control and the server enforces it.
+    expect(screen.getByText('Saved draft')).toBeVisible();
+    expect(screen.queryByRole('button', { name: 'Publish' })).not.toBeInTheDocument();
     expect(screen.getByRole('alert')).toHaveTextContent('The saved version changed');
 });
 

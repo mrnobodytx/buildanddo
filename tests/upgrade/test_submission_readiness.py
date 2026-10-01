@@ -315,12 +315,12 @@ class SubmissionTests(unittest.TestCase):
         with self.assertRaisesRegex(ReadinessError, "hash mismatch"):
             self.audit()
 
-    def test_all_eleven_owner_decisions_still_cannot_replace_official_rules(
+    def test_every_owner_decision_still_cannot_replace_official_rules(
         self,
     ) -> None:
         self.reviewed()
         result = self.audit()
-        self.assertEqual(result["verified_milestones"], 11)
+        self.assertEqual(result["verified_milestones"], len(self.contract["pieces"]))
         self.assertEqual(result["official_rules"], "UNCONFIRMED")
         self.assertEqual(result["status"], "HOLD")
 
@@ -385,6 +385,24 @@ class SubmissionTests(unittest.TestCase):
             self.states["web_tests"] = state
             with self.subTest(state=state), self.assertRaises(ReadinessError):
                 self.audit()
+
+    def test_a_planned_milestone_the_policy_does_not_gate_cannot_block_the_entry(
+        self,
+    ) -> None:
+        gated = {piece["day"] for piece in self.policy["milestones"]}
+        ungated = [piece for piece in self.contract["pieces"] if piece["day"] not in gated]
+        self.assertEqual([piece["id"] for piece in ungated], ["HS-12"])
+        self.reviewed()
+        self.official()
+        review = json.loads((self.root / "owner.json").read_text())
+        review["decisions"] = [
+            decision for decision in review["decisions"] if decision["id"] != "HS-12"
+        ]
+        write_json(self.root / "owner.json", review)
+        self.document["owner_review"] = self.ref("owner.json")
+        result = self.audit()
+        self.assertEqual(result["verified_milestones"], len(self.contract["pieces"]) - 1)
+        self.assertEqual(result["status"], "READY_FOR_OWNER_SUBMISSION")
 
     def test_changed_source_and_foreign_workspace_are_rejected(self) -> None:
         self.reviewed()

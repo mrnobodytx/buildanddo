@@ -368,13 +368,6 @@
     },
     {
       "area": "governance",
-      "evidence": ".bits/queue/VCC-BUILDANDDO-RECONCILE-001.md: 3/3 tasks done; mark SRS-BUILDANDDO-RECONCILE-001 delivered once merged and verified, or add the task that remains",
-      "severity": "medium",
-      "srs": "SRS-BUILDANDDO-RECONCILE-001",
-      "statement": "VCC-BUILDANDDO-RECONCILE-001 has every task done but SRS-BUILDANDDO-RECONCILE-001 is still in_progress"
-    },
-    {
-      "area": "governance",
       "evidence": ".bits/queue/VCC-BUILDANDDO-ROADMAP-001.md: 4/4 tasks done; mark SRS-BUILDANDDO-ROADMAP-001 delivered once merged and verified, or add the task that remains",
       "severity": "medium",
       "srs": "SRS-BUILDANDDO-ROADMAP-001",
@@ -910,7 +903,7 @@
       "wired_into_ci": true
     }
   ],
-  "generated_at": "2026-10-01T16:47:24.378820+00:00",
+  "generated_at": "2026-10-01T17:19:19.956599+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -1644,7 +1637,7 @@
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 1879,
+    "tracked_files": 1875,
     "web_source_files": 385
   },
   "schema_version": 1,
@@ -1724,11 +1717,11 @@
         "why": "Competition readiness requires an evidence-backed learning-through-work journey, a reproducible replay and actual submission criteria."
       }
     ],
-    "source_sha256": "d028310a30aabb29a7426e74521b7bfc71a1a13c0aa68c67fd62177e79bff121",
+    "source_sha256": "ea5b041b7d9d169909b64d3449d98464ab67a6b65df907d7631af4f7b0067d53",
     "state": "PASS"
   },
   "summary": {
-    "findings": 64,
+    "findings": 63,
     "findings_high": 32,
     "pipelines": 12,
     "srs_open": 55,

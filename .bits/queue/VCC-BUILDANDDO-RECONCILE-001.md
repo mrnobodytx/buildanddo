@@ -38,6 +38,7 @@
 | 8 | Converge main after #105 by R14, as a pull request to the staging line | `git merge-base --is-ancestor origin/main HEAD`; the suites and gates again | done: #107, merged as `def2bfb` |
 | 9 | Pull request taking the staging line into `main`, merged only on the operator's OK | GitHub reports it mergeable without conflicts | done: #108, merged as `21ffb6b` |
 | 10 | Follow-up merge by R15: the staging line after #110, #111 and #117 into `main`, merged only on the operator's OK | `git merge-base --is-ancestor <staging line> HEAD`; no conflict markers; the touched suites and the gates | in progress: staging line at `5805bc9`, main at `c540085` |
+| 11 | Repair by R16 the ten tests that failed on both parents, in the same pull request | `python -m unittest tests.upgrade.test_hostinger_readiness tests.upgrade.test_submission_readiness`; `npx vitest run` in `apps/web` | in progress |
 
 ## Evidence (2026-09-24, release workstation, Windows, LF checkout)
 
