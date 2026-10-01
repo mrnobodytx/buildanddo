@@ -122,7 +122,12 @@ class ReadinessTests(unittest.TestCase):
 
     def test_current_contract_has_all_milestones_without_runtime_claims(self) -> None:
         report = readiness.assessment(self.root)
-        self.assertEqual(len(report["pieces"]), 11)
+        # One reviewed piece per planned milestone; the plan, not a literal, says how many.
+        self.assertEqual(
+            [row["id"] for row in report["pieces"]],
+            [piece["id"] for piece in self.contract["pieces"]],
+        )
+        self.assertEqual(len(report["pieces"]), len(readiness.MILESTONES))
         self.assertTrue(
             all(row["runtime_state"] == "UNMEASURED" for row in report["pieces"])
         )
@@ -517,9 +522,11 @@ class AcceptanceTests(unittest.TestCase):
             "tests/upgrade/example.test.mjs",
             checks.command(self.root, checks.CHECKS["source_node"]),
         )
+        # The Day-21 gate requires every one of these profiles (each native check twice,
+        # package and compose). Change this count only when adding or retiring a profile.
         self.assertEqual(
             sum(2 if check.level == "native" else 1 for check in checks.CHECKS.values()),
-            18,
+            25,
         )
         self.assertEqual(checks.runtime_version(self.root, "compose"), "0.28.3")
         with self.assertRaises(ValueError):

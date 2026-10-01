@@ -77,7 +77,6 @@ function fixture(path = '/login') {
     f.params = new URLSearchParams(f.window.location.search);
     const forbidden = () => assert.fail('Unexpected outbound call or second identity owner');
     const posthog = {
-        get_config(key) { return this.config?.[key]; },
         init(key, config) { this.config = { ...config, token: key }; },
         has_opted_out_capturing: () => false,
         capture(name, properties) {

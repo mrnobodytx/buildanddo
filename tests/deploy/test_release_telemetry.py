@@ -74,6 +74,9 @@ class CanonicalTelemetryTests(unittest.TestCase):
                         patch.object(release, "git_branch", return_value="synthetic-branch"),
                         patch.object(release, "write_receipt"),
                         patch.object(release, "run", side_effect=self.local_command),
+                        # The key-presence check has its own tests (test_bundle_telemetry_check.py); this
+                        # synthetic artifact carries no real keys, so it passes here and the contract decides.
+                        patch.object(release, "bundle_telemetry", return_value={"ok": True, "checks": {}, "reason": ""}),
                         patch.object(release.urllib.request, "urlopen", side_effect=AssertionError("network call"))):
             patcher.start()
             self.addCleanup(patcher.stop)

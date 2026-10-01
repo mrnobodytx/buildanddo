@@ -12,7 +12,7 @@
 # EnumType:     Service
 # EnumEdges:    DEPENDS_ON .bits/submission-policy.json; DEPENDS_ON scripts/ci/hostinger_readiness.py; DEPENDS_ON scripts/ci/hostinger_replay.py; CONSUMES scripts/ci/gitlab_ci.py
 # DAG Node:     none
-# Intent:       Keep all eleven submission milestones gated by current acceptance, captured replay and reviewed official requirements.
+# Intent:       Keep every gated submission checkpoint behind current acceptance, captured replay and reviewed official requirements.
 # ───────────────────────────────────────────────────────────────
 
 """Prepare and audit submission evidence without inventing contest rules or publishing."""
@@ -113,6 +113,12 @@ def load_policy(root: Path) -> dict[str, object]:
             bool(piece.get("title")) and len(strings(piece.get("required"))) >= 4,
             "Every checkpoint needs concrete acceptance requirements.",
         )
+    # A subset may skip a planned day, but never the last one: that checkpoint is the
+    # submission itself, and a policy that drops it would stop gating the entry.
+    require(
+        previous_day == max(planned_days),
+        "The gate must end on the plan's final checkpoint.",
+    )
     require(
         value.get("materials") == list(MATERIALS),
         "Retain all evaluator, rights, privacy and recovery materials.",
@@ -338,7 +344,7 @@ def audit(
     now: datetime | None = None,
 ) -> dict[str, object]:
     """Reconcile supplied bytes through existing acceptance, replay and owner-review gates."""
-    load_policy(root)
+    policy = load_policy(root)
     check_wiring(root)
     at = now or datetime.now(timezone.utc)
     require(
@@ -445,11 +451,14 @@ def audit(
             review_root=review_path.parent,
         )
         milestones = cast(list[dict[str, object]], projection["milestones"])
-        verified = sum(piece["status"] == "verified" for piece in milestones)
-        result["verified_milestones"] = verified
-        if verified != 11:
+        result["verified_milestones"] = sum(piece["status"] == "verified" for piece in milestones)
+        # The policy gates a subset of the planned milestones (see load_policy), so the entry
+        # needs every gated checkpoint verified - matched by day, as the projection carries it.
+        verified_days = {piece["day"] for piece in milestones if piece["status"] == "verified"}
+        gated_days = {object_value(item)["day"] for item in cast(list[object], policy["milestones"])}
+        if not gated_days <= verified_days:
             blockers.append(
-                "All eleven milestones must have current runtime evidence and owner review."
+                "Every checkpoint the submission policy gates must have current runtime evidence and owner review."
             )
     if document.get("official_review") is None:
         blockers.append(

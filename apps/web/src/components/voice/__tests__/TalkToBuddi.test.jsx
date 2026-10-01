@@ -251,7 +251,10 @@ describe('talk to Buddi', () => {
         const user = userEvent.setup();
         microphoneGranted();
         render(<TalkToBuddi />);
-        vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
+        // shouldAdvanceTime: userEvent awaits a timer after every action (Testing Library's
+        // asyncWrapper only advances Jest's fake clock), so a frozen clock hangs the click.
+        // Same cause and fix as EditorialReels.test.jsx; the 30 s stall is still advanced by hand.
+        vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'], shouldAdvanceTime: true });
         const timedUser = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
         await startTalking(timedUser);
         await act(async () => {});

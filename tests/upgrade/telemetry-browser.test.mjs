@@ -54,7 +54,6 @@ function fixture(env = {}) {
     const invoke = (name, args = []) => { calls.push([name, ...args]); if (failures.has(name)) throw new Error(`fixture ${name} failure`); };
     const posthog = {
         config: null, optedOut: false, userId: null, distinctId: null, deviceId: null, persisted: {},
-        get_config(key) { return this.config?.[key]; },
         get_property(key) { return { $user_id: this.userId, distinct_id: this.distinctId, $device_id: this.deviceId }[key]; },
         has_opted_out_capturing() { return this.optedOut; },
         init(key, config) {

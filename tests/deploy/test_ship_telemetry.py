@@ -134,6 +134,9 @@ class TelemetryArtifactTests(unittest.TestCase):
                         patch.object(ship, "STATE_DIR", self.root / "state"), patch.object(ship, "VM_HOST", "deploy@host.invalid"),
                         patch.object(ship, "SSH_KEY", ""),
                         patch.object(ship, "_run", side_effect=command_double),
+                        # The key-presence check has its own tests (test_bundle_telemetry_check.py); this
+                        # synthetic artifact carries no real keys, so it passes here and the contract decides.
+                        patch.object(ship, "check_bundle_telemetry", return_value={"ok": True, "checks": {}, "reason": ""}),
                         patch.object(ship.urllib.request, "urlopen", side_effect=AssertionError("unexpected network call"))):
             patcher.start()
             self.addCleanup(patcher.stop)
