@@ -81,6 +81,8 @@ source_federal_portfolio:
   before_script:
     - python${PYTHON_VERSION} -m venv state/ci/portfolio-venv
   script:
+    # The research sprint tests import the foundry registry and its declared YAML parser.
+    - state/ci/portfolio-venv/bin/python -m pip install -r foundry/shared/requirements.txt
     - state/ci/portfolio-venv/bin/python tests/upgrade/check_federal_foundry.py
     - state/ci/portfolio-venv/bin/python -m apps.federal_foundry compile --output state/ci/federal-portfolio
   artifacts:
@@ -170,6 +172,9 @@ source_assurance:
     - state/ci/assurance-venv/bin/python -m unittest tests.upgrade.test_assurance_runner
     - state/ci/assurance-venv/bin/python -m unittest tests.deploy.test_ship_telemetry tests.deploy.test_release_telemetry tests.deploy.test_ship_swap
     - state/ci/assurance-venv/bin/python -m tests.assurance.run --source-only --profiles security,evidence,failure --output state/ci/assurance/$CI_JOB_ID/source
+    # The research export loads the foundry registry, whose declared YAML parser
+    # a new environment does not contain. The steps above need no installed package.
+    - state/ci/assurance-venv/bin/python -m pip install -r foundry/shared/requirements.txt
     - state/ci/assurance-venv/bin/python -m apps.federal_foundry sprint --output state/ci/assurance/$CI_JOB_ID/research
     - state/ci/assurance-venv/bin/python -m apps.federal_foundry verify-sprint state/ci/assurance/$CI_JOB_ID/research
   artifacts:
