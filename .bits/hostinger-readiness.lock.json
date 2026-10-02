@@ -1302,7 +1302,7 @@
     "tests/upgrade/test_evolution_support.py": "0b3a35f4b10df86948ed0317d6826dff0cf30ca98fc26640e44877f08bea7de9",
     "tests/upgrade/test_federal_foundry.py": "9596ba290eff9c940f170e5cd86d0c0da25cc6c5681524fee93e9165a49b15e6",
     "tests/upgrade/test_gitlab_acceptance.py": "b3244094bd026a5e6722cf7b357458971b9c725f108e5ad7864ee2b6eb2f2f44",
-    "tests/upgrade/test_hostinger_readiness.py": "40a8afe405c2ba250668b741f4c5afb527f2c4095c4b162193fb2c612fbef28e",
+    "tests/upgrade/test_hostinger_readiness.py": "f448176da85f1b6c47e13f4d4bf07f68df4ec41f9eb2ef532508b4bfb627ae03",
     "tests/upgrade/test_hostinger_replay.py": "229890e2ea0194181e2bc110adfda9d00f4ba92f0e23bee4522d430eefdcfb86",
     "tests/upgrade/test_hygiene.py": "6ba22c9f65f6cc348b90ec52d4eb0c6a3d37f4bb0329d4e443f642651eceb406",
     "tests/upgrade/test_media_corpus.py": "84628fd75c5ea91a856cb832d795ac438408006e117ddd6f1014a6297c0f13c3",
