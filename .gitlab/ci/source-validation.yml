@@ -81,6 +81,8 @@ source_federal_portfolio:
   before_script:
     - python${PYTHON_VERSION} -m venv state/ci/portfolio-venv
   script:
+    # The research sprint tests import the foundry registry and its declared YAML parser.
+    - state/ci/portfolio-venv/bin/python -m pip install -r foundry/shared/requirements.txt
     - state/ci/portfolio-venv/bin/python tests/upgrade/check_federal_foundry.py
     - state/ci/portfolio-venv/bin/python -m apps.federal_foundry compile --output state/ci/federal-portfolio
   artifacts:

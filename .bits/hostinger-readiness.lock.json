@@ -14,7 +14,7 @@
     ".github/workflows/pr-governance.yml": "3bb5d5362ad3921d2f44cc070042188e75c5b01e1bd929f88db12dbb65c74c2a",
     ".gitlab-ci.yml": "8b71b52b36b0867087b307bd8a6e8c3578f50c7858375705f2346fb79546cb98",
     ".gitlab/ci/day21-submission.yml": "fd612e85bb14d72e19c850aea34c1ddc2bf92dcdec8f50bcb9eea6e981c63c49",
-    ".gitlab/ci/source-validation.yml": "1dfb5231ea176002d82531d9c8beca41009d7a7a6e7bbc0ba2d734bcc7bb3e6e",
+    ".gitlab/ci/source-validation.yml": "74d38254d5f7d4c8e174130e7f9f403121648193f15978bffa549815eed95a07",
     ".nvmrc": "f14b4987904bcb5814e4459a057ed4d20f58a633152288a761214dcd28780b56",
     "AGENTS.md": "70695c7a06e9a8eb37e284f36745ec6850bcbcc46572a46a7197ac78fbd7c39a",
     "CLAUDE.md": "e81b5d7b9ed2bf16c5f76a42466275354fd7becb17e6b00564e33d07c62596bf",
