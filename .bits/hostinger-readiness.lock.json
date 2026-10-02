@@ -1078,7 +1078,7 @@
     "scripts/ci/sprint_cycle.py": "5862bea99da72a1eb238fbd5c0946606a9c88feb8b3ca8e524cccba1e5cb0b89",
     "scripts/ci/sprint_ledger.json": "a371f70320e80ae0e6d0f2594213da2332fc29b3dfa74df5bcd7395103dccf85",
     "scripts/ci/sprint_replay.py": "9ebe31ae36617dcde206f1451720c403862904f4feb39c0b673adc71b2fdb376",
-    "scripts/ci/submission_readiness.py": "84b4349c7013226939d19ed46fc8e66bfe6a6aa4fccf956016d6496caa3551e7",
+    "scripts/ci/submission_readiness.py": "5b29bf20344522d26752c725d89fa15d391c3262c298ea07f038b77c559fef23",
     "scripts/ci/supply_chain.py": "8b89da195b100ed96b96c11ca52885f55ff40086d131cc067d7ac29d88c3714a",
     "scripts/ci/system_growth.py": "ae482619d0e1f941be58fa53f9c890f24ad2da31df3c621f9cc6d584c1ba1f01",
     "scripts/ci/telemetry_delta.py": "0fa2d34eb097ca42a3ea1b111bbdf6a5213e0c659e6dd2e6f4ab3de439532cab",

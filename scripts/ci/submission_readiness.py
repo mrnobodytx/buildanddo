@@ -57,6 +57,9 @@ MATERIALS = (
     "privacy_and_permissions",
     "rollback_and_support",
 )
+# The acceptance gate was agreed at eleven checkpoints, HS-01 to HS-11. The velocity plan has
+# since grown past it and may again; this is the number the policy may never fall below.
+ORIGINAL_ANCHORS = 11
 
 
 def require(value: bool, reason: str) -> None:
@@ -92,10 +95,15 @@ def load_policy(root: Path) -> dict[str, object]:
     # and the gate must not outgrow the plan. Renumbering the policy instead would have
     # silently changed what HS-08 means in .bits/hostinger-readiness.json and
     # .bits/context.lock.json, which both name these ids.
+    #
+    # A subset still has a floor. The plan may grow past the gate, but the gate may not shrink:
+    # allowing any non-empty prefix meant a policy with a checkpoint deleted still passed, which
+    # is the opposite of what an acceptance gate is for.
     planned_days = [piece["day"] for piece in MILESTONES]
     require(
-        isinstance(pieces, list) and 0 < len(cast(list[object], pieces)) <= len(MILESTONES),
-        "Account for the sprint checkpoints without exceeding the plan.",
+        isinstance(pieces, list)
+        and ORIGINAL_ANCHORS <= len(cast(list[object], pieces)) <= len(MILESTONES),
+        "Account for every original sprint checkpoint without exceeding the plan.",
     )
     previous_day = 0
     for index, item in enumerate(cast(list[object], pieces)):
@@ -338,7 +346,7 @@ def audit(
     now: datetime | None = None,
 ) -> dict[str, object]:
     """Reconcile supplied bytes through existing acceptance, replay and owner-review gates."""
-    load_policy(root)
+    policy = load_policy(root)
     check_wiring(root)
     at = now or datetime.now(timezone.utc)
     require(
@@ -445,11 +453,24 @@ def audit(
             review_root=review_path.parent,
         )
         milestones = cast(list[dict[str, object]], projection["milestones"])
-        verified = sum(piece["status"] == "verified" for piece in milestones)
+        # Count the checkpoints the policy gates, not every piece the contract projects. The
+        # contract carries a planned checkpoint the policy does not gate on, so a bare total
+        # compared against eleven was wrong in both directions: a complete review of all twelve
+        # could never pass, and a review that omitted a gated checkpoint passed whenever the
+        # ungated one made up the number. The projection carries no id, so the join is the day,
+        # which load_policy has already required to be planned and strictly increasing.
+        verified_days = {
+            piece["day"] for piece in milestones if piece["status"] == "verified"
+        }
+        gated_days = [
+            object_value(item)["day"]
+            for item in cast(list[object], policy["milestones"])
+        ]
+        verified = sum(day in verified_days for day in gated_days)
         result["verified_milestones"] = verified
-        if verified != 11:
+        if verified != len(gated_days):
             blockers.append(
-                "All eleven milestones must have current runtime evidence and owner review."
+                "Every gated milestone must have current runtime evidence and owner review."
             )
     if document.get("official_review") is None:
         blockers.append(
