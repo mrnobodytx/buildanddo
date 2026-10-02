@@ -27,6 +27,9 @@ Flow, every run:
   2. GATE       run integrity_regression_check.py (build+lint, real subprocess,
                 never assumed). FAIL stops the line before anything touches a
                 server - staging gets nothing broken deployed to it either.
+     KEYS       refuse a dist whose entry script lacks the PostHog key, the Datadog
+                client token or the PostHog init (bundle_telemetry_check.py). A keyless
+                build runs, errors nowhere and reports nothing.
   3. STAGING    copy the fresh dist beside /var/www/buildanddo-staging on the VM,
                 verify it, swap it into place (see _rsync), then
                 compare served HTML, JavaScript and manifest bytes with the artifact.
@@ -66,6 +69,8 @@ from pathlib import Path
 import os
 
 ROOT = Path(__file__).resolve().parents[2]  # sites/buildanddo/
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from bundle_telemetry_check import check_dist as check_bundle_telemetry  # noqa: E402 - needs the path above
 # Deploy-only local secrets (VM host key path, PostHog project key) - never
 # committed (see .gitignore), never reach into any other project's tree.
 # Falls back to OS env vars of the same names if the file is absent, so this
@@ -720,6 +725,17 @@ def main() -> int:
     if not DIST_DIR.is_dir():
         record["stages"]["staging_sync"] = {"ok": False, "reason": "dist dir missing after a passing build"}
         record["stopped_at"] = "staging_sync"
+        _finish(record)
+        return 1
+
+    # Check the exact bytes about to ship, after the gate's own rebuild. A build without its
+    # telemetry keys deploys cleanly and then reports nothing, so nothing downstream can notice.
+    # Measured 2026-09-24: production served such a build for 12 hours and no alarm fired.
+    telemetry_keys = check_bundle_telemetry(DIST_DIR)
+    record["stages"]["telemetry_keys"] = telemetry_keys
+    if not telemetry_keys["ok"]:
+        print(f"REFUSED {telemetry_keys['reason']}")
+        record["stopped_at"] = "telemetry_keys"
         _finish(record)
         return 1
 

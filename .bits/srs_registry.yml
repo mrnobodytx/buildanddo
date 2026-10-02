@@ -432,3 +432,17 @@ srs:
     spec: .bits/srs/SRS-BUILDANDDO-WITNESS-001.md
     owner: BITS-CODEGEN
     notes: Registered 2026-09-24 by SRS-BUILDANDDO-HYGIENE-001 with the status, risk and seat its own spec declares; the public anchor step it specifies is still unbuilt (every epoch is tagged anchor:pending)
+  - code: SRS-BUILDANDDO-OCN-TELEMETRY-001
+    title: OCN probe receipts become marked PostHog and Datadog telemetry, published from the release workstation and proven by readback
+    status: in_progress
+    risk: A2
+    spec: .bits/srs/SRS-BUILDANDDO-OCN-TELEMETRY-001.md
+    owner: C-ONE
+    notes: Off by default; live sends, enablement and estate driver changes are A3 and need the operator. Operator decisions 2026-09-24 - PostHog project 597897 with flagged, personless agent events (no person profiles, no $identify, no $pageview) that never keep the sending machine's address; Datadog events and logs only, custom metrics behind a flag that stays off. Only ocn_seat_session.py among the 17 probes changes, and only to retire its box-side capture. Excluding agent events from the public activity figure is an estate precondition outside this repository
+  - code: SRS-BUILDANDDO-MAIL-001
+    title: Account mail (password reset, verification) through Customer.io's transactional API
+    status: in_progress
+    risk: A2
+    spec: .bits/srs/SRS-BUILDANDDO-MAIL-001.md
+    owner: C-ONE
+    notes: Operator decision 2026-09-25 - BuildAndDo mail goes through Customer.io. Both environments were measured with no working mail transport. Open/click tracking and body retention are off per message; the key and sender are configured on the host, never in the repository. Live sends, host configuration and a buildanddo.com sending domain are A3 and need the operator

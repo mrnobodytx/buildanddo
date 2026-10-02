@@ -73,6 +73,8 @@ export function initTelemetry() {
 		// Only native auth may identify it; cross-page anonymous continuity is
 		// deliberately lost. SDK opt-out storage remains separately configured.
 		persistence: 'memory',
+		// 'history_change' records in-app navigation too. `true` recorded only the
+		// first full page load, so /app sections showed 0 pageviews in PostHog.
 		capture_pageview: 'history_change',
 		capture_pageleave: true,
 		autocapture: false,
