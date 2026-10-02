@@ -58,6 +58,12 @@ PUBLIC_INPUTS = {
     "VITE_DD_VERSION": "38+aaaaaaa",
 }
 
+# The synthetic bundle carries no key-shaped strings on purpose, so the bundle key check
+# (scripts/deploy/bundle_telemetry_check.py, covered by test_bundle_telemetry_check.py) refuses
+# it. Admission tests stub that one stage; test_keyless_bundle_stops_before_staging runs it.
+REAL_BUNDLE_CHECK = ship.check_bundle_telemetry
+BUNDLE_KEYS_PRESENT = {"ok": True, "checks": {}, "entry_scripts": ["assets/app.js"], "files_scanned": 1, "reason": ""}
+
 
 def local_validator(command: list[str], **kwargs) -> dict:
     """Run only the local, credential-free Node validator; never a deploy command."""
@@ -133,6 +139,7 @@ class TelemetryArtifactTests(unittest.TestCase):
         for patcher in (patch.object(ship, "ROOT", self.root), patch.object(ship, "DIST_DIR", self.dist),
                         patch.object(ship, "STATE_DIR", self.root / "state"), patch.object(ship, "VM_HOST", "deploy@host.invalid"),
                         patch.object(ship, "SSH_KEY", ""),
+                        patch.object(ship, "check_bundle_telemetry", return_value=dict(BUNDLE_KEYS_PRESENT)),
                         patch.object(ship, "_run", side_effect=command_double),
                         patch.object(ship.urllib.request, "urlopen", side_effect=AssertionError("unexpected network call"))):
             patcher.start()
@@ -367,6 +374,16 @@ class TelemetryArtifactTests(unittest.TestCase):
         self.assertEqual(finish.call_args.args[0]["stopped_at"], "telemetry_artifact")
         sync.assert_not_called()
         stamp.assert_not_called()
+
+    def test_keyless_bundle_stops_before_staging(self) -> None:
+        with patch.object(ship, "_release_build_context", return_value=(dict(self.expected), {})), \
+                patch.object(ship, "_build", return_value={"ok": True}), patch.object(ship, "_gate", return_value={"ok": True}), \
+                patch.object(ship, "_write_deployed_version"), \
+                patch.object(ship, "check_bundle_telemetry", side_effect=REAL_BUNDLE_CHECK), \
+                patch.object(ship, "_rsync") as sync, patch.object(ship, "_finish") as finish:
+            self.assertEqual(ship.main(), 1)
+        self.assertEqual(finish.call_args.args[0]["stopped_at"], "telemetry_keys")
+        sync.assert_not_called()
 
     def test_same_gated_bytes_pass_the_local_line_with_all_effects_mocked(self) -> None:
         publisher = SimpleNamespace(publish=Mock(return_value={"ok": True}))
