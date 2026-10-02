@@ -2,8 +2,8 @@
   "progression": {
     "dispatch_tasks": {
       "done": 174,
-      "progress": 0.8488,
-      "total": 205
+      "progress": 0.8571,
+      "total": 203
     },
     "dispatches": {
       "USO-BUILDANDDO-CRAWL-001": {
@@ -184,7 +184,7 @@
         "srs": "SRS-BUILDANDDO-RECONCILE-001",
         "status": "in_progress",
         "tasks_done": 3,
-        "tasks_total": 5
+        "tasks_total": 3
       },
       "VCC-BUILDANDDO-ROADMAP-001": {
         "srs": "SRS-BUILDANDDO-ROADMAP-001",
@@ -312,7 +312,7 @@
     "pocketbase_hooks": 31,
     "pocketbase_migrations": 67,
     "readmes": 50,
-    "tracked_files": 1873
+    "tracked_files": 1874
   },
   "systems": {
     "apps/career": {

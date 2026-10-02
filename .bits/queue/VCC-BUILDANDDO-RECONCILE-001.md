@@ -35,8 +35,8 @@
 | 5 | Repository gates | `submission_readiness.py --check`, `verify_public_boundary.py` | done |
 | 6 | Pull request to the staging line, merged only on the operator's OK | the gates again on a trial merge into the current head | done: #106, merged as `ea97e3b` |
 | 7 | Staging-only deploy of web and backend | readback from staging | done: staging serves `ea97e3b`; backend at 109 migrations |
-| 8 | Converge main after #105 by R14, as a pull request to the staging line | `git merge-base --is-ancestor origin/main HEAD`; the suites and gates again | done 2026-10-01: `c-one/SRS-BUILDANDDO-RECONCILE-001-trunk-into-main-20261001` merges the line (`5805bc9`) into main (`c540085`); opened against `main` because the line was the smaller side (31 vs 63 commits), so the line fast-forwards to the merge; see `.bits/handoffs/2026-10-01-c-one-reconverge-staging-line-into-main.md` |
-| 9 | Pull request taking the staging line into `main`, merged only on the operator's OK | GitHub reports it mergeable without conflicts | pending: merge the 2026-10-01 PR, then fast-forward the line to the merge commit (push, no force) and deploy staging from it |
+| 8 | Converge main after #105 by R14, as a pull request to the staging line | `git merge-base --is-ancestor origin/main HEAD`; the suites and gates again | done 2026-10-01: PR #124 (`c-one/SRS-BUILDANDDO-RECONCILE-001-trunk-into-main-20261001`, merge commit `0459a53`) merges the line (`5805bc9`) into main (`c540085`); opened against `main` because the line was the smaller side (31 vs 63 commits), so the line fast-forwards to the merge; see `.bits/handoffs/2026-10-01-c-one-reconverge-staging-line-into-main.md` |
+| 9 | Pull request taking the staging line into `main`, merged only on the operator's OK | GitHub reports it mergeable without conflicts | pending: merge PR #124, then fast-forward the line to the merge commit (push, no force) and deploy staging from it |
 
 ## Evidence (2026-09-24, release workstation, Windows, LF checkout)
 
@@ -193,3 +193,4 @@ public boundary, redaction, README and changelog all PASS. Node 1530/7 against m
 against main's 972/4 (3 shared; the fourth is order-dependent on each side and passes alone). Python 1587 ran,
 28 failures + 48 errors + 1 loader error, against main's 1425 ran: 28 failures, 48 errors, 2 skipped; the same names, and the inner `_FailedTest.test_development_fixture` loader error appears on both. AEGIS clean on every hand-touched file.
 Pre-existing findings are listed in the handoff, not fixed here.
+PR #124 against `main`, merge commit `0459a53`, label `actor:agent`.

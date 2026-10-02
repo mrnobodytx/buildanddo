@@ -101,7 +101,7 @@ Node: the 14 extra passes on the merged tree are the line's new OCN telemetry an
 
 ## Operator steps (gated; nothing below was run)
 
-1. Review and merge the pull request into `main` (`actor:agent`, SRS-BUILDANDDO-RECONCILE-001).
+1. Review and merge PR #124 (merge commit `0459a53`) into `main` (`actor:agent`, SRS-BUILDANDDO-RECONCILE-001).
 2. Fast-forward the staging line to the merge commit so the split closes:
    `git push origin <merge-sha>:refs/heads/bits/SRS-BUILDANDDO-WORKSPACE-001-fleet-master-seat-gate`
    (fast-forward, no force; the line's tip is a parent of the merge).
