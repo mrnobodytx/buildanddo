@@ -382,6 +382,13 @@
     },
     {
       "area": "governance",
+      "evidence": ".bits/queue/VCC-BUILDANDDO-SENTRY-GUILD-001.md: 6/6 tasks done; mark SRS-BUILDANDDO-SENTRY-GUILD-001 delivered once merged and verified, or add the task that remains",
+      "severity": "medium",
+      "srs": "SRS-BUILDANDDO-SENTRY-GUILD-001",
+      "statement": "VCC-BUILDANDDO-SENTRY-GUILD-001 has every task done but SRS-BUILDANDDO-SENTRY-GUILD-001 is still in_progress"
+    },
+    {
+      "area": "governance",
       "evidence": ".bits/queue/VCC-BUILDANDDO-SITE-001.md: 5/5 tasks done; mark SRS-BUILDANDDO-SITE-001 delivered once merged and verified, or add the task that remains",
       "severity": "medium",
       "srs": "SRS-BUILDANDDO-SITE-001",
@@ -878,7 +885,7 @@
       "wired_into_ci": true
     }
   ],
-  "generated_at": "2026-09-30T18:50:56.035356+00:00",
+  "generated_at": "2026-10-16T20:22:04.180943+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -1234,6 +1241,13 @@
         "spec": ".bits/srs/SRS-BUILDANDDO-SEMANTIC-TWIN-P1-COMPLETE-001.md",
         "status": "in_progress",
         "title": "Complete and integrate Phase 1 with the version-two contracts"
+      },
+      {
+        "code": "SRS-BUILDANDDO-SENTRY-GUILD-001",
+        "risk": "A1",
+        "spec": ".bits/srs/SRS-BUILDANDDO-SENTRY-GUILD-001.md",
+        "status": "in_progress",
+        "title": "Sentry guild scoped to the public BuildAndDo plane, slice 1"
       },
       {
         "code": "SRS-BUILDANDDO-SITE-001",
@@ -1675,15 +1689,15 @@
         "why": "Competition readiness requires an evidence-backed learning-through-work journey, a reproducible replay and actual submission criteria."
       }
     ],
-    "source_sha256": "671dad8a2b8409b0e6689c3649dc63de7a42dac9442876143a7587d7fa2de648",
+    "source_sha256": "1b41dbec9ff9e6c44a8ba27106e88b1c06ac413bd1f92385af8fce24eacb635c",
     "state": "PASS"
   },
   "summary": {
-    "findings": 62,
+    "findings": 63,
     "findings_high": 32,
     "pipelines": 12,
-    "srs_open": 53,
-    "srs_total": 57,
+    "srs_open": 54,
+    "srs_total": 58,
     "unwired_gates": 32
   },
   "tests": {
