@@ -878,7 +878,7 @@
       "wired_into_ci": true
     }
   ],
-  "generated_at": "2026-09-30T18:50:56.035356+00:00",
+  "generated_at": "2026-10-17T01:49:59.053172+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -1595,8 +1595,8 @@
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 1863,
-    "web_source_files": 384
+    "tracked_files": 1865,
+    "web_source_files": 386
   },
   "schema_version": 1,
   "sprint_readiness": {
@@ -1675,7 +1675,7 @@
         "why": "Competition readiness requires an evidence-backed learning-through-work journey, a reproducible replay and actual submission criteria."
       }
     ],
-    "source_sha256": "671dad8a2b8409b0e6689c3649dc63de7a42dac9442876143a7587d7fa2de648",
+    "source_sha256": "66164425c7cb58723368233913f2e18b56d0de1a690aa35b529f6d6b0a27196d",
     "state": "PASS"
   },
   "summary": {
@@ -1690,7 +1690,7 @@
     "js_runners": [
       "vitest"
     ],
-    "js_test_files": 107,
+    "js_test_files": 108,
     "js_test_script": true,
     "junit_configured": true,
     "python_suite_entrypoints": [

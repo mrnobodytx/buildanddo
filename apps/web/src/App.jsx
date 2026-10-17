@@ -8,13 +8,13 @@
 // Seat:        BITS-CODEGEN, C-ONE
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-21
-// Depends:     apps/web/src/contexts/AuthContext.jsx, apps/web/src/components/ProtectedRoute.jsx, apps/web/src/pages/workspace/GovernmentPage.jsx, apps/web/src/pages/workspace/CareerPage.jsx, apps/web/src/hooks/useFailureTelemetry.js, apps/web/src/components/workspace/PageBoundary.jsx
+// Depends:     apps/web/src/contexts/AuthContext.jsx, apps/web/src/components/ProtectedRoute.jsx, apps/web/src/pages/workspace/GovernmentPage.jsx, apps/web/src/pages/workspace/CareerPage.jsx, apps/web/src/hooks/useFailureTelemetry.js, apps/web/src/components/workspace/PageBoundary.jsx, apps/web/src/lib/lazyRoute.js
 // EnumType:    Widget
-// EnumEdges:   CONSUMES apps/web/src/contexts/AuthContext.jsx; CONSUMES apps/web/src/components/ProtectedRoute.jsx; CONSUMES apps/web/src/pages/workspace/GovernmentPage.jsx; CONSUMES apps/web/src/pages/workspace/CareerPage.jsx; CONSUMES apps/web/src/hooks/useFailureTelemetry.js; CONSUMES apps/web/src/components/workspace/PageBoundary.jsx
+// EnumEdges:   CONSUMES apps/web/src/contexts/AuthContext.jsx; CONSUMES apps/web/src/components/ProtectedRoute.jsx; CONSUMES apps/web/src/pages/workspace/GovernmentPage.jsx; CONSUMES apps/web/src/pages/workspace/CareerPage.jsx; CONSUMES apps/web/src/hooks/useFailureTelemetry.js; CONSUMES apps/web/src/components/workspace/PageBoundary.jsx; CONSUMES apps/web/src/lib/lazyRoute.js
 // Intent:      Route public and workspace views only after native session validation.
 // ───────────────────────────────────────────────────────────────
 
-import React, { lazy, Suspense, useEffect, useRef } from 'react';
+import React, { Suspense, useEffect, useRef } from 'react';
 import { MotionProvider } from '@/contexts/MotionContext';
 import { MotionEntrance } from '@/components/motion/MotionPrimitives';
 import { ThemeProvider } from 'next-themes';
@@ -33,66 +33,69 @@ import { workspaceDestination } from '@/lib/navigationIntent';
 import { isMasterSeat } from '@/lib/estateAccess';
 import { trackUnknownRoute } from '@/lib/observability/runtime';
 import { useFailureTelemetry } from '@/hooks/useFailureTelemetry';
+import { lazyRoute } from '@/lib/lazyRoute';
 
-const HomePage = lazy(() => import('./pages/HomePage'));
-const HostingerChallengePage = lazy(() => import('./pages/HostingerChallengePage'));
-const RoadmapPage = lazy(() => import('./pages/RoadmapPage'));
-const PracticePage = lazy(() => import('./pages/PracticePage'));
-const PlatformPage = lazy(() => import('./pages/PlatformPage'));
-const LoginPage = lazy(() => import('./pages/LoginPage'));
-const SignupPage = lazy(() => import('./pages/SignupPage'));
-const ForgotPasswordPage = lazy(() => import('./pages/ForgotPasswordPage'));
-const ResetPasswordPage = lazy(() => import('./pages/ResetPasswordPage'));
-const OnboardingPage = lazy(() => import('./pages/OnboardingPage'));
-const WorkspaceLayout = lazy(() => import('./components/workspace/WorkspaceLayout'));
-const OverviewPage = lazy(() => import('./pages/workspace/OverviewPage'));
-const SignalsPage = lazy(() => import('./pages/workspace/SignalsPage'));
-const MissionsPage = lazy(() => import('./pages/workspace/MissionsPage'));
-const WorkflowsPage = lazy(() => import('./pages/workspace/WorkflowsPage'));
-const TutorialsPage = lazy(() => import('./pages/workspace/TutorialsPage'));
-const ClassroomsPage = lazy(() => import('./pages/workspace/ClassroomsPage'));
-const ClassroomLandingPage = lazy(() => import('./pages/ClassroomLandingPage'));
-const ErpPage = lazy(() => import('./pages/workspace/ErpPage'));
-const OperationsPage = lazy(() => import('./pages/workspace/OperationsPage'));
-const FleetPage = lazy(() => import('./pages/workspace/FleetPage'));
-const PlatformHealthPage = lazy(() => import('./pages/workspace/PlatformHealthPage'));
-const EvidencePage = lazy(() => import('./pages/workspace/EvidencePage'));
-const ResearchPage = lazy(() => import('./pages/workspace/ResearchPage'));
-const KnowledgePage = lazy(() => import('./pages/workspace/KnowledgePage'));
-const BlueprintPage = lazy(() => import('./pages/workspace/BlueprintPage'));
-const PolicyPage = lazy(() => import('./pages/workspace/PolicyPage'));
-const OperatorPage = lazy(() => import('./pages/workspace/OperatorPage'));
-const SuitePage = lazy(() => import('./pages/workspace/SuitePage'));
-const GovernmentPage = lazy(() => import('./pages/workspace/GovernmentPage'));
-const DossierPage = lazy(() => import('./pages/workspace/DossierPage'));
-const DailyEditionPage = lazy(() => import('./pages/workspace/DailyEditionPage'));
+// Routes load through lazyRoute: a chunk removed by a newer deployment reloads the page into the current
+// build rather than leaving a page that cannot load.
+const HomePage = lazyRoute(() => import('./pages/HomePage'));
+const HostingerChallengePage = lazyRoute(() => import('./pages/HostingerChallengePage'));
+const RoadmapPage = lazyRoute(() => import('./pages/RoadmapPage'));
+const PracticePage = lazyRoute(() => import('./pages/PracticePage'));
+const PlatformPage = lazyRoute(() => import('./pages/PlatformPage'));
+const LoginPage = lazyRoute(() => import('./pages/LoginPage'));
+const SignupPage = lazyRoute(() => import('./pages/SignupPage'));
+const ForgotPasswordPage = lazyRoute(() => import('./pages/ForgotPasswordPage'));
+const ResetPasswordPage = lazyRoute(() => import('./pages/ResetPasswordPage'));
+const OnboardingPage = lazyRoute(() => import('./pages/OnboardingPage'));
+const WorkspaceLayout = lazyRoute(() => import('./components/workspace/WorkspaceLayout'));
+const OverviewPage = lazyRoute(() => import('./pages/workspace/OverviewPage'));
+const SignalsPage = lazyRoute(() => import('./pages/workspace/SignalsPage'));
+const MissionsPage = lazyRoute(() => import('./pages/workspace/MissionsPage'));
+const WorkflowsPage = lazyRoute(() => import('./pages/workspace/WorkflowsPage'));
+const TutorialsPage = lazyRoute(() => import('./pages/workspace/TutorialsPage'));
+const ClassroomsPage = lazyRoute(() => import('./pages/workspace/ClassroomsPage'));
+const ClassroomLandingPage = lazyRoute(() => import('./pages/ClassroomLandingPage'));
+const ErpPage = lazyRoute(() => import('./pages/workspace/ErpPage'));
+const OperationsPage = lazyRoute(() => import('./pages/workspace/OperationsPage'));
+const FleetPage = lazyRoute(() => import('./pages/workspace/FleetPage'));
+const PlatformHealthPage = lazyRoute(() => import('./pages/workspace/PlatformHealthPage'));
+const EvidencePage = lazyRoute(() => import('./pages/workspace/EvidencePage'));
+const ResearchPage = lazyRoute(() => import('./pages/workspace/ResearchPage'));
+const KnowledgePage = lazyRoute(() => import('./pages/workspace/KnowledgePage'));
+const BlueprintPage = lazyRoute(() => import('./pages/workspace/BlueprintPage'));
+const PolicyPage = lazyRoute(() => import('./pages/workspace/PolicyPage'));
+const OperatorPage = lazyRoute(() => import('./pages/workspace/OperatorPage'));
+const SuitePage = lazyRoute(() => import('./pages/workspace/SuitePage'));
+const GovernmentPage = lazyRoute(() => import('./pages/workspace/GovernmentPage'));
+const DossierPage = lazyRoute(() => import('./pages/workspace/DossierPage'));
+const DailyEditionPage = lazyRoute(() => import('./pages/workspace/DailyEditionPage'));
 // Capability Passport viewer; file path retained from the former desks page so
 // existing /app/desks bookmarks keep resolving (SRS-BUILDANDDO-WITNESS-001).
-const SpecialistWorkPage = lazy(() => import('./pages/workspace/SpecialistWorkPage'));
-const ExecutionReplayPage = lazy(() => import('./pages/workspace/ExecutionReplayPage'));
-const CapabilityPassportPage = lazy(() => import('./pages/workspace/SpecialistDeskPage'));
-const CareerPage = lazy(() => import('./pages/workspace/CareerPage'));
-const JourneyPage = lazy(() => import('./pages/workspace/JourneyPage'));
-const CorrectionsPage = lazy(() => import('./pages/workspace/CorrectionsPage'));
-const SupportRevenuePage = lazy(() => import('./pages/workspace/SupportRevenuePage'));
-const CommunitySocialPage = lazy(() => import('./pages/workspace/CommunitySocialPage'));
-const WorkspaceRoadmapPage = lazy(() => import('./pages/workspace/RoadmapPage'));
-const SettingsPage = lazy(() => import('./pages/workspace/SettingsPage'));
-const AdminPage = lazy(() => import('./pages/workspace/AdminPage'));
-const IntegrationsPage = lazy(() => import('./pages/workspace/IntegrationsPage'));
-const WikiPage = lazy(() => import('./pages/workspace/WikiPage'));
-const ForumsPage = lazy(() => import('./pages/workspace/ForumsPage'));
-const PricingPage = lazy(() => import('./pages/PricingPage'));
-const AboutPage = lazy(() => import('./pages/AboutPage'));
-const DocsPage = lazy(() => import('./pages/DocsPage'));
-const BlogPage = lazy(() => import('./pages/BlogPage'));
-const ContactPage = lazy(() => import('./pages/ContactPage'));
-const GuildPage = lazy(() => import('./pages/GuildPage'));
-const PersonaProfilePage = lazy(() => import('./pages/PersonaProfilePage'));
-const StatusPage = lazy(() => import('./pages/StatusPage'));
-const RoomsPage = lazy(() => import('./pages/workspace/RoomsPage'));
-const SystemsRoomPage = lazy(() => import('./pages/workspace/SystemsRoomPage'));
-const LiveExperimentRoomPage = lazy(() => import('./pages/workspace/LiveExperimentRoomPage'));
+const SpecialistWorkPage = lazyRoute(() => import('./pages/workspace/SpecialistWorkPage'));
+const ExecutionReplayPage = lazyRoute(() => import('./pages/workspace/ExecutionReplayPage'));
+const CapabilityPassportPage = lazyRoute(() => import('./pages/workspace/SpecialistDeskPage'));
+const CareerPage = lazyRoute(() => import('./pages/workspace/CareerPage'));
+const JourneyPage = lazyRoute(() => import('./pages/workspace/JourneyPage'));
+const CorrectionsPage = lazyRoute(() => import('./pages/workspace/CorrectionsPage'));
+const SupportRevenuePage = lazyRoute(() => import('./pages/workspace/SupportRevenuePage'));
+const CommunitySocialPage = lazyRoute(() => import('./pages/workspace/CommunitySocialPage'));
+const WorkspaceRoadmapPage = lazyRoute(() => import('./pages/workspace/RoadmapPage'));
+const SettingsPage = lazyRoute(() => import('./pages/workspace/SettingsPage'));
+const AdminPage = lazyRoute(() => import('./pages/workspace/AdminPage'));
+const IntegrationsPage = lazyRoute(() => import('./pages/workspace/IntegrationsPage'));
+const WikiPage = lazyRoute(() => import('./pages/workspace/WikiPage'));
+const ForumsPage = lazyRoute(() => import('./pages/workspace/ForumsPage'));
+const PricingPage = lazyRoute(() => import('./pages/PricingPage'));
+const AboutPage = lazyRoute(() => import('./pages/AboutPage'));
+const DocsPage = lazyRoute(() => import('./pages/DocsPage'));
+const BlogPage = lazyRoute(() => import('./pages/BlogPage'));
+const ContactPage = lazyRoute(() => import('./pages/ContactPage'));
+const GuildPage = lazyRoute(() => import('./pages/GuildPage'));
+const PersonaProfilePage = lazyRoute(() => import('./pages/PersonaProfilePage'));
+const StatusPage = lazyRoute(() => import('./pages/StatusPage'));
+const RoomsPage = lazyRoute(() => import('./pages/workspace/RoomsPage'));
+const SystemsRoomPage = lazyRoute(() => import('./pages/workspace/SystemsRoomPage'));
+const LiveExperimentRoomPage = lazyRoute(() => import('./pages/workspace/LiveExperimentRoomPage'));
 
 // Each workspace page is mounted inside its own error boundary. The root
 // TelemetryBoundary still catches everything, but a root catch replaces the
