@@ -779,7 +779,7 @@
     "apps/web/src/test/__tests__/scriptsCarrying.test.js": "56f8bcc65459195c25761b6f556b3b66286a8c7a0db6138e9b152e0b13d32a88",
     "apps/web/src/test/pocketbaseMock.js": "af1ed1c592a203d84b41317c181ef91854d59830288fcae79dd841f409d7571a",
     "apps/web/src/test/select-testable.jsx": "dc7ec47557a779c65872cfe67b86e5f2727df9a26504d996381874f32df807b0",
-    "apps/web/src/test/setup.js": "b8b442a01bd92a1af998fa103fb24b8ffafdd6bbae96ba1853c93bda8044d835",
+    "apps/web/src/test/setup.js": "c79cd399853d6785179db9a4c5b07b91427ca0d3cae948e9352e81dea0fa6b06",
     "apps/web/src/test/utils.jsx": "cc5ce73e1b9793c9f503065734b1fbb7330e2fbf300cec3b2ff9d6a9ea911fd9",
     "apps/web/tailwind.config.js": "0f9c2982c04edd24fabdd553de06f8b93d9917eac8e02f1911d1a76c5117ddfb",
     "apps/web/tools/build.mjs": "d783232a89ec7306271f22e11397f4fc3c61414742885383af1e8a5091a2ef98",
@@ -1289,7 +1289,7 @@
     "tests/upgrade/test_career_support.py": "1c35170f48f8ad41b1fa77f018e2dd603dcbd217c7cf88441584fa00e44a3397",
     "tests/upgrade/test_classroom_native.py": "69261e06bab990abcb2107e7657737b80f0c17d4e6c2e79a58f5882c692610ab",
     "tests/upgrade/test_datadog_metrics.py": "30d3e128fe1cff2807d8dd42d7af0523e7293682ba926ed4236cfe5e9b927fd6",
-    "tests/upgrade/test_day21_acceptance.py": "9dbf0acb4f8ba627e2a25dd5bcc3e7986256ad5128e4b98217377270278295d4",
+    "tests/upgrade/test_day21_acceptance.py": "98be8927e61e52ac980f496e4979090c86af64c8e09bfb0a157d9746959e9d1e",
     "tests/upgrade/test_day21_submission.py": "991e9f9b7c8eec169598371e5bcfa5539107f09112be2b9142a61e2b6400389b",
     "tests/upgrade/test_day21_support.py": "c6d70798777fe7781f42b40555c523b9a3b2f2df243c1dbc4d15afd41faeeca1",
     "tests/upgrade/test_decision_runtime.py": "b43c664060d594c0008dd9c075df25ff772bf56e387967c83ea40951daed77a3",
@@ -1377,7 +1377,7 @@
     "tests/world_twin/test_interop.py": "792489958dc0b76557f6ffa51c121030ef5203c5d997989ebc165d7491083348",
     "tests/world_twin/test_world_cli.py": "943bfb292435bc35a5ba897daa23b95af0bcbb8f42278c44a8064a5d00388327",
     "tests/world_twin/test_world_twin.py": "e862a44f72842dc20bf05e1a0b74abc23b08f9f621ee70e05340f9d88d3ef04f",
-    "tools/day21/day21_acceptance.py": "4559ab3eedf03b784957692f80b7a231e952ad1a8b130f3ba14e0de8fe2a8f2e",
+    "tools/day21/day21_acceptance.py": "792244bf4567007c2e0acfe1611043e6ba60c14c1b73ad37f5d502d5bc1782f6",
     "tools/day21/day21_architecture_snapshot.py": "def489a720f9405b19677ec2addda270d5d956986426ef4bb58b403966197f3d"
   }
 }
