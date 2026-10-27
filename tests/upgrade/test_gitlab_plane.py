@@ -301,6 +301,60 @@ class AskpassTests(unittest.TestCase):
             self.assertEqual((creds["username"], creds["password"]), ("oauth2", "plane-token"))
 
 
+class InsteadOfTests(unittest.TestCase):
+    """The runner rewrites its own host to a job-token URL; the plane's URLs must escape that."""
+
+    def resolved(self, repo: Path, url: str) -> str:
+        return subprocess.run(["git", "ls-remote", "--get-url", url], cwd=repo, text=True,
+                              capture_output=True, check=True).stdout.strip()
+
+    def test_userinfo_keeps_the_runner_rewrite_from_matching(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = Path(tmp)
+            subprocess.run(["git", "init", "-q"], cwd=repo, check=True)
+            subprocess.run(["git", "config", "url.https://gitlab-ci-token:job@lab.example.test/.insteadOf",
+                            "https://lab.example.test/"], cwd=repo, check=True)
+            bare = "https://lab.example.test/root/buildanddo.git"
+            # Control: the runner's rewrite captures the bare URL and its job token wins.
+            self.assertIn("gitlab-ci-token:job@", self.resolved(repo, bare))
+            mine = plane.with_user(bare, "oauth2")
+            self.assertEqual(mine, "https://oauth2@lab.example.test/root/buildanddo.git")
+            self.assertEqual(self.resolved(repo, mine), mine)
+
+    def test_with_user_leaves_existing_userinfo_and_other_schemes(self) -> None:
+        self.assertEqual(plane.with_user("https://a@h/x.git", "b"), "https://a@h/x.git")
+        self.assertEqual(plane.with_user("ssh://git@h/x.git", "b"), "ssh://git@h/x.git")
+        self.assertEqual(plane.with_user("https://h/x.git", "x-access-token"), "https://x-access-token@h/x.git")
+
+
+class CleanPusherTests(unittest.TestCase):
+    def test_pusher_sends_checkout_objects_without_checkout_config(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            base = Path(tmp)
+            work, remote = base / "work", base / "remote.git"
+            env = {**os.environ, "GIT_AUTHOR_NAME": "t", "GIT_AUTHOR_EMAIL": "t@x",
+                   "GIT_COMMITTER_NAME": "t", "GIT_COMMITTER_EMAIL": "t@x"}
+            subprocess.run(["git", "init", "-q", str(work)], check=True)
+            subprocess.run(["git", "init", "-q", "--bare", str(remote)], check=True)
+            (work / "f").write_text("x")
+            for argv in (["add", "f"], ["commit", "-q", "-m", "c"]):
+                subprocess.run(["git", *argv], cwd=work, env=env, check=True)
+            # What the runner leaves behind: a rewrite that would capture the target.
+            subprocess.run(["git", "config", f"url.file:///nonexistent/.insteadOf", f"file://{remote}"],
+                           cwd=work, check=True)
+            sha = subprocess.run(["git", "rev-parse", "HEAD"], cwd=work, text=True,
+                                 capture_output=True, check=True).stdout.strip()
+            pusher = plane.clean_pusher(work)
+            self.assertNotIn("insteadOf", (pusher / "config").read_text())
+            plane.git("push", "--quiet", f"file://{remote}", f"{sha}:refs/heads/buildanddo-source", cwd=pusher)
+            got = subprocess.run(["git", "rev-parse", "refs/heads/buildanddo-source"], cwd=remote, text=True,
+                                 capture_output=True, check=True).stdout.strip()
+            self.assertEqual(got, sha)
+            # Control: the same push from the checkout is captured by its rewrite and fails.
+            with self.assertRaises(plane.PlaneError):
+                plane.git("push", "--quiet", f"file://{remote}", f"{sha}:refs/heads/control", cwd=work)
+
+
 class WiringTests(unittest.TestCase):
     def test_pipeline_kind_follows_the_branch(self) -> None:
         self.assertEqual(plane.pipeline_kind({"CI_COMMIT_BRANCH": plane.MAIN_MIRROR}), "main")
