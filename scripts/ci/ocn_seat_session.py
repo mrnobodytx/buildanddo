@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
-# CGRF: SRS=SRS-BUILDANDDO-OCN-TELEMETRY-001 | CAPS=B | Seat=C-ONE
+# CGRF: SRS=SRS-BUILDANDDO-OCN-TELEMETRY-001 | CAPS=pending | Seat=C-ONE
 # ─── CGRF Header ─────────────────────────────────────────────────────────────
 # File:        scripts/ci/ocn_seat_session.py
 # Stage:       09_VERIFY
-# SRS:         SRS-BUILDANDDO-LIVE-UTILIZATION-001, SRS-BUILDANDDO-COMMUNITY-WEB-001,
-#              SRS-BUILDANDDO-OCN-TELEMETRY-001
-# CAPS:        B
+# SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-LIVE-UTILIZATION-001,
+#              SRS-BUILDANDDO-COMMUNITY-WEB-001, SRS-BUILDANDDO-OCN-TELEMETRY-001
+# CAPS:        pending
 # CK:          pending
-# Seat:        C-ONE
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+# Seat:        BITS-CODEGEN, C-ONE
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-20
 # Depends:     scripts/ci/ocn_rbac_probe.py (same CitadelKey login path);
@@ -45,7 +46,9 @@ distinct_id is `ocn:<persona>`. On the release workstation, scripts/ci/ocn_telem
 PostHog events flagged `is_ocn_agent` and Datadog logs under service buildanddo-ocn. That is the
 point rather than a caveat: analytics that silently blends synthetic traffic into human funnels is
 corrupted analytics, and the operator asked for user stats AND agent stats, which needs the two to
-be separable. No box name and no address leaves the workstation's publisher.
+be separable. The receipt itself says `actor_type: agent`, `traffic_type: synthetic` and
+`probe_type: ocn-seat-session`, and carries no egress address: the box never looks one up. No box
+name and no address leaves the workstation's publisher.
 
 WHAT "REPLAY" CAN HONESTLY MEAN HERE. The receipt is an ordered, re-runnable step list - the replay
 this process can actually honour. It is NOT a video: PostHog's session recording is rrweb DOM capture
@@ -294,8 +297,9 @@ def main() -> int:
     try:
         meta = resolve_identity(args.seat, NODE_JSON, PLACEMENT)
     except IdentityRefused as refused:
-        # Nothing has touched the network: no egress lookup, no login, no telemetry under a guess.
+        # Nothing has touched the network: no login or telemetry under a guess.
         print(json.dumps({"schema": "buildanddo.ocn-seat-session/v1", "seat": args.seat, "env": args.env,
+                          "actor_type": "agent", "traffic_type": "synthetic", "probe_type": "ocn-seat-session",
                           "at": datetime.datetime.now(datetime.timezone.utc).isoformat(),
                           "identity": {"state": "REFUSED", "code": refused.code, "detail": refused.detail,
                                        "sources": refused.sources},
@@ -304,12 +308,11 @@ def main() -> int:
     seat = meta["seat"]
     base = ENVS[args.env]
 
-    ip = http("https://api.ipify.org", timeout=12)
-    meta["egress_ip"] = ip["body"].decode("utf-8", "replace").strip() if ip["status"] == 200 else None
-
-    # Every key the estate aggregate reads stays, with the same meaning, so its readers do not break.
+    # The estate aggregate's keys keep their meaning; egress_ip is gone because the box never
+    # looks its address up, and the workstation's publisher never read it.
     out = {"schema": "buildanddo.ocn-seat-session/v1", "seat": seat, "env": args.env,
-           "persona": meta["persona"], "guild": meta["guild"], "egress_ip": meta["egress_ip"],
+           "persona": meta["persona"], "guild": meta["guild"],
+           "actor_type": "agent", "traffic_type": "synthetic", "probe_type": "ocn-seat-session",
            "identity": meta["identity"],
            "session_id": str(uuid.uuid4()), "distinct_id": "ocn:" + persona_slug(meta["persona"]),
            "at": datetime.datetime.now(datetime.timezone.utc).isoformat(), "replay": [],

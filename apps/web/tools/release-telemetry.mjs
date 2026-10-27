@@ -120,8 +120,8 @@ async function observeAdapterConfiguration(sources, contract) {
             snapshots[sink] = config;
         };
         const posthog = {
+            // Mirror the real SDK: posthog-js has no get_config(), so code that calls it fails here too.
             config: null,
-            get_config(key) { return this.config?.[key]; },
             init(key, options) { this.config = { ...options, token: key }; save('posthog', { ...options, key }); },
         };
         const vendor = (sink) => ({ config: null, getInitConfiguration() { return this.config; },

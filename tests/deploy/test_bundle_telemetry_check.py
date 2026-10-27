@@ -139,12 +139,18 @@ class ShipRefusesKeylessBuilds(unittest.TestCase):
         finished = {}
         synced = []
         ship = self.ship
+        # The pinned telemetry build contract runs before this check and is tested in
+        # test_ship_telemetry.py; here it passes, so the key check is what decides.
+        (dist / ship.TELEMETRY_MANIFEST).write_text(json.dumps({"files": {}}), encoding="utf-8")
+        expected = {"commit_sha": "a" * 40, "build_id": "synthetic-build"}
         with patch.object(ship, "DIST_DIR", dist), \
                 patch.object(ship, "STATE_DIR", Path(self.tmp.name) / "state"), \
+                patch.object(ship, "_release_build_context", return_value=(expected, {})), \
                 patch.object(ship, "_build", return_value={"ok": True}), \
                 patch.object(ship, "_gate", return_value={"ok": True, "lint_ok": True}), \
+                patch.object(ship, "_verify_telemetry_artifact", return_value={"ok": True, "manifest_sha256": "0" * 64}), \
                 patch.object(ship, "_write_deployed_version"), \
-                patch.object(ship, "_rsync", side_effect=lambda local, remote: synced.append(remote) or {"ok": False}), \
+                patch.object(ship, "_rsync", side_effect=lambda local, remote, **_: synced.append(remote) or {"ok": False}), \
                 patch.object(ship, "_finish", side_effect=lambda record: finished.update(record)), \
                 patch("builtins.print"):
             code = ship.main()
@@ -177,12 +183,17 @@ class ReleaseRailRefusesKeylessBuilds(unittest.TestCase):
 
     def _stage_artifact(self, body: str) -> None:
         artifact = _dist(self.repo / ".citadel-release" / "build", body)
+        # A release that passed its build and pinned its telemetry contract, so the key check decides.
         (self.repo / ".citadel-release" / "artifact.json").write_text(
-            json.dumps({"commit_sha": "a" * 40, "artifact_dir": str(artifact)}), encoding="utf-8")
+            json.dumps({"commit_sha": "a" * 40, "artifact_dir": str(artifact), "state": "PASS",
+                        "telemetry": {"commit_sha": "a" * 40, "manifest_sha256": "0" * 64},
+                        "manifest": {"tree_sha256": "synthetic-tree"}}), encoding="utf-8")
 
     def _deploy(self, env_name: str):
         rail = self.rail
         with patch.dict(os.environ, {f"BUILDANDDO_{env_name.upper()}_DEPLOY_MODE": "ssh_webroot"}), \
+                patch.object(rail, "admit_release_telemetry", return_value={"ok": True}), \
+                patch.object(rail, "artifact_manifest", return_value={"tree_sha256": "synthetic-tree"}), \
                 patch.object(rail, "deploy_ssh_webroot", return_value={"mode": "ssh_webroot"}) as deployed, \
                 patch.object(rail, "write_receipt"):
             try:

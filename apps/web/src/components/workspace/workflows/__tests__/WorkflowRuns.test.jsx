@@ -287,8 +287,10 @@ describe('workflow outcome and approval forms', () => {
                 source: 'Saved output', observation: 'Three rows matched.' } }] });
         renderReview(run);
         expect(screen.getByText('Three rows matched.')).toBeInTheDocument();
-        expect(screen.getByText(/Evidence receipt: receipt1/)).toBeInTheDocument();
-        expect(screen.getByRole('link', { name: 'receipt1' })).toHaveAttribute('href', '/app/evidence?evidence=receipt1');
+        // The receipt id is a link inside its label, so the label is checked on the whole line.
+        const receipt = screen.getByRole('link', { name: 'receipt1' });
+        expect(receipt).toHaveAttribute('href', '/app/evidence?evidence=receipt1');
+        expect(receipt.closest('p')).toHaveTextContent(/^Evidence receipt: receipt1$/);
         expect(screen.queryByRole('button', { name: 'Cancel run' })).not.toBeInTheDocument();
         expect(screen.queryByRole('button', { name: 'Record completed step' })).not.toBeInTheDocument();
     });

@@ -1,12 +1,12 @@
-# CGRF: SRS=SRS-BUILDANDDO-OCN-TELEMETRY-001 | CAPS=B | Seat=C-ONE
+# CGRF: SRS=SRS-BUILDANDDO-OCN-TELEMETRY-001 | CAPS=pending | Seat=C-ONE
 # ─── CGRF Header ───────────────────────────────────────────────
 # File:        tests/upgrade/test_ocn_seat_session.py
 # Stage:       08_TEST
-# SRS:         SRS-BUILDANDDO-COMMUNITY-WEB-001, SRS-BUILDANDDO-OCN-TELEMETRY-001
-# CAPS:        B
+# SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-COMMUNITY-WEB-001, SRS-BUILDANDDO-OCN-TELEMETRY-001
+# CAPS:        pending
 # CK:          pending
-# Dispatch:    VCC-BUILDANDDO-COMMUNITY-WEB-001, VCC-BUILDANDDO-OCN-TELEMETRY-001
-# Seat:        C-ONE
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-COMMUNITY-WEB-001, VCC-BUILDANDDO-OCN-TELEMETRY-001
+# Seat:        BITS-CODEGEN, C-ONE
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-22
 # Depends:     scripts/ci/ocn_seat_session.py
@@ -209,13 +209,14 @@ class MainTests(unittest.TestCase):
         self.assertEqual(out["identity"]["state"], "REFUSED")
         self.assertEqual(out["identity"]["code"], "IDENTITY_UNREADABLE")
         self.assertEqual(out["login"], "NOT_ATTEMPTED")
+        self.assertEqual((out["actor_type"], out["traffic_type"], out["probe_type"]),
+                         ("agent", "synthetic", "ocn-seat-session"))
         network.assert_not_called()
         login.assert_not_called()
 
     def test_a_resolved_seat_signs_in_as_itself_under_its_persona(self):
         self.node.write_text(json.dumps({"seat_id": "seat-alpha", "persona": {"guild": "finance"}}), encoding="utf-8")
-        egress = {"status": 200, "body": b"198.51.100.7", "ms": 1, "ctype": "text/plain"}
-        with patch.object(seat_session, "http", return_value=egress), \
+        with patch.object(seat_session, "http", side_effect=AssertionError("unnecessary network call")) as network, \
                 patch.object(seat_session, "login", return_value=(None, None, "LOGIN_401")) as login:
             code, out = self.run_main(["--no-capture"])
         self.assertEqual(code, 1)
@@ -223,7 +224,11 @@ class MainTests(unittest.TestCase):
         self.assertEqual((out["seat"], out["persona"], out["guild"]), ("seat-alpha", "Sterling", "finance"))
         self.assertEqual(out["identity"]["state"], "RESOLVED")
         self.assertEqual(out["login"], "LOGIN_401")
+        self.assertNotIn("egress_ip", out)
+        self.assertEqual((out["actor_type"], out["traffic_type"], out["probe_type"]),
+                         ("agent", "synthetic", "ocn-seat-session"))
         self.assertEqual(out["telemetry"], {"accepted": 0, "refused": 0, "note": seat_session.TELEMETRY_NOTE})
+        network.assert_not_called()
 
 
 def ph_key() -> str:
@@ -236,8 +241,6 @@ def served(calls):
 
     def http(url, data=None, headers=None, method=None, timeout=25):
         calls.append(url)
-        if "ipify" in url:
-            return {"status": 200, "body": ".".join(("198", "51", "100", "7")).encode(), "ms": 1, "ctype": "text/plain"}
         if url.endswith((".json", "/_version")):
             return {"status": 200, "body": b'{"ok": true}', "ms": 2, "ctype": "application/json"}
         if "/api/collections/" in url:
@@ -273,6 +276,7 @@ class CaptureRetiredTests(unittest.TestCase):
         self.assertEqual(code, 0)
         self.assertTrue(calls)
         self.assertFalse([url for url in calls if "posthog" in url])
+        self.assertFalse([url for url in calls if "ipify" in url], "the box never looks up its egress address")
         self.assertNotIn(ph_key(), stdout)
         self.assertEqual(json.loads(stdout.strip().splitlines()[-1])["telemetry"]["accepted"], 0)
 
@@ -301,9 +305,12 @@ class CaptureRetiredTests(unittest.TestCase):
         self.resolved()
         _code, stdout, _calls = self.session([])
         out = json.loads(stdout.strip().splitlines()[-1])
-        aggregate_reads = {"seat", "persona", "guild", "egress_ip", "session_id", "distinct_id", "login", "replay",
+        aggregate_reads = {"seat", "persona", "guild", "session_id", "distinct_id", "login", "replay",
                            "perception", "telemetry"}
         self.assertLessEqual(aggregate_reads, set(out))
+        self.assertNotIn("egress_ip", out)
+        self.assertEqual((out["actor_type"], out["traffic_type"], out["probe_type"]),
+                         ("agent", "synthetic", "ocn-seat-session"))
         self.assertEqual([step["step"] for step in out["replay"]][:2], ["ocn_login", "pageview"])
         self.assertEqual(out["telemetry"], {"accepted": 0, "refused": 0, "note": seat_session.TELEMETRY_NOTE})
 

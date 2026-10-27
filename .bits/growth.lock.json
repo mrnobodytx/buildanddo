@@ -326,7 +326,7 @@
     "pocketbase_hooks": 31,
     "pocketbase_migrations": 67,
     "readmes": 50,
-    "tracked_files": 1887
+    "tracked_files": 1888
   },
   "systems": {
     "apps/career": {
@@ -522,19 +522,19 @@
       "test_files": 3
     },
     "apps/web": {
-      "cgrf_coverage": 0.7554,
-      "cgrf_files": 352,
-      "files": 504,
+      "cgrf_coverage": 0.7559,
+      "cgrf_files": 353,
+      "files": 505,
       "lines": {
         "css": 1101,
         "data": 1449,
         "html": 22,
-        "javascript": 73846,
+        "javascript": 74020,
         "markdown": 129
       },
       "readme": true,
-      "source_files": 466,
-      "source_lines": 74969,
+      "source_files": 467,
+      "source_lines": 75143,
       "srs_codes": [
         "SRS-BUILDANDDO-BUDDI-001",
         "SRS-BUILDANDDO-BUDDI-003",
@@ -549,17 +549,19 @@
         "SRS-BUILDANDDO-PUBLIC-REDACTION-001",
         "SRS-BUILDANDDO-PURPOSE-001",
         "SRS-BUILDANDDO-QUIZ-001",
+        "SRS-BUILDANDDO-RECONCILE-001",
         "SRS-BUILDANDDO-ROADMAP-001",
         "SRS-BUILDANDDO-RUM-001",
         "SRS-BUILDANDDO-RUM-002",
         "SRS-BUILDANDDO-SITE-001",
+        "SRS-BUILDANDDO-TELEMETRY-001",
         "SRS-BUILDANDDO-TEST-001",
         "SRS-BUILDANDDO-TRUST-001",
         "SRS-BUILDANDDO-UPGRADE-001",
         "SRS-BUILDANDDO-WITNESS-001",
         "SRS-BUILDANDDO-WORKSPACE-001"
       ],
-      "test_files": 112
+      "test_files": 113
     },
     "apps/world_twin": {
       "cgrf_coverage": 1.0,
@@ -666,17 +668,16 @@
       "lines": {
         "data": 681,
         "javascript": 50,
-        "python": 22984
+        "python": 22987
       },
       "readme": false,
       "source_files": 53,
-      "source_lines": 23034,
+      "source_lines": 23037,
       "srs_codes": [
         "SRS-BUILDANDDO-AGENTCTX-001",
         "SRS-BUILDANDDO-CHANGELOG-001",
         "SRS-BUILDANDDO-CI-001",
         "SRS-BUILDANDDO-CLASSROOM-001",
-        "SRS-BUILDANDDO-COMMUNITY-WEB-001",
         "SRS-BUILDANDDO-EPOCH-001",
         "SRS-BUILDANDDO-GITLAB-ONLY-CI-001",
         "SRS-BUILDANDDO-GROWTH-001",
@@ -775,13 +776,13 @@
     }
   },
   "totals": {
-    "cgrf_coverage": 0.8399,
-    "files": 1112,
-    "source_lines": 181337,
+    "cgrf_coverage": 0.8401,
+    "files": 1113,
+    "source_lines": 181514,
     "systems": 24,
     "systems_with_readme": 4,
     "systems_with_tests": 23,
-    "test_files": 241,
+    "test_files": 242,
     "test_files_unattributed": 124
   }
 }

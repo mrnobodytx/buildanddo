@@ -37,6 +37,8 @@
 | 7 | Staging-only deploy of web and backend | readback from staging | done: staging serves `ea97e3b`; backend at 109 migrations |
 | 8 | Converge main after #105 by R14, as a pull request to the staging line | `git merge-base --is-ancestor origin/main HEAD`; the suites and gates again | done 2026-10-01: PR #124 (`c-one/SRS-BUILDANDDO-RECONCILE-001-trunk-into-main-20261001`, merge commit `0459a53`) merges the line (`5805bc9`) into main (`c540085`); opened against `main` because the line was the smaller side (31 vs 63 commits), so the line fast-forwards to the merge; see `.bits/handoffs/2026-10-01-c-one-reconverge-staging-line-into-main.md` |
 | 9 | Pull request taking the staging line into `main`, merged only on the operator's OK | GitHub reports it mergeable without conflicts | pending: merge PR #124, then fast-forward the line to the merge commit (push, no force) and deploy staging from it |
+| 10 | Follow-up to #124 by R15/R17: PostHog init without `get_config` and its real-SDK test; the seat session without an egress lookup | `npx vitest run src/lib/__tests__/telemetry.navigation.test.js` in `apps/web`; `python -m unittest tests.upgrade.test_ocn_seat_session` | in progress: PR #123 |
+| 11 | Repair by R16/R17 the web tests that fail on `main` | `npx vitest run` in `apps/web` exits 0 | in progress: PR #123 |
 
 ## Evidence (2026-09-24, release workstation, Windows, LF checkout)
 

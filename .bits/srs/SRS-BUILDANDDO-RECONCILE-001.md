@@ -129,6 +129,64 @@ conflicts differently, so the lines still differed in 52 files.
 
     Afterwards main is an ancestor of the staging line, so the pull request into main merges without conflicts.
 
+## Follow-up merge (2026-10-01)
+
+After #108 the staging line took #110 (OCN-TELEMETRY-001), #111 (TELEMETRY-001) and #117 (MAIL-001), and main took
+#104 and #113-#121. A trial merge of the staging line at `5805bc9` into main at `c540085` had 12 conflicting files.
+Both lines had built their own telemetry for the same things: the failure event behind the shared notices,
+PostHog identity, the URL scrubber and the OCN seat session's capture.
+
+15. **R15 - telemetry, by area.** Operator decision, 2026-10-01:
+    - **Web.** main's form stays: `useFailureTelemetry`/`readFailed`, `identifyTelemetryUser` and its scrubber,
+      which the rest of the app already uses. The staging line's duplicate `useSectionFailure` and its second
+      identify call go, so each failure and each sign-in is reported once. Two of its guarantees are kept: the
+      scrubber also cleans the top-level `$set` and `$set_once` that PostHog sends on identify, and its test
+      against the real SDK stays, now driving main's API. What is lost is the ten-second window that
+      reported several failed cards in one section as one event.
+    - **PostHog init.** That test showed main's `initTelemetry` never started PostHog: posthog-js has no
+      `get_config()`, the call threw inside a `try`, and no event was ever captured. It now reads `config`;
+      the fakes in the node suites and in `release-telemetry.mjs` lose `get_config` so they match the SDK.
+    - **OCN seat session.** The staging line's form stays: nothing on the box sends anything (OCN-TELEMETRY-001).
+      main's privacy changes come with it: no egress address lookup and no `egress_ip` in the receipt, and
+      the receipt and the refusal both say `actor_type`, `traffic_type` and `probe_type`.
+    - **Deploy gates.** Both stay. Each path checks the bundle's keys from the bytes (the staging line), and
+      admits the pinned telemetry build contract (main). Each gate's tests stub the other gate.
+
+16. **R16 - the suites are green on the merged tree, not only "no worse than a parent".** Operator decision,
+    2026-10-01: repair in this pull request the ten tests that failed on both parents. Each is fixed at its cause:
+    - `submission_readiness.audit()` still required exactly eleven verified milestones after `caa5ee4` made the
+      policy a subset of the twelve-milestone plan, so a fully reviewed entry could never be ready and one with
+      the final decision missing could. It now requires every checkpoint the policy gates, matched by day, and
+      the policy must still end on the plan's final day so the submission checkpoint cannot be dropped. Rooms
+      (HS-12) stays ungated, as `caa5ee4` left it.
+    - the readiness tests compare the contract with the plan rather than with eleven, and pin the current
+      twenty-five acceptance profiles. The Day-21 messages count the profiles instead of saying eighteen.
+    - three web tests: the Buddi stall test gets the fake-clock fix `EditorialReels.test.jsx` already documents;
+      the workflow receipt and the daily-edition editor tests assert what the product deliberately renders (a
+      receipt link inside its label; no Publish control for an editor). The tutorials page test's partial mock of
+      the observability runtime now includes `readFailed`, which the page calls; without it every run of the suite
+      ended with four unhandled rejections and a non-zero exit, on `main` too.
+
+    - `CHANGELOG.md` is regenerated with `scripts/ci/changelog_gen.py`. GitHub's changelog workflow has not run on
+      `main` since the Actions billing lock, so `changelog_gen.py --check` failed on `main` and on every pull request.
+
+    `test_system_growth` is left alone: `growth.lock.json` is refreshed on `main` by the owner's choice (GROWTH-001).
+
+17. **R17 - after #124.** #124 landed the same convergence on `main` on 2026-10-27, with its own resolutions,
+    and `main` became GitLab-only CI. This pull request then took `main` and keeps `main`'s form wherever it
+    covers the same ground: the submission gate and its tests (#125's floor of eleven checkpoints), the readiness
+    tests, the scrubber, the mailer, the release controller and the dispatch history. It still carries what
+    `main` lacks:
+    - PostHog starts: `initTelemetry` reads `posthog.config`, because posthog-js has no `get_config()`. The
+      real-SDK test that shows it stays, and the fakes no longer offer the method.
+    - R15's seat session: no egress lookup, no `egress_ip`, and the agent markers on the receipt and refusal.
+    - R16's web test repairs: TalkToBuddi, WorkflowRuns, DailyEditionPage and the TutorialsPage mock.
+
+    The growth lock is refreshed here after all, as #137, #138 and #139 each did. On GitLab,
+    `day21_full_acceptance` runs `source_python`, which includes `test_the_live_lock_is_current`, so a pull
+    request whose lock lags its own tree fails review, although GROWTH-001 keeps growth non-blocking. That
+    conflict is GROWTH-001's to settle; this pull request only follows the practice.
+
 ## Out of scope
 
 - Production, and any server change other than the staging-only deploy in R8.
