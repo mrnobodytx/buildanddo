@@ -252,7 +252,12 @@ class Askpass:
         script.write_text("#!/bin/sh\ncase \"$1\" in\n  *Username*) printf '%s\\n' \"$PLANE_GIT_USER\" ;;\n"
                           "  *) printf '%s\\n' \"$PLANE_GIT_TOKEN\" ;;\nesac\n")
         script.chmod(0o700)
+        # GitLab Runner installs a credential helper in the checkout that answers with the
+        # job token, and git asks helpers before GIT_ASKPASS. The job token can read this
+        # project but never push, so intake failed with "not allowed to push code". An empty
+        # credential.helper at command-line scope clears the helper list for these calls.
         self.env = {**os.environ, "GIT_ASKPASS": str(script), "GIT_TERMINAL_PROMPT": "0",
+                    "GIT_CONFIG_COUNT": "1", "GIT_CONFIG_KEY_0": "credential.helper", "GIT_CONFIG_VALUE_0": "",
                     "PLANE_GIT_USER": user, "PLANE_GIT_TOKEN": token}
 
     def close(self) -> None:
