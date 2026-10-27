@@ -294,7 +294,7 @@ assurance, plus the Day-21 job, which runs all eighteen acceptance profiles. Eve
 
 | Job | Trigger | What it does |
 |---|---|---|
-| `github_intake` | schedule `intake`, every 10 min | Pulls `main` into `buildanddo-source` (verified by SHA) and trusted PR heads into `review/pr-N`, then posts each pipeline's result to GitHub as `gitlab-ci/buildanddo` |
+| `github_intake` | schedule `intake`, every 10 min | Pulls `main` into `buildanddo-source` (verified by SHA) and trusted PR heads into `review/pr-N`, posts each pipeline's result to GitHub as `gitlab-ci/buildanddo`, then merges `actor:agent` PRs on `bits/SRS-*` branches whose exact head passed (kill switch: CI/CD variable `AUTOMERGE=0`) |
 | `evidence_epoch` | push to `buildanddo-source` | Fingerprints the build's evidence and publishes the root |
 | `main_writeback` | after `evidence_epoch` | Commits `CHANGELOG.md`, the evidence chain head and `.bits/growth.lock.json` back to `main` with `[skip ci]` |
 | `ci_report` | every main and review pipeline | Telemetry, deltas and test results to Datadog (optional; never turns a pipeline red) |
@@ -303,6 +303,10 @@ assurance, plus the Day-21 job, which runs all eighteen acceptance profiles. Eve
 
 PRs from forks are not pulled automatically, because the runner would execute their code. A
 maintainer mirrors them.
+
+The plane jobs run on runners tagged `buildanddo-plane`, so they never wait behind acceptance
+jobs; acceptance needs a runner tagged `buildanddo` with Python 3.11/3.12 and the declared
+PocketBase binary.
 
 </details>
 

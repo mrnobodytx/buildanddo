@@ -1,9 +1,9 @@
 {
   "progression": {
     "dispatch_tasks": {
-      "done": 190,
-      "progress": 0.8597,
-      "total": 221
+      "done": 186,
+      "progress": 0.8611,
+      "total": 216
     },
     "dispatches": {
       "USO-BUILDANDDO-CRAWL-001": {
@@ -113,12 +113,6 @@
         "status": "in_progress",
         "tasks_done": 6,
         "tasks_total": 7
-      },
-      "VCC-BUILDANDDO-GITLAB-RELEASE-001": {
-        "srs": "SRS-BUILDANDDO-GITLAB-RELEASE-001",
-        "status": "in_progress",
-        "tasks_done": 4,
-        "tasks_total": 5
       },
       "VCC-BUILDANDDO-GROWTH-001": {
         "srs": "SRS-BUILDANDDO-GROWTH-001",
@@ -251,12 +245,11 @@
       "by_risk": {
         "A0": 2,
         "A1": 29,
-        "A2": 30,
-        "A3": 1
+        "A2": 30
       },
       "by_status": {
         "delivered": 4,
-        "in_progress": 52,
+        "in_progress": 51,
         "proposed": 6
       },
       "specs": {
@@ -289,7 +282,6 @@
         "SRS-BUILDANDDO-FEDERAL-NAVAIR-001": "proposed",
         "SRS-BUILDANDDO-FEDERAL-SEMANTIC-ISR-001": "proposed",
         "SRS-BUILDANDDO-GITLAB-ONLY-CI-001": "in_progress",
-        "SRS-BUILDANDDO-GITLAB-RELEASE-001": "in_progress",
         "SRS-BUILDANDDO-GROWTH-001": "in_progress",
         "SRS-BUILDANDDO-HEADERS-001": "in_progress",
         "SRS-BUILDANDDO-HYGIENE-001": "in_progress",
@@ -323,18 +315,18 @@
         "SRS-BUILDANDDO-WORKSPACE-001": "in_progress",
         "SRS-BUILDANDDO-WORLD-TWIN-001": "in_progress"
       },
-      "total": 62
+      "total": 61
     }
   },
   "schema": "buildanddo.growth-lock/v1",
   "surface": {
     "docs_pages": 58,
     "github_workflows": 0,
-    "gitlab_jobs": 22,
+    "gitlab_jobs": 20,
     "pocketbase_hooks": 31,
     "pocketbase_migrations": 67,
     "readmes": 50,
-    "tracked_files": 1891
+    "tracked_files": 1887
   },
   "systems": {
     "apps/career": {
@@ -672,13 +664,13 @@
       "cgrf_files": 52,
       "files": 56,
       "lines": {
-        "data": 663,
+        "data": 672,
         "javascript": 50,
-        "python": 22903
+        "python": 22984
       },
       "readme": false,
       "source_files": 53,
-      "source_lines": 22953,
+      "source_lines": 23034,
       "srs_codes": [
         "SRS-BUILDANDDO-AGENTCTX-001",
         "SRS-BUILDANDDO-CHANGELOG-001",
@@ -715,7 +707,7 @@
         "SRS-BUILDANDDO-TELEMETRY-001",
         "SRS-BUILDANDDO-UPGRADE-001"
       ],
-      "test_files": 6
+      "test_files": 5
     },
     "scripts/discordbot": {
       "cgrf_coverage": 1.0,
@@ -769,14 +761,13 @@
       "cgrf_files": 8,
       "files": 13,
       "lines": {
-        "python": 5715
+        "python": 5698
       },
       "readme": false,
       "source_files": 13,
-      "source_lines": 5715,
+      "source_lines": 5698,
       "srs_codes": [
         "SRS-BUILDANDDO-DAY21-CLOSURE-001",
-        "SRS-BUILDANDDO-GITLAB-RELEASE-001",
         "SRS-BUILDANDDO-SUBMISSION-FRESHNESS-001",
         "SRS-BUILDANDDO-UPGRADE-001"
       ],
@@ -786,11 +777,11 @@
   "totals": {
     "cgrf_coverage": 0.8399,
     "files": 1112,
-    "source_lines": 181273,
+    "source_lines": 181337,
     "systems": 24,
     "systems_with_readme": 4,
     "systems_with_tests": 23,
-    "test_files": 242,
+    "test_files": 241,
     "test_files_unattributed": 124
   }
 }

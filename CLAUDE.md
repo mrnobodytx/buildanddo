@@ -59,7 +59,8 @@ ship pipeline. GitHub is the public collaboration plane and runs nothing. GitLab
 is the only CI and holds golden data, infrastructure and deployment authority.
 `.gitlab/ci/github-plane.yml` pulls public `main` into `buildanddo-source` and
 each trusted PR head into `review/pr-N`, and `scripts/ci/gitlab_plane.py` posts
-every result back as the `gitlab-ci/buildanddo` commit status. The changelog,
+every result back as the `gitlab-ci/buildanddo` commit status. An `actor:agent` PR on a
+`bits/SRS-*` branch merges itself once GitLab passes its exact head (`AUTOMERGE=0` stops it). The changelog,
 growth lock and evidence chain head are committed back to `main` by GitLab
 with `[skip ci]`. `.gitlab/ci/release.yml` ships `buildanddo-source` through the release rail
 when `BUILDANDDO_DEPLOY_ENABLE=1`. The Day-21 GitLab job runs all eighteen acceptance profiles
