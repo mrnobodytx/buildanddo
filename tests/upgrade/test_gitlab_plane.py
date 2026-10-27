@@ -280,6 +280,27 @@ class WritebackTests(unittest.TestCase):
         self.assertIn("SRS: SRS-BUILDANDDO-EPOCH-001", items["scripts/ci/epoch_chain.json"].trailers)
 
 
+class AskpassTests(unittest.TestCase):
+    """The plane's token must win over the runner's job-token credential helper."""
+
+    def fill(self, env: dict[str, str], cwd: Path) -> dict[str, str]:
+        out = subprocess.run(["git", "credential", "fill"], cwd=cwd, env=env, text=True, capture_output=True,
+                             input="protocol=https\nhost=gitlab.example.test\n\n", check=True).stdout
+        return dict(line.split("=", 1) for line in out.splitlines() if "=" in line)
+
+    def test_runner_credential_helper_is_bypassed(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = Path(tmp)
+            subprocess.run(["git", "init", "-q"], cwd=repo, check=True)
+            helper = "!f() { echo username=gitlab-ci-token; echo password=job-token; }; f"
+            subprocess.run(["git", "config", "credential.helper", helper], cwd=repo, check=True)
+            # Control: without the plane's environment the runner helper answers.
+            self.assertEqual(self.fill({**os.environ, "GIT_TERMINAL_PROMPT": "0"}, repo)["password"], "job-token")
+            with plane.Askpass("oauth2", "plane-token") as auth:
+                creds = self.fill(auth.env, repo)
+            self.assertEqual((creds["username"], creds["password"]), ("oauth2", "plane-token"))
+
+
 class WiringTests(unittest.TestCase):
     def test_pipeline_kind_follows_the_branch(self) -> None:
         self.assertEqual(plane.pipeline_kind({"CI_COMMIT_BRANCH": plane.MAIN_MIRROR}), "main")
