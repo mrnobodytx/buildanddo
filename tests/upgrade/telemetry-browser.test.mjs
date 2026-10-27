@@ -608,6 +608,20 @@ test('vitals clock and sink failures cannot escape startup or periodic/final flu
     assert.doesNotThrow(() => missing.load('lib/observability/vitals.js').startVitals());
 });
 
+test('PostHog identify envelopes are scrubbed beside properties: $set and $set_once at the top level', () => {
+    // posthog-js puts $set / $set_once on the envelope itself for $identify, not under properties, and the
+    // SDK's initial pathname and person info start out holding whatever room or reset link the session began on.
+    const event = { event: '$identify', properties: { $current_url: '/app/classrooms/private-room' },
+        $set: { $initial_current_url: 'https://buildanddo.com/reset-password/private-token?code=private-code', email: 'private-email' },
+        $set_once: { $initial_pathname: '/app/classrooms/private-room',
+            $initial_person_info: { u: 'https://buildanddo.com/app/classrooms/private-room?join=1', r: '$direct' } } };
+    assert.equal(navigation.scrubClassroomProperties(event), event);
+    assert.doesNotMatch(JSON.stringify(event), /private-/);
+    assert.equal(event.$set_once.$initial_pathname, '/app/classrooms/:room');
+    assert.equal(event.$set.$initial_current_url, 'https://buildanddo.com/reset-password/:token');
+    assert.equal(event.$set_once.$initial_person_info.r, '$direct');
+});
+
 test('PostHog SDK routing token survives before_send, but forged application tokens and credentials never do', () => {
     const f = fixture(), product = f.load('lib/telemetry.js'); product.initTelemetry();
     assert.equal(f.events[0].properties.token, 'fixture-project', 'the real SDK envelope needs its public routing key');
