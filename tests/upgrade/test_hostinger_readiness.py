@@ -122,7 +122,7 @@ class ReadinessTests(unittest.TestCase):
 
     def test_current_contract_has_all_milestones_without_runtime_claims(self) -> None:
         report = readiness.assessment(self.root)
-        self.assertEqual(len(report["pieces"]), 11)
+        self.assertEqual(len(report["pieces"]), 12)
         self.assertTrue(
             all(row["runtime_state"] == "UNMEASURED" for row in report["pieces"])
         )
@@ -519,7 +519,7 @@ class AcceptanceTests(unittest.TestCase):
         )
         self.assertEqual(
             sum(2 if check.level == "native" else 1 for check in checks.CHECKS.values()),
-            18,
+            22,
         )
         self.assertEqual(checks.runtime_version(self.root, "compose"), "0.28.3")
         with self.assertRaises(ValueError):
