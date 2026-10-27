@@ -8,9 +8,9 @@
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-16
-# Depends:     docker-compose.yml, apps/pocketbase/.pocketbase-version, scripts/discordbot/doctor.py, docs/discord-bot.md, docs/mission-research.md, docs/private-dossiers.md, .github/workflows/pr-governance.yml
+# Depends:     docker-compose.yml, apps/pocketbase/.pocketbase-version, scripts/discordbot/doctor.py, docs/discord-bot.md, docs/mission-research.md, docs/private-dossiers.md, .gitlab/ci/source-validation.yml
 # EnumType:    Doc
-# EnumEdges:   CONSUMES docker-compose.yml; CONSUMES apps/pocketbase/.pocketbase-version; CONSUMES scripts/discordbot/doctor.py; CONSUMES docs/discord-bot.md; CONSUMES docs/mission-research.md; CONSUMES docs/private-dossiers.md; CONSUMES .github/workflows/pr-governance.yml
+# EnumEdges:   CONSUMES docker-compose.yml; CONSUMES apps/pocketbase/.pocketbase-version; CONSUMES scripts/discordbot/doctor.py; CONSUMES docs/discord-bot.md; CONSUMES docs/mission-research.md; CONSUMES docs/private-dossiers.md; CONSUMES .gitlab/ci/source-validation.yml
 # DAG Node:    none
 # Intent:      Separate inspected local startup contracts from unverified bot activation and identify the evidence the receiving runtime must supply.
 # ───────────────────────────────────────────────────────────────

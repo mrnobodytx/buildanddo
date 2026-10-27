@@ -14,6 +14,7 @@
 // Intent:      Diagnose existing mail delivery failures without logging messages, recipient data or upstream payloads.
 // ----------------------------------------------------------------
 
+/// <reference path="../pb_data/types.d.ts" />
 // Account mail goes out through the first of: PocketBase SMTP when it is enabled
 // in settings; Customer.io when BUILDER_MAILER_PROVIDER=customerio
 // (customerio-mail.js); otherwise the builder mailer API below.

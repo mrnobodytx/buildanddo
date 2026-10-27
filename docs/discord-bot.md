@@ -8,9 +8,9 @@
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-15
-# Depends:     scripts/discordbot/bot.py, scripts/discordbot/service.py, scripts/discordbot/grading.py, apps/pocketbase/pb_hooks/community-quiz.pb.js, apps/web/tools/generate-community.mjs, tests/upgrade/check_discordbot.py, .github/workflows/pr-governance.yml, docs/mission-research.md, scripts/discordbot/research.py, docs/private-dossiers.md, docs/discord-activation.md
+# Depends:     scripts/discordbot/bot.py, scripts/discordbot/service.py, scripts/discordbot/grading.py, apps/pocketbase/pb_hooks/community-quiz.pb.js, apps/web/tools/generate-community.mjs, tests/upgrade/check_discordbot.py, .gitlab/ci/source-validation.yml, docs/mission-research.md, scripts/discordbot/research.py, docs/private-dossiers.md, docs/discord-activation.md
 # EnumType:    Doc
-# EnumEdges:   CONSUMES scripts/discordbot/bot.py; CONSUMES scripts/discordbot/service.py; CONSUMES scripts/discordbot/grading.py; CONSUMES apps/pocketbase/pb_hooks/community-quiz.pb.js; CONSUMES apps/web/tools/generate-community.mjs; VERIFIED_BY tests/upgrade/check_discordbot.py; CONSUMES .github/workflows/pr-governance.yml; CONSUMES docs/mission-research.md; CONSUMES scripts/discordbot/research.py; CONSUMES docs/private-dossiers.md; CONSUMES docs/discord-activation.md
+# EnumEdges:   CONSUMES scripts/discordbot/bot.py; CONSUMES scripts/discordbot/service.py; CONSUMES scripts/discordbot/grading.py; CONSUMES apps/pocketbase/pb_hooks/community-quiz.pb.js; CONSUMES apps/web/tools/generate-community.mjs; VERIFIED_BY tests/upgrade/check_discordbot.py; CONSUMES .gitlab/ci/source-validation.yml; CONSUMES docs/mission-research.md; CONSUMES scripts/discordbot/research.py; CONSUMES docs/private-dossiers.md; CONSUMES docs/discord-activation.md
 # DAG Node:    none
 # Intent:      Explain the implemented Discord experience, its real public data sources and the remaining private activation requirements.
 # ───────────────────────────────────────────────────────────────

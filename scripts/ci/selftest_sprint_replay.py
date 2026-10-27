@@ -92,7 +92,7 @@ class TheControl(unittest.TestCase):
         report = R.replay(state, _ctx(Path(".")))
         self.assertEqual(report["claimed_pct"], 100.0)   # the old rule: sprint complete
         self.assertEqual(report["replayed_pct"], 0.0)    # the replay: nothing was shown
-        self.assertEqual(report["counts"][R.UNCHECKED], 11)
+        self.assertEqual(report["counts"][R.UNCHECKED], len(sprint_cycle.MILESTONES))
 
 
 class ClaimExtraction(unittest.TestCase):
@@ -249,7 +249,7 @@ class DetectsRealRot(unittest.TestCase):
 
     def test_an_unverified_milestone_is_reported_as_such_not_as_rot(self):
         report = R.replay(_ledger([]), _ctx(Path(".")))
-        self.assertEqual(report["counts"][R.NOT_VERIFIED], 11)
+        self.assertEqual(report["counts"][R.NOT_VERIFIED], len(sprint_cycle.MILESTONES))
         self.assertEqual(report["counts"][R.ROTTED_V], 0)
 
 

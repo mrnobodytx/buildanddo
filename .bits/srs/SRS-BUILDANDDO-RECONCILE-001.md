@@ -172,6 +172,16 @@ PostHog identity, the URL scrubber and the OCN seat session's capture.
 
     `test_system_growth` is left alone: `growth.lock.json` is refreshed on `main` by the owner's choice (GROWTH-001).
 
+17. **R17 - after #124.** #124 landed the same convergence on `main` on 2026-10-27, with its own resolutions,
+    and `main` became GitLab-only CI. This pull request then took `main` and keeps `main`'s form wherever it
+    covers the same ground: the submission gate and its tests (#125's floor of eleven checkpoints), the readiness
+    tests, the scrubber, the mailer, the release controller and the dispatch history. It still carries what
+    `main` lacks:
+    - PostHog starts: `initTelemetry` reads `posthog.config`, because posthog-js has no `get_config()`. The
+      real-SDK test that shows it stays, and the fakes no longer offer the method.
+    - R15's seat session: no egress lookup, no `egress_ip`, and the agent markers on the receipt and refusal.
+    - R16's web test repairs: TalkToBuddi, WorkflowRuns, DailyEditionPage and the TutorialsPage mock.
+
 ## Out of scope
 
 - Production, and any server change other than the staging-only deploy in R8.

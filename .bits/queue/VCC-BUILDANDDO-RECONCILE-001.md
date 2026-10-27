@@ -35,10 +35,10 @@
 | 5 | Repository gates | `submission_readiness.py --check`, `verify_public_boundary.py` | done |
 | 6 | Pull request to the staging line, merged only on the operator's OK | the gates again on a trial merge into the current head | done: #106, merged as `ea97e3b` |
 | 7 | Staging-only deploy of web and backend | readback from staging | done: staging serves `ea97e3b`; backend at 109 migrations |
-| 8 | Converge main after #105 by R14, as a pull request to the staging line | `git merge-base --is-ancestor origin/main HEAD`; the suites and gates again | done: #107, merged as `def2bfb` |
-| 9 | Pull request taking the staging line into `main`, merged only on the operator's OK | GitHub reports it mergeable without conflicts | done: #108, merged as `21ffb6b` |
-| 10 | Follow-up merge by R15: the staging line after #110, #111 and #117 into `main`, merged only on the operator's OK | `git merge-base --is-ancestor <staging line> HEAD`; no conflict markers; the touched suites and the gates | in progress: staging line at `5805bc9`, main at `c540085` |
-| 11 | Repair by R16 the ten tests that failed on both parents, in the same pull request | `python -m unittest tests.upgrade.test_hostinger_readiness tests.upgrade.test_submission_readiness`; `npx vitest run` in `apps/web` | in progress |
+| 8 | Converge main after #105 by R14, as a pull request to the staging line | `git merge-base --is-ancestor origin/main HEAD`; the suites and gates again | done 2026-10-01: PR #124 (`c-one/SRS-BUILDANDDO-RECONCILE-001-trunk-into-main-20261001`, merge commit `0459a53`) merges the line (`5805bc9`) into main (`c540085`); opened against `main` because the line was the smaller side (31 vs 63 commits), so the line fast-forwards to the merge; see `.bits/handoffs/2026-10-01-c-one-reconverge-staging-line-into-main.md` |
+| 9 | Pull request taking the staging line into `main`, merged only on the operator's OK | GitHub reports it mergeable without conflicts | pending: merge PR #124, then fast-forward the line to the merge commit (push, no force) and deploy staging from it |
+| 10 | Follow-up to #124 by R15/R17: PostHog init without `get_config` and its real-SDK test; the seat session without an egress lookup | `npx vitest run src/lib/__tests__/telemetry.navigation.test.js` in `apps/web`; `python -m unittest tests.upgrade.test_ocn_seat_session` | in progress: PR #123 |
+| 11 | Repair by R16/R17 the web tests that fail on `main` | `npx vitest run` in `apps/web` exits 0 | in progress: PR #123 |
 
 ## Evidence (2026-09-24, release workstation, Windows, LF checkout)
 
@@ -185,3 +185,14 @@ converged sources: 127 of 127, Node 24.20.0. The record follows main's model and
 - The readiness refresh vouches for every commit in the merged tree. That includes main's commits and any
   commit pushed straight to the staging line since the last refresh, so the operator signs off before the merge.
 - No production deploy. The staging deploy uses the staging-only path, after the operator merges.
+
+## Evidence (2026-10-01, release workstation, Windows, LF clone)
+
+Re-converge after the lines split again post #105/#108: main `c540085` (63 commits since the merge-base `82df1fb`)
+and the staging line `5805bc9` (31). 12 conflicts, resolved block by block under rules R1-R6 in the handoff. Gates
+on the merged tree: lint, build, boundary, semantic_twin, dependency_lock, the three locks, submission readiness,
+public boundary, redaction, README and changelog all PASS. Node 1530/7 against main's 1516/7 (same 7). Vitest 972/4
+against main's 972/4 (3 shared; the fourth is order-dependent on each side and passes alone). Python 1587 ran,
+28 failures + 48 errors + 1 loader error, against main's 1425 ran: 28 failures, 48 errors, 2 skipped; the same names, and the inner `_FailedTest.test_development_fixture` loader error appears on both. AEGIS clean on every hand-touched file.
+Pre-existing findings are listed in the handoff, not fixed here.
+PR #124 against `main`, merge commit `0459a53`, label `actor:agent`.

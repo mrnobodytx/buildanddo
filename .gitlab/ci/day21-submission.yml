@@ -8,9 +8,9 @@
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-21
-# Depends:     tools/day21/day21_acceptance.py, scripts/ci/day21_submission.py, scripts/ci/hostinger_readiness.py, scripts/ci/submission_readiness.py, scripts/ci/verify_public_boundary.py, .gitlab/ci/source-validation.yml
+# Depends:     scripts/ci/gitlab_plane.py, tools/day21/day21_acceptance.py, scripts/ci/day21_submission.py, scripts/ci/hostinger_readiness.py, scripts/ci/submission_readiness.py, scripts/ci/verify_public_boundary.py, .gitlab/ci/source-validation.yml
 # EnumType:    Workflow
-# EnumEdges:   CONSUMES tools/day21/day21_acceptance.py; CONSUMES scripts/ci/day21_submission.py; CONSUMES scripts/ci/hostinger_readiness.py; CONSUMES scripts/ci/submission_readiness.py; CONSUMES scripts/ci/verify_public_boundary.py; CONSUMES .gitlab/ci/source-validation.yml
+# EnumEdges:   CONSUMES scripts/ci/gitlab_plane.py; CONSUMES tools/day21/day21_acceptance.py; CONSUMES scripts/ci/day21_submission.py; CONSUMES scripts/ci/hostinger_readiness.py; CONSUMES scripts/ci/submission_readiness.py; CONSUMES scripts/ci/verify_public_boundary.py; CONSUMES .gitlab/ci/source-validation.yml
 # Intent:      Execute and retain one complete candidate-bound acceptance matrix on the GitLab shell runner before submission evidence review.
 # ───────────────────────────────────────────────────────────────
 
@@ -21,13 +21,17 @@ include:
 
 day21_governance:
   stage: verify
+  interruptible: true
   tags: [buildanddo]
   script:
     - python3 scripts/ci/hostinger_readiness.py --check
     - python3 scripts/ci/submission_readiness.py --check
+    # review/pr-N carries a public pull request: export its record bound to this exact
+    # head so the actor-label gate reads GitHub's labels. A no-op on every other ref.
+    - python3 scripts/ci/gitlab_plane.py review-event
     - python3 scripts/ci/verify_public_boundary.py --gitlab-ci
     - python3 scripts/ci/agent_context.py --check
-    - python3 -m unittest tests.upgrade.test_public_boundary tests.upgrade.test_gitlab_acceptance tests.upgrade.test_hostinger_readiness tests.upgrade.test_hostinger_replay tests.upgrade.test_submission_readiness tests.upgrade.test_day21_acceptance tests.upgrade.test_day21_submission
+    - python3 -m unittest tests.upgrade.test_public_boundary tests.upgrade.test_gitlab_acceptance tests.upgrade.test_gitlab_plane tests.upgrade.test_hostinger_readiness tests.upgrade.test_hostinger_replay tests.upgrade.test_submission_readiness tests.upgrade.test_day21_acceptance tests.upgrade.test_day21_submission
     - python3 tests/upgrade/check_sprint_execution.py
   artifacts:
     when: always
@@ -39,7 +43,10 @@ day21_governance:
   rules:
     - if: '$DAY21_FULL_ACCEPTANCE == "1" || $DAY21_COMPILE_SUBMISSION == "1"'
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "external_pull_request_event"'
-    - if: '$CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH =~ /^sprint\//'
+    - if: '$CI_PIPELINE_SOURCE != "schedule" && $CI_COMMIT_BRANCH =~ /^review\//'
+      variables:
+        BUILDANDDO_GITHUB_PR_EVENT: state/ci/github-pr-event.json
+    - if: '$CI_PIPELINE_SOURCE != "schedule" && ($CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH == "buildanddo-source" || $CI_COMMIT_BRANCH =~ /^(sprint|review)\//)'
     - when: never
 
 # Run all eight source/build checks and five native checks for EACH declared
@@ -48,6 +55,7 @@ day21_governance:
 # isolated interpreter, then provisions the declared disposable binaries.
 day21_full_acceptance:
   stage: test
+  interruptible: true
   tags: [buildanddo]
   before_script:
     - node --eval "require('node:assert/strict').equal(process.versions.node.split('.')[0], require('node:fs').readFileSync('.nvmrc', 'utf8').trim())"
@@ -68,7 +76,7 @@ day21_full_acceptance:
   rules:
     - if: '$DAY21_FULL_ACCEPTANCE == "1" || $DAY21_COMPILE_SUBMISSION == "1"'
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "external_pull_request_event"'
-    - if: '$CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH =~ /^sprint\//'
+    - if: '$CI_PIPELINE_SOURCE != "schedule" && ($CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH == "buildanddo-source" || $CI_COMMIT_BRANCH =~ /^(sprint|review)\//)'
     - when: never
 
 # The receiving owner must also supply candidate-matched deployment, browser,

@@ -1437,6 +1437,13 @@ def deploy_environment(root: Path, repo: Path, env_name: str, *, ack: str) -> di
     artifact = Path(str(release_doc.get("artifact_dir") or repo / ".citadel-release" / "artifact"))
     if not artifact.is_dir() or not re.fullmatch(r"[0-9a-fA-F]{40,64}", sha):
         raise ReleaseError("verified release artifact is missing; run build first")
+    telemetry = release_doc.get("telemetry")
+    if (release_doc.get("state") != "PASS" or not isinstance(telemetry, dict) or
+            telemetry.get("commit_sha") != sha or not telemetry.get("manifest_sha256")):
+        raise ReleaseError("release lacks a pinned telemetry build contract; rebuild before deployment")
+    admission = admit_release_telemetry(repo, artifact, telemetry, env_name)
+    if artifact_manifest(artifact).get("tree_sha256") != (release_doc.get("manifest") or {}).get("tree_sha256"):
+        raise ReleaseError("release artifact changed after build; no copy authorized")
     # A WEB BUILD WITHOUT ITS TELEMETRY KEYS DEPLOYS CLEANLY AND THEN REPORTS NOTHING. This
     # controller builds with whatever apps/web/.env sits in the checkout and never writes that file,
     # so a checkout without it yields a keyless bundle. Measured 2026-09-24: production served one
@@ -1446,13 +1453,6 @@ def deploy_environment(root: Path, repo: Path, env_name: str, *, ack: str) -> di
     telemetry_keys = bundle_telemetry(repo, artifact)
     if not telemetry_keys.get("ok"):
         raise ReleaseError(f"refusing to deploy to {env_name}: {telemetry_keys.get('reason') or 'telemetry check failed'}")
-    telemetry = release_doc.get("telemetry")
-    if (release_doc.get("state") != "PASS" or not isinstance(telemetry, dict) or
-            telemetry.get("commit_sha") != sha or not telemetry.get("manifest_sha256")):
-        raise ReleaseError("release lacks a pinned telemetry build contract; rebuild before deployment")
-    admission = admit_release_telemetry(repo, artifact, telemetry, env_name)
-    if artifact_manifest(artifact).get("tree_sha256") != (release_doc.get("manifest") or {}).get("tree_sha256"):
-        raise ReleaseError("release artifact changed after build; no copy authorized")
     prefix = f"BUILDANDDO_{env_name.upper()}"
     mode = os.environ.get(prefix + "_DEPLOY_MODE", "").strip().lower()
     if mode == "local_webroot":

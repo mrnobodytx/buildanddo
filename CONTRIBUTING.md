@@ -7,8 +7,10 @@ enforced by a real check, not just a convention people are trusted to follow.
 
 - **GitHub** (`mrnobodytx/buildanddo`, this repo) — the public collaboration and
   submission plane. Open issues and PRs here.
-- **Private GitLab mirror** — internal release/golden pipeline, not public, and
-  not something contributors need access to.
+- **Private GitLab mirror** — the only CI, plus the internal release/golden
+  pipeline. It is not public and contributors do not need access: it pulls each
+  PR head itself and reports back on the PR as the `gitlab-ci/buildanddo` status.
+  PRs from forks are mirrored by a maintainer before they run.
 
 A PR merged here goes through the real staging → production pipeline described
 below; nothing bypasses it.

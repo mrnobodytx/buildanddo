@@ -9,10 +9,10 @@
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-10
-# Depends:     AGENTS.md, .bits/context.md, .bits/srs_registry.yml, scripts/ci/gitlab_ci.py
+# Depends:     AGENTS.md, .bits/context.md, .bits/srs_registry.yml, scripts/ci/gitlab_ci.py, scripts/ci/gitlab_plane.py
 # EnumType:    Service
 # EnumEdges:   CONSUMES .bits/srs_registry.yml; PRODUCES .bits/context.lock.json;
-#              GATES bits/SRS-* branches; VALIDATES .github/workflows; CONSUMES scripts/ci/hostinger_readiness.py;
+#              GATES bits/SRS-* branches; VALIDATES .gitlab/ci; CONSUMES scripts/ci/hostinger_readiness.py;
 #              CONSUMES scripts/ci/gitlab_ci.py; VALIDATES .gitlab/ci/day21-submission.yml
 # Intent:      Give every agent turn the same measured view of the repo instead of a
 #              hand-written brief that silently goes stale.
@@ -46,6 +46,7 @@ if str(_MODULE_ROOT) not in sys.path:
 from scripts.ci.hostinger_checks import CHECKS  # noqa: E402
 from scripts.ci.hostinger_readiness import ReadinessError, check_review  # noqa: E402
 from scripts.ci import gitlab_ci  # noqa: E402
+from scripts.ci import gitlab_plane  # noqa: E402
 
 LOCK_PATH = ".bits/context.lock.json"
 REGISTRY_PATH = ".bits/srs_registry.yml"
@@ -202,6 +203,9 @@ def gitlab_scripts(commands: list[str]) -> set[str]:
             names = [name for name, check in CHECKS.items()
                      if not ("--source-only" in argv and check.level == "native")
                      and not ("--native-only" in argv and check.level != "native")]
+        elif argv[1] == "scripts/ci/gitlab_plane.py" and len(argv) > 2:
+            # The plane's subcommands run fixed scripts; count them as wired with it.
+            scripts.update(gitlab_plane.WRAPPED.get(argv[2], ()))
         elif argv[1] == "scripts/ci/hostinger_readiness.py" and "--run" in argv:
             index = argv.index("--run") + 1
             if index < len(argv):
@@ -286,6 +290,14 @@ def collect_findings(root: Path, inventory: dict, registry: list[dict]) -> list[
             srs = "SRS-BUILDANDDO-AGENTCTX-001" if name.startswith(".bits/") else ""
             add("medium", "governance", f"{name} is declared by repo convention but absent",
                 "AGENTS.md and .bits/context.md name it as required reading", srs)
+
+    # SRS-BUILDANDDO-GITLAB-ONLY-CI-001: GitHub runs nothing. A workflow file there is
+    # either dead (Actions is off) or a second CI nobody reviews; both belong in GitLab.
+    for pipeline in inventory["pipelines"]:
+        if pipeline["provider"] == "github":
+            add("high", "ci", f"{pipeline['file']} is a GitHub Actions {pipeline['kind']}; GitLab is the only CI",
+                "GitHub Actions was retired; move the job into .gitlab/ci and delete the file",
+                "SRS-BUILDANDDO-GITLAB-ONLY-CI-001")
 
     github_runs: dict[str, list[str]] = {}
     for pipeline in inventory["pipelines"]:

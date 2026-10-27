@@ -15,7 +15,7 @@
         ".bits/context.md",
         ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md",
         ".bits/queue/VCC-BUILDANDDO-UPGRADE-001.md",
-        ".github/workflows/pr-governance.yml",
+        ".gitlab/ci/github-plane.yml",
         "scripts/ci",
         "package.json",
         "package-lock.json",
@@ -35,7 +35,7 @@
         "services/praxis_evidence",
         "apps/web/tools/release-telemetry.mjs",
         "docs/telemetry-coverage.md",
-        ".github/workflows/evidence-epoch.yml",
+        "scripts/ci/gitlab_plane.py",
         "scripts/ci/candidate_manifest.py",
         "tests/upgrade/check_work_exchange.py"
       ],

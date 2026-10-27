@@ -12,7 +12,7 @@
 # EnumType:    Service
 # EnumEdges:   CONSUMES git history; PRODUCES CHANGELOG.md;
 #              PRODUCES state/changelog/latest.json;
-#              GATES .github/workflows/pr-governance.yml
+#              GATES .gitlab/ci/github-plane.yml
 # Intent:      Derive the changelog from the commits that actually landed, and
 #              emit the same facts as machine-readable release telemetry.
 # ───────────────────────────────────────────────────────────────

@@ -13,8 +13,7 @@
 #              .bits/queue
 # EnumType:    Service
 # EnumEdges:   PRODUCES .bits/growth.lock.json; CONSUMES .bits/srs_registry.yml;
-#              CONSUMES .bits/queue; GATES .github/workflows/growth.yml;
-#              GATES .github/workflows/pr-governance.yml; GATES .gitlab-ci.yml
+#              CONSUMES .bits/queue; GATES .gitlab/ci/github-plane.yml; GATES .gitlab-ci.yml
 # Intent:      Record how every system develops, measured from the repository alone, so growth
 #              is a history anyone can replay rather than a claim.
 # ───────────────────────────────────────────────────────────────
@@ -25,7 +24,7 @@ growing: size by language, tests, READMEs and CGRF coverage per system, plus
 how far every SRS and dispatch has progressed. The lock carries no timestamp
 and no commit id, because it cannot contain its own commit. The growth history
 is the git history of .bits/growth.lock.json, one point per merge to main,
-written by .github/workflows/growth.yml.
+written by the main_writeback GitLab job (.gitlab/ci/github-plane.yml).
 
     python scripts/ci/system_growth.py               # human summary
     python scripts/ci/system_growth.py --write       # refresh .bits/growth.lock.json
