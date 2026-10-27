@@ -1,7 +1,7 @@
 // --- CGRF Header ------------------------------------------------
 // File:        apps/web/src/hooks/__tests__/useClassroomMedia.test.jsx
 // Stage:       08_TEST
-// SRS:         SRS-BUILDANDDO-UPGRADE-001
+// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-REALTIME-TURN-001
 // CAPS:        pending
 // CK:          pending
 // Dispatch:    VCC-BUILDANDDO-UPGRADE-001
@@ -32,6 +32,7 @@ vi.mock('@/lib/observability/runtime', () => ({ reportAction: vi.fn(), readFaile
 vi.mock('@/lib/telemetry', () => ({ trackEvent: vi.fn() }));
 vi.mock('@/lib/classroomRealtime', () => ({
     PRESENCE_POLL_MS: 5000, classroomHealth: vi.fn(), joinClassroom: vi.fn(),
+    classroomIceServers: vi.fn(async () => ({ iceServers: [{ urls: 'stun:stun.cloudflare.com:3478' }], turn: false, reason: 'fixture' })),
     createPresenceTracker: vi.fn(), startPresenceHeartbeat: vi.fn(), inboundAudioStats: vi.fn(),
 }));
 
@@ -76,6 +77,7 @@ function invalidate(view, boundary) {
 
 beforeEach(() => {
     vi.resetAllMocks();
+    realtime.classroomIceServers.mockResolvedValue({ iceServers: [{ urls: 'stun:stun.cloudflare.com:3478' }], turn: false, reason: 'fixture' });
     const unexpected = () => { throw new Error('Unexpected browser transport or device access in a stubbed hook test.'); };
     vi.stubGlobal('fetch', vi.fn(unexpected));
     vi.stubGlobal('RTCPeerConnection', vi.fn(unexpected));
@@ -392,6 +394,42 @@ describe('classroom media lifetime', () => {
         expect(mediaEvents('join.started')).toHaveLength(1);
         expect(mediaEvents('join.result')).toHaveLength(1);
         expect(mediaEvents('leave')).toHaveLength(1);
+    });
+});
+
+describe('classroom media ICE servers (SRS-BUILDANDDO-REALTIME-TURN-001)', () => {
+    const turn = [{ urls: ['turns:turn.cloudflare.com:443?transport=tcp'], username: 'u', credential: 'c' }];
+
+    it('prefetches ICE for the scope and hands it to the join without delaying the synchronous claim', async () => {
+        realtime.classroomIceServers.mockResolvedValue({ iceServers: turn, turn: true, reason: '' });
+        realtime.joinClassroom.mockReturnValue(deferred().promise);
+        const view = mount();
+        await act(async () => {});
+        expect(realtime.classroomIceServers).toHaveBeenCalledWith('synthetic');
+        act(() => { view.result.current.join('watch'); });
+        expect(realtime.joinClassroom).toHaveBeenCalledTimes(1);
+        expect(realtime.joinClassroom.mock.calls[0][0].iceServers).toEqual(turn);
+    });
+
+    it('joins STUN-only (no iceServers) when the prefetch has not answered or failed', async () => {
+        realtime.classroomIceServers.mockReturnValue(new Promise(() => {}));
+        realtime.joinClassroom.mockReturnValue(deferred().promise);
+        const view = mount();
+        await act(async () => {});
+        act(() => { view.result.current.join('watch'); });
+        expect(realtime.joinClassroom.mock.calls[0][0].iceServers).toBeUndefined();
+    });
+
+    it('does not carry ICE servers fetched for one room into another', async () => {
+        realtime.classroomIceServers.mockResolvedValueOnce({ iceServers: turn, turn: true, reason: '' })
+            .mockReturnValue(new Promise(() => {}));
+        realtime.joinClassroom.mockReturnValue(deferred().promise);
+        const view = mount();
+        await act(async () => {});
+        view.rerender({ roomId: 'room2', enabled: true });
+        await act(async () => {});
+        act(() => { view.result.current.join('watch'); });
+        expect(realtime.joinClassroom.mock.calls[0][0].iceServers).toBeUndefined();
     });
 });
 

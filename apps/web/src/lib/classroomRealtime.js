@@ -1,7 +1,7 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/src/lib/classroomRealtime.js
 // Stage:       07_BUILD
-// SRS:         SRS-BUILDANDDO-UPGRADE-001
+// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-REALTIME-TURN-001
 // CAPS:        pending
 // CK:          pending
 // Dispatch:    VCC-BUILDANDDO-UPGRADE-001
@@ -69,10 +69,42 @@ export const API = {
     presence: `${BACKEND_BASE}/api/classroom/presence`,
     presenceHealth: `${BACKEND_BASE}/api/classroom/presence/health`,
     health: `${BACKEND_BASE}/api/classroom/health`,
+    ice: `${BACKEND_BASE}/api/classroom/ice`,
 };
 
-/** Cloudflare Realtime requires a STUN server for candidate gathering. */
-const RTC_CONFIG = { iceServers: [{ urls: 'stun:stun.cloudflare.com:3478' }], bundlePolicy: 'max-bundle' };
+/** Cloudflare Realtime requires a STUN server for candidate gathering. This is the
+ *  default and the fallback; a join given TURN servers uses those instead. */
+const STUN_ONLY = Object.freeze([{ urls: 'stun:stun.cloudflare.com:3478' }]);
+const RTC_CONFIG = { iceServers: STUN_ONLY, bundlePolicy: 'max-bundle' };
+
+/** Keeps only well-formed ICE server entries; anything else falls back to STUN. */
+function usableIceServers(list) {
+    if (!Array.isArray(list)) return null;
+    const kept = list.filter((entry) => {
+        const urls = Array.isArray(entry?.urls) ? entry.urls : [entry?.urls];
+        return urls.length > 0 && urls.every((u) => typeof u === 'string' && /^(stun|turns?):/.test(u));
+    });
+    return kept.length ? kept : null;
+}
+
+/**
+ * Short-lived ICE servers for one join (SRS-BUILDANDDO-REALTIME-TURN-001). The backend mints
+ * Cloudflare TURN credentials when configured, so a viewer behind symmetric NAT or a firewall
+ * that blocks UDP can still reach the SFU. This never throws and never blocks a join: any
+ * failure answers STUN-only with the reason, which is exactly the pre-TURN behaviour.
+ * @param {string} [authToken] PocketBase auth token.
+ * @returns {Promise<{iceServers: object[], turn: boolean, reason: string}>}
+ */
+export async function classroomIceServers(authToken) {
+    try {
+        const json = await send('GET', API.ice, undefined, authToken);
+        const servers = usableIceServers(json.iceServers);
+        if (!servers) return { iceServers: STUN_ONLY, turn: false, reason: json.reason || 'ice_unreadable' };
+        return { iceServers: servers, turn: json.turn === true, reason: json.reason || '' };
+    } catch (err) {
+        return { iceServers: STUN_ONLY, turn: false, reason: `ice_request_failed:${err?.status || 'network'}` };
+    }
+}
 
 /** A presence row is refreshed on this cadence and lives this long. The hook caps
  *  the TTL at 120 s, so a heartbeat that misses three beats lets the row lapse. */
@@ -292,6 +324,7 @@ export async function inboundAudioStats(pc) {
  * @param {(close: () => void) => void} [opts.onCleanup] Register immediate local cancellation.
  * @param {(state: string) => void} [opts.onConnectionState] Observe actual peer state, not signalling acceptance.
  * @param {(error: Error) => void} [opts.onDeviceError] Observe combined microphone/camera capture failure.
+ * @param {object[]} [opts.iceServers] From classroomIceServers(); omitted or malformed means STUN only.
  * @returns {Promise<object>} handle with { sessionId, pc, tracks, remoteStream, mayPublish, iceComplete, close() }
  */
 export async function joinClassroom(opts = {}) {
@@ -303,7 +336,8 @@ export async function joinClassroom(opts = {}) {
         throw new Error('WebRTC unavailable in this browser');
     }
 
-    const pc = new RTCPeerConnection(RTC_CONFIG);
+    const servers = usableIceServers(opts.iceServers);
+    const pc = new RTCPeerConnection(servers ? { ...RTC_CONFIG, iceServers: servers } : RTC_CONFIG);
     const localTracks = [];
     let stream = opts.localStream || null;
     // Inbound tracks land here so the page has one object to hand an <audio>/<video>
