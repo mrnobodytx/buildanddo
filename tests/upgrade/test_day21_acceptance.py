@@ -217,6 +217,13 @@ class AcceptanceRunnerTests(unittest.TestCase):
         pip = next(argv for argv in commands if "pip" in argv)
         self.assertIn("foundry/shared/requirements.txt", pip)
 
+    def test_the_site_is_built_before_the_python_suite_scans_it(self) -> None:
+        order = list(runner.SOURCE_CHECKS)
+        self.assertLess(order.index("web_build"), order.index("source_python"))
+        self.assertEqual(sorted(order), sorted(
+            name for name, check in runner.checks.CHECKS.items() if check.level != "native"))
+        self.assertEqual(runner.build_before_python(("a", "b")), ("a", "b"))
+
     def test_source_checks_find_python_as_the_acceptance_interpreter(self) -> None:
         seen = []
 

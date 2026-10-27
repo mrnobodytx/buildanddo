@@ -20,9 +20,10 @@ import { cleanup, configure } from '@testing-library/react';
 import { afterEach, beforeEach, vi } from 'vitest';
 
 // findBy*/waitFor give up after 1 s by default. On a loaded GitLab shell runner a render that
-// takes 0.3 s locally can take several seconds, and those queries failed while the same files
-// pass unchanged locally (job 105160). Slower is not wrong; the per-test limit still applies.
-configure({ asyncUtilTimeout: 5_000 });
+// takes 0.3 s locally can take several seconds: 13 files failed at 1 s (job 105160) and one still
+// failed at 5 s (job 6369) while passing locally. Slower is not wrong; the 30 s test limit still
+// fails anything that hangs.
+configure({ asyncUtilTimeout: 15_000 });
 
 /* jsdom gaps -------------------------------------------------------------- */
 /* Each polyfill below exists because a Radix primitive the workspace pages   */

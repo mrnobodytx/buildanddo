@@ -39,9 +39,22 @@ from scripts.ci import hostinger_checks as checks  # noqa: E402
 from scripts.ci.day21_submission import Day21Error, export_acceptance  # noqa: E402
 from scripts.ci.hostinger_readiness import ReadinessError  # noqa: E402
 
-SOURCE_CHECKS = tuple(
+def build_before_python(names: tuple[str, ...]) -> tuple[str, ...]:
+    """Run the web build ahead of the Python suite.
+
+    The Python suite scans the built site for leaked machine names and skips that test when no
+    build exists. Declared order ran web_build afterwards, so a fresh runner always skipped it and
+    a skip turns source_python into HOLD (job 6369, 2026-10-27)."""
+    ordered = [name for name in names if name != "web_build"]
+    if "web_build" in names:
+        at = ordered.index("source_python") if "source_python" in ordered else len(ordered)
+        ordered.insert(at, "web_build")
+    return tuple(ordered)
+
+
+SOURCE_CHECKS = build_before_python(tuple(
     name for name, check in checks.CHECKS.items() if check.level != "native"
-)
+))
 NATIVE_CHECKS = tuple(
     name for name, check in checks.CHECKS.items() if check.level == "native"
 )
