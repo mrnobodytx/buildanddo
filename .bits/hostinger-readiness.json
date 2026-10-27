@@ -16,6 +16,7 @@
         ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md",
         ".bits/queue/VCC-BUILDANDDO-UPGRADE-001.md",
         ".gitlab/ci/github-plane.yml",
+        ".gitlab/ci/release.yml",
         "scripts/ci",
         "package.json",
         "package-lock.json",
