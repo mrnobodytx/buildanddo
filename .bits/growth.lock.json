@@ -312,7 +312,7 @@
     "pocketbase_hooks": 31,
     "pocketbase_migrations": 67,
     "readmes": 50,
-    "tracked_files": 1874
+    "tracked_files": 1876
   },
   "systems": {
     "apps/career": {
@@ -493,19 +493,19 @@
       "test_files": 7
     },
     "apps/web": {
-      "cgrf_coverage": 0.7543,
-      "cgrf_files": 350,
-      "files": 502,
+      "cgrf_coverage": 0.7554,
+      "cgrf_files": 352,
+      "files": 504,
       "lines": {
         "css": 1101,
         "data": 1449,
         "html": 22,
-        "javascript": 73689,
+        "javascript": 73846,
         "markdown": 129
       },
       "readme": true,
-      "source_files": 464,
-      "source_lines": 74812,
+      "source_files": 466,
+      "source_lines": 74969,
       "srs_codes": [
         "SRS-BUILDANDDO-BUDDI-001",
         "SRS-BUILDANDDO-BUDDI-003",
@@ -530,7 +530,7 @@
         "SRS-BUILDANDDO-WITNESS-001",
         "SRS-BUILDANDDO-WORKSPACE-001"
       ],
-      "test_files": 111
+      "test_files": 112
     },
     "apps/world_twin": {
       "cgrf_coverage": 1.0,
@@ -745,13 +745,13 @@
     }
   },
   "totals": {
-    "cgrf_coverage": 0.838,
-    "files": 1101,
-    "source_lines": 179278,
+    "cgrf_coverage": 0.8384,
+    "files": 1103,
+    "source_lines": 179435,
     "systems": 23,
     "systems_with_readme": 4,
     "systems_with_tests": 22,
-    "test_files": 236,
+    "test_files": 237,
     "test_files_unattributed": 124
   }
 }
