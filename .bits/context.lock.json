@@ -875,7 +875,7 @@
       "wired_into_ci": true
     }
   ],
-  "generated_at": "2026-10-27T20:28:25.107009+00:00",
+  "generated_at": "2026-10-27T20:29:12.751025+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -1516,7 +1516,7 @@
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 1890,
+    "tracked_files": 1888,
     "web_source_files": 386
   },
   "schema_version": 1,
@@ -1596,7 +1596,7 @@
         "why": "Competition readiness requires an evidence-backed learning-through-work journey, a reproducible replay and actual submission criteria."
       }
     ],
-    "source_sha256": "f42a600d5f364148a029a0096a4f63ad7688b37558e390b58f142154a8940d67",
+    "source_sha256": "80044c6490317c0952077c79dafbbd234ecbd22c7842fa4d46df721ebd6500e5",
     "state": "PASS"
   },
   "summary": {
