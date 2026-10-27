@@ -1086,7 +1086,7 @@
     "scripts/ci/public_redaction.py": "d540609ef2b4af1555f7c2a492e156085fb2c041a59ddacd995970da2f37c87d",
     "scripts/ci/readme_check.py": "3ebb9d678f1ce9ed5263668912c4564f3e2a89a9ac9d6e6f20679b5c13a5450c",
     "scripts/ci/release.mjs": "d5402ea7c93878c9f59bcddd606b86addaa892ef726f9a9555177bd032385f3f",
-    "scripts/ci/selftest_sprint_replay.py": "a8419d239618c07347118d920a0b918474b55d3bc1051665155d4d2d24a2db00",
+    "scripts/ci/selftest_sprint_replay.py": "79381baf5b8260a9a07e682f664ed50afdaeae003695c9979529e3bfa504d2b4",
     "scripts/ci/sprint_cycle.py": "5862bea99da72a1eb238fbd5c0946606a9c88feb8b3ca8e524cccba1e5cb0b89",
     "scripts/ci/sprint_ledger.json": "a371f70320e80ae0e6d0f2594213da2332fc29b3dfa74df5bcd7395103dccf85",
     "scripts/ci/sprint_replay.py": "9ebe31ae36617dcde206f1451720c403862904f4feb39c0b673adc71b2fdb376",
