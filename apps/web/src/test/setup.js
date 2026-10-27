@@ -1,7 +1,7 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/src/test/setup.js
 // Stage:       08_TEST
-// SRS:         SRS-BUILDANDDO-TEST-001
+// SRS:         SRS-BUILDANDDO-TEST-001, SRS-BUILDANDDO-DAY21-RUNNER-001
 // CAPS:        pending
 // CK:          pending
 // Seat:        BITS-CODEGEN
@@ -16,8 +16,13 @@
 // ───────────────────────────────────────────────────────────────
 
 import '@testing-library/jest-dom/vitest';
-import { cleanup } from '@testing-library/react';
+import { cleanup, configure } from '@testing-library/react';
 import { afterEach, beforeEach, vi } from 'vitest';
+
+// findBy*/waitFor give up after 1 s by default. On a loaded GitLab shell runner a render that
+// takes 0.3 s locally can take several seconds, and those queries failed while the same files
+// pass unchanged locally (job 105160). Slower is not wrong; the per-test limit still applies.
+configure({ asyncUtilTimeout: 5_000 });
 
 /* jsdom gaps -------------------------------------------------------------- */
 /* Each polyfill below exists because a Radix primitive the workspace pages   */

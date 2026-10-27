@@ -214,6 +214,29 @@ class AcceptanceRunnerTests(unittest.TestCase):
             )
         self.assertIn(["npm", "ci", "--include=dev"], commands)
         self.assertTrue(any("pip" in argv and "install" in argv for argv in commands))
+        pip = next(argv for argv in commands if "pip" in argv)
+        self.assertIn("foundry/shared/requirements.txt", pip)
+
+    def test_source_checks_find_python_as_the_acceptance_interpreter(self) -> None:
+        seen = []
+
+        def check(*_args: object, env: dict[str, str] | None = None) -> int:
+            seen.append(env)
+            return 0
+
+        with (
+            patch.dict(runner.os.environ, {"PATH": "/usr/bin"}),
+            patch.object(runner, "run", return_value=0),
+            patch.object(runner, "readiness", side_effect=check),
+            patch.object(runner, "write_summary", return_value={"state": "PASS"}),
+        ):
+            runner.main([*self.args, "--source-only", "--offline"])
+        self.assertTrue(seen)
+        for env in seen:
+            self.assertIsNotNone(env)
+            first = env["PATH"].split(runner.os.pathsep)[0]
+            self.assertEqual(Path(first), Path(runner.sys.executable).parent)
+            self.assertTrue(env["PATH"].endswith("/usr/bin"))
 
     def test_docker_extraction_cleans_up_on_copy_failure_and_success(self) -> None:
         with patch.object(runner.shutil, "which", return_value=None):

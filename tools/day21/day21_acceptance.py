@@ -2,7 +2,7 @@
 # ─── CGRF Header ───────────────────────────────────────────────
 # File:        tools/day21/day21_acceptance.py
 # Stage:       07_BUILD
-# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-DAY21-RUNNER-001
 # CAPS:        pending
 # CK:          pending
 # Dispatch:    VCC-BUILDANDDO-UPGRADE-001
@@ -51,6 +51,18 @@ def run(argv: list[str], *, cwd: Path, env: dict[str, str] | None = None) -> int
     """Execute a fixed argument list without invoking a shell."""
     print("+ " + " ".join(argv), flush=True)
     return subprocess.run(argv, cwd=cwd, env=env, check=False).returncode
+
+
+def interpreter_env() -> dict[str, str]:
+    """The environment for source checks, with this interpreter's directory first on PATH.
+
+    Node suites spawn `python` to compare their output with the Python implementation. A GitLab
+    shell runner ships `python3` only, so those suites failed with ENOENT before testing anything
+    (measured on fleet runner 17, job 105160). Putting the acceptance venv's bin directory first
+    makes `python` the same interpreter that just received the declared requirements."""
+    env = dict(os.environ)
+    env["PATH"] = str(Path(sys.executable).parent) + os.pathsep + env.get("PATH", "")
+    return env
 
 
 def version_for(root: Path, profile: str) -> str:
@@ -212,12 +224,17 @@ def main(argv: list[str] | None = None) -> int:
                             "scripts/discordbot/requirements.txt",
                             "-r",
                             "apps/research/requirements.txt",
+                            # The research and federal-foundry suites load the registry's YAML
+                            # parser; without it source_python fails on import.
+                            "-r",
+                            "foundry/shared/requirements.txt",
                         ],
                         cwd=root,
                     )
                 )
+            source_env = interpreter_env()
             for name in SOURCE_CHECKS:
-                failures += bool(readiness(root, evidence, name, "package"))
+                failures += bool(readiness(root, evidence, name, "package", env=source_env))
         if not args.source_only:
             with tempfile.TemporaryDirectory(prefix="buildanddo-day21-pb-") as tmp:
                 for profile, supplied in (
