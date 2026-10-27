@@ -252,10 +252,10 @@ class Askpass:
         script.write_text("#!/bin/sh\ncase \"$1\" in\n  *Username*) printf '%s\\n' \"$PLANE_GIT_USER\" ;;\n"
                           "  *) printf '%s\\n' \"$PLANE_GIT_TOKEN\" ;;\nesac\n")
         script.chmod(0o700)
-        # GitLab Runner installs a credential helper in the checkout that answers with the
-        # job token, and git asks helpers before GIT_ASKPASS. The job token can read this
-        # project but never push, so intake failed with "not allowed to push code". An empty
-        # credential.helper at command-line scope clears the helper list for these calls.
+        # GitLab Runner can also install a credential helper that answers with the job
+        # token, and git asks helpers before GIT_ASKPASS. The job token can read this project
+        # but never push. An empty credential.helper at command-line scope clears the list;
+        # with_user() handles the runner's insteadOf rewrite.
         self.env = {**os.environ, "GIT_ASKPASS": str(script), "GIT_TERMINAL_PROMPT": "0",
                     "GIT_CONFIG_COUNT": "1", "GIT_CONFIG_KEY_0": "credential.helper", "GIT_CONFIG_VALUE_0": "",
                     "PLANE_GIT_USER": user, "PLANE_GIT_TOKEN": token}
@@ -268,6 +268,36 @@ class Askpass:
 
     def __exit__(self, *_: object) -> None:
         self.close()
+
+
+def with_user(url: str, user: str) -> str:
+    """Put a username in an https URL so the runner's insteadOf rewrite cannot match it.
+
+    GitLab Runner rewrites `https://<gitlab host>/` to a URL carrying the job token
+    (url.<...>.insteadOf in the checkout's config). That rewrite matches by prefix, so
+    `https://user@host/...` is left alone, and GIT_ASKPASS supplies the password.
+    """
+    scheme, sep, rest = url.partition("://")
+    if not sep or scheme != "https" or "@" in rest.split("/", 1)[0]:
+        return url
+    return f"{scheme}://{urllib.parse.quote(user, safe='')}@{rest}"
+
+
+def clean_pusher(root: Path = ROOT) -> Path:
+    """A bare repository that borrows this checkout's objects but none of its config.
+
+    The runner writes job-token settings (credential helper, insteadOf rewrite, auth
+    headers) into the checkout's .git/config. Pushing from a repository without that
+    config means only the plane's own token is ever offered, whatever the runner did.
+    """
+    common = Path(git("rev-parse", "--git-common-dir", cwd=root).stdout.strip())
+    objects = (common if common.is_absolute() else root / common).resolve() / "objects"
+    pusher = root / "state/ci/plane.git"
+    shutil.rmtree(pusher, ignore_errors=True)
+    pusher.parent.mkdir(parents=True, exist_ok=True)
+    git("init", "--quiet", "--bare", str(pusher), cwd=root)
+    (pusher / "objects/info/alternates").write_text(str(objects) + "\n")
+    return pusher
 
 
 def github_url(repo: str) -> str:
@@ -375,9 +405,11 @@ def cmd_intake(args: argparse.Namespace, env: dict[str, str], request: Http = ht
     git("fetch", "--no-tags", "--quiet", github_url(repo), *refspecs)
     main_sha = git("rev-parse", "refs/github/main").stdout.strip()
 
-    target = gitlab_url(env) if token else ""
-    with Askpass(env.get("GITLAB_INGEST_USER") or "oauth2", token) as auth:
-        listing = git("ls-remote", "--heads", target, cwd=ROOT, env=auth.env).stdout if token else ""
+    user = env.get("GITLAB_INGEST_USER") or "oauth2"
+    target = with_user(gitlab_url(env), user) if token else ""
+    pusher = clean_pusher() if token else ROOT
+    with Askpass(user, token) as auth:
+        listing = git("ls-remote", "--heads", target, cwd=pusher, env=auth.env).stdout if token else ""
         plan = plan_intake(main_sha, pulls, remote_heads(listing), repo)
         out = Path(args.output)
         out.parent.mkdir(parents=True, exist_ok=True)
@@ -395,7 +427,7 @@ def cmd_intake(args: argparse.Namespace, env: dict[str, str], request: Http = ht
             # does not prove propagation.
             git("push", "--quiet", f"--force-with-lease=refs/heads/{MAIN_MIRROR}:"
                 + remote_heads(listing).get(MAIN_MIRROR, ""), target,
-                f"{main_sha}:refs/heads/{MAIN_MIRROR}", env=auth.env)
+                f"{main_sha}:refs/heads/{MAIN_MIRROR}", cwd=pusher, env=auth.env)
         lab = gitlab_client(env, request)
         if not lab.has_commit(main_sha):
             print(f"HOLD: GitLab has no commit object {main_sha} after intake.")
@@ -405,7 +437,7 @@ def cmd_intake(args: argparse.Namespace, env: dict[str, str], request: Http = ht
         specs = [f"+{sha}:refs/heads/{branch}" for branch, sha in sorted(plan.pushes.items()) if branch != MAIN_MIRROR]
         specs += [f":refs/heads/{branch}" for branch in plan.deletes]
         if specs:
-            git("push", "--quiet", target, *specs, env=auth.env)
+            git("push", "--quiet", target, *specs, cwd=pusher, env=auth.env)
         for branch, sha in sorted(plan.pushes.items()):
             if branch != MAIN_MIRROR:
                 print(f"MIRRORED: {branch} -> {sha[:12]}")
@@ -617,7 +649,8 @@ def cmd_writeback(args: argparse.Namespace, env: dict[str, str], request: Http =
             if args.dry_run:
                 print("DRY RUN: would push " + "; ".join(committed))
                 return 0
-            pushed = git("push", "--quiet", github_url(repo), "HEAD:refs/heads/main", cwd=tree, env=auth.env, check=False)
+            pushed = git("push", "--quiet", with_user(github_url(repo), "x-access-token"), "HEAD:refs/heads/main",
+                         cwd=tree, env=auth.env, check=False)
             if pushed.returncode == 0:
                 print(f"WRITEBACK: pushed {len(committed)} commit(s) to main on attempt {attempt}.")
                 return 0
