@@ -45,6 +45,8 @@ from scripts.ci.gitlab_ci import require_command  # noqa: E402
 
 CONTRACT = ".bits/hostinger-readiness.json"
 LOCK = ".bits/hostinger-readiness.lock.json"
+# Written by CI after each merge (main_writeback), never by a reviewed change.
+GENERATED_BOOKKEEPING = frozenset({"scripts/ci/epoch_chain.json"})
 MAX_AGE = timedelta(hours=48)
 
 
@@ -288,7 +290,9 @@ def source_snapshot(root: Path, contract: dict[str, object]) -> dict[str, object
         capture_output=True,
         check=True,
     )
-    files = sorted(set(result.stdout.decode().strip("\0").split("\0")) - {""})
+    # Bookkeeping CI commits back to main after every merge is evidence, not reviewed
+    # source: binding it made each merge's own epoch commit stale the readiness review.
+    files = sorted(set(result.stdout.decode().strip("\0").split("\0")) - {""} - GENERATED_BOOKKEEPING)
     if not files:
         raise ReadinessError("No governed source files were found.")
     hashes: dict[str, str] = {}

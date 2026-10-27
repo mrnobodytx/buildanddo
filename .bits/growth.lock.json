@@ -666,11 +666,11 @@
       "lines": {
         "data": 663,
         "javascript": 50,
-        "python": 22899
+        "python": 22903
       },
       "readme": false,
       "source_files": 53,
-      "source_lines": 22949,
+      "source_lines": 22953,
       "srs_codes": [
         "SRS-BUILDANDDO-AGENTCTX-001",
         "SRS-BUILDANDDO-CHANGELOG-001",
@@ -777,7 +777,7 @@
   "totals": {
     "cgrf_coverage": 0.8399,
     "files": 1112,
-    "source_lines": 181252,
+    "source_lines": 181256,
     "systems": 24,
     "systems_with_readme": 4,
     "systems_with_tests": 23,
