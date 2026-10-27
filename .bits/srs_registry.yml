@@ -207,6 +207,14 @@ srs:
     owner: C-ONE
     notes: Owner directive 2026-10-27 after the GitHub Actions billing lock; GitLab pulls main and trusted PR heads, posts commit status back and performs the changelog/growth/epoch writeback; CI variables, schedules, tokens and disabling Actions are A3 operator steps
 
+  - code: SRS-BUILDANDDO-CF-WORKERS-BUILD-001
+    title: The orphan buildanddo Worker fails every Workers Build; owner disconnects it
+    status: in_progress
+    risk: A1
+    spec: .bits/srs/SRS-BUILDANDDO-CF-WORKERS-BUILD-001.md
+    owner: C-ONE
+    notes: Agent self-authorized on the owner's 2026-10-27 request to investigate and document; 415 builds since 2026-09-09, 0 succeeded; the Cloudflare disconnect is A3 and only the owner performs it
+
   - code: SRS-BUILDANDDO-EVIDENCE-CI-001
     title: Run the Praxis evidence suite in public CI
     status: proposed
