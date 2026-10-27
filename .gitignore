@@ -54,8 +54,8 @@ __pycache__/
 scripts/ci/run_sprint_cycle.ps1
 
 # Private GitLab-mirror CI config - names an internal project path, must
-# never land in the public GitHub repo. See .github/workflows/candidate-to-gitlab.yml
-# for the sanctioned (secrets-only, no hardcoded path) public mirror mechanism.
+# never land in the public GitHub repo. GitLab pulls public main itself
+# (.gitlab/ci/github-plane.yml); credentials live only in GitLab CI/CD variables.
 /.gitlab-ci.yml
 
 # Generated at build time by scripts/deploy/roadmap_status.py - never hand-edited

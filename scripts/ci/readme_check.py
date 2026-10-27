@@ -12,7 +12,7 @@
 # Depends:     README.md, scripts/ci/sprint_cycle.py
 # EnumType:    Service
 # EnumEdges:   VALIDATES README.md; CONSUMES scripts/ci/sprint_cycle.py;
-#              GATES .github/workflows/pr-governance.yml; GATES .gitlab-ci.yml
+#              GATES .gitlab/ci/day21-submission.yml; GATES .gitlab-ci.yml
 # Intent:      Stop the README from silently falling behind the repository it describes.
 # ───────────────────────────────────────────────────────────────
 """Regression check for README.md.

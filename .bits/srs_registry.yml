@@ -199,6 +199,14 @@ srs:
     owner: C-ONE
     notes: Agent self-authorized on the owner's 2026-10-16 request; provenance-labelled content packages produced and verified by distinct guildmasters, dry-run delivery only; sending to TradeBuilder or walk-in and any model provider are A3 and need a human dispatch
 
+  - code: SRS-BUILDANDDO-GITLAB-ONLY-CI-001
+    title: GitLab is the only CI; retire GitHub Actions
+    status: in_progress
+    risk: A2
+    spec: .bits/srs/SRS-BUILDANDDO-GITLAB-ONLY-CI-001.md
+    owner: C-ONE
+    notes: Owner directive 2026-10-27 after the GitHub Actions billing lock; GitLab pulls main and trusted PR heads, posts commit status back and performs the changelog/growth/epoch writeback; CI variables, schedules, tokens and disabling Actions are A3 operator steps
+
   - code: SRS-BUILDANDDO-EVIDENCE-CI-001
     title: Run the Praxis evidence suite in public CI
     status: proposed

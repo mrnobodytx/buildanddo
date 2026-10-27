@@ -80,6 +80,12 @@ class HygieneFindingsTests(unittest.TestCase):
         (finding,) = self.statements("github_only.py")
         self.assertIn("run only by GitHub (.github/workflows/demo.yml)", finding["evidence"])
 
+    def test_a_github_actions_workflow_is_a_high_finding(self) -> None:
+        (finding,) = self.statements("is a GitHub Actions workflow")
+        self.assertEqual(finding["severity"], "high")
+        self.assertIn(".github/workflows/demo.yml", finding["statement"])
+        self.assertEqual(finding["srs"], "SRS-BUILDANDDO-GITLAB-ONLY-CI-001")
+
     def test_control_a_gate_nothing_runs_still_says_nothing(self) -> None:
         (finding,) = self.statements("orphan.py")
         self.assertEqual(finding["evidence"], "referenced by: nothing in this repo")

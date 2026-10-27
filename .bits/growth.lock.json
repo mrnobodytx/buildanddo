@@ -1,9 +1,9 @@
 {
   "progression": {
     "dispatch_tasks": {
-      "done": 180,
-      "progress": 0.8612,
-      "total": 209
+      "done": 186,
+      "progress": 0.8611,
+      "total": 216
     },
     "dispatches": {
       "USO-BUILDANDDO-CRAWL-001": {
@@ -107,6 +107,12 @@
         "status": "in_progress",
         "tasks_done": 0,
         "tasks_total": 0
+      },
+      "VCC-BUILDANDDO-GITLAB-ONLY-CI-001": {
+        "srs": "SRS-BUILDANDDO-GITLAB-ONLY-CI-001",
+        "status": "in_progress",
+        "tasks_done": 6,
+        "tasks_total": 7
       },
       "VCC-BUILDANDDO-GROWTH-001": {
         "srs": "SRS-BUILDANDDO-GROWTH-001",
@@ -239,11 +245,11 @@
       "by_risk": {
         "A0": 2,
         "A1": 29,
-        "A2": 29
+        "A2": 30
       },
       "by_status": {
         "delivered": 4,
-        "in_progress": 50,
+        "in_progress": 51,
         "proposed": 6
       },
       "specs": {
@@ -275,6 +281,7 @@
         "SRS-BUILDANDDO-FEDERAL-MARITIME-001": "proposed",
         "SRS-BUILDANDDO-FEDERAL-NAVAIR-001": "proposed",
         "SRS-BUILDANDDO-FEDERAL-SEMANTIC-ISR-001": "proposed",
+        "SRS-BUILDANDDO-GITLAB-ONLY-CI-001": "in_progress",
         "SRS-BUILDANDDO-GROWTH-001": "in_progress",
         "SRS-BUILDANDDO-HEADERS-001": "in_progress",
         "SRS-BUILDANDDO-HYGIENE-001": "in_progress",
@@ -308,18 +315,18 @@
         "SRS-BUILDANDDO-WORKSPACE-001": "in_progress",
         "SRS-BUILDANDDO-WORLD-TWIN-001": "in_progress"
       },
-      "total": 60
+      "total": 61
     }
   },
   "schema": "buildanddo.growth-lock/v1",
   "surface": {
     "docs_pages": 58,
-    "github_workflows": 8,
-    "gitlab_jobs": 14,
+    "github_workflows": 0,
+    "gitlab_jobs": 20,
     "pocketbase_hooks": 31,
     "pocketbase_migrations": 67,
     "readmes": 50,
-    "tracked_files": 1890
+    "tracked_files": 1887
   },
   "systems": {
     "apps/career": {
@@ -653,17 +660,17 @@
       "test_files": 7
     },
     "scripts/ci": {
-      "cgrf_coverage": 0.9808,
-      "cgrf_files": 51,
-      "files": 55,
+      "cgrf_coverage": 0.9811,
+      "cgrf_files": 52,
+      "files": 56,
       "lines": {
         "data": 654,
         "javascript": 50,
-        "python": 22056
+        "python": 22844
       },
       "readme": false,
-      "source_files": 52,
-      "source_lines": 22106,
+      "source_files": 53,
+      "source_lines": 22894,
       "srs_codes": [
         "SRS-BUILDANDDO-AGENTCTX-001",
         "SRS-BUILDANDDO-CHANGELOG-001",
@@ -671,6 +678,7 @@
         "SRS-BUILDANDDO-CLASSROOM-001",
         "SRS-BUILDANDDO-COMMUNITY-WEB-001",
         "SRS-BUILDANDDO-EPOCH-001",
+        "SRS-BUILDANDDO-GITLAB-ONLY-CI-001",
         "SRS-BUILDANDDO-GROWTH-001",
         "SRS-BUILDANDDO-LIVE-UTILIZATION-001",
         "SRS-BUILDANDDO-OCN-TELEMETRY-001",
@@ -679,7 +687,7 @@
         "SRS-BUILDANDDO-UPGRADE-001",
         "SRS-BUILDANDDO-WORKSPACE-001"
       ],
-      "test_files": 10
+      "test_files": 11
     },
     "scripts/deploy": {
       "cgrf_coverage": 1.0,
@@ -767,13 +775,13 @@
     }
   },
   "totals": {
-    "cgrf_coverage": 0.8397,
-    "files": 1111,
-    "source_lines": 180409,
+    "cgrf_coverage": 0.8399,
+    "files": 1112,
+    "source_lines": 181197,
     "systems": 24,
     "systems_with_readme": 4,
     "systems_with_tests": 23,
-    "test_files": 240,
+    "test_files": 241,
     "test_files_unattributed": 124
   }
 }

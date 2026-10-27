@@ -217,7 +217,7 @@ the integration is implemented.
 | **Assistant endpoint** | Buddi, the workspace assistant: a configurable inference URL with no vendor SDK | `workspace-assistant.js` | Wired |
 | **Firecrawl · n8n** | Reviewed business actions and crawl checks | `business-actions.js`, `scripts/crawl_check.py` | Wired; reviewed actions only |
 | **Citadel Nexus** | Career profiles and OCN seat sign-in through CitadelKey | `career-profile.pb.js`, `ocn-login.pb.js` | Wired |
-| **GitLab** | Private mirror: executes CI, holds deployment authority | `.github/workflows/candidate-to-gitlab.yml` | Wired |
+| **GitLab** | The only CI; pulls `main` and PR heads, reports back, holds deployment authority | [`.gitlab/ci/github-plane.yml`](./.gitlab/ci/github-plane.yml) | Wired; needs operator CI variables |
 | **Reddit** | Release notices | `scripts/publish/activity_publish.py` | Held, deliberately |
 | **Public anchor network** | Notarising evidence roots | [EVIDENCE_WITNESS.md](./docs/architecture/EVIDENCE_WITNESS.md) | Designed, not yet built |
 
@@ -261,10 +261,10 @@ outside Docker.
 
 ```mermaid
 flowchart LR
-    PR["Pull request<br/>one SRS · one actor label"] --> G{"PR governance<br/>gates"}
-    G -- pass --> M["main"]
-    M --> C["Changelog refresh<br/>+ evidence epoch"]
-    M --> GL["GitLab mirror<br/>CI + release candidate"]
+    PR["Pull request<br/>one SRS · one actor label"] --> G{"GitLab review/pr-N<br/>every gate"}
+    G -- "gitlab-ci/buildanddo<br/>status" --> M["main"]
+    M --> GL["GitLab buildanddo-source<br/>CI + release candidate"]
+    GL --> C["Changelog, growth point<br/>+ evidence epoch committed back"]
     GL --> ST["Staging<br/>pipeline-stage"]
     ST -- "commit + fingerprint<br/>read back" --> PRD["Production<br/>pipeline-promote"]
     PRD -- "rollback backup ·<br/>external readback" --> V["/_version receipt"]
@@ -279,28 +279,28 @@ read back from outside before it counts. The rules for contributors are in
 ## Quality gates
 
 <details open>
-<summary><strong>GitHub Actions</strong>: the public collaboration plane</summary>
-
-| Workflow | Trigger | What it does |
-|---|---|---|
-| [`.github/workflows/pr-governance.yml`](./.github/workflows/pr-governance.yml) | every PR | Pins one reviewed head, then runs readiness, boundary, context lock, README, dependency lock, lint, tests with coverage and the Python suites |
-| [`.github/workflows/changelog.yml`](./.github/workflows/changelog.yml) | push to `main` | Regenerates `CHANGELOG.md` from history and commits it back |
-| [`.github/workflows/growth.yml`](./.github/workflows/growth.yml) | push to `main` | Measures every system and records one growth point in `.bits/growth.lock.json` |
-| [`.github/workflows/evidence-epoch.yml`](./.github/workflows/evidence-epoch.yml) | push to `main` | Fingerprints the build's evidence and records the chain head |
-| [`.github/workflows/candidate-to-gitlab.yml`](./.github/workflows/candidate-to-gitlab.yml) | push to `main` | Hands the reviewed candidate to the GitLab mirror |
-| [`.github/workflows/datadog-dora.yml`](./.github/workflows/datadog-dora.yml) | after a candidate | DORA deployment events, with lead time |
-| [`.github/workflows/citadel-stack-telemetry.yml`](./.github/workflows/citadel-stack-telemetry.yml) | hourly | Stack telemetry to Datadog |
-| [`.github/workflows/supply-chain.yml`](./.github/workflows/supply-chain.yml) | weekly | Dependency vulnerability audit |
-
-</details>
-
-<details open>
-<summary><strong>GitLab CI</strong>: executes acceptance and holds deployment authority</summary>
+<summary><strong>GitLab CI</strong>: the only CI; GitHub runs no workflows</summary>
 
 [`.gitlab-ci.yml`](./.gitlab-ci.yml) runs `integrity_gate` (build and lint regression, boundary scan,
 README check, docs redaction scan), `sprint_replay`, `praxis_evidence_tests` and SAST. It includes the source-validation
 matrices for the Discord bot, foundry, federal portfolio, mission suite, behaviour coverage and
-assurance, plus the Day-21 job, which runs all eighteen acceptance profiles.
+assurance, plus the Day-21 job, which runs all eighteen acceptance profiles. Every one of them runs on
+`buildanddo-source` (public `main`) and on `review/pr-N` (a public pull request).
+
+[`.gitlab/ci/github-plane.yml`](./.gitlab/ci/github-plane.yml) does what GitHub Actions used to, through
+`scripts/ci/gitlab_plane.py`:
+
+| Job | Trigger | What it does |
+|---|---|---|
+| `github_intake` | schedule `intake`, every 10 min | Pulls `main` into `buildanddo-source` (verified by SHA) and trusted PR heads into `review/pr-N`, then posts each pipeline's result to GitHub as `gitlab-ci/buildanddo` |
+| `evidence_epoch` | push to `buildanddo-source` | Fingerprints the build's evidence and publishes the root |
+| `main_writeback` | after `evidence_epoch` | Commits `CHANGELOG.md`, the evidence chain head and `.bits/growth.lock.json` back to `main` with `[skip ci]` |
+| `ci_report` | every main and review pipeline | Telemetry, deltas and test results to Datadog (optional; never turns a pipeline red) |
+| `stack_telemetry` | schedule `telemetry`, hourly | Stack telemetry to Datadog |
+| `supply_chain_weekly` | schedule `supply_chain`, weekly | Dependency vulnerability audit |
+
+PRs from forks are not pulled automatically, because the runner would execute their code. A
+maintainer mirrors them.
 
 </details>
 
@@ -343,7 +343,7 @@ shows what was *planned*. Whether each milestone was verified is recorded live a
 
 [CHANGELOG.md](./CHANGELOG.md) is derived from the commits themselves, not written from memory.
 `scripts/ci/changelog_gen.py` groups every non-merge commit on `main` by date and conventional type
-and cites its SRS code. [`changelog.yml`](./.github/workflows/changelog.yml) regenerates it on every
+and cites its SRS code. The GitLab `main_writeback` job regenerates it after every
 push to `main` and commits the result. That commit carries a `Changelog: skip` trailer, so it never
 lists itself.
 
@@ -353,7 +353,7 @@ lists itself.
 the pipeline: a measurement taken from the repository alone. For every system it records size by
 language, tests, README and CGRF coverage, and the SRS codes behind it. For the project, it records
 how many specs are delivered and how many dispatch tasks are done.
-[`growth.yml`](./.github/workflows/growth.yml) refreshes it on every merge to `main`, so the lock's
+The GitLab `main_writeback` job refreshes it on every merge to `main`, so the lock's
 git history is the growth history, one dated point per merge.
 
 ```bash

@@ -251,19 +251,22 @@ class DatadogMetricTests(unittest.TestCase):
         self.assertIn("SKIP: no aggregate Citadel state", stdout.getvalue())
         self.assertIn('"series": []', stdout.getvalue())
 
-    def test_scheduled_workflow_binds_state_and_existing_datadog_secret(self) -> None:
+    def test_scheduled_gitlab_job_emits_without_a_committed_secret(self) -> None:
+        # The hourly run moved from GitHub Actions to a GitLab pipeline schedule
+        # (SRS-BUILDANDDO-GITLAB-ONLY-CI-001). DD_API_KEY and the CITADEL_* paths are
+        # CI/CD variables, so the job names neither and SKIPs cleanly without them.
         source = (
-            Path(__file__).resolve().parents[2]
-            / ".github/workflows/citadel-stack-telemetry.yml"
+            Path(__file__).resolve().parents[2] / ".gitlab/ci/github-plane.yml"
         ).read_text(encoding="utf-8")
+        job = source.split("\nstack_telemetry:\n", 1)[1].split("\n\n", 1)[0]
 
-        self.assertIn("cron: '17 * * * *'", source)
-        self.assertIn("secrets.DD_API_KEY", source)
-        self.assertIn("vars.CITADEL_STATE_DIR", source)
-        self.assertIn("vars.CITADEL_TELEMETRY_RUNNER", source)
-        self.assertIn("python scripts/ci/emit_datadog_metrics.py", source)
-        self.assertIn("contents: read", source)
-
+        self.assertIn("- python3 scripts/ci/emit_datadog_metrics.py", job)
+        self.assertIn(
+            '$CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TASK == "telemetry"', job
+        )
+        self.assertIn("- when: never", job)
+        self.assertNotIn("DD_API_KEY:", job)
+        self.assertNotIn("allow_failure", job)
 
 if __name__ == "__main__":
     unittest.main()
