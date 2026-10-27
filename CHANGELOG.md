@@ -28,6 +28,59 @@ the entry.
 
 <!-- changelog:generated:begin -->
 
+## 2026-10-27
+
+### Added
+
+- readiness: count the two checks the staging line added, and refresh the locks [SRS-BUILDANDDO-RECONCILE-001] (`8ba5f5c`, SRS-BUILDANDDO-RECONCILE-001)
+
+### Changed
+
+- ci: refresh the context lock for the selftest fix [SRS-BUILDANDDO-ROADMAP-001] (`e28e74a`, SRS-BUILDANDDO-ROADMAP-001)
+- gitlab: make GitLab the only CI and retire GitHub Actions [SRS-BUILDANDDO-GITLAB-ONLY-CI-001] (`fc3cb69`, SRS-BUILDANDDO-GITLAB-ONLY-CI-001)
+- readme: name apps/trade_assist in the systems table [SRS-BUILDANDDO-TRADE-ASSIST-001] (`a296035`, SRS-BUILDANDDO-TRADE-ASSIST-001)
+
+### Fixed
+
+- ci: report the push pipeline, not intake's own run [SRS-BUILDANDDO-GITLAB-ONLY-CI-001] (`9e0fddc`, SRS-BUILDANDDO-GITLAB-ONLY-CI-001)
+- ci: name stale PR branches and cancel superseded pipelines [SRS-BUILDANDDO-GITLAB-ONLY-CI-001] (`e54aa07`, SRS-BUILDANDDO-GITLAB-ONLY-CI-001)
+- ci: mirror each PR head in its own push so GitLab runs it [SRS-BUILDANDDO-GITLAB-ONLY-CI-001] (`e441501`, SRS-BUILDANDDO-GITLAB-ONLY-CI-001)
+- discord: run the blueprint suites the discord gate already measures [SRS-BUILDANDDO-UPGRADE-001] (`71c6980`, SRS-BUILDANDDO-UPGRADE-001)
+- ci: push intake from a config-free repository [SRS-BUILDANDDO-GITLAB-ONLY-CI-001] (`ae559e4`, SRS-BUILDANDDO-GITLAB-ONLY-CI-001)
+- ci: let the plane's token win over the runner's job-token helper [SRS-BUILDANDDO-GITLAB-ONLY-CI-001] (`5a04d02`, SRS-BUILDANDDO-GITLAB-ONLY-CI-001)
+- roadmap: count milestones from the plan in the replay selftest [SRS-BUILDANDDO-ROADMAP-001] (`9e61adb`, SRS-BUILDANDDO-ROADMAP-001)
+
+## 2026-10-17
+
+### Fixed
+
+- web: reload into the current build when a deploy removed a route chunk (`716f175`, SRS-BUILDANDDO-UPGRADE-001)
+
+## 2026-10-16
+
+### Added
+
+- evidence: guildmasters draft verified content for TradeBuilder and walk-in (`a303b67`, SRS-BUILDANDDO-TRADE-ASSIST-001)
+
+## 2026-10-02
+
+### Added
+
+- governance: correct two counts that predate a merge (`e499568`, SRS-BUILDANDDO-UPGRADE-001)
+- deploy: stub the bundle key check in admission tests, and cover it (`1125372`, SRS-BUILDANDDO-RECONCILE-001)
+
+### Fixed
+
+- ci: install the foundry requirements before the portfolio coverage check (`20460b6`, SRS-BUILDANDDO-UPGRADE-001)
+- governance: gate the submission audit on the checkpoints the policy names (`b9508b6`, SRS-BUILDANDDO-UPGRADE-001)
+- ci: install the foundry requirements before the assurance research export (`cf9cb66`, SRS-BUILDANDDO-UPGRADE-001)
+
+## 2026-10-01
+
+### Changed
+
+- governance: record PR #124 and refresh the growth lock on the converged tree (`272cc5c`, SRS-BUILDANDDO-RECONCILE-001)
+
 ## 2026-09-30
 
 ### Added
@@ -41,12 +94,28 @@ the entry.
 - web: repair workspace connection recovery (`ac4e1af`, SRS-BUILDANDDO-UPGRADE-001)
 - web: recover interrupted Buddi connections (`a074577`, SRS-BUILDANDDO-UPGRADE-001)
 
+## 2026-09-25
+
+### Added
+
+- mail: account mail goes out through Customer.io, untracked and unretained (`c549c35`, SRS-BUILDANDDO-MAIL-001)
+
+### Changed
+
+- governance: regenerate the locks over the Customer.io mail change (`0151409`, SRS-BUILDANDDO-MAIL-001)
+
 ## 2026-09-24
 
 ### Added
 
 - ci: system growth lock - per-system development and progression, recorded on every merge (`59ab341`, SRS-BUILDANDDO-GROWTH-001)
 - pocketbase: verify workspace domain ownership by DNS TXT record (`a8191e6`, SRS-BUILDANDDO-SITE-001)
+- telemetry: every shared failure notice reports its section to both tools (`8608452`)
+- ci: the partial-send transport fake keeps its state per case, not in a default argument (`445d3e9`, SRS-BUILDANDDO-OCN-TELEMETRY-001)
+- ci: every OCN socket guard records what it refuses, and is shown to refuse (`c51210a`, SRS-BUILDANDDO-OCN-TELEMETRY-001)
+- ci: one named test per OCN adapter (`63fc1ca`, SRS-BUILDANDDO-OCN-TELEMETRY-001)
+- ci: verify OCN telemetry by readback, with five controls (`fe4846a`, SRS-BUILDANDDO-OCN-TELEMETRY-001)
+- ci: publish OCN probe receipts as marked telemetry from the release workstation (`63cc6df`, SRS-BUILDANDDO-OCN-TELEMETRY-001)
 - evidence: record the broadcast source run on the final converged revision (R12) (`4e54c32`, SRS-BUILDANDDO-RECONCILE-001)
 - evidence: re-run the broadcast source regression on the converged line (R12) (`54e3538`, SRS-BUILDANDDO-RECONCILE-001)
 
@@ -62,6 +131,14 @@ the entry.
 - readme: name every system and service, gate README drift, automate the changelog (`601c29b`, SRS-BUILDANDDO-CHANGELOG-001)
 - bits: bind the locks to the SITE-001 tree (`18658a0`, SRS-BUILDANDDO-SITE-001)
 - bits: register SRS-BUILDANDDO-SITE-001 and its dispatch (`8783082`, SRS-BUILDANDDO-SITE-001)
+- governance: regenerate the locks over the OCN verify fix (`d7a7df5`, SRS-BUILDANDDO-OCN-TELEMETRY-001)
+- governance: record the OCN telemetry review fixes and regenerate the locks (`010323f`, SRS-BUILDANDDO-OCN-TELEMETRY-001)
+- observability: say that the estate collector still passes the capture key to every seat (`84d2864`, SRS-BUILDANDDO-OCN-TELEMETRY-001)
+- governance: regenerate the locks after the per-adapter tests (`3172828`, SRS-BUILDANDDO-OCN-TELEMETRY-001)
+- governance: record the OCN telemetry build and regenerate the locks (`35031fd`, SRS-BUILDANDDO-OCN-TELEMETRY-001)
+- observability: document OCN telemetry, its gates and its verify runbook (`39cee59`, SRS-BUILDANDDO-OCN-TELEMETRY-001)
+- gate the OCN publisher's offline selftest as a source check (`76e1b80`, SRS-BUILDANDDO-OCN-TELEMETRY-001)
+- governance: register SRS-BUILDANDDO-OCN-TELEMETRY-001 and its dispatch (`518d872`, SRS-BUILDANDDO-OCN-TELEMETRY-001)
 - bits: rebind the context lock to the merged tree (`7f69baf`, SRS-BUILDANDDO-QUIZ-001)
 - governance: rebind the locks over the catalogue and bot changes (`90c2a07`)
 - reconcile: record the convergence (R14) and regenerate the locks (`c4720dc`, SRS-BUILDANDDO-RECONCILE-001)
@@ -82,6 +159,17 @@ the entry.
 - web: close telemetry gaps (`a9b6e71`, SRS-BUILDANDDO-UPGRADE-001)
 - pocketbase: give the domain migration its own timestamp; record SITE-001 gates (`b780e4d`, SRS-BUILDANDDO-SITE-001)
 - pocketbase: refuse removing a linked domain; prove verification natively (`e2b5012`, SRS-BUILDANDDO-SITE-001)
+- public: a gate comment names the release workstation's role, not its machine name (`073f48e`, SRS-BUILDANDDO-OCN-TELEMETRY-001)
+- ci: OCN verify holds C1 only when the invalid-key twin went out, and a send never inherits a dry run's time (`70529cc`, SRS-BUILDANDDO-OCN-TELEMETRY-001)
+- deploy: refuse to ship a web build that carries no telemetry keys (`bb16df3`)
+- telemetry: PostHog sees in-app navigation, knows who signed in, and scrubs every URL it sends (`2d02399`)
+- ci: the OCN publisher loads its sibling modules from its own folder only (`b90f43a`, SRS-BUILDANDDO-OCN-TELEMETRY-001)
+- ci: the OCN run wrapper reads the right receipt and lets it name its own command (`359d96d`, SRS-BUILDANDDO-OCN-TELEMETRY-001)
+- ci: OCN verify reads legacy capture across the project and never waits on a refused send (`f315fc6`, SRS-BUILDANDDO-OCN-TELEMETRY-001)
+- ci: OCN delivery obeys the kill switch, waits for PostHog's precondition and retries only what failed (`4f5b61c`, SRS-BUILDANDDO-OCN-TELEMETRY-001)
+- ci: OCN templating masks emails and every record id, and the leak gate refuses emails (`1d243ec`, SRS-BUILDANDDO-OCN-TELEMETRY-001)
+- ci: OCN adapters publish only what the probe judged (`dfb22f7`, SRS-BUILDANDDO-OCN-TELEMETRY-001)
+- ci: the seat session sends nothing from its box (`752b977`, SRS-BUILDANDDO-OCN-TELEMETRY-001)
 - public: two new files would have added machine names to the public mirror (`0a050ca`)
 - learning: the public catalogue stops answering its own knowledge checks (`03cdc98`)
 - public: narrow the shipped activity mirror, which still carried the credential inventory (`569e155`)
