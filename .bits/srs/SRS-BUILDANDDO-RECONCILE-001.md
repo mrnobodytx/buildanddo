@@ -182,6 +182,11 @@ PostHog identity, the URL scrubber and the OCN seat session's capture.
     - R15's seat session: no egress lookup, no `egress_ip`, and the agent markers on the receipt and refusal.
     - R16's web test repairs: TalkToBuddi, WorkflowRuns, DailyEditionPage and the TutorialsPage mock.
 
+    The growth lock is refreshed here after all, as #137, #138 and #139 each did. On GitLab,
+    `day21_full_acceptance` runs `source_python`, which includes `test_the_live_lock_is_current`, so a pull
+    request whose lock lags its own tree fails review, although GROWTH-001 keeps growth non-blocking. That
+    conflict is GROWTH-001's to settle; this pull request only follows the practice.
+
 ## Out of scope
 
 - Production, and any server change other than the staging-only deploy in R8.

@@ -192,6 +192,8 @@ class StatusTests(unittest.TestCase):
         code, _ = quiet(plane.cmd_status, argparse.Namespace(intake=str(self.intake)), self.env, http)
         self.assertEqual(code, 0)
         posted = {url.rsplit("/", 1)[1]: body for url, body in http.posts()}
+        lookups = [url for method, url, _, _ in http.calls if method == "GET" and "/pipelines?" in url]
+        self.assertTrue(lookups and all("source=push" in url for url in lookups))
         self.assertEqual(posted[MAIN]["state"], "success")
         self.assertEqual(posted[MAIN]["target_url"], "https://lab/1")
         self.assertEqual(posted[PR_A]["state"], "failure")
@@ -398,6 +400,77 @@ class CleanPusherTests(unittest.TestCase):
             # Control: the same push from the checkout is captured by its rewrite and fails.
             with self.assertRaises(plane.PlaneError):
                 plane.git("push", "--quiet", f"file://{remote}", f"{sha}:refs/heads/control", cwd=work)
+
+
+def agent_pull(number: int, sha: str, **changes: object) -> dict:
+    pull = {"number": number, "title": f"fix(x): change {number} [SRS-BUILDANDDO-X-001]", "draft": False,
+            "base": {"ref": "main"}, "mergeable": True,
+            "head": {"sha": sha, "ref": f"bits/SRS-BUILDANDDO-X-001-change-{number}", "repo": {"full_name": REPO}},
+            "labels": [{"name": "actor:agent"}]}
+    pull.update(changes)
+    return pull
+
+
+class AutomergeTests(unittest.TestCase):
+    ALLOWED = frozenset({"actor:agent"})
+
+    def test_only_a_fully_qualified_green_agent_pr_merges(self) -> None:
+        self.assertEqual(plane.merge_verdict(agent_pull(1, PR_A), REPO, "success", self.ALLOWED), "merge")
+        refusals = {
+            "draft": agent_pull(1, PR_A, draft=True),
+            "base": agent_pull(1, PR_A, base={"ref": "release"}),
+            "fork": agent_pull(1, PR_A, head={"sha": PR_A, "ref": "bits/SRS-BUILDANDDO-X-001-a",
+                                             "repo": {"full_name": "someone/fork"}}),
+            "branch": agent_pull(1, PR_A, head={"sha": PR_A, "ref": "feature/x", "repo": {"full_name": REPO}}),
+            "no actor": agent_pull(1, PR_A, labels=[]),
+            "two actors": agent_pull(1, PR_A, labels=[{"name": "actor:agent"}, {"name": "actor:human"}]),
+            "human": agent_pull(1, PR_A, labels=[{"name": "actor:human"}]),
+            "hold": agent_pull(1, PR_A, labels=[{"name": "actor:agent"}, {"name": "hold"}]),
+            "unknown mergeable": agent_pull(1, PR_A, mergeable=None),
+        }
+        for case, pull in refusals.items():
+            with self.subTest(case=case):
+                self.assertNotEqual(plane.merge_verdict(pull, REPO, "success", self.ALLOWED), "merge")
+        for state in ("pending", "failure", "error", None):
+            with self.subTest(state=state):
+                self.assertNotEqual(plane.merge_verdict(agent_pull(1, PR_A), REPO, state, self.ALLOWED), "merge")
+
+    def routes(self, pulls: dict[int, dict], states: dict[str, str]) -> FakeHttp:
+        routes: dict[tuple[str, str], tuple[int, object]] = {
+            ("GET", "/pulls?state=open"): (200, [{"number": n} for n in pulls]),
+            ("PUT", "/merge"): (200, {"merged": True, "sha": "c" * 40}),
+        }
+        for number, pull in pulls.items():
+            sha = pull["head"]["sha"]
+            routes[("GET", f"/pulls/{number}")] = (200, pull)
+            routes[("GET", f"/commits/{sha}/status")] = (
+                200, {"statuses": [{"context": plane.STATUS_CONTEXT, "state": states[sha]}]})
+        return FakeHttp(routes)
+
+    def test_merges_green_heads_pinned_to_the_reviewed_sha_and_skips_the_rest(self) -> None:
+        http = self.routes({1: agent_pull(1, PR_A), 2: agent_pull(2, PR_B)}, {PR_A: "success", PR_B: "pending"})
+        env = {"AUTOMERGE": "1", "GITHUB_WRITEBACK_TOKEN": "w"}
+        code, out = quiet(plane.cmd_automerge, argparse.Namespace(dry_run=False), env, http)
+        self.assertEqual(code, 0)
+        merges = [(url, body) for method, url, _, body in http.calls if method == "PUT"]
+        self.assertEqual(len(merges), 1)
+        self.assertTrue(merges[0][0].endswith("/pulls/1/merge"))
+        self.assertEqual(merges[0][1]["sha"], PR_A)
+        self.assertTrue(merges[0][1]["commit_title"].startswith("Merge pull request #1: "))
+        self.assertIn("WAIT: PR #2: GitLab result is pending", out)
+
+    def test_switched_off_or_tokenless_merges_nothing(self) -> None:
+        http = self.routes({1: agent_pull(1, PR_A)}, {PR_A: "success"})
+        for env in ({}, {"AUTOMERGE": "0", "GITHUB_WRITEBACK_TOKEN": "w"}, {"AUTOMERGE": "1"}):
+            with self.subTest(env=env):
+                code, out = quiet(plane.cmd_automerge, argparse.Namespace(dry_run=False), env, http)
+                self.assertEqual(code, 0)
+                self.assertIn("SKIP:", out)
+        self.assertFalse([c for c in http.calls if c[0] == "PUT"])
+
+    def test_epoch_bookkeeping_stays_out_of_the_changelog(self) -> None:
+        items = {item.path: item for item in plane.bookkeeping(MAIN)}
+        self.assertTrue(all("Changelog: skip" in item.trailers for item in items.values()))
 
 
 class WiringTests(unittest.TestCase):

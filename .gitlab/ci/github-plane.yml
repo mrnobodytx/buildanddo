@@ -20,6 +20,7 @@
 # GitHub is where people open and merge pull requests. Nothing runs there any more.
 #
 #   schedule (SCHEDULE_TASK=intake, every 10 min) on buildanddo-source
+#     github_intake  merges actor:agent PRs GitLab passed (AUTOMERGE=1)
 #     github_intake  GitHub main      -> buildanddo-source  (protected; same-SHA verified)
 #                    trusted PR heads -> review/pr-N        (no secrets reach these)
 #                    GitLab results   -> GitHub commit status "gitlab-ci/buildanddo"
@@ -30,17 +31,24 @@
 # GITHUB_STATUS_TOKEN and GITHUB_WRITEBACK_TOKEN as protected and masked, and protect
 # buildanddo-source. Review pipelines run code from pull requests and get none of them.
 # Operator setup: .bits/handoffs/2026-10-27-C-ONE-gitlab-only-ci.md
+#
+# Lanes: the short plane jobs run on runners tagged buildanddo-plane, so they never queue
+# behind 30-minute acceptance jobs; everything else needs a runner tagged buildanddo.
 
 github_intake:
   stage: verify
-  tags: [buildanddo]
+  tags: [buildanddo-plane]
   timeout: 15m
   resource_group: buildanddo-github-intake
   variables:
     GIT_DEPTH: "0"
+    AUTOMERGE: "1"
   script:
     - python3 scripts/ci/gitlab_plane.py intake
     - python3 scripts/ci/gitlab_plane.py status
+    # Merges actor:agent PRs on bits/SRS-* branches whose exact head GitLab passed.
+    # Kill switch: set the project CI/CD variable AUTOMERGE to 0.
+    - python3 scripts/ci/gitlab_plane.py automerge
   artifacts:
     when: always
     expire_in: 7 days
@@ -53,7 +61,7 @@ github_intake:
 # Hourly. Datadog stays a no-op without DD_API_KEY; missing state is a clean SKIP.
 stack_telemetry:
   stage: verify
-  tags: [buildanddo]
+  tags: [buildanddo-plane]
   timeout: 5m
   script:
     - python3 scripts/ci/emit_datadog_metrics.py
@@ -126,7 +134,7 @@ evidence_epoch:
 # changelog and growth point do not depend on it.
 main_writeback:
   stage: .post
-  tags: [buildanddo]
+  tags: [buildanddo-plane]
   timeout: 15m
   resource_group: buildanddo-main-writeback
   needs:
