@@ -1,16 +1,16 @@
 # --- CGRF Header ------------------------------------------------
 # File:        .gitlab-ci.yml
 # Stage:       11_COMMIT
-# SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-GITLAB-ONLY-CI-001
+# SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-GITLAB-ONLY-CI-001, SRS-BUILDANDDO-GITLAB-RELEASE-001
 # CAPS:        pending
 # CK:          pending
 # Dispatch:    VCC-BUILDANDDO-UPGRADE-001
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-24
-# Depends:     services/praxis_evidence/run_all_tests.py, .gitlab/ci/day21-submission.yml, .gitlab/ci/github-plane.yml
+# Depends:     services/praxis_evidence/run_all_tests.py, .gitlab/ci/day21-submission.yml, .gitlab/ci/github-plane.yml, .gitlab/ci/release.yml
 # EnumType:    Workflow
-# EnumEdges:   CONSUMES services/praxis_evidence/run_all_tests.py; CONSUMES .gitlab/ci/day21-submission.yml; CONSUMES .gitlab/ci/github-plane.yml
+# EnumEdges:   CONSUMES services/praxis_evidence/run_all_tests.py; CONSUMES .gitlab/ci/day21-submission.yml; CONSUMES .gitlab/ci/github-plane.yml; CONSUMES .gitlab/ci/release.yml
 # Intent:      Keep GitLab testing blocking while isolating mutating Praxis suites from shared backends and production credentials.
 # ----------------------------------------------------------------
 # The only CI for buildanddo (SRS-BUILDANDDO-GITLAB-ONLY-CI-001). GitHub (mrnobodytx/buildanddo)
@@ -24,6 +24,7 @@
 stages:
   - verify
   - test
+  - release
 
 integrity_gate:
   stage: verify
@@ -150,4 +151,5 @@ code_security_sast:
 include:
   - local: '.gitlab/ci/day21-submission.yml'
   - local: '.gitlab/ci/github-plane.yml'
+  - local: '.gitlab/ci/release.yml'
 # END CITADEL DAY21 SUBMISSION CLOSURE v1

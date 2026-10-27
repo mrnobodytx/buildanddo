@@ -1,0 +1,89 @@
+# ─── CGRF Header ───────────────────────────────────────────────
+# File:        .gitlab/ci/release.yml
+# Stage:       11_COMMIT
+# SRS:         SRS-BUILDANDDO-GITLAB-RELEASE-001
+# CAPS:        pending
+# CK:          pending
+# Dispatch:    VCC-BUILDANDDO-GITLAB-RELEASE-001
+# Seat:        C-ONE
+# Owner:       Citadel Nexus Inc.
+# Created:     2026-10-27
+# Depends:     tools/buildanddo_release.py, .citadel/release.public.json
+# EnumType:    Workflow
+# EnumEdges:   CONSUMES tools/buildanddo_release.py; CONSUMES .citadel/release.public.json
+# Intent:      Ship every merged main to staging and production from GitLab through the existing release rail.
+# ───────────────────────────────────────────────────────────────
+
+# The release rail (tools/buildanddo_release.py) already knows how to ship: build the exact
+# commit, copy it to staging, read /_version back, and promote the SAME bytes to production
+# only when staging served the same payload digest. Until now an operator ran it by hand. These
+# two jobs run it after every gate on buildanddo-source has passed.
+#
+#   release_staging     pipeline-stage    build + deploy staging + external readback
+#   release_production  pipeline-promote  same artifact to production, readback, then DORA
+#
+# Nothing runs until the operator sets BUILDANDDO_DEPLOY_ENABLE=1. Every rule also requires a
+# protected ref, so review/pr-N pipelines (which run the PR's own CI file) never reach a
+# deploy credential. Production promotes automatically only with BUILDANDDO_PROMOTE_PRODUCTION=1;
+# otherwise it waits for a click on the pipeline page.
+#
+# Credentials are protected CI/CD variables, never files in the repo:
+#   BUILDANDDO_VM_HOST           user@host of the web VM (the name ship.py already uses)
+#   BUILDANDDO_SSH_KEY           File variable: the deploy key
+#   BUILDANDDO_SSH_KNOWN_HOSTS   File variable: the VM's host key line (StrictHostKeyChecking stays on)
+#   VITE_BUILDANDDO_PH, VITE_DD_APPLICATION_ID, VITE_DD_CLIENT_TOKEN  public browser keys
+# A runner on the web VM itself can deploy without SSH: set BUILDANDDO_DEPLOY_RUNNER_TAG to its
+# tag and BUILDANDDO_{STAGING,PRODUCTION}_DEPLOY_MODE=local_webroot with _ROOT. Restrict that
+# runner to protected refs.
+
+release_staging:
+  stage: release
+  interruptible: false
+  resource_group: buildanddo-release
+  tags:
+    - $BUILDANDDO_DEPLOY_RUNNER_TAG
+  timeout: 45m
+  variables:
+    BUILDANDDO_DEPLOY_RUNNER_TAG: buildanddo
+    GIT_DEPTH: "0"
+  before_script:
+    - if [ -n "${BUILDANDDO_SSH_KEY:-}" ]; then chmod 600 "$BUILDANDDO_SSH_KEY"; fi
+  script:
+    - python3 tools/buildanddo_release.py pipeline-stage --root . --repo . --ack-authority A3
+  artifacts:
+    when: always
+    expire_in: 30 days
+    paths:
+      - .citadel-release/
+      - state/sprint/citadel-21-day-2026-09/release/
+  rules:
+    - if: '$CI_PIPELINE_SOURCE =~ /^(push|web|api)$/ && $CI_COMMIT_BRANCH == "buildanddo-source" && $CI_COMMIT_REF_PROTECTED == "true" && $BUILDANDDO_DEPLOY_ENABLE == "1"'
+    - when: never
+
+release_production:
+  stage: release
+  interruptible: false
+  resource_group: buildanddo-release
+  tags:
+    - $BUILDANDDO_DEPLOY_RUNNER_TAG
+  timeout: 30m
+  needs:
+    - job: release_staging
+      artifacts: true
+  variables:
+    BUILDANDDO_DEPLOY_RUNNER_TAG: buildanddo
+  before_script:
+    - if [ -n "${BUILDANDDO_SSH_KEY:-}" ]; then chmod 600 "$BUILDANDDO_SSH_KEY"; fi
+  script:
+    - python3 tools/buildanddo_release.py pipeline-promote --root . --repo . --ack-authority A3
+  artifacts:
+    when: always
+    expire_in: 90 days
+    paths:
+      - state/sprint/citadel-21-day-2026-09/release/
+  rules:
+    - if: '$CI_PIPELINE_SOURCE =~ /^(push|web|api)$/ && $CI_COMMIT_BRANCH == "buildanddo-source" && $CI_COMMIT_REF_PROTECTED == "true" && $BUILDANDDO_DEPLOY_ENABLE == "1" && $BUILDANDDO_PROMOTE_PRODUCTION == "1"'
+    - if: '$CI_PIPELINE_SOURCE =~ /^(push|web|api)$/ && $CI_COMMIT_BRANCH == "buildanddo-source" && $CI_COMMIT_REF_PROTECTED == "true" && $BUILDANDDO_DEPLOY_ENABLE == "1"'
+      when: manual
+      allow_failure: true
+    - when: never

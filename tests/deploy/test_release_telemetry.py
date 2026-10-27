@@ -48,7 +48,7 @@ class CanonicalTelemetryTests(unittest.TestCase):
         assurance = pipeline.split("\nsource_assurance:\n", 1)[1].split("\nassurance_full_runtime:\n", 1)[0]
         self.assertIn(
             "- state/ci/assurance-venv/bin/python -m unittest tests.deploy.test_ship_telemetry "
-            "tests.deploy.test_release_telemetry tests.deploy.test_ship_swap", assurance
+            "tests.deploy.test_release_telemetry tests.deploy.test_ship_swap tests.deploy.test_release_lane", assurance
         )
         self.assertNotIn("allow_failure: true", assurance)
 
