@@ -134,5 +134,11 @@ export function scrubClassroomProperties(event) {
         }
         return result;
     };
-    try { event.properties = scrub(event.properties); return event; } catch { return null; }
+    try {
+        event.properties = scrub(event.properties);
+        // identify envelopes carry $set / $set_once beside `properties`; the SDK's initial
+        // pathname and person info live there and start out holding the first room or reset link.
+        for (const key of ['$set', '$set_once']) if (event[key] && typeof event[key] === 'object') event[key] = scrub(event[key]);
+        return event;
+    } catch { return null; }
 }

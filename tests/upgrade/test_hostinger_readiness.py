@@ -519,7 +519,7 @@ class AcceptanceTests(unittest.TestCase):
         )
         self.assertEqual(
             sum(2 if check.level == "native" else 1 for check in checks.CHECKS.values()),
-            22,
+            25,
         )
         self.assertEqual(checks.runtime_version(self.root, "compose"), "0.28.3")
         with self.assertRaises(ValueError):
