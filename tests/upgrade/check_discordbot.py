@@ -47,7 +47,11 @@ def main() -> int:
         )
         if args.include_research:
             suite.addTests(unittest.defaultTestLoader.discover(str(ROOT / "tests/upgrade"), pattern="test_research_runtime.py"))
-            suite.addTests(unittest.defaultTestLoader.discover(str(ROOT / "tests/upgrade"), pattern="test_blueprints.py"))
+            # Every apps/research module is measured below, so every suite that owns one runs:
+            # the blueprint pipeline and extraction modules arrived in fcb1f4b with their own
+            # tests, and measuring them without running those tests failed this gate.
+            for pattern in ("test_blueprints.py", "test_blueprint_pipeline.py", "test_blueprint_extraction.py"):
+                suite.addTests(unittest.defaultTestLoader.discover(str(ROOT / "tests/upgrade"), pattern=pattern))
         return unittest.TextTestRunner(verbosity=1).run(suite)
 
     threading.settrace(tracer.globaltrace)

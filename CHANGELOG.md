@@ -28,16 +28,42 @@ the entry.
 
 <!-- changelog:generated:begin -->
 
+## 2026-09-30
+
+### Added
+
+- web: compile evidence-backed media drafts (`52251db`, SRS-BUILDANDDO-UPGRADE-001)
+- evidence: connect reciprocal work exchange (`97c92cd`, SRS-BUILDANDDO-UPGRADE-001)
+
+### Fixed
+
+- web: recover classroom discovery and saves (`0b5abc4`, SRS-BUILDANDDO-UPGRADE-001)
+- web: repair workspace connection recovery (`ac4e1af`, SRS-BUILDANDDO-UPGRADE-001)
+- web: recover interrupted Buddi connections (`a074577`, SRS-BUILDANDDO-UPGRADE-001)
+
 ## 2026-09-24
 
 ### Added
 
+- ci: system growth lock - per-system development and progression, recorded on every merge (`59ab341`, SRS-BUILDANDDO-GROWTH-001)
+- pocketbase: verify workspace domain ownership by DNS TXT record (`a8191e6`, SRS-BUILDANDDO-SITE-001)
 - evidence: record the broadcast source run on the final converged revision (R12) (`4e54c32`, SRS-BUILDANDDO-RECONCILE-001)
 - evidence: re-run the broadcast source regression on the converged line (R12) (`54e3538`, SRS-BUILDANDDO-RECONCILE-001)
 
 ### Changed
 
+- bits: rebind the locks to the merged SITE-001 tree (`7602640`)
+- bits: rebind locks and changelog to the merged main (`4c61592`)
+- bits: rebind the locks to the hygiene changes (`4e812b9`, SRS-BUILDANDDO-HYGIENE-001)
+- web: remove 51 unreachable files and 32 unused packages; knip sees the app again (`1967cb9`, SRS-BUILDANDDO-HYGIENE-001)
+- governance: register the unregistered specs, retire a delivered dispatch, date the .tech correction (`5fd9436`, SRS-BUILDANDDO-HYGIENE-001)
+- bits: rebind the context lock to the merged tree (`b8eb0fa`, SRS-BUILDANDDO-QUIZ-001)
+- readme: catalogue every README in the repository, generated and gated (`2666cd0`, SRS-BUILDANDDO-CHANGELOG-001)
+- readme: name every system and service, gate README drift, automate the changelog (`601c29b`, SRS-BUILDANDDO-CHANGELOG-001)
+- bits: bind the locks to the SITE-001 tree (`18658a0`, SRS-BUILDANDDO-SITE-001)
+- bits: register SRS-BUILDANDDO-SITE-001 and its dispatch (`8783082`, SRS-BUILDANDDO-SITE-001)
 - bits: rebind the context lock to the merged tree (`7f69baf`, SRS-BUILDANDDO-QUIZ-001)
+- governance: rebind the locks over the catalogue and bot changes (`90c2a07`)
 - reconcile: record the convergence (R14) and regenerate the locks (`c4720dc`, SRS-BUILDANDDO-RECONCILE-001)
 - reconcile: register R14 - converge the two reconciliations on #106 (`e9ff8f4`, SRS-BUILDANDDO-RECONCILE-001)
 - bits: refresh the context lock after rebasing onto main (`e50ce77`, SRS-BUILDANDDO-QUIZ-001)
@@ -46,7 +72,20 @@ the entry.
 
 ### Fixed
 
+- edge: no Cloudflare ids in the public repository (SRS-BUILDANDDO-CF-IDS-001) (`48ab707`, SRS-BUILDANDDO-CF-IDS-001, SRS-BUILDANDDO-HYGIENE-001)
+- discord: server-graded quiz answers are observed, and no longer reported as errors (`7c2ea78`, SRS-BUILDANDDO-QUIZ-001)
+- web: the build no longer dies after Vite, so page heads, the catalogue and the answer scan run again (`ed25b64`, SRS-BUILDANDDO-UPGRADE-001)
+- discord: server-graded quiz answers are observed, and no longer reported as errors (`af599b1`, SRS-BUILDANDDO-QUIZ-001)
+- web: the build no longer dies after Vite, so page heads, the catalogue and the answer scan run again (`c57359f`, SRS-BUILDANDDO-UPGRADE-001)
+- ci: the context lock reports GitHub-run gates and stale dispatches truthfully (`3930050`, SRS-BUILDANDDO-HYGIENE-001)
+- public: public docs name no machine, and CI now reads their prose (`274c8ca`, SRS-BUILDANDDO-HYGIENE-001, SRS-BUILDANDDO-PUBLIC-REDACTION-001)
 - web: close telemetry gaps (`a9b6e71`, SRS-BUILDANDDO-UPGRADE-001)
+- pocketbase: give the domain migration its own timestamp; record SITE-001 gates (`b780e4d`, SRS-BUILDANDDO-SITE-001)
+- pocketbase: refuse removing a linked domain; prove verification natively (`e2b5012`, SRS-BUILDANDDO-SITE-001)
+- public: two new files would have added machine names to the public mirror (`0a050ca`)
+- learning: the public catalogue stops answering its own knowledge checks (`03cdc98`)
+- public: narrow the shipped activity mirror, which still carried the credential inventory (`569e155`)
+- estate: the platform report stops being public; the filter moves to the artifact (`0468602`)
 - test: complete the motion mock in two workspace page tests (`7301df8`, SRS-BUILDANDDO-RECONCILE-001)
 - web: agent activity names seats by persona again and withholds machine names (`7ee648c`, SRS-BUILDANDDO-RECONCILE-001)
 - test: the claim rollback test stays rolled back across a restart (`8f12607`, SRS-BUILDANDDO-RECONCILE-001)
@@ -63,6 +102,8 @@ the entry.
 
 ### Added
 
+- ci: say what a signed-in person FINDS, not just whether the route answered (`83fb444`)
+- deploy: production was never given the runtime config staging has (`eb08029`)
 - evidence: re-observe the classroom source regression after the converge (`48d3872`)
 - broadcast: carry the trunk's seat-name and profile-link coverage onto main's components (`2ccb145`)
 - classroom: a class can exist without a workspace, and the workspace holds your access (`801102c`)
@@ -84,6 +125,8 @@ the entry.
 - web: every public page says BuildAndDo is an educational platform (`3a4d542`, SRS-BUILDANDDO-PURPOSE-001)
 - web: talk to Buddi on the home page with the official ElevenLabs SDK (`93aca83`, SRS-BUILDANDDO-BUDDI-003)
 - web: align two tests with the merged product (`11a91f8`, SRS-BUILDANDDO-UPGRADE-001)
+- web: forward the voice agent's tool URLs to the backend at the edge (`5383060`, SRS-BUILDANDDO-BUDDI-002)
+- pocketbase: answer Buddi's eight tools from public platform data (`c1670cf`, SRS-BUILDANDDO-BUDDI-002)
 - web: broadcast live classes, keep an attendance record and show agent work (`62b8859`, SRS-BUILDANDDO-UPGRADE-001)
 - web,pocketbase: call the workspace assistant Buddi (`0050ced`, SRS-BUILDANDDO-BUDDI-001)
 - web: one source for community links, public guildmaster profiles, an honest status page (`1e7be24`, SRS-BUILDANDDO-COMMUNITY-WEB-001)
@@ -97,6 +140,7 @@ the entry.
 
 ### Changed
 
+- governance: refresh the source bindings the fixes invalidated (`b80589f`)
 - handoff: keep workstation paths out of the public archive kit (`9481315`)
 - reconcile: record the CLASSROOM-GLOBAL-001 merge and the runs after it (`ad3e6bb`, SRS-BUILDANDDO-RECONCILE-001)
 - handoff: record the 2026-09-23 branch sweep and the operator step that closes merged names (`8ce9701`)
@@ -128,6 +172,10 @@ the entry.
 - bits: bind the readiness and context locks to the voice section, on LF bytes (`c50f5af`, SRS-BUILDANDDO-BUDDI-003)
 - governance: register SRS-BUILDANDDO-BUDDI-003, Talk to Buddi on the home page (`edb06dd`, SRS-BUILDANDDO-BUDDI-003)
 - handoff: release candidate for the broadcast classroom, and the steps this seat could not run (`d139a66`, SRS-BUILDANDDO-UPGRADE-001)
+- bits: bind the readiness lock to Buddi's tool endpoints, on LF bytes (`678b392`, SRS-BUILDANDDO-BUDDI-002)
+- governance: record the gate results for Buddi's tool endpoints (`0139f21`, SRS-BUILDANDDO-BUDDI-002)
+- web: import the buildanddo-edge worker source as it stands, unchanged (`8f97751`, SRS-BUILDANDDO-BUDDI-002, SRS-BUILDANDDO-WORKSPACE-001)
+- governance: register the dispatch for Buddi's tool endpoints (`f8ac91f`, SRS-BUILDANDDO-BUDDI-002)
 - bits: rebind the locks after merging the community links (`265aa73`, SRS-BUILDANDDO-PUBLIC-REDACTION-001)
 - bits: rebind the readiness lock to the bytes CI checks out (`a4621bb`, SRS-BUILDANDDO-PUBLIC-REDACTION-001)
 - bits: rebind context and readiness locks after merging main (`386feeb`, SRS-BUILDANDDO-UPGRADE-001)
@@ -138,6 +186,11 @@ the entry.
 
 ### Fixed
 
+- workspace: six pages that misdescribed what the reader was looking at (`096fe9e`)
+- lib: three error messages that named the wrong cause (`1cadfcf`)
+- workspace: a control that switches itself off now says why (`b411959`)
+- workspace: six sections failed while the backend answered 200 (`fb29995`)
+- ocn-sweep: the workspace belongs to an environment, so the box reads its own (`b8c826a`)
 - merge: keep main's production address and a machine name out of the staging line (`b5ed896`, SRS-BUILDANDDO-RECONCILE-001)
 - web: the public-lessons plugin accepts lesson files on Windows (`5987608`, SRS-BUILDANDDO-RECONCILE-001)
 - brand: size the lockups so the ruler actually renders (`48d8468`)
@@ -167,6 +220,8 @@ the entry.
 - test: give jsdom URL.revokeObjectURL so a loaded run cannot fail on the blueprint download timer (`56ed003`, SRS-BUILDANDDO-PURPOSE-001)
 - web: secure classrooms and retain lessons (`2778730`, SRS-BUILDANDDO-UPGRADE-001)
 - web: tell visitors a Buddi conversation may be recorded, and say where the live header comes from (`aa2a526`, SRS-BUILDANDDO-BUDDI-003)
+- pocketbase: read Buddi's community links from their one source (`c25a8d1`, SRS-BUILDANDDO-BUDDI-002)
+- pocketbase: say "does not parse" when a published file is broken JSON (`63ee8f5`, SRS-BUILDANDDO-BUDDI-002)
 - ci: a machine name joined into a slug is still that machine (`dfc12ea`, SRS-BUILDANDDO-PUBLIC-REDACTION-001)
 - evidence: bind claims and review handoffs (`d8b569f`, SRS-BUILDANDDO-UPGRADE-001)
 - web,ci: publish no fleet machine name or address from the generators or the bundle (`eaaa80f`, SRS-BUILDANDDO-PUBLIC-REDACTION-001)

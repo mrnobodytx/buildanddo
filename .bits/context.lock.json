@@ -4,24 +4,10 @@
   "findings": [
     {
       "area": "ci",
-      "evidence": "run only by GitHub (.github/workflows/candidate-to-gitlab.yml); referenced by: tests/upgrade/check_work_exchange.py, tests/upgrade/test_work_exchange.py",
-      "severity": "high",
-      "srs": "",
-      "statement": "scripts/ci/candidate_manifest.py is not configured in reachable GitLab jobs"
-    },
-    {
-      "area": "ci",
       "evidence": "referenced by: scripts/deploy/ship.py",
       "severity": "high",
       "srs": "",
       "statement": "scripts/ci/capability_inventory.py is not configured in reachable GitLab jobs"
-    },
-    {
-      "area": "ci",
-      "evidence": "run only by GitHub (.github/workflows/changelog.yml, .github/workflows/pr-governance.yml); referenced by: tests/upgrade/test_readme_check.py",
-      "severity": "high",
-      "srs": "",
-      "statement": "scripts/ci/changelog_gen.py is not configured in reachable GitLab jobs"
     },
     {
       "area": "ci",
@@ -43,27 +29,6 @@
       "severity": "high",
       "srs": "",
       "statement": "scripts/ci/curriculum_link_gate.py is not configured in reachable GitLab jobs"
-    },
-    {
-      "area": "ci",
-      "evidence": "run only by GitHub (.github/actions/datadog-ci-report/action.yml, .github/workflows/datadog-dora.yml, .github/workflows/evidence-epoch.yml); referenced by: scripts/deploy/ship.py",
-      "severity": "high",
-      "srs": "",
-      "statement": "scripts/ci/datadog_publish.py is not configured in reachable GitLab jobs"
-    },
-    {
-      "area": "ci",
-      "evidence": "run only by GitHub (.github/workflows/citadel-stack-telemetry.yml); referenced by: apps/federal_foundry/operator.py, tests/upgrade/test_datadog_metrics.py",
-      "severity": "high",
-      "srs": "",
-      "statement": "scripts/ci/emit_datadog_metrics.py is not configured in reachable GitLab jobs"
-    },
-    {
-      "area": "ci",
-      "evidence": "run only by GitHub (.github/workflows/evidence-epoch.yml); referenced by: apps/federal_foundry/evidence.py, apps/federal_foundry/protocol.py, apps/mission_suite/bundle.py, apps/mission_suite/engine.py, scripts/deploy/ship.py, tests/upgrade/test_work_exchange.py",
-      "severity": "high",
-      "srs": "",
-      "statement": "scripts/ci/evidence_epoch.py is not configured in reachable GitLab jobs"
     },
     {
       "area": "ci",
@@ -95,7 +60,7 @@
     },
     {
       "area": "ci",
-      "evidence": "referenced by: nothing in this repo",
+      "evidence": "referenced by: tests/upgrade/test_ocn_telemetry.py",
       "severity": "high",
       "srs": "",
       "statement": "scripts/ci/ocn_classroom_live.py is not configured in reachable GitLab jobs"
@@ -165,7 +130,7 @@
     },
     {
       "area": "ci",
-      "evidence": "referenced by: tests/upgrade/test_ocn_seat_session.py",
+      "evidence": "referenced by: tests/upgrade/test_ocn_seat_session.py, tests/upgrade/test_ocn_telemetry.py",
       "severity": "high",
       "srs": "",
       "statement": "scripts/ci/ocn_seat_session.py is not configured in reachable GitLab jobs"
@@ -190,20 +155,6 @@
       "severity": "high",
       "srs": "",
       "statement": "scripts/ci/sprint_cycle.py is not configured in reachable GitLab jobs"
-    },
-    {
-      "area": "ci",
-      "evidence": "run only by GitHub (.github/actions/datadog-ci-report/action.yml); referenced by: nothing in this repo",
-      "severity": "high",
-      "srs": "",
-      "statement": "scripts/ci/telemetry_delta.py is not configured in reachable GitLab jobs"
-    },
-    {
-      "area": "ci",
-      "evidence": "run only by GitHub (.github/actions/datadog-ci-report/action.yml); referenced by: nothing in this repo",
-      "severity": "high",
-      "srs": "",
-      "statement": "scripts/ci/telemetry_snapshot.py is not configured in reachable GitLab jobs"
     },
     {
       "area": "ci",
@@ -333,6 +284,13 @@
     },
     {
       "area": "governance",
+      "evidence": ".bits/queue/VCC-BUILDANDDO-OCN-TELEMETRY-001.md: 10/10 tasks done; mark SRS-BUILDANDDO-OCN-TELEMETRY-001 delivered once merged and verified, or add the task that remains",
+      "severity": "medium",
+      "srs": "SRS-BUILDANDDO-OCN-TELEMETRY-001",
+      "statement": "VCC-BUILDANDDO-OCN-TELEMETRY-001 has every task done but SRS-BUILDANDDO-OCN-TELEMETRY-001 is still in_progress"
+    },
+    {
+      "area": "governance",
       "evidence": ".bits/queue/VCC-BUILDANDDO-PRESENCE-001.md: 3/3 tasks done; mark SRS-BUILDANDDO-PRESENCE-001 delivered once merged and verified, or add the task that remains",
       "severity": "medium",
       "srs": "SRS-BUILDANDDO-PRESENCE-001",
@@ -358,6 +316,13 @@
       "severity": "medium",
       "srs": "SRS-BUILDANDDO-QUIZ-001",
       "statement": "VCC-BUILDANDDO-QUIZ-001 has every task done but SRS-BUILDANDDO-QUIZ-001 is still in_progress"
+    },
+    {
+      "area": "governance",
+      "evidence": ".bits/queue/VCC-BUILDANDDO-RECONCILE-001.md: 3/3 tasks done; mark SRS-BUILDANDDO-RECONCILE-001 delivered once merged and verified, or add the task that remains",
+      "severity": "medium",
+      "srs": "SRS-BUILDANDDO-RECONCILE-001",
+      "statement": "VCC-BUILDANDDO-RECONCILE-001 has every task done but SRS-BUILDANDDO-RECONCILE-001 is still in_progress"
     },
     {
       "area": "governance",
@@ -393,6 +358,13 @@
       "severity": "medium",
       "srs": "SRS-BUILDANDDO-SITE-001",
       "statement": "VCC-BUILDANDDO-SITE-001 has every task done but SRS-BUILDANDDO-SITE-001 is still in_progress"
+    },
+    {
+      "area": "governance",
+      "evidence": ".bits/queue/VCC-BUILDANDDO-TRADE-ASSIST-001.md: 6/6 tasks done; mark SRS-BUILDANDDO-TRADE-ASSIST-001 delivered once merged and verified, or add the task that remains",
+      "severity": "medium",
+      "srs": "SRS-BUILDANDDO-TRADE-ASSIST-001",
+      "statement": "VCC-BUILDANDDO-TRADE-ASSIST-001 has every task done but SRS-BUILDANDDO-TRADE-ASSIST-001 is still in_progress"
     },
     {
       "area": "governance",
@@ -447,12 +419,12 @@
   "gates": [
     {
       "configured_providers": [
-        "gitlab",
-        "github"
+        "gitlab"
       ],
       "path": "scripts/ci/agent_context.py",
       "referenced_by": [
         "tests/upgrade/test_gitlab_acceptance.py",
+        "tests/upgrade/test_gitlab_plane.py",
         "tests/upgrade/test_hostinger_readiness.py",
         "tests/upgrade/test_hygiene.py"
       ],
@@ -460,14 +432,14 @@
     },
     {
       "configured_providers": [
-        "github"
+        "gitlab"
       ],
       "path": "scripts/ci/candidate_manifest.py",
       "referenced_by": [
         "tests/upgrade/check_work_exchange.py",
         "tests/upgrade/test_work_exchange.py"
       ],
-      "wired_into_ci": false
+      "wired_into_ci": true
     },
     {
       "configured_providers": [],
@@ -479,13 +451,14 @@
     },
     {
       "configured_providers": [
-        "github"
+        "gitlab"
       ],
       "path": "scripts/ci/changelog_gen.py",
       "referenced_by": [
+        "tests/upgrade/test_gitlab_plane.py",
         "tests/upgrade/test_readme_check.py"
       ],
-      "wired_into_ci": false
+      "wired_into_ci": true
     },
     {
       "configured_providers": [
@@ -517,13 +490,14 @@
     },
     {
       "configured_providers": [
-        "github"
+        "gitlab"
       ],
       "path": "scripts/ci/datadog_publish.py",
       "referenced_by": [
-        "scripts/deploy/ship.py"
+        "scripts/deploy/ship.py",
+        "tests/upgrade/test_gitlab_plane.py"
       ],
-      "wired_into_ci": false
+      "wired_into_ci": true
     },
     {
       "configured_providers": [
@@ -541,18 +515,19 @@
     },
     {
       "configured_providers": [
-        "github"
+        "gitlab"
       ],
       "path": "scripts/ci/emit_datadog_metrics.py",
       "referenced_by": [
         "apps/federal_foundry/operator.py",
-        "tests/upgrade/test_datadog_metrics.py"
+        "tests/upgrade/test_datadog_metrics.py",
+        "tests/upgrade/test_ocn_telemetry.py"
       ],
-      "wired_into_ci": false
+      "wired_into_ci": true
     },
     {
       "configured_providers": [
-        "github"
+        "gitlab"
       ],
       "path": "scripts/ci/evidence_epoch.py",
       "referenced_by": [
@@ -563,7 +538,7 @@
         "scripts/deploy/ship.py",
         "tests/upgrade/test_work_exchange.py"
       ],
-      "wired_into_ci": false
+      "wired_into_ci": true
     },
     {
       "configured_providers": [],
@@ -576,8 +551,18 @@
     },
     {
       "configured_providers": [
-        "gitlab",
-        "github"
+        "gitlab"
+      ],
+      "path": "scripts/ci/gitlab_plane.py",
+      "referenced_by": [
+        "tests/upgrade/test_gitlab_acceptance.py",
+        "tests/upgrade/test_gitlab_plane.py"
+      ],
+      "wired_into_ci": true
+    },
+    {
+      "configured_providers": [
+        "gitlab"
       ],
       "path": "scripts/ci/hostinger_readiness.py",
       "referenced_by": [
@@ -622,7 +607,9 @@
     {
       "configured_providers": [],
       "path": "scripts/ci/ocn_classroom_live.py",
-      "referenced_by": [],
+      "referenced_by": [
+        "tests/upgrade/test_ocn_telemetry.py"
+      ],
       "wired_into_ci": false
     },
     {
@@ -638,7 +625,8 @@
       "path": "scripts/ci/ocn_feature_sweep.py",
       "referenced_by": [
         "scripts/ci/hostinger_checks.py",
-        "scripts/deploy/apply_production_runtime_config.py"
+        "scripts/deploy/apply_production_runtime_config.py",
+        "tests/upgrade/test_ocn_telemetry.py"
       ],
       "wired_into_ci": true
     },
@@ -660,7 +648,8 @@
       ],
       "path": "scripts/ci/ocn_journey_report.py",
       "referenced_by": [
-        "scripts/ci/hostinger_checks.py"
+        "scripts/ci/hostinger_checks.py",
+        "tests/upgrade/test_ocn_telemetry.py"
       ],
       "wired_into_ci": true
     },
@@ -704,7 +693,8 @@
       "configured_providers": [],
       "path": "scripts/ci/ocn_seat_session.py",
       "referenced_by": [
-        "tests/upgrade/test_ocn_seat_session.py"
+        "tests/upgrade/test_ocn_seat_session.py",
+        "tests/upgrade/test_ocn_telemetry.py"
       ],
       "wired_into_ci": false
     },
@@ -722,13 +712,24 @@
     },
     {
       "configured_providers": [
-        "gitlab",
-        "github"
+        "gitlab"
+      ],
+      "path": "scripts/ci/ocn_telemetry.py",
+      "referenced_by": [
+        "scripts/ci/hostinger_checks.py",
+        "tests/upgrade/test_ocn_telemetry.py"
+      ],
+      "wired_into_ci": true
+    },
+    {
+      "configured_providers": [
+        "gitlab"
       ],
       "path": "scripts/ci/public_redaction.py",
       "referenced_by": [
         "scripts/publish/media_contracts.py",
         "tests/upgrade/test_hygiene.py",
+        "tests/upgrade/test_ocn_telemetry.py",
         "tests/upgrade/test_platform_health_public_projection.py",
         "tests/upgrade/test_public_redaction.py"
       ],
@@ -736,8 +737,7 @@
     },
     {
       "configured_providers": [
-        "gitlab",
-        "github"
+        "gitlab"
       ],
       "path": "scripts/ci/readme_check.py",
       "referenced_by": [
@@ -775,8 +775,7 @@
     },
     {
       "configured_providers": [
-        "gitlab",
-        "github"
+        "gitlab"
       ],
       "path": "scripts/ci/submission_readiness.py",
       "referenced_by": [
@@ -788,8 +787,7 @@
     },
     {
       "configured_providers": [
-        "gitlab",
-        "github"
+        "gitlab"
       ],
       "path": "scripts/ci/supply_chain.py",
       "referenced_by": [
@@ -802,30 +800,30 @@
     },
     {
       "configured_providers": [
-        "gitlab",
-        "github"
+        "gitlab"
       ],
       "path": "scripts/ci/system_growth.py",
       "referenced_by": [
+        "tests/upgrade/test_gitlab_plane.py",
         "tests/upgrade/test_system_growth.py"
       ],
       "wired_into_ci": true
     },
     {
       "configured_providers": [
-        "github"
+        "gitlab"
       ],
       "path": "scripts/ci/telemetry_delta.py",
       "referenced_by": [],
-      "wired_into_ci": false
+      "wired_into_ci": true
     },
     {
       "configured_providers": [
-        "github"
+        "gitlab"
       ],
       "path": "scripts/ci/telemetry_snapshot.py",
       "referenced_by": [],
-      "wired_into_ci": false
+      "wired_into_ci": true
     },
     {
       "configured_providers": [],
@@ -835,8 +833,7 @@
     },
     {
       "configured_providers": [
-        "gitlab",
-        "github"
+        "gitlab"
       ],
       "path": "scripts/ci/verify_public_boundary.py",
       "referenced_by": [
@@ -885,7 +882,7 @@
       "wired_into_ci": true
     }
   ],
-  "generated_at": "2026-10-16T20:22:04.180943+00:00",
+  "generated_at": "2026-10-27T20:54:54.857411+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -1096,6 +1093,13 @@
         "title": "Semantic ISR research"
       },
       {
+        "code": "SRS-BUILDANDDO-GITLAB-ONLY-CI-001",
+        "risk": "A2",
+        "spec": ".bits/srs/SRS-BUILDANDDO-GITLAB-ONLY-CI-001.md",
+        "status": "in_progress",
+        "title": "GitLab is the only CI; retire GitHub Actions"
+      },
+      {
         "code": "SRS-BUILDANDDO-GROWTH-001",
         "risk": "A2",
         "spec": ".bits/srs/SRS-BUILDANDDO-GROWTH-001.md",
@@ -1143,6 +1147,20 @@
         "spec": ".bits/srs/SRS-BUILDANDDO-LEARNING-NATIVE-001.md",
         "status": "in_progress",
         "title": "Native learning summary and migration replay on declared PocketBase"
+      },
+      {
+        "code": "SRS-BUILDANDDO-MAIL-001",
+        "risk": "A2",
+        "spec": ".bits/srs/SRS-BUILDANDDO-MAIL-001.md",
+        "status": "in_progress",
+        "title": "Account mail (password reset, verification) through Customer.io's transactional API"
+      },
+      {
+        "code": "SRS-BUILDANDDO-OCN-TELEMETRY-001",
+        "risk": "A2",
+        "spec": ".bits/srs/SRS-BUILDANDDO-OCN-TELEMETRY-001.md",
+        "status": "in_progress",
+        "title": "OCN probe receipts become marked PostHog and Datadog telemetry, published from the release workstation and proven by readback"
       },
       {
         "code": "SRS-BUILDANDDO-PB-METRICS-001",
@@ -1271,6 +1289,13 @@
         "title": "Web test runner emitting JUnit, with workspace component suites"
       },
       {
+        "code": "SRS-BUILDANDDO-TRADE-ASSIST-001",
+        "risk": "A1",
+        "spec": ".bits/srs/SRS-BUILDANDDO-TRADE-ASSIST-001.md",
+        "status": "in_progress",
+        "title": "Guildmaster content assist for TradeBuilder and walk-in, slice 1"
+      },
+      {
         "code": "SRS-BUILDANDDO-TRUST-001",
         "risk": "A2",
         "spec": ".bits/srs/SRS-BUILDANDDO-TRUST-001.md",
@@ -1311,164 +1336,6 @@
     "scripts/ci/hostinger_replay.py"
   ],
   "pipelines": [
-    {
-      "file": ".github/workflows/candidate-to-gitlab.yml",
-      "kind": "workflow",
-      "local_actions": [
-        ".github/actions/datadog-ci-report"
-      ],
-      "name": "BuildAndDo Candidate to GitLab",
-      "npm_scripts": [
-        "build",
-        "lint"
-      ],
-      "provider": "github",
-      "scripts": [
-        "scripts/ci/candidate_manifest.py",
-        "scripts/ci/supply_chain.py",
-        "scripts/ci/verify_public_boundary.py"
-      ],
-      "triggers": [
-        "push",
-        "workflow_dispatch"
-      ]
-    },
-    {
-      "file": ".github/workflows/changelog.yml",
-      "kind": "workflow",
-      "local_actions": [],
-      "name": "BuildAndDo Changelog",
-      "npm_scripts": [],
-      "provider": "github",
-      "scripts": [
-        "scripts/ci/changelog_gen.py",
-        "scripts/ci/readme_check.py"
-      ],
-      "triggers": [
-        "push",
-        "workflow_dispatch"
-      ]
-    },
-    {
-      "file": ".github/workflows/citadel-stack-telemetry.yml",
-      "kind": "workflow",
-      "local_actions": [],
-      "name": "BuildAndDo Citadel Stack Telemetry",
-      "npm_scripts": [],
-      "provider": "github",
-      "scripts": [
-        "scripts/ci/emit_datadog_metrics.py"
-      ],
-      "triggers": [
-        "schedule",
-        "workflow_dispatch"
-      ]
-    },
-    {
-      "file": ".github/workflows/datadog-dora.yml",
-      "kind": "workflow",
-      "local_actions": [],
-      "name": "Datadog DORA Deployment",
-      "npm_scripts": [],
-      "provider": "github",
-      "scripts": [
-        "scripts/ci/datadog_publish.py"
-      ],
-      "triggers": [
-        "workflow_run"
-      ]
-    },
-    {
-      "file": ".github/workflows/evidence-epoch.yml",
-      "kind": "workflow",
-      "local_actions": [],
-      "name": "BuildAndDo Evidence Epoch",
-      "npm_scripts": [
-        "build"
-      ],
-      "provider": "github",
-      "scripts": [
-        "scripts/ci/datadog_publish.py",
-        "scripts/ci/evidence_epoch.py",
-        "scripts/ci/verify_public_boundary.py"
-      ],
-      "triggers": [
-        "push",
-        "workflow_dispatch"
-      ]
-    },
-    {
-      "file": ".github/workflows/growth.yml",
-      "kind": "workflow",
-      "local_actions": [],
-      "name": "BuildAndDo System Growth",
-      "npm_scripts": [],
-      "provider": "github",
-      "scripts": [
-        "scripts/ci/system_growth.py"
-      ],
-      "triggers": [
-        "push",
-        "workflow_dispatch"
-      ]
-    },
-    {
-      "file": ".github/workflows/pr-governance.yml",
-      "kind": "workflow",
-      "local_actions": [
-        ".github/actions/datadog-ci-report"
-      ],
-      "name": "BuildAndDo PR Governance",
-      "npm_scripts": [],
-      "provider": "github",
-      "scripts": [
-        "scripts/ci/agent_context.py",
-        "scripts/ci/changelog_gen.py",
-        "scripts/ci/hostinger_readiness.py",
-        "scripts/ci/public_redaction.py",
-        "scripts/ci/readme_check.py",
-        "scripts/ci/submission_readiness.py",
-        "scripts/ci/supply_chain.py",
-        "scripts/ci/system_growth.py",
-        "scripts/ci/verify_public_boundary.py"
-      ],
-      "triggers": [
-        "pull_request",
-        "workflow_dispatch"
-      ]
-    },
-    {
-      "file": ".github/workflows/supply-chain.yml",
-      "kind": "workflow",
-      "local_actions": [
-        ".github/actions/datadog-ci-report"
-      ],
-      "name": "BuildAndDo Weekly Supply Chain",
-      "npm_scripts": [],
-      "provider": "github",
-      "scripts": [
-        "scripts/ci/supply_chain.py"
-      ],
-      "triggers": [
-        "schedule",
-        "workflow_dispatch"
-      ]
-    },
-    {
-      "file": ".github/actions/datadog-ci-report/action.yml",
-      "kind": "action",
-      "local_actions": [],
-      "name": "Datadog CI report",
-      "npm_scripts": [],
-      "provider": "github",
-      "scripts": [
-        "scripts/ci/datadog_publish.py",
-        "scripts/ci/supply_chain.py",
-        "scripts/ci/telemetry_delta.py",
-        "scripts/ci/telemetry_snapshot.py"
-      ],
-      "triggers": []
-    },
     {
       "configuration_errors": [],
       "file": ".gitlab-ci.yml",
@@ -1526,9 +1393,11 @@
         "scripts/ci/agent_context.py",
         "scripts/ci/classroom_drive.py",
         "scripts/ci/day21_submission.py",
+        "scripts/ci/gitlab_plane.py",
         "scripts/ci/hostinger_readiness.py",
         "scripts/ci/ocn_feature_sweep.py",
         "scripts/ci/ocn_journey_report.py",
+        "scripts/ci/ocn_telemetry.py",
         "scripts/ci/submission_readiness.py",
         "scripts/ci/supply_chain.py",
         "scripts/ci/verify_public_boundary.py",
@@ -1538,9 +1407,11 @@
         "scripts/ci/agent_context.py",
         "scripts/ci/classroom_drive.py",
         "scripts/ci/day21_submission.py",
+        "scripts/ci/gitlab_plane.py",
         "scripts/ci/hostinger_readiness.py",
         "scripts/ci/ocn_feature_sweep.py",
         "scripts/ci/ocn_journey_report.py",
+        "scripts/ci/ocn_telemetry.py",
         "scripts/ci/submission_readiness.py",
         "scripts/ci/supply_chain.py",
         "scripts/ci/verify_public_boundary.py",
@@ -1572,6 +1443,54 @@
       "triggers": [
         "rules (not evaluated)"
       ]
+    },
+    {
+      "configuration_errors": [],
+      "file": ".gitlab/ci/github-plane.yml",
+      "jobs": [
+        "github_intake",
+        "stack_telemetry",
+        "supply_chain_weekly",
+        "evidence_epoch",
+        "main_writeback",
+        "ci_report"
+      ],
+      "kind": "include",
+      "local_actions": [],
+      "name": "github-plane",
+      "npm_scripts": [
+        "build"
+      ],
+      "provider": "gitlab",
+      "required_scripts": [
+        "scripts/ci/candidate_manifest.py",
+        "scripts/ci/changelog_gen.py",
+        "scripts/ci/datadog_publish.py",
+        "scripts/ci/emit_datadog_metrics.py",
+        "scripts/ci/evidence_epoch.py",
+        "scripts/ci/gitlab_plane.py",
+        "scripts/ci/supply_chain.py",
+        "scripts/ci/system_growth.py",
+        "scripts/ci/telemetry_delta.py",
+        "scripts/ci/telemetry_snapshot.py",
+        "scripts/ci/verify_public_boundary.py"
+      ],
+      "scripts": [
+        "scripts/ci/candidate_manifest.py",
+        "scripts/ci/changelog_gen.py",
+        "scripts/ci/datadog_publish.py",
+        "scripts/ci/emit_datadog_metrics.py",
+        "scripts/ci/evidence_epoch.py",
+        "scripts/ci/gitlab_plane.py",
+        "scripts/ci/supply_chain.py",
+        "scripts/ci/system_growth.py",
+        "scripts/ci/telemetry_delta.py",
+        "scripts/ci/telemetry_snapshot.py",
+        "scripts/ci/verify_public_boundary.py"
+      ],
+      "triggers": [
+        "rules (not evaluated)"
+      ]
     }
   ],
   "repo": {
@@ -1586,6 +1505,8 @@
       "mission_suite",
       "pocketbase",
       "research",
+      "sentry_guild",
+      "trade_assist",
       "web",
       "world_twin"
     ],
@@ -1600,17 +1521,18 @@
       "apps/web/tools/release-telemetry.mjs",
       "apps/web/vite.config.js",
       "scripts/deploy/apply_production_runtime_config.py",
+      "scripts/deploy/bundle_telemetry_check.py",
       "scripts/deploy/roadmap_status.py",
       "scripts/deploy/ship.py",
       "scripts/deploy/staging-readback.sh"
     ],
     "migrations": 77,
-    "python_files": 466,
+    "python_files": 495,
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 1863,
-    "web_source_files": 384
+    "tracked_files": 1907,
+    "web_source_files": 386
   },
   "schema_version": 1,
   "sprint_readiness": {
@@ -1689,22 +1611,22 @@
         "why": "Competition readiness requires an evidence-backed learning-through-work journey, a reproducible replay and actual submission criteria."
       }
     ],
-    "source_sha256": "1b41dbec9ff9e6c44a8ba27106e88b1c06ac413bd1f92385af8fce24eacb635c",
+    "source_sha256": "cbe5f66c4da63e01c3b3b53492161e22a3d6ada73d7b13e40d3a63687191e28f",
     "state": "PASS"
   },
   "summary": {
-    "findings": 63,
-    "findings_high": 32,
-    "pipelines": 12,
-    "srs_open": 54,
-    "srs_total": 58,
-    "unwired_gates": 32
+    "findings": 59,
+    "findings_high": 25,
+    "pipelines": 4,
+    "srs_open": 58,
+    "srs_total": 62,
+    "unwired_gates": 25
   },
   "tests": {
     "js_runners": [
       "vitest"
     ],
-    "js_test_files": 107,
+    "js_test_files": 108,
     "js_test_script": true,
     "junit_configured": true,
     "python_suite_entrypoints": [

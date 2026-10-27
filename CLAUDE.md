@@ -55,17 +55,16 @@ work always needs an explicit human dispatch. Then branch
 `apps/web` is the React + Vite site, `apps/pocketbase` is the backend and its
 migrations, `services/praxis_evidence` is the evidence fabric with its own
 Python suites, `scripts/ci` holds the gates, `scripts/deploy` holds the real
-ship pipeline. GitHub is the public collaboration plane; GitLab executes CI and
-holds golden data, infrastructure and deployment authority. The Day-21 GitLab
-job runs all eighteen acceptance profiles and retains the complete evidence
-export. The briefing distinguishes reachable GitLab wiring from GitHub
-definitions; neither source inventory nor a GitHub job failure establishes
-GitLab runtime acceptance.
-GitHub governance runs automatically for public PR changes, with an explicit
-manual diagnostic also available. Both pin one reviewed head. The
-GitLab source-validation include preserves the separate coverage matrices;
-review pipelines require one actor label. Public GitHub review metadata and
-GitLab status publication must come from the receiving CI integration.
+ship pipeline. GitHub is the public collaboration plane and runs nothing. GitLab
+is the only CI and holds golden data, infrastructure and deployment authority.
+`.gitlab/ci/github-plane.yml` pulls public `main` into `buildanddo-source` and
+each trusted PR head into `review/pr-N`, and `scripts/ci/gitlab_plane.py` posts
+every result back as the `gitlab-ci/buildanddo` commit status. The changelog,
+growth lock and evidence chain head are committed back to `main` by GitLab
+with `[skip ci]`. The Day-21 GitLab job runs all eighteen acceptance profiles
+and retains the complete evidence export. The GitLab source-validation include
+preserves the separate coverage matrices; review pipelines require one actor
+label, read from the PR record bound to the exact head under test.
 
 ## Traps that have already cost time
 

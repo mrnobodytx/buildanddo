@@ -1,3 +1,4 @@
+# CGRF: SRS=SRS-BUILDANDDO-CI-001, SRS-BUILDANDDO-OCN-TELEMETRY-001 | CAPS=B | Seat=C-ONE
 # ─── CGRF Header ───────────────────────────────────────────────
 # File:        docs/observability/datadog-ci.md
 # Stage:       06_PLAN
@@ -7,57 +8,64 @@
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-10
-# Depends:     .github/actions/datadog-ci-report/action.yml, .github/workflows/datadog-dora.yml,
-#              .github/workflows/evidence-epoch.yml, scripts/ci/telemetry_snapshot.py,
+# Depends:     scripts/ci/gitlab_plane.py, .gitlab/ci/github-plane.yml, scripts/ci/telemetry_snapshot.py,
 #              scripts/ci/telemetry_delta.py, scripts/ci/datadog_publish.py,
 #              scripts/ci/evidence_epoch.py
 # EnumType:    Doc
-# EnumEdges:   VALIDATES .github/workflows/datadog-dora.yml;
-#              VALIDATES .github/actions/datadog-ci-report/action.yml;
-#              VALIDATES .github/workflows/evidence-epoch.yml;
+# EnumEdges:   VALIDATES scripts/ci/gitlab_plane.py;
+#              VALIDATES .gitlab/ci/github-plane.yml;
 #              VALIDATES scripts/ci/evidence_epoch.py
 # Intent:      Document what BuildAndDo measures per pipeline run, and what an operator must configure.
 # ───────────────────────────────────────────────────────────────
 
 # Datadog CI telemetry, deltas and DORA
 
-Every GitHub Actions run measures itself, compares the result against the last
-successful `main` build, and ships metrics, deltas, events, logs, git metadata
-and test results to the Citadel Nexus Datadog org on **us5.datadoghq.com**.
+GitLab is the only CI (SRS-BUILDANDDO-GITLAB-ONLY-CI-001). Every GitLab pipeline on
+`buildanddo-source` (public `main`) and on `review/pr-N` (a public pull request)
+measures itself, compares the result against the last successful `main` run, and
+ships metrics, deltas, events, logs, git metadata and test results to the Citadel
+Nexus Datadog org on **us5.datadoghq.com**.
 
-## Required GitHub Actions secrets
+## Required GitLab CI/CD variables
 
-| Secret       | Value                | Purpose                                            |
+| Variable     | Value                | Purpose                                            |
 |--------------|----------------------|----------------------------------------------------|
-| `DD_API_KEY` | Datadog API key      | Authenticates metric, event, log, test and DORA submissions. |
-| `DD_SITE`    | `us5.datadoghq.com`  | Datadog site. Optional — workflows default to it.  |
+| `DD_API_KEY` | Datadog API key      | Authenticates metric, event, log and test submissions. Masked. |
+| `DD_SITE`    | `us5.datadoghq.com`  | Datadog site. Optional; the scripts default to it. |
 
-Set them under **Settings → Secrets and variables → Actions**. Until `DD_API_KEY`
-exists every Datadog step logs `SKIP:` and exits zero, so pipelines never fail
-because observability is not wired up yet.
+Set them under **Settings → CI/CD → Variables** on the GitLab project. Until
+`DD_API_KEY` exists every Datadog step logs `SKIP:` and exits zero, so pipelines
+never fail because observability is not wired up yet.
 
 ## Pipeline flow
 
-`.github/actions/datadog-ci-report` runs in both pipelines and performs one pass:
+The `ci_report` job (`python scripts/ci/gitlab_plane.py ci-report`, in
+`.gitlab/ci/github-plane.yml`) runs after acceptance in every `main` and review
+pipeline. It is optional, so telemetry can never turn a pipeline red, and it
+performs one pass:
 
 1. **Collect** — `scripts/ci/telemetry_snapshot.py` measures the build output,
    dependency graph, tracked source, JUnit results, ESLint and knip reports, the
    public-boundary scan and the run itself into one JSON snapshot.
-2. **Baseline** — the newest non-expired `buildanddo-telemetry-main` artifact is
-   downloaded. Absent (first run, expired), the run reports absolute values only.
+2. **Baseline** — the `reports/telemetry/snapshot.json` artifact of the last
+   `ci_report` job on `buildanddo-source` is downloaded with the job token. Absent
+   (first run, expired), the run reports absolute values only.
 3. **Compare** — `scripts/ci/telemetry_delta.py` diffs the two snapshots, applies
    per-metric thresholds and writes the job-summary table plus a delta report.
 4. **Publish** — `scripts/ci/datadog_publish.py` submits gauges, `.delta` gauges,
    one event and structured logs; `datadog-ci` uploads git metadata, JUnit results
    and pipeline-level measures.
-5. **Persist** — the snapshot is uploaded as an artifact. Main-branch runs
-   overwrite the baseline every PR is measured against.
+5. **Persist** — the snapshot is kept as a job artifact. Main-branch runs
+   become the baseline every PR is measured against.
 
 ## Metric catalog
 
 All under the `buildanddo.ci.` prefix, tagged
 `service`, `env`, `pipeline`, `branch`, `repository`, `workflow`, `job_status`,
 `source:github-actions`. Each comparable metric also emits a `.delta` companion.
+
+The `source:github-actions` value is historical. GitLab runs still carry it so existing
+dashboards and monitors keep matching; renaming it is a separate, dashboard-wide change.
 
 | Group      | Metrics                                                                                   |
 |------------|-------------------------------------------------------------------------------------------|
@@ -104,7 +112,7 @@ an absolute and a relative tolerance, so routine drift stays quiet:
 | `governance.findings_high`   | 0        | 0%       | up            |
 | `governance.unwired_gates`   | 0        | 0%       | up            |
 
-Regressions surface as GitHub warning annotations, a job-summary section, a
+Regressions surface in the job log, a
 `warning` Datadog event and `warn`-level logs. They do **not** fail the build:
 the pipelines run in report-only mode. Pass `--fail-on-regression` to the delta
 script to turn any group into a hard gate once the baselines are trusted.
@@ -150,8 +158,8 @@ able to break the thing it observes.
 
 | Trigger              | Producer                                | `trigger` value      |
 |----------------------|-----------------------------------------|----------------------|
-| Push to `main`       | `.github/workflows/evidence-epoch.yml`  | `merge`              |
-| Manual dispatch      | same workflow, `workflow_dispatch`      | `manual`             |
+| Push to `main`       | `evidence_epoch` job in `.gitlab/ci/github-plane.yml`, on `buildanddo-source` | `merge` |
+| Manual run           | `python scripts/ci/evidence_epoch.py --trigger manual` | `manual` |
 | Production promote   | `scripts/deploy/ship.py`, after the production probe returns 200 | `production_deploy` |
 
 Epoch manifests are written to `state/epochs/` — gitignored, and boundary-
@@ -314,18 +322,17 @@ The witness design itself lands in `docs/architecture/EVIDENCE_WITNESS.md`, whic
 is authored separately and is **not present in this repository yet** — this
 sentence is the pointer, not a claim that the file exists. Check before citing it.
 
-## Pipeline traces require the Datadog GitHub App
+## Pipeline traces require the Datadog GitLab integration
 
-Full GitHub Actions pipeline traces (job/step spans, queue time, failed-job
-attribution) are ingested by the Datadog GitHub integration, not by anything a
-repository can install itself. Metrics, events, logs and DORA above work without
-it; pipeline spans and the `datadog-ci measure` values attached to them do not.
-An org admin must, once:
+Full pipeline traces (job spans, queue time, failed-job attribution) come from
+Datadog's GitLab CI Visibility integration, not from anything a repository can
+install itself. Metrics, events and logs above work without it; pipeline spans
+do not. A GitLab maintainer enables it once under the project's **Settings →
+Integrations → Datadog**, with the us5 site and a Datadog API key.
 
-1. Open **Integrations → GitHub** in the us5 Datadog org.
-2. Install the Datadog GitHub App on the `mrnobodytx` account and grant it
-   access to `buildanddo`.
-3. Enable **Enable GitHub Actions CI Visibility** for the repository.
+DORA deployments are emitted by the release controller after an external
+`/_version` readback. The retired GitHub workflow that reported every successful
+candidate as a production deployment is gone.
 
 ## Verifying
 
@@ -333,7 +340,7 @@ An org admin must, once:
 - Events: `sources:github tags:service:buildanddo-web`.
 - Logs: `source:github-actions service:buildanddo-web`.
 - Software Delivery → DORA Metrics: `service:buildanddo-web env:production`.
-- CI Visibility → Pipelines and Tests (after the GitHub App install).
+- CI Visibility → Pipelines and Tests (after the GitLab integration is enabled).
 - Evidence epochs: `buildanddo.epoch.root_created` in Metrics Explorer, and the
   `BuildAndDo Evidence Epochs` dashboard.
 
@@ -345,3 +352,19 @@ An org admin must, once:
   the default branch.
 - `buildanddo.ci.pipeline.succeeded` average below 0.9 — pipeline health.
 - `buildanddo.cd.deployment.lead_time_seconds` p95 trend — DORA lead time.
+
+## OCN probe telemetry (`service:buildanddo-ocn`)
+
+A fourth service name sits next to `buildanddo-web` (CI, RUM, epochs), `buildanddo` (the stack
+collector, SAST) and `buildanddo-public` (release DORA). `scripts/ci/ocn_telemetry.py` publishes what the
+OCN probes measured from the release workstation, off by default. It sends one event per judged run and
+one log per check under `service:buildanddo-ocn`, tagged `env` (the environment probed), `team`,
+`ocn_probe`, `ocn_outcome`, `ocn_persona` and `ocn_run`. No signal carries a host.
+
+Custom metrics exist only behind `--dd-metrics`, which stays off until Plan & Usage has been checked:
+`buildanddo.ocn.run.measured`, `buildanddo.ocn.run.outcome`, `buildanddo.ocn.run.checks_failed` and
+`buildanddo.ocn.feature.alive`. They are gauges tagged `service`, `env`, `team` and `ocn_probe`, and the
+last also `ocn_feature`. The ceiling is 178 series, and no run id, persona or host ever tags a metric.
+Search with `service:buildanddo-ocn ocn_run:<id>`.
+[ocn-telemetry.md](ocn-telemetry.md) holds the event catalogue, the gates, and the verify runbook with
+its controls.

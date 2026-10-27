@@ -38,6 +38,9 @@ with patch.dict(os.environ, {"CITADEL_RELEASE_ENV": "synthetic-unused-store",
         patch.object(Path, "read_text", side_effect=AssertionError("credential read during import")):
     spec.loader.exec_module(release)
 
+# The synthetic artifact is keyless and the synthetic repo ships no checker, so the real bundle
+# key guard refuses every copy. Admission tests stub it; one test below runs it for real.
+REAL_BUNDLE_TELEMETRY = release.bundle_telemetry
 
 class CanonicalTelemetryTests(unittest.TestCase):
     def test_both_release_guards_run_in_the_required_source_assurance_job(self) -> None:
@@ -73,6 +76,7 @@ class CanonicalTelemetryTests(unittest.TestCase):
                         patch.object(release, "git_head", return_value="a" * 40),
                         patch.object(release, "git_branch", return_value="synthetic-branch"),
                         patch.object(release, "write_receipt"),
+                        patch.object(release, "bundle_telemetry", return_value={"ok": True, "checks": {}, "reason": ""}),
                         patch.object(release, "run", side_effect=self.local_command),
                         patch.object(release.urllib.request, "urlopen", side_effect=AssertionError("network call"))):
             patcher.start()
@@ -157,6 +161,12 @@ class CanonicalTelemetryTests(unittest.TestCase):
             self.assertEqual(result["state"], "MUTATED_UNVERIFIED")
             self.assertTrue(result["telemetry"]["ok"])
         self.assertFalse((self.root / "production-webroot").exists())
+
+    def test_bundle_the_key_check_cannot_vouch_for_is_refused_before_copy(self) -> None:
+        self.assertFalse(REAL_BUNDLE_TELEMETRY(ROOT, self.artifact)["ok"])  # keyless synthetic bundle
+        with patch.object(release, "bundle_telemetry", side_effect=REAL_BUNDLE_TELEMETRY):
+            for environment in ("staging", "production"):
+                self.assert_no_copy(environment)  # no checker in the synthetic repo: fails closed
 
     def test_authority_and_complete_artifact_hash_remain_required(self) -> None:
         with patch.object(release, "run") as command:

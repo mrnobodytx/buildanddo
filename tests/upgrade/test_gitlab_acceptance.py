@@ -223,36 +223,55 @@ class GitLabAcceptanceTests(unittest.TestCase):
         hostinger_readiness.check_wiring(ROOT)
         submission_readiness.check_wiring(ROOT)
 
-    def test_github_governance_preserves_automatic_and_manual_review_checks(
-        self,
-    ) -> None:
-        workflow = next(
-            item
-            for item in agent_context.collect_pipelines(ROOT)
-            if item["file"] == ".github/workflows/pr-governance.yml"
+    def test_gitlab_is_the_only_ci_and_reviews_every_public_head(self) -> None:
+        # SRS-BUILDANDDO-GITLAB-ONLY-CI-001: GitHub runs nothing; GitLab reviews both
+        # the public main mirror and every mirrored pull-request head.
+        self.assertFalse(list((ROOT / ".github").glob("workflows/*.y*ml")))
+        self.assertFalse((ROOT / ".github/actions").exists())
+        pipelines = agent_context.collect_pipelines(ROOT)
+        self.assertEqual({item["provider"] for item in pipelines}, {"gitlab"})
+        self.assertIn(".gitlab/ci/github-plane.yml", {item["file"] for item in pipelines})
+        config = gitlab_ci.collect(ROOT)
+        self.assertEqual(config.errors, ())
+        jobs = {job.name: job for job in config.jobs}
+        for name in ("github_intake", "evidence_epoch", "main_writeback", "stack_telemetry", "supply_chain_weekly"):
+            self.assertTrue(jobs[name].required, name)
+        self.assertFalse(jobs["ci_report"].required)
+        sources = {
+            path: (ROOT / path).read_text()
+            for path in (".gitlab-ci.yml", ".gitlab/ci/day21-submission.yml", ".gitlab/ci/source-validation.yml")
+        }
+        gate_rule = (
+            "'$CI_PIPELINE_SOURCE != \"schedule\" && ($CI_COMMIT_BRANCH == \"main\" || "
+            "$CI_COMMIT_BRANCH == \"buildanddo-source\" || $CI_COMMIT_BRANCH =~ /^(sprint|review)\\//)'"
         )
-        self.assertEqual(
-            set(workflow["triggers"]), {"pull_request", "workflow_dispatch"}
+        for path, text in sources.items():
+            with self.subTest(path=path):
+                self.assertNotIn("'$CI_COMMIT_BRANCH == \"main\" || $CI_COMMIT_BRANCH =~ /^sprint\\//'", text)
+        for name in ("integrity_gate", "sprint_replay", "praxis_evidence_tests", "day21_governance",
+                     "day21_full_acceptance", "source_discord", "source_foundry", "source_federal_portfolio",
+                     "source_mission_suite", "source_behavior_coverage", "source_assurance"):
+            with self.subTest(job=name):
+                self.assertIn(jobs[name].file, sources)
+                body = sources[jobs[name].file].split(f"\n{name}:\n", 1)[1].split("\n\n", 1)[0]
+                self.assertIn(gate_rule, body)
+        governance = sources[".gitlab/ci/day21-submission.yml"].split("\nday21_governance:\n", 1)[1]
+        self.assertLess(
+            governance.index("scripts/ci/gitlab_plane.py review-event"),
+            governance.index("scripts/ci/verify_public_boundary.py --gitlab-ci"),
         )
-        text = (ROOT / workflow["file"]).read_text()
-        for event in (
-            "opened",
-            "synchronize",
-            "reopened",
-            "labeled",
-            "unlabeled",
-            "ready_for_review",
-        ):
-            self.assertIn(event, text)
-        self.assertIn(
-            "github.event.pull_request.number || inputs.pull_request_number", text
-        )
-        self.assertIn("github.event.pull_request.head.sha", text)
-        self.assertIn('"$candidate_sha" == "$EVENT_SHA"', text)
-        self.assertNotIn("ref: refs/pull/", text)
-        self.assertEqual(text.count("uses: actions/checkout@v4"), 7)
-        self.assertEqual(text.count("ref: ${{ needs.candidate.outputs.sha }}"), 7)
-        self.assertEqual(text.count("needs: candidate"), 7)
+        self.assertIn("BUILDANDDO_GITHUB_PR_EVENT: state/ci/github-pr-event.json", governance)
+        plane = (ROOT / ".gitlab/ci/github-plane.yml").read_text()
+        bodies = {**{k: v for path, text in sources.items() for k, v in
+                     ((n, text.split(f"\n{n}:\n", 1)[1].split("\n\n", 1)[0]) for n in jobs if f"\n{n}:\n" in text)},
+                  **{n: plane.split(f"\n{n}:\n", 1)[1].split("\n\n", 1)[0] for n in jobs if f"\n{n}:\n" in plane}}
+        for name in ("integrity_gate", "day21_full_acceptance", "source_foundry", "ci_report"):
+            self.assertIn("interruptible: true", bodies[name], name)
+        for name in ("evidence_epoch", "main_writeback", "github_intake"):
+            self.assertNotIn("interruptible", bodies[name], name)
+        for name in ("github_intake", "main_writeback"):
+            body = plane.split(f"\n{name}:\n", 1)[1].split("\n\n", 1)[0]
+            self.assertIn('$CI_COMMIT_REF_PROTECTED == "true"', body, name)
 
     def test_gitlab_preserves_required_coverage_and_actor_gates(self) -> None:
         commands = (
@@ -359,7 +378,8 @@ class GitLabAcceptanceTests(unittest.TestCase):
         for rule in (
             '$DAY21_FULL_ACCEPTANCE == "1" || $DAY21_COMPILE_SUBMISSION == "1"',
             '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "external_pull_request_event"',
-            '$CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH =~ /^sprint\\//',
+            '$CI_PIPELINE_SOURCE != "schedule" && ($CI_COMMIT_BRANCH == "main" || '
+            '$CI_COMMIT_BRANCH == "buildanddo-source" || $CI_COMMIT_BRANCH =~ /^(sprint|review)\\//)',
         ):
             self.assertIn("    - if: '" + rule + "'\n", body)
 

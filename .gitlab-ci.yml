@@ -1,27 +1,33 @@
 # --- CGRF Header ------------------------------------------------
 # File:        .gitlab-ci.yml
 # Stage:       11_COMMIT
-# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-GITLAB-ONLY-CI-001
 # CAPS:        pending
 # CK:          pending
 # Dispatch:    VCC-BUILDANDDO-UPGRADE-001
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-24
-# Depends:     services/praxis_evidence/run_all_tests.py, .gitlab/ci/day21-submission.yml
+# Depends:     services/praxis_evidence/run_all_tests.py, .gitlab/ci/day21-submission.yml, .gitlab/ci/github-plane.yml
 # EnumType:    Workflow
-# EnumEdges:   CONSUMES services/praxis_evidence/run_all_tests.py; CONSUMES .gitlab/ci/day21-submission.yml
+# EnumEdges:   CONSUMES services/praxis_evidence/run_all_tests.py; CONSUMES .gitlab/ci/day21-submission.yml; CONSUMES .gitlab/ci/github-plane.yml
 # Intent:      Keep GitLab testing blocking while isolating mutating Praxis suites from shared backends and production credentials.
 # ----------------------------------------------------------------
-# Private CI for the buildanddo GitLab intake mirror (gitlab.citadel-nexus.com/root/buildanddo).
-# GitHub (mrnobodytx/buildanddo) is the public collaboration/submission plane; this project
-# runs the private release pipeline on a dedicated shell runner (tag: buildanddo).
+# The only CI for buildanddo (SRS-BUILDANDDO-GITLAB-ONLY-CI-001). GitHub (mrnobodytx/buildanddo)
+# is the public collaboration/submission plane and runs nothing. A scheduled job in
+# .gitlab/ci/github-plane.yml pulls public main into the protected branch buildanddo-source and
+# trusted pull-request heads into review/pr-N, then posts each pipeline's result back to GitHub.
+# Everything runs on a dedicated shell runner (tag: buildanddo). Scheduled pipelines run only
+# their own jobs: every gate below excludes CI_PIPELINE_SOURCE == "schedule".
+# Gates are interruptible, so a newer push to the same branch cancels superseded work instead
+# of queueing behind it. Evidence and bookkeeping jobs are not: each merge keeps its epoch.
 stages:
   - verify
   - test
 
 integrity_gate:
   stage: verify
+  interruptible: true
   tags:
     - buildanddo
   script:
@@ -32,10 +38,10 @@ integrity_gate:
     - python3 scripts/ci/verify_public_boundary.py --root .
     - python3 scripts/ci/public_redaction.py scan docs README.md CHANGELOG.md CLAUDE.md AGENTS.md CONTRIBUTING.md
     - python3 scripts/ci/readme_check.py --check
-    # Summary only: the lock is refreshed on main by .github/workflows/growth.yml.
+    # Summary only: main_writeback (.gitlab/ci/github-plane.yml) refreshes the lock on main.
     - python3 scripts/ci/system_growth.py
   rules:
-    - if: '$CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH =~ /^sprint\//'
+    - if: '$CI_PIPELINE_SOURCE != "schedule" && ($CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH == "buildanddo-source" || $CI_COMMIT_BRANCH =~ /^(sprint|review)\//)'
 
 # Day 21 of the campaign. sprint_cycle.py scores a milestone on whether a non-empty string
 # was typed into its evidence field and nothing ever reads that string again - measured
@@ -50,6 +56,7 @@ integrity_gate:
 # commits; without it a shallow clone reports UNMEASURABLE for every one of them.
 sprint_replay:
   stage: verify
+  interruptible: true
   tags:
     - buildanddo
   variables:
@@ -58,10 +65,11 @@ sprint_replay:
     - python3 scripts/ci/selftest_sprint_replay.py
     - python3 scripts/ci/sprint_replay.py
   rules:
-    - if: '$CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH =~ /^sprint\//'
+    - if: '$CI_PIPELINE_SOURCE != "schedule" && ($CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH == "buildanddo-source" || $CI_COMMIT_BRANCH =~ /^(sprint|review)\//)'
 
 praxis_evidence_tests:
   stage: test
+  interruptible: true
   tags:
     - buildanddo
   timeout: 30m
@@ -75,7 +83,7 @@ praxis_evidence_tests:
     - python3 services/praxis_evidence/run_all_tests.py --profile $POCKETBASE_PROFILE --provision
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "external_pull_request_event"'
-    - if: '$CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH =~ /^sprint\//'
+    - if: '$CI_PIPELINE_SOURCE != "schedule" && ($CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH == "buildanddo-source" || $CI_COMMIT_BRANCH =~ /^(sprint|review)\//)'
 
 # BEGIN CITADEL BUILDANDDO VERIFIED RELEASE v1
 # GitLab runner builds and packages the exact candidate after all existing
@@ -115,6 +123,7 @@ buildanddo_release_candidate:
 # during the campaign freeze; tighten it once the security rulesets come back clean.
 code_security_sast:
   stage: verify
+  interruptible: true
   tags:
     - buildanddo
   allow_failure: true
@@ -134,10 +143,11 @@ code_security_sast:
       npx --yes @datadog/datadog-ci static-analysis run \
         --service "$DD_SERVICE" --env "$DD_ENV" --no-verbose
   rules:
-    - if: '$CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH =~ /^sprint\// || $CI_COMMIT_BRANCH =~ /^bits\//'
+    - if: '$CI_PIPELINE_SOURCE != "schedule" && ($CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH == "buildanddo-source" || $CI_COMMIT_BRANCH =~ /^(sprint|review|bits)\//)'
 # END CITADEL CODE SECURITY v1
 
 # BEGIN CITADEL DAY21 SUBMISSION CLOSURE v1
 include:
   - local: '.gitlab/ci/day21-submission.yml'
+  - local: '.gitlab/ci/github-plane.yml'
 # END CITADEL DAY21 SUBMISSION CLOSURE v1

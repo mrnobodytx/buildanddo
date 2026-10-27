@@ -141,6 +141,39 @@ class PublicBoundaryTests(unittest.TestCase):
         self.assertEqual(report["actor"]["status"], "NOT_APPLICABLE")
         self.assertIsNone(report["actor"]["actor_label"])
 
+    def test_public_main_mirror_is_treated_as_the_default_branch(self) -> None:
+        code, report = self.run_gate(
+            "--gitlab-ci",
+            env={
+                "CI_PIPELINE_SOURCE": "push",
+                "CI_COMMIT_BRANCH": boundary.PUBLIC_MAIN_MIRROR,
+                "CI_DEFAULT_BRANCH": "main",
+            },
+        )
+        self.assertEqual(code, 0)
+        self.assertEqual(report["actor"]["status"], "NOT_APPLICABLE")
+
+    def test_review_branch_requires_and_accepts_the_bound_pull_request_export(self) -> None:
+        env = {
+            "CI_PIPELINE_SOURCE": "push",
+            "CI_COMMIT_BRANCH": "review/pr-64",
+            "CI_DEFAULT_BRANCH": "main",
+        }
+        self.assertEqual(self.run_gate("--gitlab-ci", env=env)[0], 1)
+        event = self.github_event()
+        code, report = self.run_gate(
+            "--gitlab-ci", env={**env, "BUILDANDDO_GITHUB_PR_EVENT": str(event)}
+        )
+        self.assertEqual(code, 0)
+        self.assertEqual(report["actor"]["actor_label"], "actor:agent")
+        moved = self.github_event(head={"sha": "b" * 40})
+        self.assertEqual(
+            self.run_gate(
+                "--gitlab-ci", env={**env, "BUILDANDDO_GITHUB_PR_EVENT": str(moved)}
+            )[0],
+            1,
+        )
+
     def test_candidate_and_external_pipelines_require_review_metadata(self) -> None:
         for env in (
             {},
