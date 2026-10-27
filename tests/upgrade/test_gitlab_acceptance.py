@@ -269,6 +269,12 @@ class GitLabAcceptanceTests(unittest.TestCase):
             self.assertIn("interruptible: true", bodies[name], name)
         for name in ("evidence_epoch", "main_writeback", "github_intake"):
             self.assertNotIn("interruptible", bodies[name], name)
+        for name in ("github_intake", "main_writeback", "stack_telemetry"):
+            self.assertIn("tags: [buildanddo-plane]", bodies[name], name)
+        for name in ("integrity_gate", "day21_full_acceptance", "source_foundry", "evidence_epoch", "ci_report"):
+            self.assertNotIn("buildanddo-plane", bodies[name], name)
+        intake = bodies["github_intake"]
+        self.assertLess(intake.index("gitlab_plane.py status"), intake.index("gitlab_plane.py automerge"))
         for name in ("github_intake", "main_writeback"):
             body = plane.split(f"\n{name}:\n", 1)[1].split("\n\n", 1)[0]
             self.assertIn('$CI_COMMIT_REF_PROTECTED == "true"', body, name)
