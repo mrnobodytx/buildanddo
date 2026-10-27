@@ -1194,7 +1194,7 @@
     "tests/upgrade/check_blueprints.py": "b65527c36ce00b988829cbb75ae264105ddebc7bfff1c55b3392f598a1a67d0b",
     "tests/upgrade/check_career_passport.py": "7e95293ee1d4fd17489998ffd48bf20747c2bfe426b4016ba5e4c4e0b9024342",
     "tests/upgrade/check_decision_runtime.py": "29ef64f6144a4fd3df3b77ccd12965ce31860bec8ffdb7cb26606900caacd6e3",
-    "tests/upgrade/check_discordbot.py": "aca60cfd05593162aa10b23c558f90a7c478727f3ef5e682fa0be34b2357ecf5",
+    "tests/upgrade/check_discordbot.py": "ef5bd206b23003410b0be45cd61132ce7586da6f7df8eaf6728e88a6111d8d92",
     "tests/upgrade/check_federal_foundry.py": "19aa1b0249cf106e7c768f74e06b8c4006cdf44f32cab59d91f713888aed4190",
     "tests/upgrade/check_media_corpus.py": "42703ef3531779aef1826543a9dee07f0bb3710a046a3a778735222dd6ae43bb",
     "tests/upgrade/check_mission_suite.py": "fa860124f42c2b62ca3256507f6988d30fe6986d28511f4552cb77e14561979e",
