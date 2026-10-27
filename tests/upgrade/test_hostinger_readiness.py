@@ -191,6 +191,17 @@ class ReadinessTests(unittest.TestCase):
                 readiness.check_wiring(self.root)
             path.write_text(original)
 
+    def test_ci_bookkeeping_does_not_stale_the_review_but_source_still_does(self) -> None:
+        chain = self.root / "scripts/ci/epoch_chain.json"
+        chain.parent.mkdir(parents=True, exist_ok=True)
+        chain.write_text('{"length": 1}')
+        self.refresh()
+        with redirect_stdout(io.StringIO()), redirect_stderr(io.StringIO()):
+            chain.write_text('{"length": 2}')
+            self.assertEqual(readiness.main(["--root", str(self.root), "--check"]), 0)
+            (self.root / "scripts/ci/neighbour.py").write_text("changed")
+            self.assertEqual(readiness.main(["--root", str(self.root), "--check"]), 1)
+
     def test_cli_refresh_checks_and_report_never_create_sprint_completion(self) -> None:
         with redirect_stdout(io.StringIO()) as out, redirect_stderr(io.StringIO()):
             for mode in (["--refresh"], ["--check"], ["--json"], []):
