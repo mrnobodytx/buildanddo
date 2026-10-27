@@ -19,6 +19,7 @@
 # The full Day-21 job separately runs web and both disposable PocketBase profiles.
 source_discord:
   stage: test
+  interruptible: true
   tags: [buildanddo]
   timeout: 10m
   before_script:
@@ -41,6 +42,7 @@ source_discord:
 
 source_foundry:
   stage: test
+  interruptible: true
   tags: [buildanddo]
   # Measured local trace coverage takes nearly nine minutes before packaging.
   timeout: 20m
@@ -73,6 +75,7 @@ source_foundry:
 
 source_federal_portfolio:
   stage: test
+  interruptible: true
   tags: [buildanddo]
   timeout: 10m
   parallel:
@@ -100,6 +103,7 @@ source_federal_portfolio:
 
 source_mission_suite:
   stage: test
+  interruptible: true
   tags: [buildanddo]
   timeout: 10m
   parallel:
@@ -125,6 +129,7 @@ source_mission_suite:
 
 source_behavior_coverage:
   stage: test
+  interruptible: true
   tags: [buildanddo]
   timeout: 10m
   parallel:
@@ -160,6 +165,7 @@ source_behavior_coverage:
 # Their source-only receipt is explicit; it cannot replace runtime acceptance.
 source_assurance:
   stage: test
+  interruptible: true
   tags: [buildanddo]
   timeout: 15m
   parallel:

@@ -262,6 +262,13 @@ class GitLabAcceptanceTests(unittest.TestCase):
         )
         self.assertIn("BUILDANDDO_GITHUB_PR_EVENT: state/ci/github-pr-event.json", governance)
         plane = (ROOT / ".gitlab/ci/github-plane.yml").read_text()
+        bodies = {**{k: v for path, text in sources.items() for k, v in
+                     ((n, text.split(f"\n{n}:\n", 1)[1].split("\n\n", 1)[0]) for n in jobs if f"\n{n}:\n" in text)},
+                  **{n: plane.split(f"\n{n}:\n", 1)[1].split("\n\n", 1)[0] for n in jobs if f"\n{n}:\n" in plane}}
+        for name in ("integrity_gate", "day21_full_acceptance", "source_foundry", "ci_report"):
+            self.assertIn("interruptible: true", bodies[name], name)
+        for name in ("evidence_epoch", "main_writeback", "github_intake"):
+            self.assertNotIn("interruptible", bodies[name], name)
         for name in ("github_intake", "main_writeback"):
             body = plane.split(f"\n{name}:\n", 1)[1].split("\n\n", 1)[0]
             self.assertIn('$CI_COMMIT_REF_PROTECTED == "true"', body, name)
