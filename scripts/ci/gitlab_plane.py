@@ -227,7 +227,10 @@ class GitLab:
         return status == 200
 
     def latest_pipeline(self, sha: str, ref: str) -> dict | None:
-        query = urllib.parse.urlencode({"sha": sha, "ref": ref, "order_by": "id", "sort": "desc", "per_page": 1})
+        # Push pipelines only: the scheduled intake runs on the same ref and SHA, and
+        # reporting it would post intake's own "running" as the commit's result.
+        query = urllib.parse.urlencode({"sha": sha, "ref": ref, "source": "push",
+                                        "order_by": "id", "sort": "desc", "per_page": 1})
         status, data = self.request("GET", self.url(f"/pipelines?{query}"), self.headers(), None)
         if status != 200 or not isinstance(data, list):
             raise PlaneError(f"GitLab pipeline lookup for {ref} returned {status}")

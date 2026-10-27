@@ -192,6 +192,8 @@ class StatusTests(unittest.TestCase):
         code, _ = quiet(plane.cmd_status, argparse.Namespace(intake=str(self.intake)), self.env, http)
         self.assertEqual(code, 0)
         posted = {url.rsplit("/", 1)[1]: body for url, body in http.posts()}
+        lookups = [url for method, url, _, _ in http.calls if method == "GET" and "/pipelines?" in url]
+        self.assertTrue(lookups and all("source=push" in url for url in lookups))
         self.assertEqual(posted[MAIN]["state"], "success")
         self.assertEqual(posted[MAIN]["target_url"], "https://lab/1")
         self.assertEqual(posted[PR_A]["state"], "failure")
