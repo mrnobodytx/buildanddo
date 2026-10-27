@@ -198,6 +198,23 @@ class StatusTests(unittest.TestCase):
         self.assertEqual(posted[FORK]["state"], "pending")
         self.assertTrue(all(body["context"] == plane.STATUS_CONTEXT for body in posted.values()))
 
+    def test_a_branch_from_before_gitlab_only_ci_is_told_to_merge_main(self) -> None:
+        def fake_git(*args: str, **_: object) -> subprocess.CompletedProcess:
+            missing = args[0] == "cat-file" and args[2].startswith(PR_A)
+            return subprocess.CompletedProcess(args, 1 if missing else 0, "merge\n", "")
+
+        http = FakeHttp({
+            ("GET", f"sha={MAIN}"): (200, [{"id": 1, "status": "success", "web_url": "u"}]),
+            ("GET", f"sha={PR_A}"): (200, []),
+            ("GET", "/status"): (200, {"statuses": []}),
+            ("POST", "/statuses/"): (201, {}),
+        })
+        with mock.patch.object(plane, "git", side_effect=fake_git):
+            quiet(plane.cmd_status, argparse.Namespace(intake=str(self.intake)), self.env, http)
+        posted = {url.rsplit("/", 1)[1]: body for url, body in http.posts()}
+        self.assertEqual(posted[PR_A]["state"], "error")
+        self.assertIn("merge main", posted[PR_A]["description"])
+
     def test_an_unchanged_status_is_not_posted_again(self) -> None:
         hub = plane.GitHub(REPO, "t", FakeHttp({
             ("GET", "/status"): (200, {"statuses": [{"context": plane.STATUS_CONTEXT, "state": "success",

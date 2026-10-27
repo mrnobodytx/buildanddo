@@ -21,6 +21,7 @@ include:
 
 day21_governance:
   stage: verify
+  interruptible: true
   tags: [buildanddo]
   script:
     - python3 scripts/ci/hostinger_readiness.py --check
@@ -54,6 +55,7 @@ day21_governance:
 # isolated interpreter, then provisions the declared disposable binaries.
 day21_full_acceptance:
   stage: test
+  interruptible: true
   tags: [buildanddo]
   before_script:
     - node --eval "require('node:assert/strict').equal(process.versions.node.split('.')[0], require('node:fs').readFileSync('.nvmrc', 'utf8').trim())"

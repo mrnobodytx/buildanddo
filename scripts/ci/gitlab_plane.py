@@ -460,12 +460,24 @@ def cmd_status(args: argparse.Namespace, env: dict[str, str], request: Http = ht
     posted = 0
     for sha, ref in targets:
         message = git("log", "-1", "--format=%B", sha, check=False).stdout
-        result = describe(lab.latest_pipeline(sha, ref), bool(SKIP_CI_RE.search(message)))
+        pipeline = lab.latest_pipeline(sha, ref)
+        if pipeline is None and not has_plane(sha):
+            # A review pipeline runs the PR's own CI file. A branch cut before GitLab became
+            # the only CI has no job that matches review/*, so GitLab creates nothing and a
+            # "waiting" status would wait forever. Say what unblocks it instead.
+            result = ("error", "Branch predates GitLab-only CI; merge main to run GitLab checks", "")
+        else:
+            result = describe(pipeline, bool(SKIP_CI_RE.search(message)))
         posted += post_if_changed(hub, sha, *result)
     for number, sha in state.get("held", {}).items():
         posted += post_if_changed(hub, sha, "pending", f"Fork PR #{number}: a maintainer must mirror it to GitLab", "")
     print(f"STATUS: {posted} commit status(es) updated on GitHub.")
     return 0
+
+
+def has_plane(sha: str) -> bool:
+    """True when this commit carries the GitLab-only CI include (and so has review jobs)."""
+    return git("cat-file", "-e", f"{sha}:.gitlab/ci/github-plane.yml", check=False).returncode == 0
 
 
 def post_if_changed(hub: GitHub, sha: str, state: str, description: str, url: str) -> int:

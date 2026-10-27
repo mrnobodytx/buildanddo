@@ -145,6 +145,7 @@ main_writeback:
 # acceptance fails. The main baseline is the last buildanddo-source ci_report artifact.
 ci_report:
   stage: .post
+  interruptible: true
   tags: [buildanddo]
   timeout: 15m
   allow_failure: true
