@@ -64,6 +64,13 @@ it once the mirror workflow stopped.
     GitHub `main` with `[skip ci]`, each as its own commit, retrying when `main` moves.
   - `ci-report` ports the Datadog CI report action. Its baseline comes from GitLab
     artifacts.
+  - `automerge` (added 2026-10-27, owner directive "do all 5") merges an open PR only when
+    every check the manual merge step used holds: a `bits/SRS-*` branch in this repository,
+    exactly one actor label and it is `actor:agent`, not a draft, no `hold` label, GitHub
+    reports it mergeable, and `gitlab-ci/buildanddo` is `success` on that exact head. The
+    merge is pinned to that SHA. The project CI/CD variable `AUTOMERGE=0` switches it off.
+- **Lanes.** `github_intake`, `main_writeback` and `stack_telemetry` run on runners tagged
+  `buildanddo-plane`, so they never queue behind acceptance jobs.
 - **`.gitlab/ci/github-plane.yml`**, included from `.gitlab-ci.yml`: the scheduled jobs
   (`SCHEDULE_TASK` = `intake`, `telemetry`, `supply_chain`), `main_writeback` and
   `ci_report`. Every job that holds a secret runs only on a protected ref.

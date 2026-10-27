@@ -30,6 +30,7 @@ commit status. Bookkeeping commits go back to `main` with `[skip ci]`.
 
     python scripts/ci/gitlab_plane.py intake            # main + trusted PR heads into GitLab
     python scripts/ci/gitlab_plane.py status            # GitLab pipeline state -> GitHub status
+    python scripts/ci/gitlab_plane.py automerge         # merge agent PRs GitLab passed (AUTOMERGE=1)
     python scripts/ci/gitlab_plane.py review-event      # on review/pr-N: export the PR record
     python scripts/ci/gitlab_plane.py fetch-chain       # published evidence chain head
     python scripts/ci/gitlab_plane.py epoch-publish     # epoch outputs -> Datadog
@@ -201,6 +202,11 @@ class GitHub:
                 return item
         return None
 
+    def merge(self, number: int, sha: str, title: str) -> tuple[int, Any]:
+        """Merge pinned to the reviewed head: GitHub refuses if the head moved."""
+        return self.request("PUT", f"{self.api}/repos/{self.repo}/pulls/{number}/merge", self.headers(),
+                            {"merge_method": "merge", "sha": sha, "commit_title": title})
+
     def post_status(self, sha: str, payload: dict) -> int:
         status, _ = self.request("POST", f"{self.api}/repos/{self.repo}/statuses/{sha}", self.headers(), payload)
         return status
@@ -227,7 +233,10 @@ class GitLab:
         return status == 200
 
     def latest_pipeline(self, sha: str, ref: str) -> dict | None:
-        query = urllib.parse.urlencode({"sha": sha, "ref": ref, "order_by": "id", "sort": "desc", "per_page": 1})
+        # Push pipelines only: the scheduled intake runs on the same ref and SHA, and
+        # reporting it would post intake's own "running" as the commit's result.
+        query = urllib.parse.urlencode({"sha": sha, "ref": ref, "source": "push",
+                                        "order_by": "id", "sort": "desc", "per_page": 1})
         status, data = self.request("GET", self.url(f"/pipelines?{query}"), self.headers(), None)
         if status != 200 or not isinstance(data, list):
             raise PlaneError(f"GitLab pipeline lookup for {ref} returned {status}")
@@ -475,6 +484,78 @@ def cmd_status(args: argparse.Namespace, env: dict[str, str], request: Http = ht
     return 0
 
 
+AUTOMERGE_BRANCH_RE = re.compile(r"bits/SRS-[A-Z0-9]+(?:-[A-Z0-9]+)+-[a-z0-9][a-z0-9-]*")
+ACTOR_LABELS = frozenset({"actor:human", "actor:agent", "actor:mixed"})
+
+
+def merge_verdict(pull: dict, repo: str, gitlab_state: str | None, allowed: frozenset[str]) -> str:
+    """Why a PR may or may not merge unattended. "merge" is the only yes.
+
+    Every condition the human merge step checked by hand: one SRS branch, exactly
+    one actor label from the allowed set, same-repository head, not a draft, the
+    GitLab result for this exact head is success, and GitHub reports it mergeable.
+    """
+    if pull.get("draft"):
+        return "draft"
+    if (pull.get("base") or {}).get("ref") != "main":
+        return "base is not main"
+    head = pull.get("head") or {}
+    if (head.get("repo") or {}).get("full_name") != repo:
+        return "head is outside this repository"
+    if not AUTOMERGE_BRANCH_RE.fullmatch(head.get("ref") or ""):
+        return "branch is not bits/<SRS-CODE>-<slug>"
+    labels = {item.get("name") for item in pull.get("labels") or []}
+    actors = labels & ACTOR_LABELS
+    if len(actors) != 1:
+        return "needs exactly one actor label"
+    if not actors <= allowed:
+        return f"{next(iter(actors))} is not merged unattended"
+    if "do-not-merge" in labels or "hold" in labels:
+        return "held by label"
+    if gitlab_state != "success":
+        return f"GitLab result is {gitlab_state or 'missing'}"
+    if pull.get("mergeable") is not True:
+        return "GitHub does not report it mergeable yet"
+    return "merge"
+
+
+def cmd_automerge(args: argparse.Namespace, env: dict[str, str], request: Http = http) -> int:
+    if env.get("AUTOMERGE", "0") != "1":
+        print("SKIP: AUTOMERGE is not 1; pull requests wait for a person.")
+        return 0
+    token = env.get("GITHUB_WRITEBACK_TOKEN", "")
+    if not token:
+        print("SKIP: GITHUB_WRITEBACK_TOKEN is not set; nothing can be merged.")
+        return 0
+    allowed = frozenset(x.strip() for x in env.get("AUTOMERGE_ACTORS", "actor:agent").split(",") if x.strip())
+    hub = GitHub(repository(env), token, request)
+    merged = 0
+    for summary in hub.open_pulls():
+        number = summary.get("number")
+        if type(number) is not int:
+            continue
+        pull = hub.get(f"/pulls/{number}")  # the list omits mergeable
+        sha = (pull.get("head") or {}).get("sha", "")
+        status = hub.status_of(sha, STATUS_CONTEXT) if SHA_RE.fullmatch(sha or "") else None
+        verdict = merge_verdict(pull, hub.repo, (status or {}).get("state"), allowed)
+        if verdict != "merge":
+            print(f"WAIT: PR #{number}: {verdict}")
+            continue
+        if args.dry_run:
+            print(f"DRY RUN: would merge PR #{number} at {sha[:12]}")
+            continue
+        title = f"Merge pull request #{number}: {pull.get('title', '').strip()}"[:250]
+        code, body = hub.merge(number, sha, title)
+        if code == 200 and (body or {}).get("merged"):
+            merged += 1
+            print(f"MERGED: PR #{number} at {sha[:12]} -> {(body or {}).get('sha', '')[:12]}")
+        else:
+            # A moved head or a conflict refuses the merge; the next run re-reads it.
+            print(f"WAIT: PR #{number}: GitHub refused the merge ({code})")
+    print(f"AUTOMERGE: {merged} pull request(s) merged.")
+    return 0
+
+
 def has_plane(sha: str) -> bool:
     """True when this commit carries the GitLab-only CI include (and so has review jobs)."""
     return git("cat-file", "-e", f"{sha}:.gitlab/ci/github-plane.yml", check=False).returncode == 0
@@ -596,7 +677,7 @@ def bookkeeping(sha: str) -> list[Bookkeeping]:
                     f"{by} scripts/ci/changelog_gen.py.\n\nSRS: SRS-BUILDANDDO-CHANGELOG-001\nChangelog: skip"),
         Bookkeeping("scripts/ci/epoch_chain.json", "ci(bits): record {epoch} in the evidence chain [skip ci]",
                     f"Root {{root}}. {by} scripts/ci/evidence_epoch.py so the epoch chain is reconstructable "
-                    "from git history alone.\n\nSRS: SRS-BUILDANDDO-EPOCH-001"),
+                    "from git history alone.\n\nSRS: SRS-BUILDANDDO-EPOCH-001\nChangelog: skip"),
         Bookkeeping(".bits/growth.lock.json", f"chore(growth): record system growth for {sha[:7]} [skip ci]",
                     f"{by} scripts/ci/system_growth.py.\n\nSRS: SRS-BUILDANDDO-GROWTH-001\nChangelog: skip"),
     ]
@@ -767,6 +848,7 @@ def cmd_ci_report(args: argparse.Namespace, env: dict[str, str], request: Http =
 COMMANDS = {
     "intake": cmd_intake,
     "status": cmd_status,
+    "automerge": cmd_automerge,
     "review-event": cmd_review_event,
     "fetch-chain": cmd_fetch_chain,
     "epoch-publish": cmd_epoch_publish,
@@ -780,6 +862,8 @@ def parser() -> argparse.ArgumentParser:
     sub = ap.add_subparsers(dest="command", required=True)
     p = sub.add_parser("intake", help="mirror GitHub main and trusted PR heads into GitLab")
     p.add_argument("--output", default="state/ci/intake.json")
+    p.add_argument("--dry-run", action="store_true")
+    p = sub.add_parser("automerge", help="merge agent PRs whose exact head GitLab passed")
     p.add_argument("--dry-run", action="store_true")
     p = sub.add_parser("status", help="post GitLab pipeline results to GitHub commit statuses")
     p.add_argument("--intake", default="state/ci/intake.json")
