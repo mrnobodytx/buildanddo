@@ -130,6 +130,34 @@ class IntakePlanTests(unittest.TestCase):
         self.assertIn("HOLD: GITLAB_INGEST_TOKEN", out)
 
 
+class IntakePushTests(unittest.TestCase):
+    def test_each_review_branch_is_its_own_push_so_gitlab_runs_a_pipeline_for_it(self) -> None:
+        calls: list[tuple[str, ...]] = []
+
+        def fake_git(*args: str, **_: object) -> subprocess.CompletedProcess:
+            calls.append(args)
+            out = ""
+            if args[0] == "rev-parse":
+                out = MAIN + "\n"
+            elif args[0] == "ls-remote":
+                out = f"{MAIN}\trefs/heads/{plane.MAIN_MIRROR}\n{OLD}\trefs/heads/review/pr-9\n"
+            return subprocess.CompletedProcess(args, 0, out, "")
+
+        http = FakeHttp({("GET", "/pulls?"): (200, [pull(1, PR_A), pull(2, PR_B)]),
+                         ("GET", f"/repository/commits/{MAIN}"): (200, {})})
+        env = {"GITLAB_INGEST_TOKEN": "g", "GITLAB_INGEST_REPO_URL": "https://lab.example.test/root/b.git",
+               "CI_API_V4_URL": "https://lab.example.test/api/v4", "CI_PROJECT_ID": "104"}
+        with tempfile.TemporaryDirectory() as tmp, \
+                mock.patch.object(plane, "git", side_effect=fake_git), \
+                mock.patch.object(plane, "clean_pusher", return_value=Path(tmp)):
+            code, out = quiet(plane.cmd_intake, argparse.Namespace(dry_run=False, output=f"{tmp}/i.json"), env, http)
+        self.assertEqual(code, 0, out)
+        pushes = [c for c in calls if c[0] == "push"]
+        self.assertEqual([c[-1] for c in pushes],
+                         [f"+{PR_A}:refs/heads/review/pr-1", f"+{PR_B}:refs/heads/review/pr-2", ":refs/heads/review/pr-9"])
+        self.assertTrue(all(c[2].startswith("https://oauth2@") for c in pushes))
+
+
 class StatusTests(unittest.TestCase):
     def setUp(self) -> None:
         directory = tempfile.TemporaryDirectory()

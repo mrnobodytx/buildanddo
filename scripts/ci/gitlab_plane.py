@@ -434,10 +434,12 @@ def cmd_intake(args: argparse.Namespace, env: dict[str, str], request: Http = ht
             return 1
         print(f"PROPAGATION VERIFIED: GitLab {MAIN_MIRROR} holds {main_sha}")
 
+        # One ref per push. GitLab creates no pipelines for a push that moves more than a
+        # few branches at once, so a batched push mirrored five PR heads and ran none of them.
         specs = [f"+{sha}:refs/heads/{branch}" for branch, sha in sorted(plan.pushes.items()) if branch != MAIN_MIRROR]
         specs += [f":refs/heads/{branch}" for branch in plan.deletes]
-        if specs:
-            git("push", "--quiet", target, *specs, cwd=pusher, env=auth.env)
+        for spec in specs:
+            git("push", "--quiet", target, spec, cwd=pusher, env=auth.env)
         for branch, sha in sorted(plan.pushes.items()):
             if branch != MAIN_MIRROR:
                 print(f"MIRRORED: {branch} -> {sha[:12]}")
