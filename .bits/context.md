@@ -52,11 +52,12 @@ matrix and retains the receipts, logs and referenced artifacts together. The
 source-validation include retains the native SDK/parser gates and Python
 3.11/3.12 foundry, portfolio and mission coverage. GitLab review pipelines also
 require exactly one actor label; external GitHub reviews require an export
-bound to the tested head. GitHub governance also runs automatically on public PR changes and label updates.
-Manual diagnostics remain available; no required GitLab check is removed. The
+bound to the tested head. GitLab is the only CI (SRS-BUILDANDDO-GITLAB-ONLY-CI-001):
+a scheduled job pulls public `main` into `buildanddo-source` and trusted PR heads into
+`review/pr-N`, every gate runs there, and results return to GitHub as the
+`gitlab-ci/buildanddo` commit status. No required GitLab check is removed. The
 existing private release path remains separately governed. GitHub is the public
-collaboration plane; its workflow definitions and historical check observations
-do not establish GitLab execution or runner health. The browser ships RUM and
+collaboration plane and runs no workflows. The browser ships RUM and
 browser logs. Run the briefing for the current source inventory; configured jobs
 remain unmeasured until actual pipeline records and acceptance exports exist.
 
@@ -104,8 +105,8 @@ acceptance. The contract does not assert a percentage or rewrite sprint state.
 1. Run acceptance on the GitLab `buildanddo` shell runner with Node from `.nvmrc`,
    isolated declared Python dependencies, the locked web toolchain and both
    disposable PocketBase profiles. Retain the entire candidate-bound export and
-   actual failure/skip counts. The earlier GitHub billing annotation is historical
-   evidence about GitHub only; it is not a GitLab prerequisite. Vitest/JUnit, release
+   actual failure/skip counts. The GitHub Actions billing lock is why Actions was
+   retired; it was never a GitLab prerequisite. Vitest/JUnit, release
    tags and supply telemetry now exist; older proposed specs are not a current
    inventory of missing implementations.
    The receiving owner must confirm candidate mirroring, review metadata and

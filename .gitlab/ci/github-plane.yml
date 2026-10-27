@@ -1,0 +1,170 @@
+# ─── CGRF Header ───────────────────────────────────────────────
+# File:        .gitlab/ci/github-plane.yml
+# Stage:       11_COMMIT
+# SRS:         SRS-BUILDANDDO-GITLAB-ONLY-CI-001
+# CAPS:        pending
+# CK:          pending
+# Dispatch:    VCC-BUILDANDDO-GITLAB-ONLY-CI-001
+# Seat:        C-ONE
+# Owner:       Citadel Nexus Inc.
+# Created:     2026-10-27
+# Depends:     scripts/ci/gitlab_plane.py, scripts/ci/evidence_epoch.py, scripts/ci/emit_datadog_metrics.py,
+#              scripts/ci/supply_chain.py, scripts/ci/verify_public_boundary.py
+# EnumType:    Workflow
+# EnumEdges:   CONSUMES scripts/ci/gitlab_plane.py; CONSUMES scripts/ci/evidence_epoch.py;
+#              CONSUMES scripts/ci/emit_datadog_metrics.py; CONSUMES scripts/ci/supply_chain.py;
+#              PRODUCES CHANGELOG.md; PRODUCES .bits/growth.lock.json; PRODUCES scripts/ci/epoch_chain.json
+# Intent:      Do in GitLab everything GitHub Actions used to do, so GitLab is the only CI.
+# ───────────────────────────────────────────────────────────────
+
+# GitHub is where people open and merge pull requests. Nothing runs there any more.
+#
+#   schedule (SCHEDULE_TASK=intake, every 10 min) on buildanddo-source
+#     github_intake  GitHub main      -> buildanddo-source  (protected; same-SHA verified)
+#                    trusted PR heads -> review/pr-N        (no secrets reach these)
+#                    GitLab results   -> GitHub commit status "gitlab-ci/buildanddo"
+#   push to buildanddo-source  every existing gate, plus evidence_epoch, main_writeback, ci_report
+#   push to review/pr-N        every existing gate, plus ci_report
+#
+# Secret-bearing jobs run only on protected refs. Mark GITLAB_INGEST_TOKEN,
+# GITHUB_STATUS_TOKEN and GITHUB_WRITEBACK_TOKEN as protected and masked, and protect
+# buildanddo-source. Review pipelines run code from pull requests and get none of them.
+# Operator setup: .bits/handoffs/2026-10-27-C-ONE-gitlab-only-ci.md
+
+github_intake:
+  stage: verify
+  tags: [buildanddo]
+  timeout: 15m
+  resource_group: buildanddo-github-intake
+  variables:
+    GIT_DEPTH: "0"
+  script:
+    - python3 scripts/ci/gitlab_plane.py intake
+    - python3 scripts/ci/gitlab_plane.py status
+  artifacts:
+    when: always
+    expire_in: 7 days
+    paths:
+      - state/ci/intake.json
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TASK == "intake" && $CI_COMMIT_REF_PROTECTED == "true"'
+    - when: never
+
+# Hourly. Datadog stays a no-op without DD_API_KEY; missing state is a clean SKIP.
+stack_telemetry:
+  stage: verify
+  tags: [buildanddo]
+  timeout: 5m
+  script:
+    - python3 scripts/ci/emit_datadog_metrics.py
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TASK == "telemetry"'
+    - when: never
+
+# Weekly. Finds newly disclosed advisories without waiting for a code change.
+supply_chain_weekly:
+  stage: verify
+  tags: [buildanddo]
+  timeout: 10m
+  script:
+    - python3 scripts/ci/supply_chain.py
+    - python3 scripts/ci/gitlab_plane.py ci-report --pipeline main --skip-static-analysis --skip-provenance
+  artifacts:
+    when: always
+    expire_in: 30 days
+    paths:
+      - reports/supply-chain.json
+      - reports/telemetry/
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TASK == "supply_chain"'
+    - when: never
+
+# The epoch chain is a chain, so epochs are built one at a time (shared resource group).
+# The build is repeated here on purpose: a root over a tree this job built from the
+# commit it describes is a stronger claim than a root over a sibling job's upload.
+evidence_epoch:
+  stage: test
+  tags: [buildanddo]
+  needs: []
+  timeout: 30m
+  resource_group: buildanddo-main-writeback
+  variables:
+    GIT_DEPTH: "0"
+    # evidence_epoch.py reads the GitHub Actions names; they describe this GitLab run.
+    GITHUB_SHA: "$CI_COMMIT_SHA"
+    GITHUB_REF_NAME: "main"
+    GITHUB_REPOSITORY: "mrnobodytx/buildanddo"
+    GITHUB_WORKFLOW: "gitlab:evidence_epoch"
+    GITHUB_RUN_ID: "$CI_PIPELINE_ID"
+    GITHUB_RUN_ATTEMPT: "1"
+    GITHUB_ACTOR: "$GITLAB_USER_LOGIN"
+    GITHUB_OUTPUT: "state/epochs/outputs.env"
+  script:
+    - python3 scripts/ci/verify_public_boundary.py
+    - npm ci
+    - npm run build
+    - python3 scripts/ci/gitlab_plane.py fetch-chain
+    - python3 scripts/ci/evidence_epoch.py --chain state/epochs/chain-head.json --trigger merge
+    # A root that does not recompute from its own manifest is never published.
+    - python3 scripts/ci/evidence_epoch.py --verify state/epochs/latest.json --recheck-files
+    - touch state/epochs/rechecked
+    - python3 scripts/ci/gitlab_plane.py epoch-publish
+  artifacts:
+    when: always
+    # Longer than candidate retention: the manifest is the only copy of the artifact
+    # list the root was computed over, and its purpose is to outlive the artifacts.
+    expire_in: 90 days
+    paths:
+      - state/epochs/
+  rules:
+    - if: '($CI_PIPELINE_SOURCE == "push" || $CI_PIPELINE_SOURCE == "web") && $CI_COMMIT_BRANCH == "buildanddo-source"'
+    - when: never
+
+# Commits the changelog, the chain head and the growth point to GitHub main, each as
+# its own [skip ci] commit, and retries when main moves. It runs even when the epoch
+# failed: the chain head is only written back from a self-verified epoch, and the
+# changelog and growth point do not depend on it.
+main_writeback:
+  stage: .post
+  tags: [buildanddo]
+  timeout: 15m
+  resource_group: buildanddo-main-writeback
+  needs:
+    - job: evidence_epoch
+      artifacts: true
+  variables:
+    GIT_DEPTH: "0"
+  script:
+    - python3 scripts/ci/gitlab_plane.py writeback
+  rules:
+    - if: '($CI_PIPELINE_SOURCE == "push" || $CI_PIPELINE_SOURCE == "web") && $CI_COMMIT_BRANCH == "buildanddo-source" && $CI_COMMIT_REF_PROTECTED == "true"'
+      when: always
+    - when: never
+
+# Telemetry must never turn a pipeline red, so this is optional and runs even when
+# acceptance fails. The main baseline is the last buildanddo-source ci_report artifact.
+ci_report:
+  stage: .post
+  tags: [buildanddo]
+  timeout: 15m
+  allow_failure: true
+  needs:
+    - job: day21_full_acceptance
+      artifacts: true
+      optional: true
+  script:
+    - npm ci
+    - npm run build
+    - python3 scripts/ci/gitlab_plane.py ci-report
+  artifacts:
+    when: always
+    expire_in: 30 days
+    paths:
+      - reports/telemetry/
+      - reports/supply-chain.json
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+      when: never
+    - if: '$CI_COMMIT_BRANCH == "buildanddo-source" || $CI_COMMIT_BRANCH =~ /^review\//'
+      when: always
+    - when: never

@@ -4,24 +4,10 @@
   "findings": [
     {
       "area": "ci",
-      "evidence": "run only by GitHub (.github/workflows/candidate-to-gitlab.yml); referenced by: tests/upgrade/check_work_exchange.py, tests/upgrade/test_work_exchange.py",
-      "severity": "high",
-      "srs": "",
-      "statement": "scripts/ci/candidate_manifest.py is not configured in reachable GitLab jobs"
-    },
-    {
-      "area": "ci",
       "evidence": "referenced by: scripts/deploy/ship.py",
       "severity": "high",
       "srs": "",
       "statement": "scripts/ci/capability_inventory.py is not configured in reachable GitLab jobs"
-    },
-    {
-      "area": "ci",
-      "evidence": "run only by GitHub (.github/workflows/changelog.yml, .github/workflows/pr-governance.yml); referenced by: tests/upgrade/test_readme_check.py",
-      "severity": "high",
-      "srs": "",
-      "statement": "scripts/ci/changelog_gen.py is not configured in reachable GitLab jobs"
     },
     {
       "area": "ci",
@@ -43,27 +29,6 @@
       "severity": "high",
       "srs": "",
       "statement": "scripts/ci/curriculum_link_gate.py is not configured in reachable GitLab jobs"
-    },
-    {
-      "area": "ci",
-      "evidence": "run only by GitHub (.github/actions/datadog-ci-report/action.yml, .github/workflows/datadog-dora.yml, .github/workflows/evidence-epoch.yml); referenced by: scripts/deploy/ship.py",
-      "severity": "high",
-      "srs": "",
-      "statement": "scripts/ci/datadog_publish.py is not configured in reachable GitLab jobs"
-    },
-    {
-      "area": "ci",
-      "evidence": "run only by GitHub (.github/workflows/citadel-stack-telemetry.yml); referenced by: apps/federal_foundry/operator.py, tests/upgrade/test_datadog_metrics.py, tests/upgrade/test_ocn_telemetry.py",
-      "severity": "high",
-      "srs": "",
-      "statement": "scripts/ci/emit_datadog_metrics.py is not configured in reachable GitLab jobs"
-    },
-    {
-      "area": "ci",
-      "evidence": "run only by GitHub (.github/workflows/evidence-epoch.yml); referenced by: apps/federal_foundry/evidence.py, apps/federal_foundry/protocol.py, apps/mission_suite/bundle.py, apps/mission_suite/engine.py, scripts/deploy/ship.py, tests/upgrade/test_work_exchange.py",
-      "severity": "high",
-      "srs": "",
-      "statement": "scripts/ci/evidence_epoch.py is not configured in reachable GitLab jobs"
     },
     {
       "area": "ci",
@@ -190,20 +155,6 @@
       "severity": "high",
       "srs": "",
       "statement": "scripts/ci/sprint_cycle.py is not configured in reachable GitLab jobs"
-    },
-    {
-      "area": "ci",
-      "evidence": "run only by GitHub (.github/actions/datadog-ci-report/action.yml); referenced by: nothing in this repo",
-      "severity": "high",
-      "srs": "",
-      "statement": "scripts/ci/telemetry_delta.py is not configured in reachable GitLab jobs"
-    },
-    {
-      "area": "ci",
-      "evidence": "run only by GitHub (.github/actions/datadog-ci-report/action.yml); referenced by: nothing in this repo",
-      "severity": "high",
-      "srs": "",
-      "statement": "scripts/ci/telemetry_snapshot.py is not configured in reachable GitLab jobs"
     },
     {
       "area": "ci",
@@ -461,12 +412,12 @@
   "gates": [
     {
       "configured_providers": [
-        "gitlab",
-        "github"
+        "gitlab"
       ],
       "path": "scripts/ci/agent_context.py",
       "referenced_by": [
         "tests/upgrade/test_gitlab_acceptance.py",
+        "tests/upgrade/test_gitlab_plane.py",
         "tests/upgrade/test_hostinger_readiness.py",
         "tests/upgrade/test_hygiene.py"
       ],
@@ -474,14 +425,14 @@
     },
     {
       "configured_providers": [
-        "github"
+        "gitlab"
       ],
       "path": "scripts/ci/candidate_manifest.py",
       "referenced_by": [
         "tests/upgrade/check_work_exchange.py",
         "tests/upgrade/test_work_exchange.py"
       ],
-      "wired_into_ci": false
+      "wired_into_ci": true
     },
     {
       "configured_providers": [],
@@ -493,13 +444,14 @@
     },
     {
       "configured_providers": [
-        "github"
+        "gitlab"
       ],
       "path": "scripts/ci/changelog_gen.py",
       "referenced_by": [
+        "tests/upgrade/test_gitlab_plane.py",
         "tests/upgrade/test_readme_check.py"
       ],
-      "wired_into_ci": false
+      "wired_into_ci": true
     },
     {
       "configured_providers": [
@@ -531,13 +483,14 @@
     },
     {
       "configured_providers": [
-        "github"
+        "gitlab"
       ],
       "path": "scripts/ci/datadog_publish.py",
       "referenced_by": [
-        "scripts/deploy/ship.py"
+        "scripts/deploy/ship.py",
+        "tests/upgrade/test_gitlab_plane.py"
       ],
-      "wired_into_ci": false
+      "wired_into_ci": true
     },
     {
       "configured_providers": [
@@ -555,7 +508,7 @@
     },
     {
       "configured_providers": [
-        "github"
+        "gitlab"
       ],
       "path": "scripts/ci/emit_datadog_metrics.py",
       "referenced_by": [
@@ -563,11 +516,11 @@
         "tests/upgrade/test_datadog_metrics.py",
         "tests/upgrade/test_ocn_telemetry.py"
       ],
-      "wired_into_ci": false
+      "wired_into_ci": true
     },
     {
       "configured_providers": [
-        "github"
+        "gitlab"
       ],
       "path": "scripts/ci/evidence_epoch.py",
       "referenced_by": [
@@ -578,7 +531,7 @@
         "scripts/deploy/ship.py",
         "tests/upgrade/test_work_exchange.py"
       ],
-      "wired_into_ci": false
+      "wired_into_ci": true
     },
     {
       "configured_providers": [],
@@ -591,8 +544,18 @@
     },
     {
       "configured_providers": [
-        "gitlab",
-        "github"
+        "gitlab"
+      ],
+      "path": "scripts/ci/gitlab_plane.py",
+      "referenced_by": [
+        "tests/upgrade/test_gitlab_acceptance.py",
+        "tests/upgrade/test_gitlab_plane.py"
+      ],
+      "wired_into_ci": true
+    },
+    {
+      "configured_providers": [
+        "gitlab"
       ],
       "path": "scripts/ci/hostinger_readiness.py",
       "referenced_by": [
@@ -753,8 +716,7 @@
     },
     {
       "configured_providers": [
-        "gitlab",
-        "github"
+        "gitlab"
       ],
       "path": "scripts/ci/public_redaction.py",
       "referenced_by": [
@@ -768,8 +730,7 @@
     },
     {
       "configured_providers": [
-        "gitlab",
-        "github"
+        "gitlab"
       ],
       "path": "scripts/ci/readme_check.py",
       "referenced_by": [
@@ -807,8 +768,7 @@
     },
     {
       "configured_providers": [
-        "gitlab",
-        "github"
+        "gitlab"
       ],
       "path": "scripts/ci/submission_readiness.py",
       "referenced_by": [
@@ -820,8 +780,7 @@
     },
     {
       "configured_providers": [
-        "gitlab",
-        "github"
+        "gitlab"
       ],
       "path": "scripts/ci/supply_chain.py",
       "referenced_by": [
@@ -834,30 +793,30 @@
     },
     {
       "configured_providers": [
-        "gitlab",
-        "github"
+        "gitlab"
       ],
       "path": "scripts/ci/system_growth.py",
       "referenced_by": [
+        "tests/upgrade/test_gitlab_plane.py",
         "tests/upgrade/test_system_growth.py"
       ],
       "wired_into_ci": true
     },
     {
       "configured_providers": [
-        "github"
+        "gitlab"
       ],
       "path": "scripts/ci/telemetry_delta.py",
       "referenced_by": [],
-      "wired_into_ci": false
+      "wired_into_ci": true
     },
     {
       "configured_providers": [
-        "github"
+        "gitlab"
       ],
       "path": "scripts/ci/telemetry_snapshot.py",
       "referenced_by": [],
-      "wired_into_ci": false
+      "wired_into_ci": true
     },
     {
       "configured_providers": [],
@@ -867,8 +826,7 @@
     },
     {
       "configured_providers": [
-        "gitlab",
-        "github"
+        "gitlab"
       ],
       "path": "scripts/ci/verify_public_boundary.py",
       "referenced_by": [
@@ -917,7 +875,7 @@
       "wired_into_ci": true
     }
   ],
-  "generated_at": "2026-10-27T19:18:05.578866+00:00",
+  "generated_at": "2026-10-27T19:38:33.963111+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -1126,6 +1084,13 @@
         "spec": ".bits/srs/SRS-BUILDANDDO-FEDERAL-SEMANTIC-ISR-001.md",
         "status": "proposed",
         "title": "Semantic ISR research"
+      },
+      {
+        "code": "SRS-BUILDANDDO-GITLAB-ONLY-CI-001",
+        "risk": "A2",
+        "spec": ".bits/srs/SRS-BUILDANDDO-GITLAB-ONLY-CI-001.md",
+        "status": "in_progress",
+        "title": "GitLab is the only CI; retire GitHub Actions"
       },
       {
         "code": "SRS-BUILDANDDO-GROWTH-001",
@@ -1358,164 +1323,6 @@
   ],
   "pipelines": [
     {
-      "file": ".github/workflows/candidate-to-gitlab.yml",
-      "kind": "workflow",
-      "local_actions": [
-        ".github/actions/datadog-ci-report"
-      ],
-      "name": "BuildAndDo Candidate to GitLab",
-      "npm_scripts": [
-        "build",
-        "lint"
-      ],
-      "provider": "github",
-      "scripts": [
-        "scripts/ci/candidate_manifest.py",
-        "scripts/ci/supply_chain.py",
-        "scripts/ci/verify_public_boundary.py"
-      ],
-      "triggers": [
-        "push",
-        "workflow_dispatch"
-      ]
-    },
-    {
-      "file": ".github/workflows/changelog.yml",
-      "kind": "workflow",
-      "local_actions": [],
-      "name": "BuildAndDo Changelog",
-      "npm_scripts": [],
-      "provider": "github",
-      "scripts": [
-        "scripts/ci/changelog_gen.py",
-        "scripts/ci/readme_check.py"
-      ],
-      "triggers": [
-        "push",
-        "workflow_dispatch"
-      ]
-    },
-    {
-      "file": ".github/workflows/citadel-stack-telemetry.yml",
-      "kind": "workflow",
-      "local_actions": [],
-      "name": "BuildAndDo Citadel Stack Telemetry",
-      "npm_scripts": [],
-      "provider": "github",
-      "scripts": [
-        "scripts/ci/emit_datadog_metrics.py"
-      ],
-      "triggers": [
-        "schedule",
-        "workflow_dispatch"
-      ]
-    },
-    {
-      "file": ".github/workflows/datadog-dora.yml",
-      "kind": "workflow",
-      "local_actions": [],
-      "name": "Datadog DORA Deployment",
-      "npm_scripts": [],
-      "provider": "github",
-      "scripts": [
-        "scripts/ci/datadog_publish.py"
-      ],
-      "triggers": [
-        "workflow_run"
-      ]
-    },
-    {
-      "file": ".github/workflows/evidence-epoch.yml",
-      "kind": "workflow",
-      "local_actions": [],
-      "name": "BuildAndDo Evidence Epoch",
-      "npm_scripts": [
-        "build"
-      ],
-      "provider": "github",
-      "scripts": [
-        "scripts/ci/datadog_publish.py",
-        "scripts/ci/evidence_epoch.py",
-        "scripts/ci/verify_public_boundary.py"
-      ],
-      "triggers": [
-        "push",
-        "workflow_dispatch"
-      ]
-    },
-    {
-      "file": ".github/workflows/growth.yml",
-      "kind": "workflow",
-      "local_actions": [],
-      "name": "BuildAndDo System Growth",
-      "npm_scripts": [],
-      "provider": "github",
-      "scripts": [
-        "scripts/ci/system_growth.py"
-      ],
-      "triggers": [
-        "push",
-        "workflow_dispatch"
-      ]
-    },
-    {
-      "file": ".github/workflows/pr-governance.yml",
-      "kind": "workflow",
-      "local_actions": [
-        ".github/actions/datadog-ci-report"
-      ],
-      "name": "BuildAndDo PR Governance",
-      "npm_scripts": [],
-      "provider": "github",
-      "scripts": [
-        "scripts/ci/agent_context.py",
-        "scripts/ci/changelog_gen.py",
-        "scripts/ci/hostinger_readiness.py",
-        "scripts/ci/public_redaction.py",
-        "scripts/ci/readme_check.py",
-        "scripts/ci/submission_readiness.py",
-        "scripts/ci/supply_chain.py",
-        "scripts/ci/system_growth.py",
-        "scripts/ci/verify_public_boundary.py"
-      ],
-      "triggers": [
-        "pull_request",
-        "workflow_dispatch"
-      ]
-    },
-    {
-      "file": ".github/workflows/supply-chain.yml",
-      "kind": "workflow",
-      "local_actions": [
-        ".github/actions/datadog-ci-report"
-      ],
-      "name": "BuildAndDo Weekly Supply Chain",
-      "npm_scripts": [],
-      "provider": "github",
-      "scripts": [
-        "scripts/ci/supply_chain.py"
-      ],
-      "triggers": [
-        "schedule",
-        "workflow_dispatch"
-      ]
-    },
-    {
-      "file": ".github/actions/datadog-ci-report/action.yml",
-      "kind": "action",
-      "local_actions": [],
-      "name": "Datadog CI report",
-      "npm_scripts": [],
-      "provider": "github",
-      "scripts": [
-        "scripts/ci/datadog_publish.py",
-        "scripts/ci/supply_chain.py",
-        "scripts/ci/telemetry_delta.py",
-        "scripts/ci/telemetry_snapshot.py"
-      ],
-      "triggers": []
-    },
-    {
       "configuration_errors": [],
       "file": ".gitlab-ci.yml",
       "jobs": [
@@ -1572,6 +1379,7 @@
         "scripts/ci/agent_context.py",
         "scripts/ci/classroom_drive.py",
         "scripts/ci/day21_submission.py",
+        "scripts/ci/gitlab_plane.py",
         "scripts/ci/hostinger_readiness.py",
         "scripts/ci/ocn_feature_sweep.py",
         "scripts/ci/ocn_journey_report.py",
@@ -1585,6 +1393,7 @@
         "scripts/ci/agent_context.py",
         "scripts/ci/classroom_drive.py",
         "scripts/ci/day21_submission.py",
+        "scripts/ci/gitlab_plane.py",
         "scripts/ci/hostinger_readiness.py",
         "scripts/ci/ocn_feature_sweep.py",
         "scripts/ci/ocn_journey_report.py",
@@ -1617,6 +1426,54 @@
       "provider": "gitlab",
       "required_scripts": [],
       "scripts": [],
+      "triggers": [
+        "rules (not evaluated)"
+      ]
+    },
+    {
+      "configuration_errors": [],
+      "file": ".gitlab/ci/github-plane.yml",
+      "jobs": [
+        "github_intake",
+        "stack_telemetry",
+        "supply_chain_weekly",
+        "evidence_epoch",
+        "main_writeback",
+        "ci_report"
+      ],
+      "kind": "include",
+      "local_actions": [],
+      "name": "github-plane",
+      "npm_scripts": [
+        "build"
+      ],
+      "provider": "gitlab",
+      "required_scripts": [
+        "scripts/ci/candidate_manifest.py",
+        "scripts/ci/changelog_gen.py",
+        "scripts/ci/datadog_publish.py",
+        "scripts/ci/emit_datadog_metrics.py",
+        "scripts/ci/evidence_epoch.py",
+        "scripts/ci/gitlab_plane.py",
+        "scripts/ci/supply_chain.py",
+        "scripts/ci/system_growth.py",
+        "scripts/ci/telemetry_delta.py",
+        "scripts/ci/telemetry_snapshot.py",
+        "scripts/ci/verify_public_boundary.py"
+      ],
+      "scripts": [
+        "scripts/ci/candidate_manifest.py",
+        "scripts/ci/changelog_gen.py",
+        "scripts/ci/datadog_publish.py",
+        "scripts/ci/emit_datadog_metrics.py",
+        "scripts/ci/evidence_epoch.py",
+        "scripts/ci/gitlab_plane.py",
+        "scripts/ci/supply_chain.py",
+        "scripts/ci/system_growth.py",
+        "scripts/ci/telemetry_delta.py",
+        "scripts/ci/telemetry_snapshot.py",
+        "scripts/ci/verify_public_boundary.py"
+      ],
       "triggers": [
         "rules (not evaluated)"
       ]
@@ -1655,11 +1512,11 @@
       "scripts/deploy/staging-readback.sh"
     ],
     "migrations": 77,
-    "python_files": 482,
+    "python_files": 484,
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 1891,
+    "tracked_files": 1888,
     "web_source_files": 386
   },
   "schema_version": 1,
@@ -1739,16 +1596,16 @@
         "why": "Competition readiness requires an evidence-backed learning-through-work journey, a reproducible replay and actual submission criteria."
       }
     ],
-    "source_sha256": "6095598a892d47a1828846a9e27037504d2119c326d0bc1cbf36efaaa69200bd",
+    "source_sha256": "9aefb2bd7c0dc7b05f0652d763d5c5c10576a92c9148c94cc75c08a1a878f6c7",
     "state": "PASS"
   },
   "summary": {
-    "findings": 65,
-    "findings_high": 32,
-    "pipelines": 12,
-    "srs_open": 56,
-    "srs_total": 60,
-    "unwired_gates": 32
+    "findings": 58,
+    "findings_high": 25,
+    "pipelines": 4,
+    "srs_open": 57,
+    "srs_total": 61,
+    "unwired_gates": 25
   },
   "tests": {
     "js_runners": [

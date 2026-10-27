@@ -2,7 +2,7 @@
 # ─── CGRF Header ───────────────────────────────────────────────
 # File:        scripts/ci/verify_public_boundary.py
 # Stage:       11_COMMIT
-# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-GITLAB-ONLY-CI-001
 # CAPS:        pending
 # CK:          pending
 # Dispatch:    VCC-BUILDANDDO-UPGRADE-001
@@ -11,7 +11,7 @@
 # Created:     2026-09-21
 # Depends:     .buildanddo/public/path-policy.json
 # EnumType:    Service
-# EnumEdges:   CONSUMES .buildanddo/public/path-policy.json; GATES .gitlab/ci/day21-submission.yml; GATES .github/workflows/pr-governance.yml
+# EnumEdges:   CONSUMES .buildanddo/public/path-policy.json; GATES .gitlab/ci/day21-submission.yml; GATES .gitlab/ci/github-plane.yml
 # Intent:      Enforce the public boundary and one review actor on the executing CI provider without accepting missing or foreign review metadata.
 # ───────────────────────────────────────────────────────────────
 
@@ -26,6 +26,9 @@ import re
 import subprocess
 from pathlib import Path
 from typing import cast
+
+# GitLab branch holding public main; see scripts/ci/gitlab_plane.py MAIN_MIRROR.
+PUBLIC_MAIN_MIRROR = "buildanddo-source"
 
 SECRET_PATTERNS = [
     ("private_key", re.compile(r"-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----")),
@@ -136,7 +139,9 @@ def review_actor(
                 "GitLab external pull requests require a candidate-bound BUILDANDDO_GITHUB_PR_EVENT export."
             )
         branch = os.environ.get("CI_COMMIT_BRANCH", "")
-        if branch and branch == os.environ.get("CI_DEFAULT_BRANCH"):
+        # The public-main mirror is written only by intake, from GitHub main, so like
+        # the default branch it has no review of its own (SRS-BUILDANDDO-GITLAB-ONLY-CI-001).
+        if branch and branch in {os.environ.get("CI_DEFAULT_BRANCH"), PUBLIC_MAIN_MIRROR}:
             return {
                 "provider": "gitlab",
                 "status": "NOT_APPLICABLE",

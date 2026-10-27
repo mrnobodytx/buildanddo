@@ -26,11 +26,13 @@ read `CONTRIBUTING.md` first.
 - `apps/pocketbase` — PocketBase backend, schema shipped via `pb_migrations/`.
 - `services/praxis_evidence` — evidence fabric, tested against a live backend.
 - `scripts/ci`, `scripts/deploy` — boundary scan and the real ship pipeline.
-- GitHub is the public collaboration plane; GitLab executes CI and holds
-  golden, infrastructure, release and deployment authority. Inspect the root
-  GitLab configuration and its reachable includes; GitHub job status does not
-  establish GitLab execution or acceptance. Automatic public PR governance and manual diagnostics remain enabled
-  alongside the required GitLab jobs. Gates must not be disabled to hide failures.
+- GitHub is the public collaboration plane and runs nothing; GitLab is the only
+  CI and holds golden, infrastructure, release and deployment authority
+  (SRS-BUILDANDDO-GITLAB-ONLY-CI-001). A scheduled GitLab job pulls public `main`
+  into `buildanddo-source` and trusted PR heads into `review/pr-N`, runs every
+  gate there and posts the result back as the `gitlab-ci/buildanddo` commit
+  status. Do not add GitHub Actions workflows; the briefing reports one as a high
+  finding. Gates must not be disabled to hide failures.
 
 ## Start here
 
