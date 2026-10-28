@@ -520,7 +520,7 @@
     "apps/web/src/components/workspace/__tests__/PageBoundary.test.jsx": "d405c88e11741163ce08afdd59d70846b8f4443a4621c67d4fbf7a0b989c59b7",
     "apps/web/src/components/workspace/__tests__/SignalMissionProposal.test.jsx": "7655efcc00563688e0f2d3d6b11aa6fbe3a7250cb29e35ed64c27b293899a479",
     "apps/web/src/components/workspace/__tests__/SprintJourney.test.jsx": "d66575b3bdb9b6923c34fbbb3b44633707cd8c2b2f9749012a4601745a8400da",
-    "apps/web/src/components/workspace/__tests__/TutorialCatalog.test.jsx": "a12289586badb1105917763251cf061b4a2151b1fd8c15437223a9fa9893bb8e",
+    "apps/web/src/components/workspace/__tests__/TutorialCatalog.test.jsx": "8a2830d6b4538d02f5499c9c8aaa692d103b5706d92c81009f1074ef95ecba37",
     "apps/web/src/components/workspace/__tests__/WorkspaceAssistant.test.jsx": "dc37030e6968595f68c17476b3505ea167695453837ebbe0071f50dc4290b9fa",
     "apps/web/src/components/workspace/__tests__/WorkspaceHistory.test.jsx": "89bf299fc5ecae123058a50d1b97c1d35e8d43895f36a56924893d855b48ef9b",
     "apps/web/src/components/workspace/__tests__/WorkspaceNotices.test.jsx": "b921973dbb239e1b3590da3946ed6813832c971ce05f154f8e9ec801369873ea",

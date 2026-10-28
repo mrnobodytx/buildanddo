@@ -536,12 +536,12 @@
         "css": 1101,
         "data": 1449,
         "html": 22,
-        "javascript": 73862,
+        "javascript": 73870,
         "markdown": 129
       },
       "readme": true,
       "source_files": 466,
-      "source_lines": 74985,
+      "source_lines": 74993,
       "srs_codes": [
         "SRS-BUILDANDDO-BUDDI-001",
         "SRS-BUILDANDDO-BUDDI-003",
@@ -786,7 +786,7 @@
   "totals": {
     "cgrf_coverage": 0.8399,
     "files": 1112,
-    "source_lines": 181383,
+    "source_lines": 181391,
     "systems": 24,
     "systems_with_readme": 4,
     "systems_with_tests": 23,
