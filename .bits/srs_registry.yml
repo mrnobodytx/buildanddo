@@ -215,6 +215,14 @@ srs:
     owner: C-ONE
     notes: Owner chose "fix it properly" 2026-10-27; job stays blocking; venv PATH and YAML requirement, test isolation, slow-runner time limits and three stale web tests; docker group on fleet hosts is an A3 operator step
 
+  - code: SRS-BUILDANDDO-WEB-COVERAGE-001
+    title: Web coverage meets its declared per-file minimums
+    status: in_progress
+    risk: A1
+    spec: .bits/srs/SRS-BUILDANDDO-WEB-COVERAGE-001.md
+    owner: C-ONE
+    notes: Found once Day-21 web_tests stopped failing on tests (pipeline 6419); 14 globs under 80%; behaviour tests only, thresholds unchanged
+
   - code: SRS-BUILDANDDO-EVIDENCE-CI-001
     title: Run the Praxis evidence suite in public CI
     status: proposed
