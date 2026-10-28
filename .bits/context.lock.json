@@ -368,6 +368,13 @@
     },
     {
       "area": "governance",
+      "evidence": ".bits/queue/VCC-BUILDANDDO-WEB-COVERAGE-001.md: 5/5 tasks done; mark SRS-BUILDANDDO-WEB-COVERAGE-001 delivered once merged and verified, or add the task that remains",
+      "severity": "medium",
+      "srs": "SRS-BUILDANDDO-WEB-COVERAGE-001",
+      "statement": "VCC-BUILDANDDO-WEB-COVERAGE-001 has every task done but SRS-BUILDANDDO-WEB-COVERAGE-001 is still in_progress"
+    },
+    {
+      "area": "governance",
       "evidence": ".bits/queue/VCC-BUILDANDDO-WORLD-TWIN-001.md: 5/5 tasks done; mark SRS-BUILDANDDO-WORLD-TWIN-001 delivered once merged and verified, or add the task that remains",
       "severity": "medium",
       "srs": "SRS-BUILDANDDO-WORLD-TWIN-001",
@@ -875,7 +882,7 @@
       "wired_into_ci": true
     }
   ],
-  "generated_at": "2026-10-27T21:10:42.575927+00:00",
+  "generated_at": "2026-10-28T01:02:27.492629+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -993,6 +1000,13 @@
         "spec": ".bits/srs/SRS-BUILDANDDO-DAY21-CLOSURE-001.md",
         "status": "in_progress",
         "title": "Day-21 submission closure - candidate continuity, browser journey, four-product proof"
+      },
+      {
+        "code": "SRS-BUILDANDDO-DAY21-RUNNER-001",
+        "risk": "A2",
+        "spec": ".bits/srs/SRS-BUILDANDDO-DAY21-RUNNER-001.md",
+        "status": "in_progress",
+        "title": "Day-21 acceptance passes on the GitLab fleet runners"
       },
       {
         "code": "SRS-BUILDANDDO-DECISION-001",
@@ -1296,6 +1310,13 @@
         "title": "BuildAndDo public, workspace and community upgrades"
       },
       {
+        "code": "SRS-BUILDANDDO-WEB-COVERAGE-001",
+        "risk": "A1",
+        "spec": ".bits/srs/SRS-BUILDANDDO-WEB-COVERAGE-001.md",
+        "status": "in_progress",
+        "title": "Web coverage meets its declared per-file minimums"
+      },
+      {
         "code": "SRS-BUILDANDDO-WITNESS-001",
         "risk": "A1",
         "spec": ".bits/srs/SRS-BUILDANDDO-WITNESS-001.md",
@@ -1516,8 +1537,8 @@
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 1888,
-    "web_source_files": 386
+    "tracked_files": 1916,
+    "web_source_files": 410
   },
   "schema_version": 1,
   "sprint_readiness": {
@@ -1596,22 +1617,22 @@
         "why": "Competition readiness requires an evidence-backed learning-through-work journey, a reproducible replay and actual submission criteria."
       }
     ],
-    "source_sha256": "e87f730fe08e91b65710e87c6ac0f22c15b3d177978bf815bbcdaca65c9ba6fb",
+    "source_sha256": "72c8be028698e21a0b11b04f2a8d2ae244ffc3067c285b64c621019284bba96f",
     "state": "PASS"
   },
   "summary": {
-    "findings": 58,
+    "findings": 59,
     "findings_high": 25,
     "pipelines": 4,
-    "srs_open": 57,
-    "srs_total": 61,
+    "srs_open": 59,
+    "srs_total": 63,
     "unwired_gates": 25
   },
   "tests": {
     "js_runners": [
       "vitest"
     ],
-    "js_test_files": 108,
+    "js_test_files": 132,
     "js_test_script": true,
     "junit_configured": true,
     "python_suite_entrypoints": [

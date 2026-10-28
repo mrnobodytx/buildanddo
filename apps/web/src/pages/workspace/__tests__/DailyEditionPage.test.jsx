@@ -75,7 +75,8 @@ it('keeps publication disabled for an editor and exposes a publication failure o
     state.sources.daily_editions.records = [{ id: 'edition1', owner: 'account1', status: 'draft', title: 'Saved draft' }];
     state.sources.daily_editions.writeError = 'The saved version changed. Reload before publishing.';
     render(<Page />);
-    expect(screen.getByRole('button', { name: 'Publish' })).toBeDisabled();
+    // Publishing is owner/admin only (SRS-BUILDANDDO-TRUST-001): an editor gets no Publish control at all.
+    expect(screen.queryByRole('button', { name: 'Publish' })).not.toBeInTheDocument();
     expect(screen.getByRole('alert')).toHaveTextContent('The saved version changed');
 });
 
