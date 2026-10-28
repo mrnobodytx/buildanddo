@@ -25,11 +25,11 @@
 
 | # | Task | Gate command | Status |
 |---|------|--------------|--------|
-| 1 | Public pages and tutorial/content components | `npm run test:coverage` | in_progress |
-| 2 | ERP and research pages | `npm run test:coverage` | in_progress |
-| 3 | Workflow components and `workflowRuns` | `npm run test:coverage` | in_progress |
-| 4 | Planning, curriculum, mission, dossier and Discord libraries | `npm run test:coverage` | in_progress |
-| 5 | Motion components and `MotionContext` | `npm run test:coverage` | in_progress |
+| 1 | Public pages and tutorial/content components | `npm run test:coverage` | done |
+| 2 | ERP and research pages | `npm run test:coverage` | done |
+| 3 | Workflow components and `workflowRuns` | `npm run test:coverage` | done |
+| 4 | Planning, curriculum, mission, dossier and Discord libraries | `npm run test:coverage` | done |
+| 5 | Motion components and `MotionContext` | `npm run test:coverage` | done |
 
 ## Constraints
 
@@ -39,8 +39,8 @@
 
 ## Definition of done
 
-- [ ] Every gate command passes and the output is in the PR.
-- [ ] `python scripts/ci/agent_context.py --check` passes.
-- [ ] `python scripts/ci/verify_public_boundary.py` passes.
-- [ ] Registry status updated for the SRS code.
-- [ ] Anything discovered but out of scope is recorded as a finding, not fixed.
+- [x] Every gate command passes and the output is in the PR.
+- [x] `python scripts/ci/agent_context.py --check` passes.
+- [x] `python scripts/ci/verify_public_boundary.py` passes.
+- [x] Registry status updated for the SRS code.
+- [x] Anything discovered but out of scope is recorded as a finding, not fixed.
