@@ -74,9 +74,7 @@
       "Its business outcome is verified.",
       "A proposal was recorded; execution and outcome remain unproven.",
       "The related service is installed."
-     ],
-     "answer": 1,
-     "explanation": "A saved proposal proves that the plan exists. Later actions and evidence are separate observations."
+     ]
     },
     "references": [
      {
@@ -160,9 +158,7 @@
       "Yes, if the domain appears in search.",
       "Yes, after adding it to a workspace.",
       "No; ownership and the specific change authority must be established."
-     ],
-     "answer": 2,
-     "explanation": "Selection is an organizational choice. Ownership verification and permission for the intended change are separate."
+     ]
     },
     "references": [
      {
@@ -247,9 +243,7 @@
       "The release caused the error spike.",
       "The log contains three failed requests.",
       "The observation was recorded at 09:00 UTC."
-     ],
-     "answer": 0,
-     "explanation": "Causation requires additional evidence. A count or timestamp can be a direct observation when its source is recorded."
+     ]
     },
     "references": [
      {
@@ -336,9 +330,7 @@
       "Keep the old approval automatically.",
       "Return the plan for approval of the new scope.",
       "Mark the mission verified."
-     ],
-     "answer": 1,
-     "explanation": "The new scope changes what was authorized. The saved approval must describe the work actually being performed."
+     ]
     },
     "references": [
      {
@@ -423,9 +415,7 @@
       "Yes, because it is visible.",
       "Yes, if a reviewer clicks complete.",
       "No; external delivery requires its own observable receipt."
-     ],
-     "answer": 2,
-     "explanation": "Evidence should match the claim. UI state and external delivery are different events."
+     ]
     },
     "references": [
      {
@@ -515,9 +505,7 @@
       "A connection has been requested or is awaiting completion.",
       "The service is healthy.",
       "All its data has synchronized."
-     ],
-     "answer": 0,
-     "explanation": "Pending is coordination state. Health and synchronization need later observations."
+     ]
     },
     "references": [
      {
@@ -603,9 +591,7 @@
       "Make the process better.",
       "Use the dashboard every day.",
       "Reduce median response time from an observed baseline to a named target over a defined period."
-     ],
-     "answer": 2,
-     "explanation": "The last measure defines an assessable outcome. Activity alone does not establish improvement."
+     ]
     },
     "references": [
      {
@@ -689,9 +675,7 @@
       "Yes, contacts are workspace members.",
       "No; contact records and account permissions are separate.",
       "Only when the task is high priority."
-     ],
-     "answer": 1,
-     "explanation": "Contact linking describes coordination. Workspace membership remains the authentication and role system’s responsibility."
+     ]
     },
     "references": [
      {
@@ -774,9 +758,7 @@
       "As unscheduled work.",
       "As the Unix epoch.",
       "As automatically due today."
-     ],
-     "answer": 0,
-     "explanation": "A missing value is unknown or unscheduled. Inventing a date distorts the planning view."
+     ]
     },
     "references": [
      {
@@ -860,9 +842,7 @@
       "Subscribe the person to a campaign.",
       "Grant permission to email them.",
       "Store a contact field; outreach and permission are separate."
-     ],
-     "answer": 2,
-     "explanation": "Storage is not consent or delivery. Keep those decisions explicit."
+     ]
     },
     "references": [
      {
@@ -950,9 +930,7 @@
       "The rollback command printed no error.",
       "The previous accepted behavior is observed and retained data remains readable.",
       "Someone said the system looks fine."
-     ],
-     "answer": 1,
-     "explanation": "A command outcome is only one part of recovery. Verify the behavior and data you intended to restore."
+     ]
     },
     "references": [
      {
@@ -1043,9 +1021,7 @@
       "Validation.",
       "Counting source files.",
       "Checking whether a command exists."
-     ],
-     "answer": 0,
-     "explanation": "Validation addresses intended use. File counts and command availability do not establish user value."
+     ]
     },
     "references": [
      {
@@ -1138,9 +1114,7 @@
       "Only in the dropdown.",
       "Only in a tutorial.",
       "In the server request policy as well as the UI."
-     ],
-     "answer": 2,
-     "explanation": "Clients can be bypassed. The server must validate the actual linked record and current caller permissions."
+     ]
     },
     "references": [
      {
@@ -1234,9 +1208,7 @@
       "All its steps ran.",
       "The definition is available to start; it does not prove an execution.",
       "An external message was sent."
-     ],
-     "answer": 1,
-     "explanation": "Definition state and execution history are separate. A real run begins with the start command."
+     ]
     },
     "references": [
      {
@@ -1324,9 +1296,7 @@
       "The outcome is uncertain; reconcile using the existing request identity.",
       "Nothing was saved.",
       "The run is verified."
-     ],
-     "answer": 0,
-     "explanation": "Transport failure and business-operation failure are different. Reconcile the durable result before repeating work."
+     ]
     },
     "references": [
      {
@@ -1411,9 +1381,7 @@
       "This will double every customer’s revenue.",
       "Write something for everybody.",
       "Help first-time editors review a draft using a named checklist."
-     ],
-     "answer": 2,
-     "explanation": "The last statement names a reader and a useful action without promising an unobserved outcome."
+     ]
     },
     "references": [
      {
@@ -1502,9 +1470,7 @@
       "A published article.",
       "Editable structure based on your input.",
       "Independently verified research."
-     ],
-     "answer": 1,
-     "explanation": "The outline is a writing aid. The author supplies content, evidence and review."
+     ]
     },
     "references": [
      {
@@ -1596,9 +1562,7 @@
       "An explanation connecting the answer to the underlying rule.",
       "Wrong.",
       "A score without context."
-     ],
-     "answer": 0,
-     "explanation": "Explanatory feedback supports transfer to another task. A bare score does not explain how to improve."
+     ]
     },
     "references": [
      {
@@ -1683,9 +1647,7 @@
       "Yes, immediately.",
       "Yes, through every connected channel.",
       "No; it records an editorial plan, not an external publishing job."
-     ],
-     "answer": 2,
-     "explanation": "Planning and delivery are separate. The current public content desk does not publish to external accounts."
+     ]
     },
     "references": [
      {
@@ -1774,9 +1736,7 @@
       "Edit it silently while keeping approval.",
       "Return it to draft, correct it and request review again.",
       "Change the publication URL only."
-     ],
-     "answer": 1,
-     "explanation": "The approval applies to the reviewed content. A correction must receive a new review before publication is recorded."
+     ]
     },
     "references": [
      {
@@ -1862,9 +1822,7 @@
       "When the server recorded the operator’s publication assertion.",
       "Guaranteed delivery to every reader.",
       "The exact time an external platform first published the page."
-     ],
-     "answer": 0,
-     "explanation": "The timestamp belongs to the recording operation. External first-publication time requires separate evidence."
+     ]
     },
     "references": [
      {
@@ -1954,9 +1912,7 @@
       "Yes, tasks are the objective.",
       "Yes, if they were high priority.",
       "No; assess the objective’s success measure separately."
-     ],
-     "answer": 2,
-     "explanation": "Tasks are actions. The objective describes the desired result, which still needs its own observation."
+     ]
     },
     "references": [
      {
@@ -2046,9 +2002,7 @@
       "The page uses a popular component library.",
       "A user can reach, operate and leave the dialog using the keyboard.",
       "The page looks good in a screenshot."
-     ],
-     "answer": 1,
-     "explanation": "Observed operation is stronger evidence than the choice of library or a static image."
+     ]
     },
     "references": [
      {
@@ -2143,9 +2097,7 @@
       "Observed results for those readers under the recorded conditions.",
       "Guaranteed success for all users.",
       "Revenue impact across the business."
-     ],
-     "answer": 0,
-     "explanation": "The observation is useful within its scope. Broader claims require broader evidence."
+     ]
     },
     "references": [
      {
@@ -2237,9 +2189,7 @@
       "Yes, merging always deploys.",
       "Yes, if no one reported an error.",
       "No; build, deployment and served behavior need separate evidence."
-     ],
-     "answer": 2,
-     "explanation": "Delivery is a chain of observed steps. A merge establishes only the source integration step."
+     ]
     },
     "references": [
      {

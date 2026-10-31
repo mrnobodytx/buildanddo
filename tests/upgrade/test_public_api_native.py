@@ -2,20 +2,22 @@
 # ─── CGRF Header ───────────────────────────────────────────────
 # File:        tests/upgrade/test_public_api_native.py
 # Stage:       08_TEST
-# SRS:         SRS-BUILDANDDO-BUDDI-002
+# SRS:         SRS-BUILDANDDO-BUDDI-002, SRS-BUILDANDDO-CURRICULUM-PRIVATE-001
 # CAPS:        pending
 # CK:          pending
-# Dispatch:    VCC-BUILDANDDO-BUDDI-002
+# Dispatch:    VCC-BUILDANDDO-BUDDI-002, VCC-BUILDANDDO-CURRICULUM-PRIVATE-001
 # Seat:        C-ONE
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-22
 # Depends:     tests/upgrade/test_dossier_native.py, apps/pocketbase/pb_hooks/public-api.pb.js,
 #              apps/pocketbase/pb_hooks/public-api.js, apps/pocketbase/pb_hooks/buddi-intake.js,
-#              apps/pocketbase/pb_migrations/1792100000_buddi_intake.js
+#              apps/pocketbase/pb_migrations/1792100000_buddi_intake.js, apps/pocketbase/pb_hooks/lesson-keys.js,
+#              tests/upgrade/test_tutorial_learning_native.py
 # EnumType:    Test
 # EnumEdges:   CONSUMES tests/upgrade/test_dossier_native.py; VALIDATES apps/pocketbase/pb_hooks/public-api.pb.js;
 #              VALIDATES apps/pocketbase/pb_hooks/public-api.js; VALIDATES apps/pocketbase/pb_hooks/buddi-intake.js;
-#              VALIDATES apps/pocketbase/pb_migrations/1792100000_buddi_intake.js
+#              VALIDATES apps/pocketbase/pb_migrations/1792100000_buddi_intake.js; VALIDATES apps/pocketbase/pb_hooks/lesson-keys.js;
+#              CONSUMES tests/upgrade/test_tutorial_learning_native.py
 # DAG Node:    none
 # Intent:      Require the voice agent's eight routes to answer from public data only, refuse writes in the declared
 #              order, and keep received requests across a rollback, on the real PocketBase binary.
@@ -27,6 +29,9 @@ The server applies the repository's WHOLE migration set in the production direct
 the lessons, the evidence fabric and the workspace collections are the ones production has. A
 fixture migration then plants private records carrying the word PRIVATE-SENTINEL, and a control in
 each test proves they are really there before asserting that no route ever returns them.
+
+The curriculum files carry no knowledge-check key. The server grades from a synthetic key file that
+test_tutorial_learning_native.stage_lesson_keys generates at test time and stages outside pb_data.
 """
 
 from __future__ import annotations
@@ -50,6 +55,12 @@ ROOT = Path(__file__).resolve().parents[2]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 from tests.upgrade.test_dossier_native import NO_WINDOW, NativeServer  # noqa: E402
+from tests.upgrade.test_tutorial_learning_native import (  # noqa: E402
+    KEY_VARIABLES,
+    NON_ASCII,
+    carries_key_text,
+    stage_lesson_keys,
+)
 
 BINARY = os.environ.get("BUILDANDDO_TEST_POCKETBASE", "")
 PUBLIC = "/api/v1/public"
@@ -186,9 +197,12 @@ class PublicApiServer(NativeServer):
             shutil.copytree(ROOT / "apps/pocketbase/pb_migrations", self.root / "pb_migrations")
             hooks = self.root / "pb_hooks"
             hooks.mkdir()
+            # tutorial-learning.js requires government-access.js at load, so without it every learning route fails.
             for name in ("public-api.pb.js", "public-api.js", "buddi-intake.js", "workspace-access.js", "workflow-policy.js",
-                         "tutorial-learning.pb.js", "tutorial-learning.js"):
+                         "tutorial-learning.pb.js", "tutorial-learning.js", "government-access.js"):
                 shutil.copyfile(ROOT / "apps/pocketbase/pb_hooks" / name, hooks / name)
+            # The key resolver beside tutorial-learning.js, and a synthetic key file outside pb_data.
+            self.keys = stage_lesson_keys(self.root, hooks, self.environment)
             lesson = json.loads((ROOT / "apps/pocketbase/pb_migrations/data/starter-tutorials.json").read_text(encoding="utf-8"))["lessons"][0]
             # Sorts after every product migration it depends on and before 1792100000_buddi_intake.js,
             # so a one-step rollback reverts exactly the intake migration.
@@ -348,12 +362,11 @@ class NativePublicReadTests(unittest.TestCase):
         self.assertEqual((status, replay["state"]), (200, "NO_PUBLIC_RUNS"))
         self.assertEqual(replay["timeline"][0]["event"], "published")
 
-        # The verification step stays meaningful: the knowledge check's answer is never handed out.
-        lesson = json.loads((ROOT / "apps/pocketbase/pb_migrations/data/starter-tutorials.json").read_text(encoding="utf-8"))
-        explanation = next(item for item in lesson["lessons"] if item["slug"] == "release-with-evidence")["lesson"]["check"]["explanation"]
+        # The verification step stays meaningful: the knowledge check's key is never handed out, though the
+        # server holds it (here a synthetic key file) to grade with.
         for document in (demo, state, evidence, replay):
             self.assertFalse(keys(document) & {"answer", "explanation"})
-            self.assertNotIn(explanation[:60], json.dumps(document))
+            self.assertFalse(carries_key_text(json.dumps(document), self.server.keys), "a public route carried key text")
 
     def test_product_context_measures_published_files_and_refuses_the_html_shell(self) -> None:
         _, context = self.get("/product-context")
@@ -399,6 +412,46 @@ class NativePublicReadTests(unittest.TestCase):
         self.assertEqual(learning["tutorial"]["content_digest"], state["content_digest"])
         status, by_record = self.get(f"/challenges/{self.record_id('release-with-evidence')}/state")
         self.assertEqual((status, by_record["content_digest"]), (200, state["content_digest"]))
+
+    def test_published_digest_is_the_enrollment_and_certificate_digest(self) -> None:
+        # Every authored lesson in all four curricula binds under the key file Python computed,
+        # including the lessons whose question or choices carry non-ASCII text.
+        status, _, _, health = self.server.call("GET", "/api/buildanddo/learning/keys-health")
+        self.assertEqual((status, health), (200, {"schema_version": 1, "keys": "SYNTHETIC", "lessons": 35, "gradable": 35,
+                                                  "unavailable": 0}))
+        for slug in NON_ASCII:
+            _, published = self.get(f"/challenges/{slug}/state")
+            self.assertEqual(published["verifier"]["state"], "SERVER_CHECKED", slug)
+        slug = "release-with-evidence"
+        _, state = self.get(f"/challenges/{slug}/state")
+        self.assertEqual(state["verifier"]["state"], "SERVER_CHECKED")
+        status, _, _, auth = self.server.call("POST", "/api/collections/users/auth-with-password",
+                                              {"identity": "alice@fixture.invalid", "password": "local-fixture-password-only"})
+        self.assertEqual(status, 200)
+        headers = {"Authorization": auth["token"]}
+        path = "/api/buildanddo/learning/" + self.record_id(slug)
+        status, _, _, detail = self.server.call("GET", path, headers=headers)
+        self.assertEqual(status, 200)
+        lesson, digest = detail["tutorial"]["lesson"], detail["tutorial"]["content_digest"]
+        self.assertEqual(digest, state["content_digest"])
+
+        def act(action: str, payload: dict) -> dict:
+            status, _, _, result = self.server.call("POST", path, {"action": action, "payload": payload, "content_digest": digest},
+                                                    headers)
+            self.assertEqual(status, 200, action)
+            return result
+
+        enrolled = act("start", {})
+        for index in range(len(lesson["sections"])):
+            act("section", {"index": index})
+        act("practice", {"checks": [True] * len(lesson["exercise"]["checklist"])})
+        finished = act("answer", {"choice": self.server.keys[slug]["answer"]})
+        self.assertTrue(finished["feedback"]["correct"])
+        certificate = finished["enrollment"]["certificate"]
+        # One digest formula: the published lesson digest is the one the certificate is bound to.
+        self.assertEqual(certificate["content_digest"], state["content_digest"])
+        self.assertEqual(enrolled["tutorial"]["content_digest"], state["content_digest"])
+        self.assertEqual(self.get(f"/challenges/{slug}/state")[1]["content_digest"], state["content_digest"])
 
     def record_id(self, slug: str) -> str:
         token = self.server.admin()
@@ -481,6 +534,38 @@ class NativePublicReadTests(unittest.TestCase):
         self.assertIn("claim", unsupported["supported_types"])
         # Fabric evidence is not linked to lessons, so asking for it under a lesson finds nothing.
         self.assertEqual(self.get("/evidence?challenge_id=release-with-evidence&evidence_id=CLM-FIX-0001")[0], 404)
+
+
+@unittest.skipUnless(BINARY and Path(BINARY).is_file(), "Native PocketBase unavailable; public API acceptance remains open.")
+class NativeUngradableCatalogueTests(unittest.TestCase):
+    """Without usable keys the catalogue still answers; it only stops publishing a digest it cannot grade."""
+
+    def test_unusable_or_absent_keys_publish_no_digest_and_never_fail_the_catalogue(self) -> None:
+        site = Site()
+        self.addCleanup(site.server_close)
+        self.addCleanup(site.shutdown)
+        server = PublicApiServer(BINARY, {"BUDDI_TOOL_SECRET": AGENT_HEADER_VALUE, "BUILDANDDO_PUBLIC_ORIGIN": site.base})
+        self.addCleanup(server.close)
+        named = server.environment[KEY_VARIABLES[0]]
+        for case, value in (("INVALID", named + ".missing"), ("ABSENT", None)):
+            with self.subTest(keys=case):
+                server.stop()
+                if value is None:
+                    server.environment.pop(KEY_VARIABLES[0], None)
+                else:
+                    server.environment[KEY_VARIABLES[0]] = value
+                server.start()
+                status, _, _, health = server.call("GET", "/api/buildanddo/learning/keys-health")
+                self.assertEqual((status, health["keys"], health["gradable"], health["unavailable"]), (200, case, 0, 35))
+                status, _, _, state = server.call("GET", PUBLIC + "/challenges/release-with-evidence/state")
+                self.assertEqual((status, state["state"]), (200, "PUBLISHED"))
+                self.assertIsNone(state["content_digest"])
+                self.assertEqual(state["verifier"]["state"], "UNAVAILABLE")
+                status, _, _, evidence = server.call("GET", PUBLIC + "/evidence?challenge_id=release-with-evidence")
+                self.assertEqual((status, evidence["items"][-1]["state"]), (200, "UNAVAILABLE"))
+                self.assertIsNone(evidence["items"][-1]["content_digest"])
+                status, _, _, demo = server.call("GET", PUBLIC + "/challenges/demo")
+                self.assertEqual((status, demo["state"]), (200, "OK"))
 
 
 @unittest.skipUnless(BINARY and Path(BINARY).is_file(), "Native PocketBase unavailable; public API acceptance remains open.")

@@ -1,16 +1,16 @@
 # ─── CGRF Header ───────────────────────────────────────────────
 # File:        tests/assurance/runtime.py
 # Stage:       08_TEST
-# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-CURRICULUM-PRIVATE-001
 # CAPS:        pending
 # CK:          pending
-# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-CURRICULUM-PRIVATE-001
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-22
-# Depends:     tests/upgrade/test_workspace_native.py, tests/upgrade/government_fixture.py
+# Depends:     tests/upgrade/test_workspace_native.py, tests/upgrade/government_fixture.py, tests/upgrade/test_tutorial_learning_native.py
 # EnumType:    Test
-# EnumEdges:   CONSUMES tests/upgrade/test_workspace_native.py; CONSUMES tests/upgrade/government_fixture.py
+# EnumEdges:   CONSUMES tests/upgrade/test_workspace_native.py; CONSUMES tests/upgrade/government_fixture.py; CONSUMES tests/upgrade/test_tutorial_learning_native.py
 # Intent:      Exercise full public application policies on a disposable native backend with recoverable synthetic data.
 # ───────────────────────────────────────────────────────────────
 
@@ -25,6 +25,7 @@ import shutil
 from typing import Any
 
 from tests.upgrade.government_fixture import membership_seed
+from tests.upgrade.test_tutorial_learning_native import stage_lesson_keys
 from tests.upgrade.test_workspace_native import (
     WorkspaceServer,
     ROOT,
@@ -81,6 +82,9 @@ class AssuranceServer(WorkspaceServer):
                 shutil.copyfile(
                     ROOT / "apps/pocketbase/pb_hooks" / name, self.root / "hooks" / name
                 )
+            # Grading keys are private: the resolver beside tutorial-learning.js and a synthetic key
+            # file, generated now from public text, outside the backed-up data directory.
+            self.keys = stage_lesson_keys(self.root, self.root / "hooks", self.environment)
             for name in EXTRA_MIGRATIONS:
                 shutil.copyfile(
                     ROOT / "apps/pocketbase/pb_migrations" / name,
@@ -184,6 +188,10 @@ class AssuranceServer(WorkspaceServer):
                 f"Native fixture request failed: {method} {path} ({status})."
             )
         return result
+
+    def answer(self, lesson: dict[str, Any]) -> int:
+        """The synthetic correct choice for a catalogue lesson; no API response carries a key."""
+        return self.keys[lesson["slug"]]["answer"]
 
     def lesson(self, *, actor: str = "alice") -> dict[str, Any]:
         """Resolve a real installed general lesson through its native catalogue."""

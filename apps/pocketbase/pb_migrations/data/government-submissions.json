@@ -106,9 +106,7 @@
       "Upload both to be safe.",
       "Follow the current opportunity's exact one-document and format instructions.",
       "Assume every agency uses a 15-slide limit."
-     ],
-     "answer": 1,
-     "explanation": "The current official opportunity controls the format and submission channel. A planning example cannot establish those rules."
+     ]
     },
     "references": [
      {
@@ -204,9 +202,7 @@
       "Technical behavior for the tested inputs.",
       "Eligibility for any government opportunity.",
       "Authorization to certify company representations."
-     ],
-     "answer": 0,
-     "explanation": "Local test evidence supports the tested behavior. Eligibility and submission authority require their own applicable evidence and human decisions."
+     ]
     },
     "references": [
      {
@@ -302,9 +298,7 @@
       "The product is deployed and mission-ready.",
       "The reported accuracy is necessarily correct.",
       "The referenced bytes match; the report's scope and conclusions still need review."
-     ],
-     "answer": 2,
-     "explanation": "Integrity checks protect the relationship to bytes. They do not validate the measurement method, semantics or deployment."
+     ]
     },
     "references": [
      {
@@ -405,9 +399,7 @@
       "Nothing; the suite has inspected the PDF.",
       "A human must inspect the rendered file and confirm the declaration matches its bytes and rules.",
       "Submit a separate slide deck automatically."
-     ],
-     "answer": 1,
-     "explanation": "The readiness operation evaluates metadata and evidence references. It cannot establish properties of document bytes it never received."
+     ]
     },
     "references": [
      {
@@ -502,9 +494,7 @@
       "Yes, possession establishes all rights.",
       "Only if the applicable rights permit the intended redistribution.",
       "Yes, after changing the filename."
-     ],
-     "answer": 1,
-     "explanation": "Access, processing, derivative and redistribution rights are distinct. The applicable agreement and recipient purpose control disclosure."
+     ]
     },
     "references": [
      {
@@ -598,9 +588,7 @@
       "Remove the tag and continue.",
       "Upload only a small sample.",
       "Reject it and use the authorized controlled-data handling process."
-     ],
-     "answer": 2,
-     "explanation": "Changing a label does not change handling obligations. This public mission suite intentionally excludes CUI."
+     ]
     },
     "references": [
      {
@@ -701,9 +689,7 @@
       "Divergence is recorded; do not describe it as the original verified run.",
       "Ignore it because the UI looks the same.",
       "Promote the candidate to an admitted cue."
-     ],
-     "answer": 0,
-     "explanation": "A changed source identity or output is a different result. Keep the discrepancy visible and investigate it before making a reproducibility claim."
+     ]
     },
     "references": [
      {
@@ -799,9 +785,7 @@
       "A government award.",
       "The receipt state stated by that acknowledgment, for that artifact and channel.",
       "Approval for any future operational deployment."
-     ],
-     "answer": 1,
-     "explanation": "Receipt, evaluation, award and deployment authority are distinct events with distinct evidence."
+     ]
     },
     "references": [
      {

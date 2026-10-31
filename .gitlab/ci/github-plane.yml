@@ -1,18 +1,20 @@
 # ─── CGRF Header ───────────────────────────────────────────────
 # File:        .gitlab/ci/github-plane.yml
 # Stage:       11_COMMIT
-# SRS:         SRS-BUILDANDDO-GITLAB-ONLY-CI-001
+# SRS:         SRS-BUILDANDDO-GITLAB-ONLY-CI-001, SRS-BUILDANDDO-CURRICULUM-PRIVATE-001
 # CAPS:        pending
 # CK:          pending
-# Dispatch:    VCC-BUILDANDDO-GITLAB-ONLY-CI-001
+# Dispatch:    VCC-BUILDANDDO-GITLAB-ONLY-CI-001, VCC-BUILDANDDO-CURRICULUM-PRIVATE-001
 # Seat:        C-ONE
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-10-27
 # Depends:     scripts/ci/gitlab_plane.py, scripts/ci/evidence_epoch.py, scripts/ci/emit_datadog_metrics.py,
-#              scripts/ci/supply_chain.py, scripts/ci/verify_public_boundary.py
+#              scripts/ci/supply_chain.py, scripts/ci/verify_public_boundary.py,
+#              scripts/ci/lesson_keys.py, apps/web/tools/check-public-lessons.mjs
 # EnumType:    Workflow
 # EnumEdges:   CONSUMES scripts/ci/gitlab_plane.py; CONSUMES scripts/ci/evidence_epoch.py;
 #              CONSUMES scripts/ci/emit_datadog_metrics.py; CONSUMES scripts/ci/supply_chain.py;
+#              CONSUMES scripts/ci/lesson_keys.py; CONSUMES apps/web/tools/check-public-lessons.mjs;
 #              PRODUCES CHANGELOG.md; PRODUCES .bits/growth.lock.json; PRODUCES scripts/ci/epoch_chain.json
 # Intent:      Do in GitLab everything GitHub Actions used to do, so GitLab is the only CI.
 # ───────────────────────────────────────────────────────────────
@@ -176,4 +178,53 @@ ci_report:
       when: never
     - if: '$CI_COMMIT_BRANCH == "buildanddo-source" || $CI_COMMIT_BRANCH =~ /^review\//'
       when: always
+    - when: never
+
+# SRS-BUILDANDDO-CURRICULUM-PRIVATE-001: the keyed lane, which restores the lesson
+# explanation fingerprint scan on main. It is off unless the project CI/CD variable
+# BUILDANDDO_LESSON_KEYS_ENABLED is 1, and even then it runs only for push or web
+# pipelines on protected buildanddo-source, never on review/pr-N.
+#   lesson_keys_bundle   builds the site with no keys and keeps dist/apps/web/ for a day.
+#   lesson_keys_private  reads the private lesson key file from the File variable
+#                        BUILDANDDO_LESSON_KEYS (protected, scoped to the lesson-keys
+#                        environment) on a runner that takes protected refs only. It runs
+#                        no npm, uses no cache and keeps no artifacts: the stdlib verifier
+#                        runs under python3 -I and the scan imports only node built-ins.
+#                        Without the variable the job stops BLOCKED (exit 3), which is
+#                        allowed to fail; binding drift or a leak fails the pipeline.
+# Setting the switch also makes automerge leave every PR that touches the keyed CI surface
+# to a person (scripts/ci/gitlab_plane.py). Operator setup: handoff H11 of that SRS.
+lesson_keys_bundle:
+  stage: verify
+  tags: [buildanddo]
+  needs: []
+  timeout: 30m
+  script:
+    - npm ci
+    - npm run build
+  artifacts:
+    expire_in: 1 day
+    paths:
+      - dist/apps/web/
+  rules:
+    - if: '($CI_PIPELINE_SOURCE == "push" || $CI_PIPELINE_SOURCE == "web") && $CI_COMMIT_BRANCH == "buildanddo-source" && $CI_COMMIT_REF_PROTECTED == "true" && $BUILDANDDO_LESSON_KEYS_ENABLED == "1"'
+    - when: never
+
+lesson_keys_private:
+  stage: test
+  tags: [buildanddo-protected]
+  timeout: 10m
+  needs:
+    - job: lesson_keys_bundle
+      artifacts: true
+  environment:
+    name: lesson-keys
+    action: prepare
+  cache: []
+  allow_failure: {exit_codes: [3]}
+  script:
+    - python3 -I scripts/ci/lesson_keys.py verify --keys "$BUILDANDDO_LESSON_KEYS" --require-private
+    - node apps/web/tools/check-public-lessons.mjs dist/apps/web --keys "$BUILDANDDO_LESSON_KEYS" --require-keys
+  rules:
+    - if: '($CI_PIPELINE_SOURCE == "push" || $CI_PIPELINE_SOURCE == "web") && $CI_COMMIT_BRANCH == "buildanddo-source" && $CI_COMMIT_REF_PROTECTED == "true" && $BUILDANDDO_LESSON_KEYS_ENABLED == "1"'
     - when: never

@@ -1,10 +1,10 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/src/components/workspace/__tests__/TutorialCatalog.test.jsx
 // Stage:       08_TEST
-// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-TRUST-001
+// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-TRUST-001, SRS-BUILDANDDO-CURRICULUM-PRIVATE-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-TRUST-001
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-TRUST-001, VCC-BUILDANDDO-CURRICULUM-PRIVATE-001
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-15
@@ -84,6 +84,10 @@ beforeEach(() => {
     });
 });
 afterEach(() => vi.restoreAllMocks());
+// The backend grades from synthetic keys generated at test time; the curriculum carries none. Checks on an
+// explanation compare against null, so a failure never prints the key text.
+const explanationOf = (record) => backend.keys.explanationFor(record.slug);
+const shown = (scope, text) => scope.queryByText(text) !== null;
 const read = async (prefix = 'Read') => {
     const user = setupUser();
     const opener = await screen.findByRole('button', { name: `${prefix} ${lesson.title}` });
@@ -137,7 +141,7 @@ describe('complete Field Manual lessons', () => {
         const { reader, user } = await read();
         expect(reader.queryByRole('button', { name: 'Save reading progress' })).not.toBeInTheDocument();
         expect(reader.getByText('Sign in and open the interactive tutorial to answer this knowledge check.')).toBeVisible();
-        expect(JSON.stringify(screen.getByRole('dialog').textContent)).not.toContain(lesson.lesson.check.explanation);
+        expect(JSON.stringify(screen.getByRole('dialog').textContent).includes(explanationOf(lesson))).toBe(false);
         await user.click(reader.getByRole('button', { name: 'Close lesson' }));
         expect(pb.collection).not.toHaveBeenCalled();
         view.unmount(); setDemoMode(true);
@@ -190,7 +194,7 @@ describe('complete Field Manual lessons', () => {
         for (const choice of lesson.lesson.check.choices) expect(check.getByText(choice)).toBeVisible();
         expect(reader.queryByRole('radio')).not.toBeInTheDocument();
         expect(reader.queryByRole('button', { name: 'Check answer' })).not.toBeInTheDocument();
-        expect(reader.queryByText(lesson.lesson.check.explanation)).not.toBeInTheDocument();
+        expect(shown(reader, explanationOf(lesson))).toBe(false);
         expect(check.getByText('Answer this knowledge check in the interactive tutorial.')).toBeVisible();
         expect(reader.getByText(/Finish the interactive tutorial to complete this lesson/)).toBeVisible();
         expect(reader.queryByRole('button', { name: 'Save reading progress' })).not.toBeInTheDocument();
@@ -232,8 +236,9 @@ describe('complete Field Manual lessons', () => {
 
     it('opens a public guided lesson from its card and reader while a revoked restricted enrollment denies aggregate progress', async () => {
         installGovernment(backend, ['user_test']);
+        // Its slug has no entry in the key file, so it holds its key in the database, as production rows may.
         backend.seed('tutorials', { ...backend.lessons[1], id: 'restricted00001', slug: 'restricted-fixture',
-            title: 'Restricted learning fixture', category: 'Government submissions' });
+            title: 'Restricted learning fixture', category: 'Government submissions', lesson: backend.keyed(backend.lessons[1].id) });
         backend.command('start', {}, { id: 'restricted00001', actor: 'user_test' });
         backend.data.government_memberships[0].status = 'revoked';
         renderWithProviders(<TutorialCatalog />);
@@ -295,7 +300,7 @@ describe('complete Field Manual lessons', () => {
         expect(reader.getByRole('heading', { name: 'Practice' })).toBeVisible();
         expect(reader.getByRole('region', { name: 'Knowledge check' })).toBeVisible();
         expect(reader.getByRole('heading', { name: 'Check your understanding' })).toBeVisible();
-        expect(reader.queryByText(sourceLesson.lesson.check.explanation)).not.toBeInTheDocument();
+        expect(shown(reader, explanationOf(sourceLesson))).toBe(false);
         expect(reader.getByText(sourceCase.source_evidence.boundary)).toBeVisible();
         expect(reader.getByRole('link', { name: /Open Evidence and its separate Source case studies panel/ })).toHaveAttribute('href', '/app/evidence');
         expect(reader.queryByRole('button', { name: 'Save reading progress' })).not.toBeInTheDocument();
@@ -346,7 +351,7 @@ describe('complete Field Manual lessons', () => {
         expect(reader.queryByRole('radio')).not.toBeInTheDocument();
         expect(reader.queryByRole('checkbox')).not.toBeInTheDocument();
         expect(reader.queryByRole('button', { name: 'Check answer' })).not.toBeInTheDocument();
-        expect(reader.queryByText(authorityLesson.lesson.check.explanation)).not.toBeInTheDocument();
+        expect(shown(reader, explanationOf(authorityLesson))).toBe(false);
         for (const name of ['tutorial_progress', 'tutorial_learning', 'evidence'])
             for (const method of ['create', 'update', 'delete']) expect(pb.__collection(name)[method]).not.toHaveBeenCalled();
         expect(pb.send.mock.calls.every(([, request]) => request.method === 'GET')).toBe(true);

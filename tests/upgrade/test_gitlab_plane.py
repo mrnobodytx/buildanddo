@@ -1,23 +1,25 @@
 # ─── CGRF Header ───────────────────────────────────────────────
 # File:        tests/upgrade/test_gitlab_plane.py
 # Stage:       08_TEST
-# SRS:         SRS-BUILDANDDO-GITLAB-ONLY-CI-001
+# SRS:         SRS-BUILDANDDO-GITLAB-ONLY-CI-001, SRS-BUILDANDDO-CURRICULUM-PRIVATE-001
 # CAPS:        pending
 # CK:          pending
-# Dispatch:    VCC-BUILDANDDO-GITLAB-ONLY-CI-001
+# Dispatch:    VCC-BUILDANDDO-GITLAB-ONLY-CI-001, VCC-BUILDANDDO-CURRICULUM-PRIVATE-001
 # Seat:        C-ONE
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-10-27
 # Depends:     scripts/ci/gitlab_plane.py, scripts/ci/agent_context.py
 # EnumType:    Test
 # EnumEdges:   VALIDATES scripts/ci/gitlab_plane.py
-# Intent:      Prove GitLab pulls only trusted heads, reports honestly and never loses or forges bookkeeping.
+# Intent:      Prove GitLab pulls only trusted heads, reports honestly and never loses or forges bookkeeping,
+#              and that automerge leaves the keyed CI surface to a person while the keyed lane is on.
 # ───────────────────────────────────────────────────────────────
 """GitLab-only CI plane: intake planning, status reporting, review export and writeback."""
 
 from __future__ import annotations
 
 import argparse
+from collections.abc import Mapping
 import contextlib
 import io
 import json
@@ -25,8 +27,10 @@ import os
 from pathlib import Path
 import subprocess
 import tempfile
+from types import MappingProxyType
 import unittest
 from unittest import mock
+import urllib.parse
 
 from scripts.ci import agent_context, gitlab_plane as plane
 
@@ -471,6 +475,194 @@ class AutomergeTests(unittest.TestCase):
     def test_epoch_bookkeeping_stays_out_of_the_changelog(self) -> None:
         items = {item.path: item for item in plane.bookkeeping(MAIN)}
         self.assertTrue(all("Changelog: skip" in item.trailers for item in items.values()))
+
+
+def changed(path: str, previous: str | None = None) -> dict:
+    entry = {"filename": path, "status": "renamed" if previous else "modified"}
+    if previous:
+        entry["previous_filename"] = previous
+    return entry
+
+
+class FilesHttp(FakeHttp):
+    """FakeHttp that also serves /pulls/{n}/files pages: a list of entries, or a callable(page)."""
+
+    def __init__(self, routes: dict[tuple[str, str], tuple[int, object]], files: dict[int, object]) -> None:
+        super().__init__(routes)
+        self.files = files
+
+    def __call__(self, method: str, url: str, headers: dict, body: object = None) -> tuple[int, object]:
+        parts = urllib.parse.urlsplit(url)
+        prefix = f"/repos/{REPO}/pulls/"
+        if method == "GET" and parts.path.startswith(prefix) and parts.path.endswith("/files"):
+            self.calls.append((method, url, headers, body))
+            query = urllib.parse.parse_qs(parts.query, strict_parsing=True)
+            number, page = int(parts.path[len(prefix):-len("/files")]), int(query["page"][0])
+            if query["per_page"] != ["100"] or set(query) != {"per_page", "page"}:
+                return 400, None
+            answer = self.files[number]
+            if callable(answer):
+                return answer(page)
+            return 200, answer[(page - 1) * 100:page * 100]
+        return super().__call__(method, url, headers, body)
+
+    def file_pages(self, number: int) -> list[int]:
+        return [int(urllib.parse.parse_qs(urllib.parse.urlsplit(url).query)["page"][0])
+                for method, url, _, _ in self.calls if method == "GET" and f"/pulls/{number}/files?" in url]
+
+    def merged(self) -> list[int]:
+        return [int(url.rsplit("/", 2)[-2]) for method, url, _, _ in self.calls if method == "PUT"]
+
+
+class KeyedSurfaceGuardTests(unittest.TestCase):
+    """SRS-BUILDANDDO-CURRICULUM-PRIVATE-001 A11: the automerge guard for the keyed CI surface."""
+
+    ALLOWED = frozenset({"actor:agent"})
+    ON = MappingProxyType({"AUTOMERGE": "1", "GITHUB_WRITEBACK_TOKEN": "w", "BUILDANDDO_LESSON_KEYS_ENABLED": "1"})
+
+    def http(self, pulls: dict[int, dict], files: dict[int, object], states: dict[str, str] | None = None) -> FilesHttp:
+        routes: dict[tuple[str, str], tuple[int, object]] = {
+            ("GET", "/pulls?state=open"): (200, [{"number": n} for n in pulls]),
+            ("PUT", "/merge"): (200, {"merged": True, "sha": "c" * 40}),
+        }
+        for number, pull in pulls.items():
+            sha = pull["head"]["sha"]
+            routes[("GET", f"/pulls/{number}")] = (200, pull)
+            routes[("GET", f"/commits/{sha}/status")] = (
+                200, {"statuses": [{"context": plane.STATUS_CONTEXT, "state": (states or {}).get(sha, "success")}]})
+        return FilesHttp(routes, files)
+
+    def run_automerge(self, env: Mapping[str, str], http: FilesHttp) -> str:
+        code, out = quiet(plane.cmd_automerge, argparse.Namespace(dry_run=False), dict(env), http)
+        self.assertEqual(code, 0, out)
+        return out
+
+    def test_the_keyed_surface_is_exactly_the_planned_set(self) -> None:
+        self.assertEqual(plane.KEYED_SURFACE, (".gitlab-ci.yml", ".gitlab/", "scripts/ci/lesson_keys.py",
+                                               "apps/web/tools/check-public-lessons.mjs", "scripts/ci/gitlab_plane.py"))
+        self.assertEqual(plane.KEYED_LANE_SWITCH, "BUILDANDDO_LESSON_KEYS_ENABLED")
+        self.assertEqual((plane.FILES_PER_PAGE, plane.FILES_MAX_PAGES), (100, 30))
+        for path in (".gitlab-ci.yml", ".gitlab/ci/github-plane.yml", ".gitlab/ci/new/job.yml", ".gitlab/x",
+                     "scripts/ci/lesson_keys.py", "apps/web/tools/check-public-lessons.mjs", "scripts/ci/gitlab_plane.py"):
+            with self.subTest(path=path):
+                self.assertTrue(plane.keyed_path(path))
+        for path in (".gitlab-ci.yml.bak", ".gitlab", ".gitlabx/ci.yml", "docs/.gitlab/ci.yml", "x/.gitlab-ci.yml",
+                     "scripts/ci/lesson_keys.pyc", "scripts/ci/lesson_keys_test.py", "tests/upgrade/test_gitlab_plane.py",
+                     "apps/web/tools/build.mjs", "apps/web/tools/check-public-lessons.mjs.map", "README.md", ""):
+            with self.subTest(path=path):
+                self.assertFalse(plane.keyed_path(path))
+
+    def test_verdict_names_the_keyed_surface_and_refuses_an_unlisted_pull(self) -> None:
+        green = agent_pull(1, PR_A)
+        self.assertEqual(plane.merge_verdict(green, REPO, "success", self.ALLOWED), "merge")
+        self.assertEqual(plane.merge_verdict(green, REPO, "success", self.ALLOWED, ()), "merge")
+        self.assertEqual(plane.merge_verdict(green, REPO, "success", self.ALLOWED, ("README.md", "apps/web/x.js")),
+                         "merge")
+        for keyed in (".gitlab-ci.yml", ".gitlab/ci/day21-submission.yml", "scripts/ci/gitlab_plane.py"):
+            with self.subTest(path=keyed):
+                self.assertEqual(plane.merge_verdict(green, REPO, "success", self.ALLOWED, ("README.md", keyed)),
+                                 "touches the keyed CI surface; a person merges it")
+        self.assertEqual(plane.merge_verdict(green, REPO, "success", self.ALLOWED, None), "cannot list changed files")
+        # The guard adds refusals only: an unqualified PR keeps its own reason.
+        self.assertEqual(plane.merge_verdict(agent_pull(1, PR_A, draft=True), REPO, "success", self.ALLOWED,
+                                             (".gitlab-ci.yml",)), "draft")
+
+    def test_without_the_switch_nothing_is_listed_and_verdicts_are_unchanged(self) -> None:
+        for value in (None, "", "0", "true", "yes", " 1", "1 "):
+            with self.subTest(value=value):
+                env = {k: v for k, v in self.ON.items() if k != "BUILDANDDO_LESSON_KEYS_ENABLED"}
+                if value is not None:
+                    env["BUILDANDDO_LESSON_KEYS_ENABLED"] = value
+                http = self.http({1: agent_pull(1, PR_A, changed_files=1)}, {1: [changed(".gitlab-ci.yml")]})
+                out = self.run_automerge(env, http)
+                self.assertEqual(http.merged(), [1])
+                self.assertEqual(http.file_pages(1), [])
+                self.assertNotIn("keyed", out)
+
+    def test_with_the_switch_a_keyed_pull_waits_and_the_rest_merge(self) -> None:
+        pulls = {1: agent_pull(1, PR_A, changed_files=2), 2: agent_pull(2, PR_B, changed_files=1)}
+        http = self.http(pulls, {1: [changed("README.md"), changed("scripts/ci/lesson_keys.py")],
+                                 2: [changed("apps/web/src/x.js")]})
+        out = self.run_automerge(self.ON, http)
+        self.assertEqual(http.merged(), [2])
+        self.assertIn("WAIT: PR #1: touches the keyed CI surface; a person merges it", out)
+        self.assertIn("BUILDANDDO_LESSON_KEYS_ENABLED=1", out)
+        self.assertEqual((http.file_pages(1), http.file_pages(2)), ([1], [1]))
+
+    def test_moving_a_keyed_file_away_is_a_keyed_change(self) -> None:
+        pulls = {1: agent_pull(1, PR_A, changed_files=1)}
+        http = self.http(pulls, {1: [changed("scripts/lesson_keys.py", previous="scripts/ci/lesson_keys.py")]})
+        out = self.run_automerge(self.ON, http)
+        self.assertEqual(http.merged(), [])
+        self.assertIn("WAIT: PR #1: touches the keyed CI surface; a person merges it", out)
+
+    def test_only_a_pull_that_would_otherwise_merge_is_listed(self) -> None:
+        pulls = {1: agent_pull(1, PR_A, changed_files=1), 2: agent_pull(2, PR_B, changed_files=1, draft=True)}
+        http = self.http(pulls, {1: [changed("README.md")], 2: [changed("README.md")]}, {PR_A: "pending"})
+        out = self.run_automerge(self.ON, http)
+        self.assertEqual(http.merged(), [])
+        self.assertEqual((http.file_pages(1), http.file_pages(2)), ([], []))
+        self.assertIn("WAIT: PR #1: GitLab result is pending", out)
+        self.assertIn("WAIT: PR #2: draft", out)
+
+    def test_every_page_is_read_up_to_the_github_limit(self) -> None:
+        many = [changed(f"docs/page-{index}.md") for index in range(250)]
+        http = self.http({1: agent_pull(1, PR_A, changed_files=250)}, {1: many})
+        self.run_automerge(self.ON, http)
+        self.assertEqual((http.merged(), http.file_pages(1)), ([1], [1, 2, 3]))
+
+        keyed_last = many[:249] + [changed(".gitlab/ci/github-plane.yml")]
+        http = self.http({1: agent_pull(1, PR_A, changed_files=250)}, {1: keyed_last})
+        out = self.run_automerge(self.ON, http)
+        self.assertEqual(http.merged(), [])
+        self.assertIn("touches the keyed CI surface", out)
+
+        exactly = [changed(f"docs/page-{index}.md") for index in range(3000)]
+        http = self.http({1: agent_pull(1, PR_A, changed_files=3000)}, {1: exactly})
+        self.run_automerge(self.ON, http)
+        self.assertEqual((http.merged(), http.file_pages(1)), ([1], list(range(1, 31))))
+
+        # GitHub stops at 3000 files; past that the list cannot be complete.
+        http = self.http({1: agent_pull(1, PR_A, changed_files=3001)}, {1: exactly + [changed("docs/x.md")]})
+        out = self.run_automerge(self.ON, http)
+        self.assertEqual((http.merged(), http.file_pages(1)), ([], list(range(1, 31))))
+        self.assertIn("WAIT: PR #1: cannot list changed files", out)
+
+    def test_an_incomplete_or_failed_listing_refuses_the_merge(self) -> None:
+        ok = [changed("README.md")]
+        cases: dict[str, tuple[dict, object]] = {
+            "server error": ({"changed_files": 1}, lambda page: (502, None)),
+            "rate limited": ({"changed_files": 1}, lambda page: (403, {"message": "rate limit"})),
+            "unreachable": ({"changed_files": 1}, lambda page: (0, {"error": "timeout"})),
+            "second page fails": ({"changed_files": 101},
+                                  lambda page: (200, [changed(f"d/{i}") for i in range(100)]) if page == 1 else (500, None)),
+            "not a list": ({"changed_files": 1}, lambda page: (200, {"files": ok})),
+            "not a list for an empty pull": ({"changed_files": 0}, lambda page: (200, {"files": []})),
+            "entry not an object": ({"changed_files": 1}, lambda page: (200, ["README.md"])),
+            "no filename": ({"changed_files": 1}, lambda page: (200, [{"status": "modified"}])),
+            "empty filename": ({"changed_files": 1}, lambda page: (200, [{"filename": ""}])),
+            "filename not text": ({"changed_files": 1}, lambda page: (200, [{"filename": 7}])),
+            "bad previous name": ({"changed_files": 1},
+                                  lambda page: (200, [{"filename": "README.md", "previous_filename": ["x"]}])),
+            "fewer than reported": ({"changed_files": 2}, ok),
+            "more than reported": ({"changed_files": 0}, ok),
+            "count missing": ({}, ok),
+            "count not a number": ({"changed_files": "1"}, ok),
+            "count is a bool": ({"changed_files": True}, ok),
+            "count negative": ({"changed_files": -1}, []),
+        }
+        for case, (changes, files) in cases.items():
+            with self.subTest(case=case):
+                http = self.http({1: agent_pull(1, PR_A, **changes)}, {1: files})
+                out = self.run_automerge(self.ON, http)
+                self.assertEqual(http.merged(), [])
+                self.assertIn("WAIT: PR #1: cannot list changed files", out)
+
+    def test_a_null_previous_name_is_no_rename(self) -> None:
+        hub = plane.GitHub(REPO, "t", self.http({}, {1: [{"filename": "README.md", "previous_filename": None}]}))
+        self.assertEqual(plane.changed_files(hub, agent_pull(1, PR_A, changed_files=1)), ("README.md",))
+        hub.request = self.http({}, {1: [changed("b.md", previous="a.md")]})
+        self.assertEqual(plane.changed_files(hub, agent_pull(1, PR_A, changed_files=1)), ("b.md", "a.md"))
 
 
 class WiringTests(unittest.TestCase):

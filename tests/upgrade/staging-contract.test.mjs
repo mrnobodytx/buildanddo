@@ -1,10 +1,12 @@
 // ─── CGRF Header ──────────────────────────────
 // File:        tests/upgrade/staging-contract.test.mjs
 // Stage:       08_TEST
-// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-BUDDI-003, SRS-BUILDANDDO-HEADERS-001
+// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-BUDDI-003, SRS-BUILDANDDO-HEADERS-001,
+//              SRS-BUILDANDDO-CURRICULUM-PRIVATE-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-BUDDI-003, VCC-BUILDANDDO-HEADERS-001
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-BUDDI-003, VCC-BUILDANDDO-HEADERS-001,
+//              VCC-BUILDANDDO-CURRICULUM-PRIVATE-001
 // Seat:        BITS-CODEGEN, C-ONE (the microphone policy; security headers on every location)
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-16
@@ -12,7 +14,8 @@
 // EnumType:    Test
 // EnumEdges:   VALIDATES apps/web/Dockerfile; VALIDATES docker-compose.staging.yml; VALIDATES scripts/deploy/staging-readback.sh; VALIDATES apps/web/nginx.conf
 // DAG Node:    buildanddo.staging.contract-test
-// Intent:      Prove the staging definition builds production output and rejects incomplete HTTP readback.
+// Intent:      Prove the staging definition builds production output and rejects incomplete HTTP readback,
+//              including a full-mode backend whose lessons cannot all be graded from private keys.
 // ───────────────────────────────────────────────────────────
 
 import assert from 'node:assert/strict';
@@ -24,6 +27,9 @@ import test from 'node:test';
 
 const run = promisify(execFile);
 const MICROPHONE_POLICY = 'camera=(), microphone=(self), geolocation=()';
+const KEYS_HEALTH = '/api/buildanddo/learning/keys-health';
+// The keys-health body of a backend whose every lesson grades from a private key file.
+const PRIVATE_KEYS = Object.freeze({ schema_version: 1, keys: 'PRIVATE', lessons: 3, gradable: 3, unavailable: 0 });
 
 /**
  * nginx.conf as a tree of blocks, each with its head (`server`, `location /assets/`), its own directives and
@@ -70,8 +76,14 @@ async function stagingServer() {
     return server;
 }
 
-async function fixtureServer(apiCode = 200) {
+/**
+ * A staging origin double. `keysHealth` is the keys-health body: an object is sent as JSON, a string verbatim,
+ * and null answers 404 as hooks without the route would. `server.requested` lists every path asked for.
+ */
+async function fixtureServer(apiCode = 200, keysHealth = PRIVATE_KEYS) {
+    const requested = [];
     const server = createServer((request, response) => {
+        requested.push(request.url);
         if (request.url === '/') {
             response.writeHead(200, { 'content-type': 'text/html' });
             response.end(
@@ -91,11 +103,22 @@ async function fixtureServer(apiCode = 200) {
             response.end(JSON.stringify({ code: apiCode }));
             return;
         }
+        if (request.url === KEYS_HEALTH && keysHealth !== null) {
+            response.writeHead(200, { 'content-type': 'application/json', 'cache-control': 'no-store' });
+            response.end(typeof keysHealth === 'string' ? keysHealth : JSON.stringify(keysHealth));
+            return;
+        }
         response.writeHead(404);
         response.end();
     });
+    server.requested = requested;
     await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
     return server;
+}
+
+/** Run the readback against a fixture origin; resolves with its output or rejects with the failed process. */
+function readback(server, mode) {
+    return run('sh', ['scripts/deploy/staging-readback.sh', `http://127.0.0.1:${server.address().port}`, mode]);
 }
 
 test('staging images use the locked Node 22 production build and same-origin API', async () => {
@@ -185,4 +208,62 @@ test('staging readback rejects a backend that does not report healthy', async (t
             return true;
         },
     );
+});
+
+test('staging health uses the full readback, so the stack is healthy only when lesson keys are installed', async () => {
+    const [dockerfile, compose] = await Promise.all([
+        readFile('apps/web/Dockerfile', 'utf8'),
+        readFile('docker-compose.staging.yml', 'utf8'),
+    ]);
+    // The image's own healthcheck stays web-only; the staging stack, which has the backend, reads it in full.
+    assert.match(dockerfile, /CMD \["\/usr\/local\/bin\/staging-readback\.sh", "http:\/\/127\.0\.0\.1", "web-only"\]/);
+    assert.match(compose, /test: \["CMD", "\/usr\/local\/bin\/staging-readback\.sh", "http:\/\/127\.0\.0\.1", "full"\]/);
+    const script = await readFile('scripts/deploy/staging-readback.sh', 'utf8');
+    assert.ok(script.includes(`"$base_url${KEYS_HEALTH}"`), 'full mode reads keys-health from the same origin');
+});
+
+test('full readback accepts private keys whatever the whitespace, and reads keys-health once', async (t) => {
+    const pretty = await fixtureServer(200, `${JSON.stringify(PRIVATE_KEYS, null, 2)}\n`);
+    t.after(() => pretty.close());
+    const result = await readback(pretty, 'full');
+    assert.match(result.stdout, /^PASS staging readback:/);
+    assert.equal(pretty.requested.filter((path) => path === KEYS_HEALTH).length, 1);
+});
+
+test('full readback fails closed unless the lesson keys are PRIVATE and every lesson can be graded', async (t) => {
+    const marker = 'response-text-that-must-not-be-logged';
+    const cases = [
+        ['an absent key file', { ...PRIVATE_KEYS, keys: 'ABSENT', gradable: 0, unavailable: 3 }, /lesson grading keys are not installed as PRIVATE/],
+        ['an absent key file with nothing stored', { ...PRIVATE_KEYS, keys: 'ABSENT', lessons: 0, gradable: 0 }, /lesson grading keys are not installed as PRIVATE/],
+        ['synthetic keys', { ...PRIVATE_KEYS, keys: 'SYNTHETIC' }, /lesson grading keys are not installed as PRIVATE/],
+        ['an unusable key file', { ...PRIVATE_KEYS, keys: 'INVALID' }, /lesson grading keys are not installed as PRIVATE/],
+        ['a lowercase state', { ...PRIVATE_KEYS, keys: 'private' }, /lesson grading keys are not installed as PRIVATE/],
+        ['private keys with lessons left ungradable', { ...PRIVATE_KEYS, gradable: 1, unavailable: 2 }, /some lessons cannot be graded/],
+        ['private keys with ten ungradable lessons', { ...PRIVATE_KEYS, lessons: 10, gradable: 0, unavailable: 10 }, /some lessons cannot be graded/],
+        ['an unavailable count that is not a number', { ...PRIVATE_KEYS, unavailable: '0' }, /some lessons cannot be graded/],
+        ['an unavailable count that only starts with 0', '{"keys":"PRIVATE","lessons":3,"unavailable":0.5}', /some lessons cannot be graded/],
+        ['a body without the counts', { schema_version: 1, keys: 'PRIVATE' }, /some lessons cannot be graded/],
+        ['a repeated key state', `{"keys":"ABSENT","keys":"PRIVATE","unavailable":0,"note":"${marker}"}`, /lesson keys health is ambiguous/],
+        ['a repeated count', `{"keys":"PRIVATE","unavailable":4,"unavailable":0,"note":"${marker}"}`, /lesson keys health is ambiguous/],
+        ['a response that is not JSON', `<html>${marker}</html>`, /lesson grading keys are not installed as PRIVATE/],
+        ['hooks without the keys-health route', null, /lesson keys health endpoint is unavailable/],
+    ];
+    for (const [label, body, message] of cases) {
+        const server = await fixtureServer(200, body);
+        t.after(() => server.close());
+        await assert.rejects(readback(server, 'full'), (error) => {
+            assert.match(error.stderr, message, label);
+            assert.equal(error.stdout, '', `${label}: nothing is reported as passing`);
+            assert.equal(`${error.stdout}${error.stderr}`.includes(marker), false, `${label}: the response is never echoed`);
+            return true;
+        }, label);
+    }
+});
+
+test('web-only readback reads neither the backend nor the lesson key state', async (t) => {
+    const server = await fixtureServer(503, { ...PRIVATE_KEYS, keys: 'ABSENT', unavailable: 3 });
+    t.after(() => server.close());
+    const result = await readback(server, 'web-only');
+    assert.match(result.stdout, /^PASS staging readback: application \(web-only\)/);
+    assert.deepEqual(server.requested.filter((path) => path.startsWith('/api/')), []);
 });

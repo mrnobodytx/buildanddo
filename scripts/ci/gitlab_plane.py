@@ -2,10 +2,10 @@
 # ─── CGRF Header ───────────────────────────────────────────────
 # File:        scripts/ci/gitlab_plane.py
 # Stage:       11_COMMIT
-# SRS:         SRS-BUILDANDDO-GITLAB-ONLY-CI-001
+# SRS:         SRS-BUILDANDDO-GITLAB-ONLY-CI-001, SRS-BUILDANDDO-CURRICULUM-PRIVATE-001
 # CAPS:        pending
 # CK:          pending
-# Dispatch:    VCC-BUILDANDDO-GITLAB-ONLY-CI-001
+# Dispatch:    VCC-BUILDANDDO-GITLAB-ONLY-CI-001, VCC-BUILDANDDO-CURRICULUM-PRIVATE-001
 # Seat:        C-ONE
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-10-27
@@ -487,13 +487,71 @@ def cmd_status(args: argparse.Namespace, env: dict[str, str], request: Http = ht
 AUTOMERGE_BRANCH_RE = re.compile(r"bits/SRS-[A-Z0-9]+(?:-[A-Z0-9]+)+-[a-z0-9][a-z0-9-]*")
 ACTOR_LABELS = frozenset({"actor:human", "actor:agent", "actor:mixed"})
 
+# SRS-BUILDANDDO-CURRICULUM-PRIVATE-001. While the keyed lane is on, code merged to main
+# runs in lesson_keys_private beside the private lesson keys. A change to what that job
+# runs, or to this guard, waits for a person. An entry ending in "/" is a directory.
+KEYED_LANE_SWITCH = "BUILDANDDO_LESSON_KEYS_ENABLED"
+KEYED_SURFACE = (
+    ".gitlab-ci.yml",
+    ".gitlab/",
+    "scripts/ci/lesson_keys.py",
+    "apps/web/tools/check-public-lessons.mjs",
+    "scripts/ci/gitlab_plane.py",
+)
+KEYED_VERDICT = "touches the keyed CI surface; a person merges it"
+UNLISTED_VERDICT = "cannot list changed files"
+FILES_PER_PAGE = 100
+FILES_MAX_PAGES = 30  # GitHub lists at most 3000 files for one pull request
 
-def merge_verdict(pull: dict, repo: str, gitlab_state: str | None, allowed: frozenset[str]) -> str:
+
+def keyed_path(path: str) -> bool:
+    return any(path.startswith(entry) if entry.endswith("/") else path == entry for entry in KEYED_SURFACE)
+
+
+def changed_files(hub: GitHub, pull: dict) -> tuple[str, ...] | None:
+    """Every path a PR changes, both sides of a rename. None when the list is incomplete.
+
+    Complete means every page answered with a list of well-formed entries and the
+    count equals the PR's own changed_files. Anything else is None, never a partial list.
+    """
+    number, expected = pull.get("number"), pull.get("changed_files")
+    if type(number) is not int or type(expected) is not int or expected < 0:
+        return None
+    paths: list[str] = []
+    listed = 0
+    try:
+        for page in range(1, FILES_MAX_PAGES + 1):
+            batch = hub.get(f"/pulls/{number}/files?per_page={FILES_PER_PAGE}&page={page}")
+            if not isinstance(batch, list):
+                return None
+            for item in batch:
+                if not isinstance(item, dict):
+                    return None
+                # A rename lists its old path too: moving a keyed file away is a keyed change.
+                previous = item.get("previous_filename")
+                names = [item.get("filename")] + ([] if previous is None else [previous])
+                if not all(isinstance(name, str) and name for name in names):
+                    return None
+                paths.extend(names)
+            listed += len(batch)
+            if len(batch) < FILES_PER_PAGE:
+                break
+    except PlaneError:
+        return None
+    return tuple(paths) if listed == expected else None
+
+
+def merge_verdict(pull: dict, repo: str, gitlab_state: str | None, allowed: frozenset[str],
+                  files: tuple[str, ...] | None = ()) -> str:
     """Why a PR may or may not merge unattended. "merge" is the only yes.
 
     Every condition the human merge step checked by hand: one SRS branch, exactly
     one actor label from the allowed set, same-repository head, not a draft, the
     GitLab result for this exact head is success, and GitHub reports it mergeable.
+
+    files is the PR's changed paths while the keyed lane is on (changed_files).
+    None means the list could not be completed and refuses the merge. The empty
+    default checks nothing, so callers without the keyed lane see no change.
     """
     if pull.get("draft"):
         return "draft"
@@ -512,6 +570,10 @@ def merge_verdict(pull: dict, repo: str, gitlab_state: str | None, allowed: froz
         return f"{next(iter(actors))} is not merged unattended"
     if "do-not-merge" in labels or "hold" in labels:
         return "held by label"
+    if files is None:
+        return UNLISTED_VERDICT
+    if any(keyed_path(path) for path in files):
+        return KEYED_VERDICT
     if gitlab_state != "success":
         return f"GitLab result is {gitlab_state or 'missing'}"
     if pull.get("mergeable") is not True:
@@ -528,6 +590,9 @@ def cmd_automerge(args: argparse.Namespace, env: dict[str, str], request: Http =
         print("SKIP: GITHUB_WRITEBACK_TOKEN is not set; nothing can be merged.")
         return 0
     allowed = frozenset(x.strip() for x in env.get("AUTOMERGE_ACTORS", "actor:agent").split(",") if x.strip())
+    keyed = env.get(KEYED_LANE_SWITCH, "") == "1"
+    if keyed:
+        print(f"AUTOMERGE: {KEYED_LANE_SWITCH}=1; pull requests that touch the keyed CI surface wait for a person.")
     hub = GitHub(repository(env), token, request)
     merged = 0
     for summary in hub.open_pulls():
@@ -538,6 +603,9 @@ def cmd_automerge(args: argparse.Namespace, env: dict[str, str], request: Http =
         sha = (pull.get("head") or {}).get("sha", "")
         status = hub.status_of(sha, STATUS_CONTEXT) if SHA_RE.fullmatch(sha or "") else None
         verdict = merge_verdict(pull, hub.repo, (status or {}).get("state"), allowed)
+        if verdict == "merge" and keyed:
+            # Listed only for a PR that would otherwise merge, to spare the API budget.
+            verdict = merge_verdict(pull, hub.repo, (status or {}).get("state"), allowed, changed_files(hub, pull))
         if verdict != "merge":
             print(f"WAIT: PR #{number}: {verdict}")
             continue

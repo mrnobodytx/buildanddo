@@ -39,6 +39,13 @@
     },
     {
       "area": "ci",
+      "evidence": "referenced by: tests/upgrade/test_classroom_native.py, tests/upgrade/test_gitlab_acceptance.py, tests/upgrade/test_gitlab_plane.py, tests/upgrade/test_lesson_keys.py, tests/upgrade/test_public_boundary.py, tests/upgrade/test_tutorial_learning_native.py",
+      "severity": "high",
+      "srs": "",
+      "statement": "scripts/ci/lesson_keys.py is not configured in reachable GitLab jobs"
+    },
+    {
+      "area": "ci",
       "evidence": "referenced by: nothing in this repo",
       "severity": "high",
       "srs": "",
@@ -581,6 +588,19 @@
     },
     {
       "configured_providers": [],
+      "path": "scripts/ci/lesson_keys.py",
+      "referenced_by": [
+        "tests/upgrade/test_classroom_native.py",
+        "tests/upgrade/test_gitlab_acceptance.py",
+        "tests/upgrade/test_gitlab_plane.py",
+        "tests/upgrade/test_lesson_keys.py",
+        "tests/upgrade/test_public_boundary.py",
+        "tests/upgrade/test_tutorial_learning_native.py"
+      ],
+      "wired_into_ci": false
+    },
+    {
+      "configured_providers": [],
       "path": "scripts/ci/migration_preflight.py",
       "referenced_by": [],
       "wired_into_ci": false
@@ -875,7 +895,7 @@
       "wired_into_ci": true
     }
   ],
-  "generated_at": "2026-10-27T21:10:42.575927+00:00",
+  "generated_at": "2026-10-31T12:30:47.744501+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -986,6 +1006,13 @@
         "spec": ".bits/srs/SRS-BUILDANDDO-CRAWL-001.md",
         "status": "in_progress",
         "title": "Firecrawl verification for every canonical public page"
+      },
+      {
+        "code": "SRS-BUILDANDDO-CURRICULUM-PRIVATE-001",
+        "risk": "A2",
+        "spec": ".bits/srs/SRS-BUILDANDDO-CURRICULUM-PRIVATE-001.md",
+        "status": "in_progress",
+        "title": "Private lesson answer keys - knowledge-check answers and explanations leave the public tree for a runtime key file"
       },
       {
         "code": "SRS-BUILDANDDO-DAY21-CLOSURE-001",
@@ -1439,7 +1466,9 @@
         "supply_chain_weekly",
         "evidence_epoch",
         "main_writeback",
-        "ci_report"
+        "ci_report",
+        "lesson_keys_bundle",
+        "lesson_keys_private"
       ],
       "kind": "include",
       "local_actions": [],
@@ -1512,11 +1541,11 @@
       "scripts/deploy/staging-readback.sh"
     ],
     "migrations": 77,
-    "python_files": 484,
+    "python_files": 486,
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 1888,
+    "tracked_files": 1897,
     "web_source_files": 386
   },
   "schema_version": 1,
@@ -1537,7 +1566,7 @@
       },
       {
         "id": "HS-03",
-        "next_step": "Migration rollout is now validated on BOTH environments: preflighted against a disposable copy of live data, applied behind a database backup, and confirmed by an authenticated readback from a second box (production at 72 applied migrations, 79 collections, 33 lessons). Recovery is still unexercised - backups were taken but no restore has been performed, so rollback remains a claim rather than an observation. Exercise a restore onto a disposable profile and record it. The later classroom migrations (media sessions and the broadcast lesson) are not rolled out yet: execute both expanded native runtime profiles, including media-session and lesson installation, typed track responses, ownership/revocation and rollback. Have the release owner install matching backend migrations/hooks before the frontend and measure actual provider delivery and stream revocation on staging.",
+        "next_step": "Migration rollout is now validated on BOTH environments: preflighted against a disposable copy of live data, applied behind a database backup, and confirmed by an authenticated readback from a second box (production at 72 applied migrations, 79 collections, 33 lessons). Recovery is still unexercised - backups were taken but no restore has been performed, so rollback remains a claim rather than an observation. Exercise a restore onto a disposable profile and record it. The later classroom migrations (media sessions and the broadcast lesson) are not rolled out yet: execute both expanded native runtime profiles, including media-session and lesson installation, typed track responses, ownership/revocation and rollback. Have the release owner install matching backend migrations/hooks before the frontend and measure actual provider delivery and stream revocation on staging. Guided grading now reads knowledge-check keys from a private key file (SRS-BUILDANDDO-CURRICULUM-PRIVATE-001): before the hooks that read it deploy, the operator installs that file and its BUILDANDDO_LESSON_KEYS_FILE drop-in on both PocketBase units (handoff 2026-10-31-BITS-CODEGEN-C-ONE-curriculum-private, H1-H3) and requires `pocketbase lesson-keys check` on a rehearsal copy to report PRIVATE with mismatch 0 and unavailable 0 (H5); without it, new enrollments in lessons with no database-held key answer 503 instead of grading. Source tests use synthetic keys only, so they do not establish installed-key acceptance.",
         "owner": "BITS-CODEGEN / IDE1",
         "why": "Persisted work and tenant isolation make the application useful beyond a visual prototype."
       },
@@ -1585,7 +1614,7 @@
       },
       {
         "id": "HS-10",
-        "next_step": "Run actual browser and native isolation tests, bind the existing inference endpoint under approved data authority, and observe scoped chat-to-form-to-personal-knowledge behavior. Validate value-card drill-downs against one real reviewed mission and exact provider/release receipts; collect comparable cost, effort and eligible-work baselines before displaying ROI. Exercise career export/import with the actual native account, ten real job dossiers and reviewed draft documents; obtain separate receiving authority for one permitted ATS browser submission and retain its actual receipt. Include unconfigured, failed-read and reconnected Buddi states with draft preservation before the real inferred action. The content and private ElevenLabsBridge owners must verify requested provider/account terms, approved voices and funding, then demonstrate the existing draft/review flow and one real generation, human publication, independent readback and measured engagement. Use the incorporated PR 119 work contract to map media source, corpus and job identities; CSCC mission assignment still requires receiving authorization. Run the classroom React regressions and disposable native backend suite, reproduce the reported classroom symptom, and retain independent host/listener media readback under the existing receiving release authority.",
+        "next_step": "Run actual browser and native isolation tests, bind the existing inference endpoint under approved data authority, and observe scoped chat-to-form-to-personal-knowledge behavior. Validate value-card drill-downs against one real reviewed mission and exact provider/release receipts; collect comparable cost, effort and eligible-work baselines before displaying ROI. Exercise career export/import with the actual native account, ten real job dossiers and reviewed draft documents; obtain separate receiving authority for one permitted ATS browser submission and retain its actual receipt. Include unconfigured, failed-read and reconnected Buddi states with draft preservation before the real inferred action. The content and private ElevenLabsBridge owners must verify requested provider/account terms, approved voices and funding, then demonstrate the existing draft/review flow and one real generation, human publication, independent readback and measured engagement. Use the incorporated PR 119 work contract to map media source, corpus and job identities; CSCC mission assignment still requires receiving authorization. Run the classroom React regressions and disposable native backend suite, reproduce the reported classroom symptom, and retain independent host/listener media readback under the existing receiving release authority. The broadcast and authority-repair lesson files now carry no knowledge-check keys (SRS-BUILDANDDO-CURRICULUM-PRIVATE-001): observe those lessons on a receiving environment only after its private key file is installed (the HS-03 prerequisite) and keys-health reports PRIVATE with no unavailable lesson.",
         "owner": "BITS-CODEGEN / CMAX-B",
         "why": "The operator and daily edition must explain current work with visible uncertainty and evidence."
       },
@@ -1596,16 +1625,16 @@
         "why": "Competition readiness requires an evidence-backed learning-through-work journey, a reproducible replay and actual submission criteria."
       }
     ],
-    "source_sha256": "e87f730fe08e91b65710e87c6ac0f22c15b3d177978bf815bbcdaca65c9ba6fb",
+    "source_sha256": "654056af91cd806a2d24897844267139a67d06dbd91ade8fffb213efde7b7687",
     "state": "PASS"
   },
   "summary": {
-    "findings": 58,
-    "findings_high": 25,
+    "findings": 59,
+    "findings_high": 26,
     "pipelines": 4,
-    "srs_open": 57,
-    "srs_total": 61,
-    "unwired_gates": 25
+    "srs_open": 58,
+    "srs_total": 62,
+    "unwired_gates": 26
   },
   "tests": {
     "js_runners": [

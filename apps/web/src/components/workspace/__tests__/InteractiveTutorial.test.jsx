@@ -1,10 +1,10 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/src/components/workspace/__tests__/InteractiveTutorial.test.jsx
 // Stage:       08_TEST
-// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-TRUST-001
+// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-TRUST-001, SRS-BUILDANDDO-CURRICULUM-PRIVATE-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-TRUST-001
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-TRUST-001, VCC-BUILDANDDO-CURRICULUM-PRIVATE-001
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-19
@@ -36,7 +36,10 @@ vi.mock('@/lib/pocketbaseClient', async () => {
 vi.mock('@/lib/observability/runtime', () => ({ reportAction: vi.fn(), reportMetric: vi.fn(), trackAuthIdentity: vi.fn(), readFailed: vi.fn() }));
 vi.mock('@/lib/telemetry', () => ({ trackEvent: vi.fn() }));
 
+// The backend grades from synthetic keys generated at test time (tests/upgrade/lesson-keys-fixture.mjs); the curriculum
+// carries none. Checks on the explanation compare against null, so a failure never prints the key text.
 let backend, lesson, transport;
+const shown = (reader, text) => reader.queryByText(text) !== null;
 beforeEach(() => {
     pb.__reset(); setDemoMode(false);
     backend = learningFixture(); lesson = backend.lessons[0];
@@ -110,16 +113,17 @@ it('requires practice and the right answer, then displays a persistent certifica
     renderWithProviders(<TutorialCatalog />);
     const { reader } = await openTutorial(user);
     await throughPractice(user, reader);
-    expect(reader.queryByText(lesson.lesson.check.explanation)).not.toBeInTheDocument();
+    const answer = backend.answerFor(lesson.id), explanation = backend.explanationFor(lesson.id);
+    expect(shown(reader, explanation)).toBe(false);
     expect(reader.getByRole('button', { name: 'Check answer and finish' })).toBeDisabled();
-    const wrong = lesson.lesson.check.choices.findIndex((_choice, index) => index !== lesson.lesson.check.answer);
+    const wrong = lesson.lesson.check.choices.findIndex((_choice, index) => index !== answer);
     await user.click(reader.getByRole('radio', { name: lesson.lesson.check.choices[wrong] }));
     await user.click(reader.getByRole('button', { name: 'Check answer and finish' }));
     expect(await reader.findByText('Not quite. Read the feedback and try again.')).toBeVisible();
     expect(reader.getByText('You can answer again in 30 seconds.')).toBeVisible();
-    expect(reader.queryByText(lesson.lesson.check.explanation)).not.toBeInTheDocument();
+    expect(shown(reader, explanation)).toBe(false);
     expect(backend.list('user_test').points).toBe(0);
-    await user.click(reader.getByRole('radio', { name: lesson.lesson.check.choices[lesson.lesson.check.answer] }));
+    await user.click(reader.getByRole('radio', { name: lesson.lesson.check.choices[answer] }));
     await user.click(reader.getByRole('button', { name: 'Check answer and finish' }));
     expect(await reader.findByRole('alert')).toHaveTextContent(/try the knowledge check again in \d+ seconds/);
     expect(reader.queryByRole('button', { name: 'Reload saved tutorial' })).not.toBeInTheDocument();
@@ -207,15 +211,15 @@ it('keeps the knowledge check usable during a server wait but clears it immediat
     const user = setupUser(); renderWithProviders(<TutorialCatalog />);
     const { reader } = await openTutorial(user);
     await throughPractice(user, reader);
-    const check = lesson.lesson.check;
-    await user.click(reader.getByRole('radio', { name: check.choices[(check.answer + 1) % check.choices.length] }));
+    const check = lesson.lesson.check, answer = backend.answerFor(lesson.id);
+    await user.click(reader.getByRole('radio', { name: check.choices[(answer + 1) % check.choices.length] }));
     await user.click(reader.getByRole('button', { name: 'Check answer and finish' }));
     await reader.findByText('You can answer again in 30 seconds.');
-    await user.click(reader.getByRole('radio', { name: check.choices[check.answer] }));
+    await user.click(reader.getByRole('radio', { name: check.choices[answer] }));
     await user.click(reader.getByRole('button', { name: 'Check answer and finish' }));
     expect(await reader.findByRole('alert')).toHaveTextContent(/try the knowledge check again/);
     expect(reader.getByRole('button', { name: 'Check answer and finish' })).toBeEnabled();
-    expect(reader.queryByText(check.explanation)).not.toBeInTheDocument();
+    expect(shown(reader, backend.explanationFor(lesson.id))).toBe(false);
     backend.denied.add(lesson.id);
     await user.click(reader.getByRole('button', { name: 'Check answer and finish' }));
     expect(await reader.findByRole('button', { name: 'Reload saved tutorial' })).toBeVisible();

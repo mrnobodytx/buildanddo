@@ -259,6 +259,14 @@ srs:
     spec: .bits/srs/SRS-BUILDANDDO-QUIZ-001.md
     notes: Owner-requested 2026-09-24; token by variable name only; curriculum data files unchanged pending owner decision
 
+  - code: SRS-BUILDANDDO-CURRICULUM-PRIVATE-001
+    title: Private lesson answer keys - knowledge-check answers and explanations leave the public tree for a runtime key file
+    status: in_progress
+    risk: A2
+    spec: .bits/srs/SRS-BUILDANDDO-CURRICULUM-PRIVATE-001.md
+    owner: BITS-CODEGEN
+    notes: Owner-requested 2026-09-24; owner decisions 2026-10-31 - answer keys only (questions, choices and lesson bodies stay public), past answers stay in git history, the missionLearning.js quizzes are a separate follow-up; keys by variable name only; GitLab keyed lane ships disabled; private side by A3 handoff
+
   - code: SRS-BUILDANDDO-SITE-001
     title: Website ownership proof by DNS TXT (front door, part 1)
     status: in_progress

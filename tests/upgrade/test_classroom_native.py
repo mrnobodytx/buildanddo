@@ -1,16 +1,16 @@
 # ─── CGRF Header ───────────────────────────────────────────────
 # File:        tests/upgrade/test_classroom_native.py
 # Stage:       08_TEST
-# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-CURRICULUM-PRIVATE-001
 # CAPS:        pending
 # CK:          pending
-# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-CURRICULUM-PRIVATE-001
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-16
-# Depends:     tests/upgrade/test_dossier_native.py, apps/pocketbase/pb_hooks/classrooms.js, apps/pocketbase/pb_hooks/classroom-media.js, apps/pocketbase/pb_migrations/1791400000_classroom_media_sessions.js
+# Depends:     tests/upgrade/test_dossier_native.py, scripts/ci/lesson_keys.py, apps/pocketbase/pb_hooks/classrooms.js, apps/pocketbase/pb_hooks/classroom-media.js, apps/pocketbase/pb_migrations/1791400000_classroom_media_sessions.js
 # EnumType:    Test
-# EnumEdges:   CONSUMES tests/upgrade/test_dossier_native.py; VALIDATES apps/pocketbase/pb_hooks/classrooms.js; VALIDATES apps/pocketbase/pb_hooks/classroom-media.js; VALIDATES apps/pocketbase/pb_migrations/1791400000_classroom_media_sessions.js
+# EnumEdges:   CONSUMES tests/upgrade/test_dossier_native.py; CONSUMES scripts/ci/lesson_keys.py; VALIDATES apps/pocketbase/pb_hooks/classrooms.js; VALIDATES apps/pocketbase/pb_hooks/classroom-media.js; VALIDATES apps/pocketbase/pb_migrations/1791400000_classroom_media_sessions.js
 # DAG Node:    none
 # Intent:      Require native classroom authentication, date serialization, concurrent receipt recovery and reversible schema before accepting an installed backend.
 # ───────────────────────────────────────────────────────────────
@@ -38,6 +38,7 @@ import unittest
 ROOT = Path(__file__).resolve().parents[2]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
+from scripts.ci.lesson_keys import SYNTHETIC_PREFIX  # noqa: E402
 from tests.upgrade.test_dossier_native import NO_WINDOW, NativeServer  # noqa: E402
 
 BINARY = os.environ.get("BUILDANDDO_TEST_POCKETBASE", "")
@@ -142,11 +143,21 @@ if (__PROVIDER_ENABLED__) module.exports.realtimeConfig = () => ({ appId: 'fixtu
 """
 
 
+# A knowledge-check key in a diagnostic line: the synthetic fixture marker, or an answer or explanation
+# member of lesson JSON, escaped or not. Debug SQL logs carry saved snapshots, which hold the resolved key.
+LESSON_KEY_TEXT = re.compile(
+    re.escape(SYNTHETIC_PREFIX) + r'|\\?"(?:answer|explanation)\\?"\s*:', re.IGNORECASE
+)
+
+
 def sanitize_diagnostics(raw: str) -> str:
-    """Retain bounded errors without startup links or credential-bearing lines."""
+    """Retain bounded errors without startup links, credential-bearing lines or lesson keys."""
     raw = re.sub(r"\x1b\[[0-?]*[ -/]*[@-~]", "", raw)
     lines = []
     for line in raw.splitlines():
+        if LESSON_KEY_TEXT.search(line):
+            lines.append("[redacted lesson key diagnostic]")
+            continue
         if re.search(
             r"password|passwd|credential|secret|token|authorization|bearer|cookie|superuser|eyJ",
             line,

@@ -1,16 +1,16 @@
 # ─── CGRF Header ───────────────────────────────────────────────
 # File:        docs/interactive-learning.md
 # Stage:       06_PLAN
-# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-CURRICULUM-PRIVATE-001
 # CAPS:        pending
 # CK:          pending
-# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-CURRICULUM-PRIVATE-001
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-19
-# Depends:     apps/pocketbase/pb_hooks/tutorial-learning.js, apps/pocketbase/pb_migrations/1790600000_tutorial_learning.js, apps/web/src/components/workspace/InteractiveTutorial.jsx, apps/web/src/components/workspace/TutorialGrowth.jsx
+# Depends:     apps/pocketbase/pb_hooks/tutorial-learning.js, apps/pocketbase/pb_migrations/1790600000_tutorial_learning.js, apps/web/src/components/workspace/InteractiveTutorial.jsx, apps/web/src/components/workspace/TutorialGrowth.jsx, apps/pocketbase/pb_hooks/lesson-keys.js, scripts/ci/lesson_keys.py
 # EnumType:    Doc
-# EnumEdges:   CONSUMES apps/pocketbase/pb_hooks/tutorial-learning.js; CONSUMES apps/pocketbase/pb_migrations/1790600000_tutorial_learning.js; CONSUMES apps/web/src/components/workspace/InteractiveTutorial.jsx; CONSUMES apps/web/src/components/workspace/TutorialGrowth.jsx
+# EnumEdges:   CONSUMES apps/pocketbase/pb_hooks/tutorial-learning.js; CONSUMES apps/pocketbase/pb_migrations/1790600000_tutorial_learning.js; CONSUMES apps/web/src/components/workspace/InteractiveTutorial.jsx; CONSUMES apps/web/src/components/workspace/TutorialGrowth.jsx; CONSUMES apps/pocketbase/pb_hooks/lesson-keys.js; CONSUMES scripts/ci/lesson_keys.py
 # DAG Node:    none
 # Intent:      Explain persistent guided learning and the exact completion, growth and certificate guarantees an installed backend must verify.
 # ───────────────────────────────────────────────────────────────
@@ -40,8 +40,27 @@ signed W3C credential, independently verified mastery, TEVV result, professional
 qualification or external accreditation. Guided responses contain only the
 question and choices; feedback follows an answer command. Browser previews,
 catalogue reads and public feeds omit grading keys and pre-answer explanations.
-The authored keys remain in public repository source; removing them from the
-browser does not make these questions a secret or proctored examination.
+
+Grading keys are held privately on the server. The public curriculum files keep
+each lesson's question and choices; PocketBase reads every answer and
+explanation at runtime from one private key file, named by
+`BUILDANDDO_LESSON_KEYS_FILE` or else `lesson-keys.json` in its data directory.
+A key an existing database already holds still grades and must agree with any
+file entry for that lesson. A lesson without a usable key cannot be graded and
+says so: starting it answers 503 and creates no enrollment, and nothing passes
+by default. Keys published earlier remain in public git history and in copies
+served before this change, so the questions are still not a secret or proctored
+examination. Tutorials stay open-book.
+
+Contributors practising guided learning locally write labelled synthetic keys
+from the public data with
+`python3 -I scripts/ci/lesson_keys.py synthetic --out <path outside the repository>`,
+make that file the server's key file and set
+`BUILDANDDO_LESSON_KEYS_SYNTHETIC=1`. Synthetic answers are made up. Never use
+them against a shared, staging or production database; without that variable
+PocketBase refuses a synthetic file. Relabelling it does not help: the file's
+integrity seal covers its `synthetic` label, and its placeholder explanations
+mark it as synthetic whatever the label says.
 
 ## Persistent growth
 
@@ -100,10 +119,19 @@ does not establish third-party authenticity.
 ## Install and rollback
 
 Ship `1790600000_tutorial_learning.js`, `tutorial-learning.js`,
-`tutorial-learning.pb.js`, and their existing `workspace-access.js` and
-`workflow-policy.js` dependencies with the matching web build. Existing tutorial
-catalogue migrations must already be installed. This source change does not
-apply migrations or change a shared backend.
+`tutorial-learning.pb.js`, `lesson-keys.js`, `lesson-keys.pb.js`, and their
+existing `workspace-access.js` and `workflow-policy.js` dependencies with the
+matching web build. Existing tutorial catalogue migrations must already be
+installed. This source change does not apply migrations or change a shared
+backend.
+
+Install the private key file before deploying hooks that read it; the dated
+curriculum-private handoff in `.bits/handoffs` lists the operator steps.
+`GET /api/buildanddo/learning/keys-health` reports only the key state and lesson
+counts, and `pocketbase lesson-keys check` is the read-only operator check. Both
+must show state PRIVATE with no unavailable lesson, and the staging readback
+requires the same. Learners enrolled before a key changes keep their saved
+lesson snapshot.
 
 The claim-authority continuation also requires
 `1791500000_learning_progress_authority.js` and
@@ -124,7 +152,8 @@ retain the additive data. No learner history or existing progress is deleted.
 ## Verification
 
 ```bash
-node --test tests/upgrade/tutorial-learning*.test.mjs
+node --test tests/upgrade/tutorial-learning*.test.mjs tests/upgrade/lesson-keys.test.mjs
+python3 -I scripts/ci/lesson_keys.py strip --check
 npm --prefix apps/web test -- src/components/workspace/__tests__/InteractiveTutorial.test.jsx src/components/workspace/__tests__/TutorialCatalog.test.jsx
 python tests/upgrade/test_tutorial_learning_native.py --require-binary
 npm --prefix apps/web run lint

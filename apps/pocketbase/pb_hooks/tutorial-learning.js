@@ -1,26 +1,32 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/pocketbase/pb_hooks/tutorial-learning.js
 // Stage:       07_BUILD
-// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-TRUST-001
+// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-TRUST-001, SRS-BUILDANDDO-CURRICULUM-PRIVATE-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-TRUST-001
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-TRUST-001, VCC-BUILDANDDO-CURRICULUM-PRIVATE-001
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-19
-// Depends:     apps/pocketbase/pb_hooks/workspace-access.js, apps/pocketbase/pb_migrations/1790600000_tutorial_learning.js, apps/pocketbase/pb_migrations/1791500100_tutorial_answer_wait.js, apps/pocketbase/pb_hooks/government-access.js
+// Depends:     apps/pocketbase/pb_hooks/workspace-access.js, apps/pocketbase/pb_migrations/1790600000_tutorial_learning.js, apps/pocketbase/pb_migrations/1791500100_tutorial_answer_wait.js, apps/pocketbase/pb_hooks/government-access.js, apps/pocketbase/pb_hooks/lesson-keys.js
 // EnumType:    Service
-// EnumEdges:   DEPENDS_ON apps/pocketbase/pb_hooks/workspace-access.js; CONSUMES apps/pocketbase/pb_migrations/1790600000_tutorial_learning.js; CONSUMES apps/pocketbase/pb_migrations/1791500100_tutorial_answer_wait.js; CONSUMES apps/pocketbase/pb_hooks/government-access.js
+// EnumEdges:   DEPENDS_ON apps/pocketbase/pb_hooks/workspace-access.js; CONSUMES apps/pocketbase/pb_migrations/1790600000_tutorial_learning.js; CONSUMES apps/pocketbase/pb_migrations/1791500100_tutorial_answer_wait.js; CONSUMES apps/pocketbase/pb_hooks/government-access.js; DEPENDS_ON apps/pocketbase/pb_hooks/lesson-keys.js
 // DAG Node:    none
-// Intent:      Keep canonical checkpoints and full grading snapshots private while serving keyless lessons with bounded answer retries.
+// Intent:      Keep canonical checkpoints and full grading snapshots private while serving keyless lessons with bounded answer retries,
+//              grading a lesson only once its private key is resolved.
 // ───────────────────────────────────────────────────────────────
 
 const access = require(`${__hooks}/workspace-access.js`);
 const government = require(`${__hooks}/government-access.js`);
+// Knowledge-check keys are private (SRS-BUILDANDDO-CURRICULUM-PRIVATE-001): the curriculum seeds each lesson's
+// question and choices, and lesson-keys.js merges the answer and explanation in memory from the private key file.
+const lessonKeys = require(`${__hooks}/lesson-keys.js`);
 const FIELDS = ['owner', 'tutorial', 'snapshot', 'content_digest', 'next_section', 'practiced', 'completed_at', 'certificate', 'protocol_version', 'answer_retry_at'];
 const POINTS = 100;
 // A wrong answer pauses further answers for this enrollment; longer stored waits are ignored so nobody is locked out.
 const RETRY_SECONDS = 30;
+const UNSUPPORTED = 'Choose a supported lesson with complete practice and a knowledge check.';
+const NOT_INSTALLED = 'This lesson\'s knowledge check is not installed on this server yet. You can still read the lesson.';
 
 function schema(app) {
     let collection;
@@ -63,18 +69,41 @@ function supported(lesson) {
         access.text(lesson.check.explanation, 5000) && Array.isArray(lesson.references) && lesson.references.length <= 12 &&
         lesson.references.every((reference) => reference && access.text(reference.label, 200) && access.text(reference.url, 2048));
 }
-function snapshot(record) {
-    const lesson = access.json(record, 'lesson');
-    if (!supported(lesson)) access.invalid('Choose a supported lesson with complete practice and a knowledge check.');
-    const result = { title: record.getString('title'), summary: record.getString('summary'), category: record.getString('category'),
+const carries = (check, name) => Object.prototype.hasOwnProperty.call(check, name) && check[name] !== null && check[name] !== undefined;
+/** @returns {boolean} Whether the lesson lacks only its private key: supplying the missing answer or explanation would make it supported. */
+function awaitingKeys(lesson) {
+    const check = lesson && typeof lesson === 'object' && lesson.check && typeof lesson.check === 'object' && !Array.isArray(lesson.check) ? lesson.check : null;
+    if (!check || carries(check, 'answer') && carries(check, 'explanation')) return false;
+    const placeholder = { ...check };
+    if (!carries(check, 'answer')) placeholder.answer = 0;
+    if (!carries(check, 'explanation')) placeholder.explanation = 'Placeholder.';
+    return Boolean(supported({ ...lesson, check: placeholder }));
+}
+/** @param {object} record Catalogue record. @param {object} lesson Its lesson with the key resolved. @returns {object} The content a certificate is bound to. */
+function content(record, lesson) {
+    return { title: record.getString('title'), summary: record.getString('summary'), category: record.getString('category'),
         effort_minutes: Number(record.get('effort_minutes') || 10), curriculum_version: record.getString('curriculum_version') || 'custom', lesson };
+}
+/** @param {object} record Catalogue record. @param {object} lesson Its resolved lesson. @returns {string} The one digest formula: enrollment, certificate and public catalogue. */
+function contentDigest(record, lesson) {
+    return $security.sha256(access.canonical(content(record, lesson)));
+}
+function snapshot(record, keys) {
+    const stored = access.json(record, 'lesson');
+    if (!supported(stored) && !awaitingKeys(stored)) access.invalid(UNSUPPORTED);
+    // Resolution may refuse with 503 when the key file disagrees with the lesson or cannot be read and the database holds no key.
+    const lesson = lessonKeys.resolve(keys, record, stored);
+    // Never auto-pass: a lesson whose key is still missing is refused before any enrollment exists.
+    if (!supported(lesson)) throw new ApiError(503, NOT_INSTALLED);
+    const result = content(record, lesson);
     if (access.canonical(result).length > 90000) access.invalid('This lesson exceeds the supported learning format.');
     return result;
 }
 function lessonFor(app, e, record) {
     const tutorial = access.find(app, 'tutorials', access.id(record ? record.getString('tutorial') : e.request.pathValue('id')));
     if (!government.lesson(app, e.auth, tutorial)) access.readable(app, tutorial, e.requestInfo());
-    const body = record ? access.json(record, 'snapshot') : snapshot(tutorial);
+    // An enrolled learner keeps the frozen snapshot and its digest; the key file is read only before enrollment.
+    const body = record ? access.json(record, 'snapshot') : snapshot(tutorial, lessonKeys.load(app));
     if (body?.category === 'Government submissions') government.requireMember(app, e.auth);
     const digest = $security.sha256(access.canonical(body));
     if (!supported(body?.lesson) || record && record.getString('content_digest') !== digest)
@@ -232,11 +261,24 @@ function list(e) {
         resume: active ? { tutorial: active.getString('tutorial'), title: access.json(active, 'snapshot').title, progress: output(active).progress } : null };
 }
 
-/** @param {object} tutorial Catalogue record. @returns {boolean} Whether its lesson is served with a server-checked answer. */
-function interactive(tutorial) {
+/**
+ * @param {object} app Native app. @param {object} tutorial Catalogue record. @param {object} [keys] A lesson-keys load() result, read once by a caller grading many lessons.
+ * @returns {object|null} Its lesson with the private key resolved, when that lesson can be graded; null when it cannot.
+ * A key file that disagrees with the lesson, or an unusable file where the database holds no key, refuses with 503.
+ */
+function gradable(app, tutorial, keys) {
     const raw = tutorial.getString('lesson');
-    if (!raw || raw === 'null') return false;
-    try { return Boolean(supported(JSON.parse(raw))); } catch { return false; }
+    if (!raw || raw === 'null') return null;
+    let stored;
+    try { stored = JSON.parse(raw); } catch { return null; }
+    if (!supported(stored) && !awaitingKeys(stored)) return null;
+    const lesson = lessonKeys.resolve(keys || lessonKeys.load(app), tutorial, stored);
+    return supported(lesson) ? lesson : null;
+}
+
+/** @param {object} tutorial Catalogue record. @param {object} app Native app. @returns {boolean} Whether its lesson is served with a server-checked answer. */
+function interactive(tutorial, app) {
+    try { return Boolean(gradable(app, tutorial)); } catch { return false; }
 }
 
 /** @param {object} app Native app. @param {string} owner Account. @param {string} tutorial Lesson. @returns {boolean} Whether a server-issued certificate exists. */
@@ -257,4 +299,4 @@ function enrich(e) {
     e.record.set('lesson', access.publicLesson(lesson));
 }
 
-module.exports = { detail, command, list, states, interactive, certified, enrich };
+module.exports = { detail, command, list, states, gradable, contentDigest, interactive, certified, enrich };
