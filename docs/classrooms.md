@@ -1,16 +1,16 @@
 # ─── CGRF Header ───────────────────────────────────────────────
 # File:        docs/classrooms.md
 # Stage:       06_PLAN
-# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-GUILDMASTER-001
 # CAPS:        pending
 # CK:          pending
-# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-GUILDMASTER-001
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-16
-# Depends:     apps/web/src/pages/workspace/ClassroomsPage.jsx, apps/web/src/hooks/useClassrooms.js, apps/web/src/hooks/useOpenClasses.js, apps/pocketbase/pb_hooks/classrooms.js, apps/pocketbase/pb_hooks/classroom-media.js, tests/upgrade/test_classroom_native.py, tests/upgrade/classroom-recovery.test.mjs
+# Depends:     apps/web/src/pages/workspace/ClassroomsPage.jsx, apps/web/src/hooks/useClassrooms.js, apps/web/src/hooks/useOpenClasses.js, apps/pocketbase/pb_hooks/classrooms.js, apps/pocketbase/pb_hooks/classroom-media.js, apps/pocketbase/pb_hooks/classroom-presence.pb.js, apps/pocketbase/pb_hooks/guildmasters.js, tests/upgrade/test_classroom_native.py, tests/upgrade/classroom-recovery.test.mjs, tests/upgrade/classroom-presence.test.mjs
 # EnumType:    Doc
-# EnumEdges:   CONSUMES apps/web/src/pages/workspace/ClassroomsPage.jsx; CONSUMES apps/web/src/hooks/useClassrooms.js; CONSUMES apps/web/src/hooks/useOpenClasses.js; CONSUMES apps/pocketbase/pb_hooks/classrooms.js; CONSUMES apps/pocketbase/pb_hooks/classroom-media.js; VERIFIED_BY tests/upgrade/test_classroom_native.py; VERIFIED_BY tests/upgrade/classroom-recovery.test.mjs
+# EnumEdges:   CONSUMES apps/web/src/pages/workspace/ClassroomsPage.jsx; CONSUMES apps/web/src/hooks/useClassrooms.js; CONSUMES apps/web/src/hooks/useOpenClasses.js; CONSUMES apps/pocketbase/pb_hooks/classrooms.js; CONSUMES apps/pocketbase/pb_hooks/classroom-media.js; CONSUMES apps/pocketbase/pb_hooks/classroom-presence.pb.js; CONSUMES apps/pocketbase/pb_hooks/guildmasters.js; VERIFIED_BY tests/upgrade/test_classroom_native.py; VERIFIED_BY tests/upgrade/classroom-recovery.test.mjs; VERIFIED_BY tests/upgrade/classroom-presence.test.mjs
 # DAG Node:    none
 # Intent:      Describe the classroom user flow, installed-backend requirements and acceptance limits without representing a shared lesson as a video stream.
 # ───────────────────────────────────────────────────────────────
@@ -72,6 +72,39 @@ on rollback. The bundled preview works without that installation. Reading the
 case or test report does not create workspace evidence, award progress/XP or
 verify a mission. Its dated source observation remains separate from blocked
 rendered/native and unmeasured hosted checks.
+
+## Guildmaster badge
+
+A presence advertisement (`POST /api/classroom/presence`) with role `guildmaster` or any
+`persona_id` claims to be one of the eight guildmasters (`docs/guildmasters.md`). The server
+decides that claim from the publisher's stored account alone, through `guildmasters.seatOf`:
+
+- Anyone else gets 403 "Only a guildmaster's own seat may carry its badge." This covers a human
+  host or administrator, whatever their display name, and an unverified, unflagged or
+  non-guildmaster seat account. Nothing is stored and no provider is contacted.
+- A guildmaster seat that names another guildmaster, or a persona outside the canon, gets the
+  same 403.
+- The matching seat is stored with `persona_id` `gm-<slug>`, role `guildmaster` and the
+  canonical display name. Any spelling of its own persona is accepted (`gm:forge`, `gm-forge`,
+  `gm:director` for Director Nexus), as is no persona at all. A guildmaster seat may still choose
+  `teacher` or `assistant` explicitly. It is then served without the badge.
+
+A persona with a role other than `guildmaster` is still 400. Workspace membership, the live room
+and fresh attendance are checked before the badge. The bound-session and publisher allowlist
+checks follow it, unchanged.
+
+`GET /api/classroom/presence` re-decides every badged row against its publisher's current
+account. A row whose publisher is not that guildmaster's seat, including rows written before this
+rule and rows from a seat whose flag has since been cleared, is served with an empty `persona_id`,
+as `teacher` when its access basis is `host` and `assistant` otherwise, under the publisher's
+own name. The stored row is not changed by a read.
+
+`tests/upgrade/classroom-presence.test.mjs` covers these cases against storage doubles. The
+native case `test_native_presence_badge_requires_the_guildmaster_seat` uses one fixture-only
+seat account. It passed on PocketBase 0.39.8 only with the temporary copy of `metrics.pb.js`
+rewritten to the positional `Middleware` form. The committed `metrics.pb.js` stops 0.39.8 at
+startup, so every native classroom case fails before running until that defect is fixed (it is
+outside SRS-BUILDANDDO-GUILDMASTER-001). Nothing here is enabled on staging or production.
 
 ## Use a classroom
 

@@ -1,16 +1,16 @@
 # ─── CGRF Header ───────────────────────────────────────────────
 # File:        tests/upgrade/test_classroom_native.py
 # Stage:       08_TEST
-# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-GUILDMASTER-001
 # CAPS:        pending
 # CK:          pending
-# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-GUILDMASTER-001
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-16
-# Depends:     tests/upgrade/test_dossier_native.py, apps/pocketbase/pb_hooks/classrooms.js, apps/pocketbase/pb_hooks/classroom-media.js, apps/pocketbase/pb_migrations/1791400000_classroom_media_sessions.js
+# Depends:     tests/upgrade/test_dossier_native.py, apps/pocketbase/pb_hooks/classrooms.js, apps/pocketbase/pb_hooks/classroom-media.js, apps/pocketbase/pb_migrations/1791400000_classroom_media_sessions.js, apps/pocketbase/pb_hooks/guildmasters.js
 # EnumType:    Test
-# EnumEdges:   CONSUMES tests/upgrade/test_dossier_native.py; VALIDATES apps/pocketbase/pb_hooks/classrooms.js; VALIDATES apps/pocketbase/pb_hooks/classroom-media.js; VALIDATES apps/pocketbase/pb_migrations/1791400000_classroom_media_sessions.js
+# EnumEdges:   CONSUMES tests/upgrade/test_dossier_native.py; VALIDATES apps/pocketbase/pb_hooks/classrooms.js; VALIDATES apps/pocketbase/pb_hooks/classroom-media.js; VALIDATES apps/pocketbase/pb_migrations/1791400000_classroom_media_sessions.js; VALIDATES apps/pocketbase/pb_hooks/guildmasters.js
 # DAG Node:    none
 # Intent:      Require native classroom authentication, date serialization, concurrent receipt recovery and reversible schema before accepting an installed backend.
 # ───────────────────────────────────────────────────────────────
@@ -68,7 +68,13 @@ HOOKS = (
     "government-access.js",
     "workflow-policy.js",
     "business-action-policy.js",
+    "guildmasters.js",
 )
+# The one guildmaster persona seat in this fixture, shaped as the seat migrations create it and as
+# guildmasters.seatOf recognises it: verified, flagged ocn_seat, email <seat>@ocn.buildanddo.invalid.
+# Its account name is not the persona name, so a badge's "Forge" comes from the server registry.
+SEAT_ACCOUNT = "accountforge001"
+SEAT_IDENTITY = "forge@ocn.buildanddo.invalid"
 OFFER = {"type": "offer", "sdp": "v=0\r\ns=fixture-only; no media negotiated\r\n"}
 ANSWER = {**OFFER, "type": "answer"}
 SEED = r"""
@@ -79,12 +85,16 @@ migrate((app) => {
     users.authRule = ''; users.authAlert = { enabled: false };
     users.passwordAuth = { enabled: true, identityFields: ['email'] };
     if (!users.fields.getByName('name')) users.fields.add(new TextField({ name: 'name', max: 120 }));
+    if (!users.fields.getByName('ocn_seat')) users.fields.add(new BoolField({ name: 'ocn_seat' }));
     app.save(users);
     for (const [id, name] of [['accountalice001', 'alice'], ['accountbravo001', 'bravo'], ['accountview0001', 'viewer'], ['accountguest001', 'guest']]) {
         const record = new Record(users); record.id = id; record.set('name', name);
         record.set('email', name + '@fixture.invalid'); record.set('verified', true);
         record.setPassword('local-fixture-password-only'); app.save(record);
     }
+    const seat = new Record(users); seat.id = 'accountforge001'; seat.set('name', 'OCN seat: forge');
+    seat.set('email', 'forge@ocn.buildanddo.invalid'); seat.set('verified', true); seat.set('ocn_seat', true);
+    seat.setPassword('local-fixture-password-only'); app.save(seat);
     const relation = (name, target) => ({ name, type: 'relation', required: true, maxSelect: 1, collectionId: app.findCollectionByNameOrId(target).id });
     const create = (name, fields, readable = false) => {
         const collection = new Collection({ name, type: 'base', listRule: readable ? '@request.auth.id != ""' : null,
@@ -95,7 +105,7 @@ migrate((app) => {
     const workspace = new Record(workspaces); workspace.id = 'workspacealpha1'; workspace.set('owner', 'accountalice001'); app.save(workspace);
     const foreign = new Record(workspaces); foreign.id = 'workspacebravo1'; foreign.set('owner', 'accountguest001'); app.save(foreign);
     const members = create('workspace_members', [relation('workspace', 'workspaces'), relation('user', 'users'), { name: 'role', type: 'text' }]);
-    for (const [user, role] of [['accountbravo001', 'editor'], ['accountview0001', 'viewer']]) {
+    for (const [user, role] of [['accountbravo001', 'editor'], ['accountview0001', 'viewer'], ['accountforge001', 'editor']]) {
         const member = new Record(members); member.set('workspace', workspace.id); member.set('user', user); member.set('role', role); app.save(member);
     }
     const tutorials = create('tutorials', [{ name: 'title', type: 'text' }, { name: 'summary', type: 'text' }, { name: 'category', type: 'text' },
@@ -316,7 +326,8 @@ class ClassroomServer(DiagnosticNativeServer):
         self.log = tempfile.TemporaryFile(mode="w+b")
         self.environment = {
             "PATH": os.environ.get("PATH", ""),
-            "BUILDANDDO_CLASSROOM_PUBLISHERS": "alice@fixture.invalid,bravo@fixture.invalid,viewer@fixture.invalid,guest@fixture.invalid",
+            "BUILDANDDO_CLASSROOM_PUBLISHERS": "alice@fixture.invalid,bravo@fixture.invalid,viewer@fixture.invalid,guest@fixture.invalid,"
+            + SEAT_IDENTITY,
             # Windows initializes Winsock from SystemRoot. Without it the child
             # exits before health with "socket: The requested service provider
             # could not be loaded or initialized"; the env stays otherwise restricted.
@@ -1444,6 +1455,131 @@ class NativeClassroomTests(unittest.TestCase):
         )
         self.denied_before_provider(
             "GET", "/api/classroom/presence?room=" + room, None, self.owner
+        )
+
+    def pushed_session(self, room: str, token: str, track: str) -> str:
+        """Bind a media session and record one pushed track through the provider double."""
+        session = self.media_session(room, token)
+        status, _ = self.server.request(
+            "POST",
+            "/api/classroom/tracks",
+            {
+                "room": room,
+                "sessionId": session,
+                "action": "push",
+                "sessionDescription": OFFER,
+                "tracks": [
+                    {"location": "local", "mid": "0", "trackName": track, "kind": "audio"}
+                ],
+            },
+            token,
+        )
+        self.assertEqual(status, 200)
+        return session
+
+    def test_native_presence_badge_requires_the_guildmaster_seat(self) -> None:
+        self.server.enable_fixture_provider()
+        status, signed_in = self.server.request(
+            "POST",
+            "/api/collections/users/auth-with-password",
+            {"identity": SEAT_IDENTITY, "password": "local-fixture-password-only"},
+        )
+        self.assertEqual(status, 200, "The synthetic seat account must sign in natively.")
+        seat = str(signed_in["token"])
+
+        # A human host may advertise, but never with a guildmaster badge: refused before any
+        # provider call, and nothing is stored.
+        room = self.live_room()
+        human = self.pushed_session(room, self.owner, "fixture-audio")
+        for claim in (
+            {"persona_id": "gm-forge"},
+            {"persona_id": "gm:forge", "role": "guildmaster"},
+            {"role": "guildmaster"},
+        ):
+            with self.subTest(claim=claim):
+                self.denied_before_provider(
+                    "POST",
+                    "/api/classroom/presence",
+                    {**self.presence_body(room, human), **claim},
+                    self.owner,
+                    (403,),
+                )
+        self.assertEqual(self.server.stored("classroom_presence"), [])
+        status, _ = self.server.request(
+            "POST", "/api/classroom/presence", self.presence_body(room, human), self.owner
+        )
+        self.assertEqual(status, 200)
+        self.assertEqual(
+            [(row["persona_id"], row["role"]) for row in self.server.stored("classroom_presence")],
+            [("", "teacher")],
+        )
+
+        # The forge seat hosts its own class and is badged as itself, canonically, and only as
+        # itself. The write still never contacts the provider.
+        seat_room = self.live_room(seat)
+        session = self.pushed_session(seat_room, seat, "fixture-forge-voice")
+        self.denied_before_provider(
+            "POST",
+            "/api/classroom/presence",
+            {**self.presence_body(seat_room, session, "fixture-forge-voice"), "persona_id": "gm-oracle"},
+            seat,
+            (403,),
+        )
+        before = self.server.provider_calls()
+        status, advertised = self.server.request(
+            "POST",
+            "/api/classroom/presence",
+            {**self.presence_body(seat_room, session, "fixture-forge-voice"), "persona_id": "gm:forge"},
+            seat,
+        )
+        self.assertEqual(status, 200)
+        self.assertEqual(self.server.provider_calls(), before)
+        row = next(
+            row for row in self.server.stored("classroom_presence") if row["id"] == advertised["id"]
+        )
+        self.assertEqual(
+            (row["publisher"], row["persona_id"], row["role"], row["display_name"], row["access_basis"]),
+            (SEAT_ACCOUNT, "gm-forge", "guildmaster", "Forge", "host"),
+        )
+        status, listed = self.server.request(
+            "GET", "/api/classroom/presence?room=" + seat_room, token=seat
+        )
+        self.assertEqual(status, 200)
+        self.assertEqual(
+            [(item["persona_id"], item["role"], item["display_name"]) for item in listed["items"]],
+            [("gm-forge", "guildmaster", "Forge")],
+        )
+        for value in (advertised, listed, self.server.stored("classroom_presence")):
+            self.assertNotIn(SEAT_IDENTITY, json.dumps(value))
+
+        # The badge is re-decided on every read: once the operator clears the seat flag, the
+        # same stored row is served without it, and a new badge claim is refused.
+        self.server.fixture_change(
+            "const seat = app.findRecordById('users', "
+            + json.dumps(SEAT_ACCOUNT)
+            + "); seat.set('ocn_seat', false); app.save(seat);"
+        )
+        status, listed = self.server.request(
+            "GET", "/api/classroom/presence?room=" + seat_room, token=seat
+        )
+        self.assertEqual(status, 200)
+        self.assertEqual(
+            [(item["persona_id"], item["role"], item["display_name"]) for item in listed["items"]],
+            [("", "teacher", "OCN seat: forge")],
+        )
+        self.assertEqual(
+            next(
+                row for row in self.server.stored("classroom_presence") if row["id"] == advertised["id"]
+            )["persona_id"],
+            "gm-forge",
+            "A read repairs nothing.",
+        )
+        self.denied_before_provider(
+            "POST",
+            "/api/classroom/presence",
+            {**self.presence_body(seat_room, session, "fixture-forge-voice"), "persona_id": "gm-forge"},
+            seat,
+            (403,),
         )
 
 
