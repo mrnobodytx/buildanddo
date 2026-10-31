@@ -8,9 +8,9 @@
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-10-31
-# Depends:     apps/pocketbase/pb_hooks/guildmasters.js, apps/pocketbase/pb_hooks/guildmasters.pb.js, apps/pocketbase/pb_migrations/1792200000_guildmaster_seat_display.js, libs/guildmasters/__init__.py, apps/pocketbase/pb_hooks/guild-publishing.js, apps/pocketbase/pb_hooks/guild-lessons.js, apps/pocketbase/pb_hooks/guild-rota.js, libs/guildmasters/rota.py, apps/pocketbase/pb_hooks/guild-classes.js
+# Depends:     apps/pocketbase/pb_hooks/guildmasters.js, apps/pocketbase/pb_hooks/guildmasters.pb.js, apps/pocketbase/pb_migrations/1792200000_guildmaster_seat_display.js, libs/guildmasters/__init__.py, apps/pocketbase/pb_hooks/guild-publishing.js, apps/pocketbase/pb_hooks/guild-lessons.js, apps/pocketbase/pb_hooks/guild-rota.js, libs/guildmasters/rota.py, apps/pocketbase/pb_hooks/guild-classes.js, scripts/ci/ocn_classroom_live.py, scripts/ci/ocn_classroom_fleet.py
 # EnumType:    Doc
-# EnumEdges:   CONSUMES apps/pocketbase/pb_hooks/guildmasters.js; CONSUMES apps/pocketbase/pb_hooks/guildmasters.pb.js; CONSUMES apps/pocketbase/pb_migrations/1792200000_guildmaster_seat_display.js; CONSUMES libs/guildmasters/__init__.py; CONSUMES apps/pocketbase/pb_hooks/guild-publishing.js; CONSUMES apps/pocketbase/pb_hooks/guild-lessons.js; CONSUMES apps/pocketbase/pb_hooks/guild-rota.js; CONSUMES libs/guildmasters/rota.py; CONSUMES apps/pocketbase/pb_hooks/guild-classes.js; VERIFIED_BY tests/upgrade/guildmaster-registry.test.mjs; VERIFIED_BY tests/upgrade/test_guildmasters.py; VERIFIED_BY tests/upgrade/guild-publishing.test.mjs; VERIFIED_BY tests/upgrade/guild-lessons.test.mjs; VERIFIED_BY tests/upgrade/guild-rota.test.mjs; VERIFIED_BY tests/upgrade/test_guild_rota.py
+# EnumEdges:   CONSUMES apps/pocketbase/pb_hooks/guildmasters.js; CONSUMES apps/pocketbase/pb_hooks/guildmasters.pb.js; CONSUMES apps/pocketbase/pb_migrations/1792200000_guildmaster_seat_display.js; CONSUMES libs/guildmasters/__init__.py; CONSUMES apps/pocketbase/pb_hooks/guild-publishing.js; CONSUMES apps/pocketbase/pb_hooks/guild-lessons.js; CONSUMES apps/pocketbase/pb_hooks/guild-rota.js; CONSUMES libs/guildmasters/rota.py; CONSUMES apps/pocketbase/pb_hooks/guild-classes.js; CONSUMES scripts/ci/ocn_classroom_live.py; CONSUMES scripts/ci/ocn_classroom_fleet.py; VERIFIED_BY tests/upgrade/guildmaster-registry.test.mjs; VERIFIED_BY tests/upgrade/test_guildmasters.py; VERIFIED_BY tests/upgrade/guild-publishing.test.mjs; VERIFIED_BY tests/upgrade/guild-lessons.test.mjs; VERIFIED_BY tests/upgrade/guild-rota.test.mjs; VERIFIED_BY tests/upgrade/test_guild_rota.py; VERIFIED_BY tests/upgrade/test_ocn_classroom_rota.py
 # DAG Node:    none
 # Intent:      State who the eight guildmasters are, how the server recognises one, and what it deliberately does not recognise.
 # ───────────────────────────────────────────────────────────────
@@ -159,6 +159,16 @@ Unset, it does nothing. It never grants membership. `docs/classrooms.md` describ
 `guild_classes` schedule and the member read route. The rota only names the auditor; recording an audit
 belongs to SRS-BUILDANDDO-CLASSROOM-GLOBAL-001.
 
+The staging classroom verifiers cast from the same rota. `scripts/ci/ocn_classroom_live.py` and
+`scripts/ci/ocn_classroom_fleet.py` hold the class happening now or next (`--at` fixes the instant): its
+host teaches, its auditor and the next two attendees join, and the first attendee left over is the
+control outsider, whose refusal a run needs to pass. Neither has a Forge or fixed-box default. The live
+verifier refuses an unknown seat, or a joiner who is the host, before any request. The fleet verifier
+resolves each fleet-map record to one of the eight at run time and refuses with `ROTA_HOST_UNSEATED`
+when no box carries the rota's host, rather than letting another box stand in. Boxes still sign as
+their own box seats until SRS-BUILDANDDO-LIVE-UTILIZATION-001 binds a key to each persona seat; the
+receipts add `rota`, `host_persona` and `joiner_personas` beside their existing keys.
+
 ## What is not a guildmaster
 
 The persona seats above are the only guildmaster identities this SRS recognises.
@@ -181,7 +191,8 @@ seat renamed by 1792200000. This is cosmetic. Identity is decided by the email r
 
 `guildmaster-registry.test.mjs`, `guild-publishing.test.mjs`, `guild-lessons.test.mjs`,
 `guild-rota.test.mjs` and `guild-classes.test.mjs` run the real hook and migration sources against
-storage doubles; `test_guild_rota.py` covers the Python rota and its CLI. They prove the decision
+storage doubles; `test_guild_rota.py` covers the Python rota and its CLI, and
+`test_ocn_classroom_rota.py` the verifiers' rota cast with every request refused. They prove the decision
 logic and the parity, not native behaviour. The guard, `seatOf` and the display migration were also
 exercised on a disposable loopback PocketBase 0.39.8. Committed native coverage is in
 `tests/upgrade/test_classroom_native.py`: the classroom badge, a seat that publishes a guild lesson

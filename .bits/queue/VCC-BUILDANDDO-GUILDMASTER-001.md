@@ -44,7 +44,7 @@ deploys; enabling the rota or anything else on staging or production is a separa
 | 3 | Badge: classroom presence carries a guildmaster badge only for the matching seat; legacy rows lose it on read | `node --test tests/upgrade/classroom-presence.test.mjs tests/upgrade/classroom-media.test.mjs tests/upgrade/classroom-telemetry.test.mjs && python3 -m unittest tests.upgrade.test_classroom_native tests.upgrade.test_native_fixture_contracts && echo PASS` | done |
 | 4 | Publishing: direct guildmaster publishing with `guild_publications` audit rows, keyless guild lessons shared by `room.material`, owner/admin `publication.withdraw`, Admin tab | `node --test tests/upgrade/guild-publishing.test.mjs tests/upgrade/guild-lessons.test.mjs tests/upgrade/workspace-claims.test.mjs tests/upgrade/workspace-community.test.mjs tests/upgrade/trust-shared-records.test.mjs tests/upgrade/business-learning.test.mjs tests/upgrade/classroom-system.test.mjs && (cd apps/web && npx vitest run src/components/workspace/__tests__/GuildPublicationsPanel.test.jsx src/pages/workspace/__tests__/DailyEditionPage.test.jsx src/components/broadcast/__tests__/AgentActivity.test.jsx && npm run lint && npm run build) && python3 -m unittest tests.upgrade.test_classroom_native tests.upgrade.test_workspace_native tests.upgrade.test_native_fixture_contracts && echo PASS` | done |
 | 5 | Rota: deterministic weekly rota (JS and Python, CLI) and the env-gated, idempotent `guild_class_rota` cron with a member read route | `node --test tests/upgrade/guild-rota.test.mjs tests/upgrade/guild-classes.test.mjs tests/upgrade/community-quiz.test.mjs && python3 -m unittest tests.upgrade.test_guild_rota && python3 -m libs.guildmasters week --week 2026-W45 --json && python3 -m unittest tests.upgrade.test_classroom_native tests.upgrade.test_native_fixture_contracts && echo PASS` | done |
-| 6 | Verifiers: `ocn_classroom_live.py` and `ocn_classroom_fleet.py` use the canonical eight and take host, joiners and auditor from the rota, with no Forge or fixed-box fallback | `python3 -m unittest tests.upgrade.test_ocn_classroom_rota tests.upgrade.test_ocn_telemetry tests.upgrade.test_guildmasters tests.upgrade.test_guild_rota && python3 scripts/ci/ocn_classroom_live.py selftest && python3 tests/upgrade/check_discordbot.py && echo PASS` | pending |
+| 6 | Verifiers: `ocn_classroom_live.py` and `ocn_classroom_fleet.py` use the canonical eight and take host, joiners and auditor from the rota, with no Forge or fixed-box fallback | `python3 -m unittest tests.upgrade.test_ocn_classroom_rota tests.upgrade.test_ocn_telemetry tests.upgrade.test_guildmasters tests.upgrade.test_guild_rota && python3 scripts/ci/ocn_classroom_live.py selftest && python3 tests/upgrade/check_discordbot.py && echo PASS` | done |
 
 Every native suite above runs with `BUILDANDDO_TEST_POCKETBASE` naming a PocketBase 0.39.8
 binary; a missing binary is a failure, not a pass.
@@ -72,6 +72,12 @@ workspace, `POST /api/crons/guild_class_rota` as the fixture superuser creates t
 for the seated editor hosts only, matching `libs.guildmasters.rota`, and a second run creates none; on
 the default server the same run writes nothing. The node suites, the Python rota suite, the CLI and the
 fixture contracts pass unchanged. No `apps/web` file changed in row 5.
+
+Row 6's gate prints PASS. Both verifiers take the eight from `libs.guildmasters` and the cast from
+`libs.guildmasters.rota`; `test_ocn_classroom_rota.py` drives them with `urllib.request.urlopen`,
+`subprocess.run` and the socket layer refusing every attempt, invented seat ids and RFC 5737
+addresses only. Neither verifier adds a migration or hook, so no native case applies, and nothing was
+run against staging.
 
 Every slice also runs the repository gates before its commit is final:
 `node --test tests/upgrade/*.test.mjs` (baseline 1537 pass, 0 fail, plus the slice's new tests);
