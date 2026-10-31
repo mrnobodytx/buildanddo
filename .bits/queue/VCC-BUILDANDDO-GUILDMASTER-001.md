@@ -43,7 +43,7 @@ deploys; enabling the rota or anything else on staging or production is a separa
 | 2 | Agent activity: guildmaster seat reports stored as `actor_type: agent` with a server-derived `seat_events.persona`; AgentActivity names the persona | `node --test tests/upgrade/workspace-claims.test.mjs tests/upgrade/trust-shared-records.test.mjs tests/upgrade/mutation-telemetry.test.mjs && (cd apps/web && npx vitest run src/components/broadcast/__tests__/AgentActivity.test.jsx && npm run lint) && python3 -m unittest tests.upgrade.test_workspace_native tests.upgrade.test_native_fixture_contracts && echo PASS` | done |
 | 3 | Badge: classroom presence carries a guildmaster badge only for the matching seat; legacy rows lose it on read | `node --test tests/upgrade/classroom-presence.test.mjs tests/upgrade/classroom-media.test.mjs tests/upgrade/classroom-telemetry.test.mjs && python3 -m unittest tests.upgrade.test_classroom_native tests.upgrade.test_native_fixture_contracts && echo PASS` | done |
 | 4 | Publishing: direct guildmaster publishing with `guild_publications` audit rows, keyless guild lessons shared by `room.material`, owner/admin `publication.withdraw`, Admin tab | `node --test tests/upgrade/guild-publishing.test.mjs tests/upgrade/guild-lessons.test.mjs tests/upgrade/workspace-claims.test.mjs tests/upgrade/workspace-community.test.mjs tests/upgrade/trust-shared-records.test.mjs tests/upgrade/business-learning.test.mjs tests/upgrade/classroom-system.test.mjs && (cd apps/web && npx vitest run src/components/workspace/__tests__/GuildPublicationsPanel.test.jsx src/pages/workspace/__tests__/DailyEditionPage.test.jsx src/components/broadcast/__tests__/AgentActivity.test.jsx && npm run lint && npm run build) && python3 -m unittest tests.upgrade.test_classroom_native tests.upgrade.test_workspace_native tests.upgrade.test_native_fixture_contracts && echo PASS` | done |
-| 5 | Rota: deterministic weekly rota (JS and Python, CLI) and the env-gated, idempotent `guild_class_rota` cron with a member read route | `node --test tests/upgrade/guild-rota.test.mjs tests/upgrade/guild-classes.test.mjs tests/upgrade/community-quiz.test.mjs && python3 -m unittest tests.upgrade.test_guild_rota && python3 -m libs.guildmasters week --week 2026-W45 --json && python3 -m unittest tests.upgrade.test_classroom_native tests.upgrade.test_native_fixture_contracts && echo PASS` | pending |
+| 5 | Rota: deterministic weekly rota (JS and Python, CLI) and the env-gated, idempotent `guild_class_rota` cron with a member read route | `node --test tests/upgrade/guild-rota.test.mjs tests/upgrade/guild-classes.test.mjs tests/upgrade/community-quiz.test.mjs && python3 -m unittest tests.upgrade.test_guild_rota && python3 -m libs.guildmasters week --week 2026-W45 --json && python3 -m unittest tests.upgrade.test_classroom_native tests.upgrade.test_native_fixture_contracts && echo PASS` | done |
 | 6 | Verifiers: `ocn_classroom_live.py` and `ocn_classroom_fleet.py` use the canonical eight and take host, joiners and auditor from the rota, with no Forge or fixed-box fallback | `python3 -m unittest tests.upgrade.test_ocn_classroom_rota tests.upgrade.test_ocn_telemetry tests.upgrade.test_guildmasters tests.upgrade.test_guild_rota && python3 scripts/ci/ocn_classroom_live.py selftest && python3 tests/upgrade/check_discordbot.py && echo PASS` | pending |
 
 Every native suite above runs with `BUILDANDDO_TEST_POCKETBASE` naming a PocketBase 0.39.8
@@ -64,6 +64,14 @@ only its disposable copy rewritten, all 12 cases pass, including the new guild-l
 `DailyEditionPage.test.jsx` the case "keeps publication disabled for an editor" fails identically at the
 base, because the page renders Publish only for administrators; the other five cases pass. Every node
 suite in the row passes, as do the new Vitest suite, lint, the build and the fixture contracts.
+
+Row 5's gate cannot print PASS on this base for the same `metrics.pb.js` reason: `test_classroom_native`
+stops at startup. With only the disposable copy of that hook rewritten, all 14 native classroom cases
+pass, including the two new rota cases: with `BUILDANDDO_GUILD_CLASS_WORKSPACE` naming the fixture
+workspace, `POST /api/crons/guild_class_rota` as the fixture superuser creates the coming week's classes
+for the seated editor hosts only, matching `libs.guildmasters.rota`, and a second run creates none; on
+the default server the same run writes nothing. The node suites, the Python rota suite, the CLI and the
+fixture contracts pass unchanged. No `apps/web` file changed in row 5.
 
 Every slice also runs the repository gates before its commit is final:
 `node --test tests/upgrade/*.test.mjs` (baseline 1537 pass, 0 fail, plus the slice's new tests);

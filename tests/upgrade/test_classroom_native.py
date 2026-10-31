@@ -8,9 +8,9 @@
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-16
-# Depends:     tests/upgrade/test_dossier_native.py, apps/pocketbase/pb_hooks/classrooms.js, apps/pocketbase/pb_hooks/classroom-media.js, apps/pocketbase/pb_migrations/1791400000_classroom_media_sessions.js, apps/pocketbase/pb_hooks/guildmasters.js, apps/pocketbase/pb_hooks/guild-lessons.js, apps/pocketbase/pb_hooks/guild-publishing.js, apps/pocketbase/pb_migrations/1792400000_guild_publications.js, apps/pocketbase/pb_migrations/1792400002_guild_lessons.js
+# Depends:     tests/upgrade/test_dossier_native.py, apps/pocketbase/pb_hooks/classrooms.js, apps/pocketbase/pb_hooks/classroom-media.js, apps/pocketbase/pb_migrations/1791400000_classroom_media_sessions.js, apps/pocketbase/pb_hooks/guildmasters.js, apps/pocketbase/pb_hooks/guild-lessons.js, apps/pocketbase/pb_hooks/guild-publishing.js, apps/pocketbase/pb_migrations/1792400000_guild_publications.js, apps/pocketbase/pb_migrations/1792400002_guild_lessons.js, apps/pocketbase/pb_hooks/guild-classes.js, apps/pocketbase/pb_migrations/1792500000_guild_class_schedule.js, libs/guildmasters/rota.py
 # EnumType:    Test
-# EnumEdges:   CONSUMES tests/upgrade/test_dossier_native.py; VALIDATES apps/pocketbase/pb_hooks/classrooms.js; VALIDATES apps/pocketbase/pb_hooks/classroom-media.js; VALIDATES apps/pocketbase/pb_migrations/1791400000_classroom_media_sessions.js; VALIDATES apps/pocketbase/pb_hooks/guildmasters.js; VALIDATES apps/pocketbase/pb_hooks/guild-lessons.js; VALIDATES apps/pocketbase/pb_hooks/guild-publishing.js; VALIDATES apps/pocketbase/pb_migrations/1792400000_guild_publications.js; VALIDATES apps/pocketbase/pb_migrations/1792400002_guild_lessons.js
+# EnumEdges:   CONSUMES tests/upgrade/test_dossier_native.py; VALIDATES apps/pocketbase/pb_hooks/classrooms.js; VALIDATES apps/pocketbase/pb_hooks/classroom-media.js; VALIDATES apps/pocketbase/pb_migrations/1791400000_classroom_media_sessions.js; VALIDATES apps/pocketbase/pb_hooks/guildmasters.js; VALIDATES apps/pocketbase/pb_hooks/guild-lessons.js; VALIDATES apps/pocketbase/pb_hooks/guild-publishing.js; VALIDATES apps/pocketbase/pb_migrations/1792400000_guild_publications.js; VALIDATES apps/pocketbase/pb_migrations/1792400002_guild_lessons.js; VALIDATES apps/pocketbase/pb_hooks/guild-classes.js; VALIDATES apps/pocketbase/pb_migrations/1792500000_guild_class_schedule.js; CONSUMES libs/guildmasters/rota.py
 # DAG Node:    none
 # Intent:      Require native classroom authentication, date serialization, concurrent receipt recovery and reversible schema before accepting an installed backend.
 # ───────────────────────────────────────────────────────────────
@@ -32,6 +32,7 @@ import sqlite3
 import subprocess
 import sys
 import tempfile
+import time
 from typing import Any
 import unittest
 
@@ -39,6 +40,7 @@ ROOT = Path(__file__).resolve().parents[2]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 from tests.upgrade.test_dossier_native import NO_WINDOW, NativeServer  # noqa: E402
+from libs.guildmasters import rota as guild_rota  # noqa: E402
 
 BINARY = os.environ.get("BUILDANDDO_TEST_POCKETBASE", "")
 WORKSPACE = "workspacealpha1"
@@ -59,6 +61,8 @@ MIGRATIONS = (
     # does not have, and classrooms never read it.
     "1792400000_guild_publications.js",
     "1792400002_guild_lessons.js",
+    # The weekly guild class schedule the guild_class_rota cron writes.
+    "1792500000_guild_class_schedule.js",
 )
 HOOKS = (
     "classrooms.pb.js",
@@ -77,6 +81,9 @@ HOOKS = (
     "guild-lessons.pb.js",
     "guild-lessons.js",
     "guild-publishing.js",
+    "guild-rota.js",
+    "guild-classes.js",
+    "guild-classes.pb.js",
 )
 # The one guildmaster persona seat in this fixture, shaped as the seat migrations create it and as
 # guildmasters.seatOf recognises it: verified, flagged ocn_seat, email <seat>@ocn.buildanddo.invalid.
@@ -297,6 +304,7 @@ class DiagnosticNativeServer(NativeServer):
             "missions",
             "guild_lessons",
             "guild_publications",
+            "guild_classes",
         }
         if name not in allowed:
             raise ValueError("Choose a public synthetic fixture table.")
@@ -326,7 +334,7 @@ class DiagnosticNativeServer(NativeServer):
 class ClassroomServer(DiagnosticNativeServer):
     """Install the complete classroom hooks with real security and no provider I/O."""
 
-    def __init__(self, binary: str) -> None:
+    def __init__(self, binary: str, environment: dict[str, str] | None = None) -> None:
         self.directory = tempfile.TemporaryDirectory(
             prefix="buildanddo-classroom-native-"
         )
@@ -346,6 +354,9 @@ class ClassroomServer(DiagnosticNativeServer):
                 if os.name == "nt" and "SystemRoot" in os.environ
                 else {}
             ),
+            # A case may add fixture-only variables, such as the guild class workspace; the
+            # default server sets none of them, so the rota cron stays disabled there.
+            **(environment or {}),
         }
         try:
             hooks = self.root / "hooks"
@@ -399,6 +410,31 @@ class ClassroomServer(DiagnosticNativeServer):
         """Read the fixture-only transport audit containing no SDP or credentials."""
         path = self.root / "fixture-provider-calls.txt"
         return path.read_text().splitlines() if path.exists() else []
+
+    def superuser(self) -> str:
+        """Sign in as the throwaway superuser NativeServer.seed_superuser created for this directory."""
+        status, data = self.request(
+            "POST",
+            "/api/collections/_superusers/auth-with-password",
+            {"identity": "fixture@localhost.invalid", "password": "fixture-local-disposable-instance"},
+        )
+        if status != 200 or not isinstance(data.get("token"), str):
+            raise AssertionError("Fixture superuser authentication failed.")
+        return data["token"]
+
+    def rota_logs(self) -> list[tuple[str, dict[str, Any]]]:
+        """Read only the guild class rota's own log lines (workspace id, week and counts).
+
+        PocketBase writes app logs to auxiliary.db in batches, within a few seconds.
+        """
+        path = self.root / "data/auxiliary.db"
+        if not path.exists():
+            return []
+        with closing(sqlite3.connect(path.as_uri() + "?mode=ro", uri=True)) as database:
+            rows = database.execute(
+                "select message, data from _logs where message like 'guild class rota%' order by created, rowid"
+            ).fetchall()
+        return [(message, json.loads(data or "{}")) for message, data in rows]
 
 
 @unittest.skipUnless(
@@ -1670,6 +1706,114 @@ class NativeClassroomTests(unittest.TestCase):
         for value in (saved, published, listed, shared, view):
             self.assertNotIn(SEAT_IDENTITY, json.dumps(value))
         self.assertEqual(self.server.stored("tutorials"), tutorials)
+
+    def run_rota(self, server: ClassroomServer) -> None:
+        """Run the registered cron through PocketBase's superuser route, which answers before the job ends."""
+        status, _ = server.request("POST", "/api/crons/guild_class_rota", None, server.superuser())
+        self.assertEqual(status, 204)
+
+    def wait_for(self, read: Any, count: int, seconds: float = 10.0) -> list[Any]:
+        """Poll a disposable read until it holds `count` items, then require exactly that many."""
+        deadline = time.monotonic() + seconds
+        while True:
+            items = read()
+            if len(items) >= count or time.monotonic() > deadline:
+                self.assertEqual(len(items), count, items)
+                return items
+            time.sleep(0.1)
+
+    def test_native_guild_class_rota_writes_nothing_without_its_workspace(self) -> None:
+        status, jobs = self.server.request("GET", "/api/crons", None, self.server.superuser())
+        self.assertEqual(status, 200)
+        self.assertIn({"id": "guild_class_rota", "expression": "17 * * * *"}, jobs)
+        self.run_rota(self.server)
+        # A configured run writes within a second and logs within a few; wait past both.
+        deadline = time.monotonic() + 5
+        while time.monotonic() < deadline:
+            self.assertEqual(self.server.stored("guild_classes"), [])
+            time.sleep(0.25)
+        self.assertEqual(self.server.stored("classroom_rooms"), [])
+        self.assertEqual(self.server.rota_logs(), [])
+
+    def test_native_guild_class_rota_schedules_seated_hosts_once(self) -> None:
+        server = ClassroomServer(BINARY, {"BUILDANDDO_GUILD_CLASS_WORKSPACE": WORKSPACE})
+        self.addCleanup(server.close)
+        # Two more persona seats, shaped as the seat migrations create them: director an editor,
+        # oracle only a viewer. The other five have no account here.
+        server.fixture_change(
+            "const users = app.findCollectionByNameOrId('users');"
+            " const members = app.findCollectionByNameOrId('workspace_members');"
+            " for (const [id, seat, role] of [['accountdirect01', 'director', 'editor'], ['accountoracle01', 'oracle', 'viewer']]) {"
+            " const record = new Record(users); record.id = id; record.set('name', 'OCN seat: ' + seat);"
+            " record.set('email', seat + '@ocn.buildanddo.invalid'); record.set('verified', true); record.set('ocn_seat', true);"
+            " record.setPassword('local-fixture-password-only'); app.save(record);"
+            " const member = new Record(members); member.set('workspace', 'workspacealpha1'); member.set('user', id);"
+            " member.set('role', role); app.save(member); }"
+        )
+        accounts = {"forge": SEAT_ACCOUNT, "director": "accountdirect01", "oracle": "accountoracle01"}
+        before = datetime.now(timezone.utc)
+        self.run_rota(server)
+        rows = self.wait_for(lambda: server.stored("guild_classes"), 2)
+        after = datetime.now(timezone.utc)
+        # The coming week by the server clock, from the Python mirror of the rota.
+        plans = {
+            plan["week"]: plan
+            for plan in (guild_rota.week(guild_rota.monday_of(moment) + guild_rota.WEEK) for moment in (before, after))
+        }
+        self.assertEqual(len({row["week"] for row in rows}), 1)
+        plan = plans[rows[0]["week"]]
+        iso = lambda value: str(value).replace(" ", "T")  # noqa: E731
+        expected = [item for item in plan["classes"] if item["host"] in ("forge", "director")]
+        self.assertEqual(
+            sorted((row["slot"], row["host_seat"], row["host"], row["auditor_seat"], row["auditor"], iso(row["starts_at"]),
+                    row["workspace"]) for row in rows),
+            [(item["slot"], item["host"], accounts[item["host"]], item["auditor"], accounts.get(item["auditor"], ""),
+              item["starts_at"], WORKSPACE) for item in expected],
+        )
+        rooms = {room["id"]: room for room in server.stored("classroom_rooms")}
+        self.assertEqual(len(rooms), 2)
+        for row in rows:
+            item = plan["classes"][row["slot"]]
+            room = rooms[row["room"]]
+            self.assertEqual(
+                (room["workspace"], room["host"], room["host_name"], room["kind"], room["status"], room["tutorial"],
+                 room["material"], iso(room["starts_at"]), room["revision"], room["protocol_version"]),
+                (WORKSPACE, accounts[item["host"]], item["name"], "class", "scheduled", "", "", item["starts_at"], 1, 1),
+            )
+            self.assertEqual(room["title"], f"{item['name']} hosts the {item['guild']} guild class")
+        # Exactly one line: a seat with no account or no editor role is a skip reason, not a slot failure.
+        logs = self.wait_for(server.rota_logs, 1)
+        self.assertEqual(logs[0], ("guild class rota scheduled",
+                                   {"workspace": WORKSPACE, "week": plan["week"], "created": 2, "existing": 0, "skipped": 6}))
+        # A second run finds the week scheduled and creates nothing.
+        self.run_rota(server)
+        logs = self.wait_for(server.rota_logs, 2)
+        self.assertEqual(logs[1][1], {"workspace": WORKSPACE, "week": plan["week"], "created": 0, "existing": 2, "skipped": 6})
+        self.assertEqual(server.stored("guild_classes"), rows)
+        self.assertEqual(len(server.stored("classroom_rooms")), 2)
+        # Members read the schedule by persona; an outsider cannot; no email is served.
+        path = f"/api/buildanddo/workspaces/{WORKSPACE}/guild-classes?week={plan['week']}"
+        status, listed = server.request("GET", path, token=server.login("viewer"))
+        self.assertEqual((status, listed["week"], listed["rota"]), (200, plan["week"], plan["classes"]), listed)
+        self.assertEqual(
+            [(item["slot"], item["host_persona"], item["room_status"], item["starts_at"]) for item in listed["scheduled"]],
+            [(item["slot"], item["persona"], "scheduled", item["starts_at"]) for item in expected],
+        )
+        self.assertNotIn("@", json.dumps(listed))
+        self.assertEqual(server.request("GET", path, token=server.login("guest"))[0], 403)
+        # The seat's class is an ordinary scheduled class: only its host may start it, and only with a lesson.
+        forge_room = next(row["room"] for row in rows if row["host_seat"] == "forge")
+        status, signed_in = server.request(
+            "POST", "/api/collections/users/auth-with-password",
+            {"identity": SEAT_IDENTITY, "password": "local-fixture-password-only"},
+        )
+        self.assertEqual(status, 200)
+        start = {"action": "room.start", "payload": {"id": forge_room}, "revision": 1}
+        classrooms = f"/api/buildanddo/workspaces/{WORKSPACE}/classrooms"
+        self.assertEqual(server.request("POST", classrooms, {**start, "request_key": "native_rota_start_editor"},
+                                        server.login("bravo"))[0], 403)
+        self.assertEqual(server.request("POST", classrooms, {**start, "request_key": "native_rota_start_seat01"},
+                                        str(signed_in["token"]))[0], 400)
 
 
 if __name__ == "__main__":

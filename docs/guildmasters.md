@@ -8,9 +8,9 @@
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-10-31
-# Depends:     apps/pocketbase/pb_hooks/guildmasters.js, apps/pocketbase/pb_hooks/guildmasters.pb.js, apps/pocketbase/pb_migrations/1792200000_guildmaster_seat_display.js, libs/guildmasters/__init__.py, apps/pocketbase/pb_hooks/guild-publishing.js, apps/pocketbase/pb_hooks/guild-lessons.js
+# Depends:     apps/pocketbase/pb_hooks/guildmasters.js, apps/pocketbase/pb_hooks/guildmasters.pb.js, apps/pocketbase/pb_migrations/1792200000_guildmaster_seat_display.js, libs/guildmasters/__init__.py, apps/pocketbase/pb_hooks/guild-publishing.js, apps/pocketbase/pb_hooks/guild-lessons.js, apps/pocketbase/pb_hooks/guild-rota.js, libs/guildmasters/rota.py, apps/pocketbase/pb_hooks/guild-classes.js
 # EnumType:    Doc
-# EnumEdges:   CONSUMES apps/pocketbase/pb_hooks/guildmasters.js; CONSUMES apps/pocketbase/pb_hooks/guildmasters.pb.js; CONSUMES apps/pocketbase/pb_migrations/1792200000_guildmaster_seat_display.js; CONSUMES libs/guildmasters/__init__.py; CONSUMES apps/pocketbase/pb_hooks/guild-publishing.js; CONSUMES apps/pocketbase/pb_hooks/guild-lessons.js; VERIFIED_BY tests/upgrade/guildmaster-registry.test.mjs; VERIFIED_BY tests/upgrade/test_guildmasters.py; VERIFIED_BY tests/upgrade/guild-publishing.test.mjs; VERIFIED_BY tests/upgrade/guild-lessons.test.mjs
+# EnumEdges:   CONSUMES apps/pocketbase/pb_hooks/guildmasters.js; CONSUMES apps/pocketbase/pb_hooks/guildmasters.pb.js; CONSUMES apps/pocketbase/pb_migrations/1792200000_guildmaster_seat_display.js; CONSUMES libs/guildmasters/__init__.py; CONSUMES apps/pocketbase/pb_hooks/guild-publishing.js; CONSUMES apps/pocketbase/pb_hooks/guild-lessons.js; CONSUMES apps/pocketbase/pb_hooks/guild-rota.js; CONSUMES libs/guildmasters/rota.py; CONSUMES apps/pocketbase/pb_hooks/guild-classes.js; VERIFIED_BY tests/upgrade/guildmaster-registry.test.mjs; VERIFIED_BY tests/upgrade/test_guildmasters.py; VERIFIED_BY tests/upgrade/guild-publishing.test.mjs; VERIFIED_BY tests/upgrade/guild-lessons.test.mjs; VERIFIED_BY tests/upgrade/guild-rota.test.mjs; VERIFIED_BY tests/upgrade/test_guild_rota.py
 # DAG Node:    none
 # Intent:      State who the eight guildmasters are, how the server recognises one, and what it deliberately does not recognise.
 # ───────────────────────────────────────────────────────────────
@@ -18,9 +18,9 @@
 # Guildmasters
 
 The eight guildmasters are automated agents, one per guild. Each signs in as its own persona
-seat. This page covers the canon, the seat identity rule and the limits of both. Publishing,
-the classroom badge and the weekly class rota build on this and are described where they land
-(SRS-BUILDANDDO-GUILDMASTER-001).
+seat. This page covers the canon, the seat identity rule, direct publishing, the weekly class rota and
+the limits of each (SRS-BUILDANDDO-GUILDMASTER-001). The classroom badge and scheduled classes are in
+`docs/classrooms.md`.
 
 ## The canon
 
@@ -121,6 +121,44 @@ edited or republished. Without `1792400000_guild_publications.js` a guildmaster 
 answers 503 and changes nothing, and every human path keeps working. The API contract is in
 `docs/workspace-administration.md` and `docs/claim-authority.md`.
 
+## The weekly class rota
+
+Owner decision (2) of 2026-10-31: each guildmaster hosts one class a week, the other seven attend, and
+one of them audits. `apps/pocketbase/pb_hooks/guild-rota.js` decides the rota from the date alone, with
+no clock, storage or environment, and `libs/guildmasters/rota.py` mirrors it field for field.
+
+- A week is an ISO 8601 week starting Monday 00:00 UTC. Week 0 is 2026-W45 (Monday 2 November 2026);
+  earlier weeks have negative indices.
+- Each week has eight slots, Monday to Thursday at 15:00 and 18:00 UTC, of 120 minutes each.
+- In week `w`, slot `s` is hosted by `ORDER[(s + w) mod 8]`, so every guildmaster hosts exactly once and
+  the hosts move through the slots week by week.
+- The auditor is `ORDER[(s + w + k) mod 8]` with `k = 1 + (w mod 7)`. The shift is never zero, so nobody
+  audits their own class, the auditors are also a permutation, and over any seven weeks each host is
+  audited by each of the other seven.
+- The attendees are the other seven, listed from the guildmaster after the host. The auditor is one of
+  them.
+
+Each class is `{slot, host, persona, name, guild, auditor, auditor_persona, attendees, starts_at}`, with
+seat ids for `host`, `auditor` and `attendees`, and persona slugs for `persona` and `auditor_persona`.
+`week(t)` returns `{week, index, starts_at, classes}`; `parseWeek('YYYY-Www')` refuses anything but an
+existing ISO week; `current(t)` returns the first class, this week or next, that has not ended by `t`.
+`guild-rota.test.mjs` runs both implementations for 176 weeks, from 20 before the epoch to 156 after,
+including 2026-W53, and requires them to agree on every field.
+
+Scripts read the rota offline:
+
+```bash
+python -m libs.guildmasters list [--json]
+python -m libs.guildmasters week [--week YYYY-Www | --date YYYY-MM-DD] [--json]
+python -m libs.guildmasters current [--at 2026-11-02T15:00:00Z] [--json]
+```
+
+The `guild_class_rota` cron turns the coming week into scheduled classes in the one workspace that
+`BUILDANDDO_GUILD_CLASS_WORKSPACE` names, for each seat already holding editor or higher role there.
+Unset, it does nothing. It never grants membership. `docs/classrooms.md` describes the cron, the
+`guild_classes` schedule and the member read route. The rota only names the auditor; recording an audit
+belongs to SRS-BUILDANDDO-CLASSROOM-GLOBAL-001.
+
 ## What is not a guildmaster
 
 The persona seats above are the only guildmaster identities this SRS recognises.
@@ -141,12 +179,14 @@ seat renamed by 1792200000. This is cosmetic. Identity is decided by the email r
 
 ## Verification boundary
 
-`guildmaster-registry.test.mjs`, `guild-publishing.test.mjs` and `guild-lessons.test.mjs` run the
-real hook and migration sources against storage doubles. They prove the decision logic and the
-parity, not native behaviour. The guard, `seatOf` and the display migration were also exercised on a
-disposable loopback PocketBase 0.39.8. Committed native coverage is in
-`tests/upgrade/test_classroom_native.py`: the classroom badge, and a seat that publishes a guild
-lesson which the host shares and starts. Those cases pass on 0.39.8 only with the temporary copy of
-`metrics.pb.js` rewritten to the positional `Middleware` form; the committed hook stops 0.39.8 at
-startup, a defect outside this SRS. Nothing here is deployed or enabled on staging or production,
+`guildmaster-registry.test.mjs`, `guild-publishing.test.mjs`, `guild-lessons.test.mjs`,
+`guild-rota.test.mjs` and `guild-classes.test.mjs` run the real hook and migration sources against
+storage doubles; `test_guild_rota.py` covers the Python rota and its CLI. They prove the decision
+logic and the parity, not native behaviour. The guard, `seatOf` and the display migration were also
+exercised on a disposable loopback PocketBase 0.39.8. Committed native coverage is in
+`tests/upgrade/test_classroom_native.py`: the classroom badge, a seat that publishes a guild lesson
+which the host shares and starts, and the rota cron scheduling the coming week once for seated hosts
+and nothing when unset. Those cases pass on 0.39.8 only with the temporary copy of `metrics.pb.js`
+rewritten to the positional `Middleware` form; the committed hook stops 0.39.8 at startup, a defect
+outside this SRS. Nothing here is deployed or enabled on staging or production,
 and the persona seats cannot sign in until SRS-BUILDANDDO-LIVE-UTILIZATION-001 binds their keys.

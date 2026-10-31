@@ -8,9 +8,9 @@
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-16
-# Depends:     apps/web/src/pages/workspace/ClassroomsPage.jsx, apps/web/src/hooks/useClassrooms.js, apps/web/src/hooks/useOpenClasses.js, apps/pocketbase/pb_hooks/classrooms.js, apps/pocketbase/pb_hooks/classroom-media.js, apps/pocketbase/pb_hooks/classroom-presence.pb.js, apps/pocketbase/pb_hooks/guildmasters.js, apps/pocketbase/pb_hooks/guild-lessons.js, apps/pocketbase/pb_migrations/1792400002_guild_lessons.js, tests/upgrade/test_classroom_native.py, tests/upgrade/classroom-recovery.test.mjs, tests/upgrade/classroom-presence.test.mjs, tests/upgrade/guild-lessons.test.mjs
+# Depends:     apps/web/src/pages/workspace/ClassroomsPage.jsx, apps/web/src/hooks/useClassrooms.js, apps/web/src/hooks/useOpenClasses.js, apps/pocketbase/pb_hooks/classrooms.js, apps/pocketbase/pb_hooks/classroom-media.js, apps/pocketbase/pb_hooks/classroom-presence.pb.js, apps/pocketbase/pb_hooks/guildmasters.js, apps/pocketbase/pb_hooks/guild-lessons.js, apps/pocketbase/pb_migrations/1792400002_guild_lessons.js, apps/pocketbase/pb_hooks/guild-classes.js, apps/pocketbase/pb_migrations/1792500000_guild_class_schedule.js, tests/upgrade/test_classroom_native.py, tests/upgrade/classroom-recovery.test.mjs, tests/upgrade/classroom-presence.test.mjs, tests/upgrade/guild-lessons.test.mjs, tests/upgrade/guild-classes.test.mjs
 # EnumType:    Doc
-# EnumEdges:   CONSUMES apps/web/src/pages/workspace/ClassroomsPage.jsx; CONSUMES apps/web/src/hooks/useClassrooms.js; CONSUMES apps/web/src/hooks/useOpenClasses.js; CONSUMES apps/pocketbase/pb_hooks/classrooms.js; CONSUMES apps/pocketbase/pb_hooks/classroom-media.js; CONSUMES apps/pocketbase/pb_hooks/classroom-presence.pb.js; CONSUMES apps/pocketbase/pb_hooks/guildmasters.js; CONSUMES apps/pocketbase/pb_hooks/guild-lessons.js; DEPENDS_ON apps/pocketbase/pb_migrations/1792400002_guild_lessons.js; VERIFIED_BY tests/upgrade/test_classroom_native.py; VERIFIED_BY tests/upgrade/classroom-recovery.test.mjs; VERIFIED_BY tests/upgrade/classroom-presence.test.mjs; VERIFIED_BY tests/upgrade/guild-lessons.test.mjs
+# EnumEdges:   CONSUMES apps/web/src/pages/workspace/ClassroomsPage.jsx; CONSUMES apps/web/src/hooks/useClassrooms.js; CONSUMES apps/web/src/hooks/useOpenClasses.js; CONSUMES apps/pocketbase/pb_hooks/classrooms.js; CONSUMES apps/pocketbase/pb_hooks/classroom-media.js; CONSUMES apps/pocketbase/pb_hooks/classroom-presence.pb.js; CONSUMES apps/pocketbase/pb_hooks/guildmasters.js; CONSUMES apps/pocketbase/pb_hooks/guild-lessons.js; DEPENDS_ON apps/pocketbase/pb_migrations/1792400002_guild_lessons.js; CONSUMES apps/pocketbase/pb_hooks/guild-classes.js; DEPENDS_ON apps/pocketbase/pb_migrations/1792500000_guild_class_schedule.js; VERIFIED_BY tests/upgrade/test_classroom_native.py; VERIFIED_BY tests/upgrade/classroom-recovery.test.mjs; VERIFIED_BY tests/upgrade/classroom-presence.test.mjs; VERIFIED_BY tests/upgrade/guild-lessons.test.mjs; VERIFIED_BY tests/upgrade/guild-classes.test.mjs
 # DAG Node:    none
 # Intent:      Describe the classroom user flow, installed-backend requirements and acceptance limits without representing a shared lesson as a video stream.
 # ───────────────────────────────────────────────────────────────
@@ -139,6 +139,50 @@ classroom page; that adapter is outside this slice.
 `test_native_guild_lesson_is_published_by_the_seat_then_shared_and_started` signs in the fixture seat,
 publishes a lesson, shares it and starts the class on PocketBase 0.39.8, with the same temporary
 `metrics.pb.js` rewrite as the badge case above.
+
+## Scheduled guild classes
+
+Owner decision (2) of 2026-10-31: each guildmaster hosts one class a week, the other seven attend and
+one of them audits. `apps/pocketbase/pb_hooks/guild-rota.js` decides who, from the date alone, and
+`libs/guildmasters/rota.py` mirrors it field for field (see `docs/guildmasters.md` for the rule and the
+`python -m libs.guildmasters` CLI).
+
+The hourly cron `guild_class_rota` (`guild-classes.pb.js`, at minute 17) turns that rota into classes.
+It does nothing unless `BUILDANDDO_GUILD_CLASS_WORKSPACE` names an existing workspace and both
+`classroom_rooms` and `guild_classes` (`1792500000_guild_class_schedule.js`) are installed and locked.
+A value that is not a record id, or names no workspace, is logged as a warning and writes nothing; so is
+a missing or opened schema. The variable is documented by name only, with an empty default, in
+`.env.example` and `docker-compose.yml`.
+
+When it is set, each run schedules the coming ISO week (the week of the next Monday 00:00 UTC). For
+each rota class it creates an ordinary class: `kind: class`, `status: scheduled`, `starts_at` from the
+rota, `tutorial: ''`, revision 1, hosted by that guildmaster's seat account with its persona name as
+`host_name`, plus `scope: workspace` and `material: ''` where those fields are installed. It does so only
+when the seat is recognised by `guildmasters.seatOf` and already holds editor or higher role in the
+workspace; every other seat is skipped with its reason (`no seat account`, `not a guildmaster seat`,
+`not a workspace editor`). The cron never grants membership: seat roles stay granted by hand through
+`member.set`. One `guild_classes` row per workspace, week and slot (a unique index) records the room,
+host and auditor seats, so a rerun creates nothing and a concurrent duplicate rolls back its own room.
+Each class has its own transaction; one info log line carries only the workspace id, week and counts.
+
+A scheduled guild class is then an ordinary class. Its host (or an administrator) shares material with
+`room.material` and starts it with `room.start`; until then `room.start` answers 400 because there is no
+lesson. Members attend with `room.join`. Deleting the room frees its slot, which the next run fills again
+while that week is still the coming week. The rota names an auditor; recording what the auditor found is
+`classroom_audit`, which belongs to SRS-BUILDANDDO-CLASSROOM-GLOBAL-001 and is not written here.
+
+`GET /api/buildanddo/workspaces/{workspace}/guild-classes` (any member, `no-store`) returns
+`{workspace, week, rota, scheduled}` for `?week=YYYY-Www`, or the coming week by default: the week's eight
+rota classes and, per scheduled slot, `slot`, `room`, `room_status`, `host_persona`, `auditor_persona` and
+`starts_at`. It carries no email. A malformed week is 400 and a missing schedule migration 503.
+
+`tests/upgrade/guild-classes.test.mjs` covers the cron, the route and the migration against storage
+doubles. Natively, `test_native_guild_class_rota_schedules_seated_hosts_once` starts a server with the
+variable set to the fixture workspace, runs the cron through `POST /api/crons/guild_class_rota` as the
+fixture superuser and compares the rooms with the Python rota; a second run creates nothing.
+`test_native_guild_class_rota_writes_nothing_without_its_workspace` runs it on the default server. Both
+need the same temporary `metrics.pb.js` rewrite as the cases above. Nothing is enabled on staging or
+production.
 
 ## Use a classroom
 
