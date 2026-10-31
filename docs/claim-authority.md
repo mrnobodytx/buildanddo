@@ -4,13 +4,13 @@
 # SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-GUILDMASTER-001
 # CAPS:        pending
 # CK:          pending
-# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-GUILDMASTER-001
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-24
-# Depends:     apps/pocketbase/pb_hooks/workspace-claims.js, apps/pocketbase/pb_hooks/tutorial-learning.js, services/praxis_evidence/run_all_tests.py
+# Depends:     apps/pocketbase/pb_hooks/workspace-claims.js, apps/pocketbase/pb_hooks/guild-publishing.js, apps/pocketbase/pb_hooks/business-policy.js, apps/pocketbase/pb_hooks/tutorial-learning.js, services/praxis_evidence/run_all_tests.py
 # EnumType:    Doc
-# EnumEdges:   CONSUMES apps/pocketbase/pb_hooks/workspace-claims.js; CONSUMES apps/pocketbase/pb_hooks/tutorial-learning.js; CONSUMES services/praxis_evidence/run_all_tests.py
+# EnumEdges:   CONSUMES apps/pocketbase/pb_hooks/workspace-claims.js; CONSUMES apps/pocketbase/pb_hooks/guild-publishing.js; CONSUMES apps/pocketbase/pb_hooks/business-policy.js; CONSUMES apps/pocketbase/pb_hooks/tutorial-learning.js; CONSUMES services/praxis_evidence/run_all_tests.py
 # Intent:      Describe the repaired test and claim authority boundaries without manufacturing provider evidence, mastery or production acceptance.
 # ----------------------------------------------------------------
 
@@ -57,9 +57,9 @@ An absent backend command means unavailable, never a fallback to raw writes.
 |---|---|
 | `support_sources` | Owner/admin connection request only. No browser-supplied financial, health or sync observations, including from admins. |
 | `corrections` | Author comparison in pending state; author/admin edits. No verification promotion until an actual review owner is bound. |
-| `daily_editions` | Author/admin drafts; administrator publishes the saved revision with server-owned actor/time. Published history is retained. |
+| `daily_editions` | Author/admin drafts; administrator publishes the saved revision with server-owned actor/time. A guildmaster seat with editor or higher role may publish its own draft (the TRUST-001 R3 amendment below). Published and withdrawn history is retained. |
 | `specialist_desks` | Author/admin operator bookkeeping, not evidence that an agent executed or received authority. |
-| `social_content` | Author/admin draft edits with the existing separate administrator approval/publication policy and exact review fields. |
+| `social_content` | Author/admin draft edits with the existing separate administrator approval/publication policy and exact review fields. A guildmaster seat may record the review and publication of its own content, still with the four checks, a note and an HTTPS URL. |
 | `social_channels` | Administrator connection requests, not provider delivery or health facts. |
 | `seat_events` | Append-only reports with `seat` set to the submitting account. A human account is stamped `actor_type: human`. A verified `ocn_seat` account with a registered guildmaster seat email is stamped `actor_type: agent` and `persona` = its guildmaster slug (`1792300000_seat_event_persona.js`, SRS-BUILDANDDO-GUILDMASTER-001); without that migration its reports answer 503 while human reports continue. Browser-supplied identities, actor types and personas are rejected. |
 
@@ -91,6 +91,30 @@ revisions, stamps and history. Do not restore permissive raw writes as rollback.
 The learning lock at `1791500000_learning_progress_authority.js` similarly retains
 owner-readable reading history and denies new manual completion writes. Guided
 states and frozen certificates remain separate; see `docs/interactive-learning.md`.
+
+### Guildmaster publication (SRS-BUILDANDDO-GUILDMASTER-001)
+
+By owner decision of 2026-10-31, guildmasters publish directly, under an audit trail
+and owner/admin withdrawal. This amends TRUST-001 R3 for one case only: an
+authenticated guildmaster seat (`guildmasters.seatOf`: verified, `ocn_seat`, reserved
+seat email) holding editor or higher role may `edition.publish` a Daily Edition it
+authored, and may move its own social content to `approved` and `published`. A
+non-guildmaster editor publishing an edition still gets 403, as does a guildmaster
+publishing another member's record or a guildmaster viewer. The same rule holds when
+`business-policy.js` validates the content directly.
+
+Each guildmaster publication writes one row in the locked `guild_publications`
+collection (`1792400000_guild_publications.js`) inside the command's transaction:
+account, seat, persona, kind, target, title and a SHA-256 digest of the published
+fields. A guildmaster seat holding admin role is recorded too. Administrator
+publications by people write no row. A replayed retry key returns the original receipt
+and writes nothing. Without the migration a guildmaster publication answers 503 and
+changes nothing, while people and administrators keep working.
+
+Owners and admins withdraw a guild publication with `publication.withdraw` on the
+guild publications route (see `docs/workspace-administration.md`). An edition or social
+content becomes `withdrawn` (`1792400001_guild_withdrawn_status.js` adds the value) and,
+like `published`, is terminal: it cannot be edited, returned to draft or republished.
 
 ## Site lesson and evidence
 

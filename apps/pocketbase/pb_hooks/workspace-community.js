@@ -1,21 +1,22 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/pocketbase/pb_hooks/workspace-community.js
 // Stage:       07_BUILD
-// SRS:         SRS-BUILDANDDO-UPGRADE-001
+// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-GUILDMASTER-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-GUILDMASTER-001
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-15
-// Depends:     apps/pocketbase/pb_hooks/workspace-access.js, apps/pocketbase/pb_migrations/1790000000_workspace_administration.js
+// Depends:     apps/pocketbase/pb_hooks/workspace-access.js, apps/pocketbase/pb_hooks/guild-publishing.js, apps/pocketbase/pb_migrations/1790000000_workspace_administration.js
 // EnumType:    Service
-// EnumEdges:   DEPENDS_ON apps/pocketbase/pb_hooks/workspace-access.js; DEPENDS_ON apps/pocketbase/pb_migrations/1790000000_workspace_administration.js
+// EnumEdges:   DEPENDS_ON apps/pocketbase/pb_hooks/workspace-access.js; CONSUMES apps/pocketbase/pb_hooks/guild-publishing.js; DEPENDS_ON apps/pocketbase/pb_migrations/1790000000_workspace_administration.js
 // DAG Node:    none
 // Intent:      Publish workspace wiki pages and moderate discussions through current-role checks, bounded reads and retry-safe audited commands.
 // ───────────────────────────────────────────────────────────────
 
 const access = require(`${__hooks}/workspace-access.js`);
+const guildPublishing = require(`${__hooks}/guild-publishing.js`);
 const isAdmin = (role) => ['owner', 'admin'].includes(role);
 function output(record) {
     const names = record.collection().name === 'wiki_pages' ? ['title', 'slug', 'body', 'status', 'owner', 'workspace', 'published_by', 'published_at'] :
@@ -63,11 +64,17 @@ function saveWiki(app, e, scope, body) {
     record.set('title', title); record.set('slug', slug); record.set('body', content);
     return record;
 }
-function transitionWiki(app, e, scope, body) {
+function transitionWiki(app, e, scope, body, guild) {
     access.exact(body.payload, ['id', 'status']);
-    if (!isAdmin(scope.role)) throw new ForbiddenError('A workspace administrator must publish or archive wiki pages.');
+    // A guildmaster seat may publish its own draft directly; every other change stays administrative.
+    if (!isAdmin(scope.role) && !(guild && body.payload.status === 'published'))
+        throw new ForbiddenError('A workspace administrator must publish or archive wiki pages.');
     if (!['draft', 'published', 'archived'].includes(body.payload.status)) access.invalid('Choose a listed wiki state.');
     const record = recordFor(app, 'wiki_pages', body.payload.id, scope.workspace.id, body.revision);
+    if (!isAdmin(scope.role)) {
+        if (record.getString('owner') !== e.auth.id) throw new ForbiddenError('A guildmaster seat publishes only what it authored.');
+        if (record.getString('status') !== 'draft') access.conflict('Publish a saved draft of this page.');
+    }
     if (body.payload.status === 'published') {
         access.bounded(record.getString('title'), 160); access.bounded(record.getString('body'), 16000);
         record.set('published_by', e.auth.id); record.set('published_at', new Date().toISOString());
@@ -75,7 +82,7 @@ function transitionWiki(app, e, scope, body) {
     record.set('status', body.payload.status);
     return record;
 }
-function postForum(app, e, scope, body, settings) {
+function postForum(app, e, scope, body, settings, guild) {
     const replying = body.action === 'forum.reply';
     access.exact(body.payload, replying ? ['topic', 'body'] : ['title', 'body']);
     if (replying) {
@@ -87,7 +94,7 @@ function postForum(app, e, scope, body, settings) {
     record.set('workspace', scope.workspace.id); record.set('owner', e.auth.id); record.set('body', content);
     if (replying) record.set('topic', body.payload.topic);
     else record.set('title', access.bounded(body.payload.title, 160));
-    record.set('status', settings.forum_moderation && !isAdmin(scope.role) ? 'pending' : replying ? 'visible' : 'open');
+    record.set('status', settings.forum_moderation && !isAdmin(scope.role) && !guild ? 'pending' : replying ? 'visible' : 'open');
     return record;
 }
 function moderateForum(app, e, scope, body) {
@@ -111,17 +118,27 @@ function command(e) {
     let response;
     e.app.runInTransaction((app) => {
         const scope = access.requireRole(app, e.auth, workspace, ['owner', 'admin', 'editor']);
+        const guild = guildPublishing.author(app, e.auth, workspace);
         const state = feature(app, workspace, body.action.startsWith('wiki.') ? 'wiki' : 'forum');
         if (!state.enabled) throw new ForbiddenError('This community feature is disabled by the workspace administrator.');
         // Recheck privileged actions on retries too, before returning a receipt.
-        if (['wiki.transition', 'forum.moderate'].includes(body.action) && !isAdmin(scope.role))
+        if (((body.action === 'wiki.transition' && !(guild && body.payload.status === 'published')) || body.action === 'forum.moderate') &&
+            !isAdmin(scope.role))
             throw new ForbiddenError('A workspace administrator must make this decision.');
         response = access.audit(app, e.auth, workspace, body, () => {
             const record = body.action === 'wiki.save' ? saveWiki(app, e, scope, body) :
-                body.action === 'wiki.transition' ? transitionWiki(app, e, scope, body) :
-                    body.action === 'forum.moderate' ? moderateForum(app, e, scope, body) : postForum(app, e, scope, body, state.settings);
+                body.action === 'wiki.transition' ? transitionWiki(app, e, scope, body, guild) :
+                    body.action === 'forum.moderate' ? moderateForum(app, e, scope, body) : postForum(app, e, scope, body, state.settings, guild);
             record.set('revision', Number(record.get('revision') || 0) + 1);
             app.save(record);
+            // A guildmaster seat's own publication is audited; moderation of others' work is not one.
+            const kind = { 'wiki.transition': 'wiki_page', 'forum.create': 'forum_topic', 'forum.reply': 'forum_reply' }[body.action];
+            if (guild && kind && ['published', 'open', 'visible'].includes(record.getString('status'))) {
+                const title = kind === 'forum_reply' ? `Reply: ${access.find(app, 'forum_topics', record.getString('topic')).getString('title')}` : record.getString('title');
+                guildPublishing.record(app, { workspace, auth: e.auth, entry: guild, kind, target: record.id, title,
+                    content: Object.fromEntries((kind === 'wiki_page' ? ['title', 'slug', 'body'] : kind === 'forum_topic' ? ['title', 'body'] : ['topic', 'body'])
+                        .map((field) => [field, record.getString(field)])) });
+            }
             return { id: record.id, workspace, revision: Number(record.get('revision')), status: record.getString('status'), action: body.action };
         });
     });

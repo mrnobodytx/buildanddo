@@ -168,6 +168,10 @@ class WorkspaceServer(DiagnosticNativeServer):
                 # workspace-claims.js requires the guildmaster registry. Its persona migration is
                 # deliberately not installed here, so a guildmaster report fails closed with 503.
                 "guildmasters.js",
+                # workspace-claims.js, business-policy.js and workspace-community.js require the guild
+                # publishing library. Its migrations are not installed here either, so a guildmaster
+                # publication answers 503 while every human and administrator path is unchanged.
+                "guild-publishing.js",
                 "workspace-administration.js",
                 "workspace-community.js",
                 "administration.pb.js",
