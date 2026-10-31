@@ -2,17 +2,19 @@
 # ─── CGRF Header ───────────────────────────────────────────────
 # File:        scripts/ci/verify_public_boundary.py
 # Stage:       11_COMMIT
-# SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-GITLAB-ONLY-CI-001
+# SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-GITLAB-ONLY-CI-001, SRS-BUILDANDDO-CURRICULUM-PRIVATE-001
 # CAPS:        pending
 # CK:          pending
-# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-CURRICULUM-PRIVATE-001
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-21
 # Depends:     .buildanddo/public/path-policy.json
 # EnumType:    Service
-# EnumEdges:   CONSUMES .buildanddo/public/path-policy.json; GATES .gitlab/ci/day21-submission.yml; GATES .gitlab/ci/github-plane.yml
-# Intent:      Enforce the public boundary and one review actor on the executing CI provider without accepting missing or foreign review metadata.
+# EnumEdges:   CONSUMES .buildanddo/public/path-policy.json; GATES .gitlab/ci/day21-submission.yml; GATES .gitlab/ci/github-plane.yml;
+#              GATES apps/pocketbase/pb_migrations/data/*.json
+# Intent:      Enforce the public boundary and one review actor on the executing CI provider without accepting missing or foreign review metadata,
+#              and keep knowledge-check answer keys and private lesson key files out of the tracked tree.
 # ───────────────────────────────────────────────────────────────
 
 """Check tracked public files and review attribution without contacting providers."""
@@ -20,6 +22,7 @@
 from __future__ import annotations
 
 import argparse
+import fnmatch
 import json
 import os
 import re
@@ -29,6 +32,14 @@ from typing import cast
 
 # GitLab branch holding public main; see scripts/ci/gitlab_plane.py MAIN_MIRROR.
 PUBLIC_MAIN_MIRROR = "buildanddo-source"
+
+# Knowledge checks keep their question and choices in public. The answer and explanation
+# live only in the private key file PocketBase reads at runtime, whose schema marker is
+# below (SRS-BUILDANDDO-CURRICULUM-PRIVATE-001). These apply when the policy omits them.
+CURRICULUM_DATA_GLOBS = ("apps/pocketbase/pb_migrations/data/*.json",)
+PRIVATE_KEY_SCHEMA = "buildanddo.lesson-keys/1"
+KEY_MEMBERS = ("answer", "explanation")
+SLUG = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*")
 
 SECRET_PATTERNS = [
     ("private_key", re.compile(r"-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----")),
@@ -164,6 +175,106 @@ def review_actor(
     }
 
 
+def _unique_members(pairs: list[tuple[str, object]]) -> dict[str, object]:
+    """Refuse a repeated member name, which could hide a key behind a later duplicate."""
+    result: dict[str, object] = {}
+    for name, value in pairs:
+        if name in result:
+            raise ValueError("A JSON object repeats a member name.")
+        result[name] = value
+    return result
+
+
+def _no_constant(_name: str) -> object:
+    raise ValueError("JSON holds NaN or Infinity.")
+
+
+def printable_slug(value: object) -> str | None:
+    """The lesson slug when it is one; never echo other text from a data file."""
+    if value is None:
+        return None
+    if isinstance(value, str) and len(value) <= 80 and SLUG.fullmatch(value):
+        return value
+    return "<invalid slug>"
+
+
+def curriculum_key_failures(root: Path, rel: str) -> list[dict[str, object]]:
+    """Name each knowledge check in a tracked curriculum file that still carries a key.
+
+    A check is any object with a ``choices`` member, or the value of a ``check``
+    member. Failures carry the path and the nearest lesson slug, never a value.
+    A file that cannot be read or parsed strictly fails closed.
+    """
+    path = root / rel
+    if path.is_symlink() or not path.is_file():
+        return [{"type": "curriculum_answer_key", "path": rel, "slug": None, "reason": "unreadable"}]
+    try:
+        document = json.loads(
+            path.read_bytes().decode("utf-8"),
+            object_pairs_hook=_unique_members,
+            parse_constant=_no_constant,
+        )
+    except OSError:
+        return [{"type": "curriculum_answer_key", "path": rel, "slug": None, "reason": "unreadable"}]
+    except (UnicodeDecodeError, ValueError, RecursionError):
+        return [{"type": "curriculum_answer_key", "path": rel, "slug": None, "reason": "unparseable"}]
+    failures: list[dict[str, object]] = []
+    # Iterative walk in document order: (value, member name holding it, nearest slug).
+    stack: list[tuple[object, str | None, object]] = [(document, None, None)]
+    while stack:
+        value, member, slug = stack.pop()
+        if isinstance(value, dict):
+            if "slug" in value:
+                slug = value["slug"]
+            if any(name in value for name in KEY_MEMBERS) and (
+                "choices" in value or member == "check"
+            ):
+                failures.append(
+                    {"type": "curriculum_answer_key", "path": rel, "slug": printable_slug(slug)}
+                )
+            stack.extend((item, name, slug) for name, item in reversed(list(value.items())))
+        elif isinstance(value, list):
+            stack.extend((item, None, slug) for item in reversed(value))
+    return failures
+
+
+class _Members(dict):
+    """A parsed JSON object that also keeps every member, repeated names included."""
+
+    pairs: list[tuple[str, object]]
+
+
+def _members(pairs: list[tuple[str, object]]) -> _Members:
+    result = _Members(pairs)
+    result.pairs = pairs
+    return result
+
+
+def is_private_key_file(path: Path, schema: str) -> bool:
+    """A tracked JSON document marked with the key schema and not labelled ``synthetic: true``.
+
+    Parsing is lenient so that a file any JSON reader accepts is covered: a byte
+    order mark, invalid UTF-8 and repeated member names do not hide it. A repeated
+    ``schema_version`` counts if any copy carries the marker, and every
+    ``synthetic`` copy must be ``true``. A symbolic link publishes no content.
+    """
+    if path.is_symlink() or not path.is_file():
+        return False
+    try:
+        document = json.loads(
+            path.read_bytes().decode("utf-8-sig", errors="replace"),
+            object_pairs_hook=_members,
+        )
+    except (OSError, ValueError, RecursionError):
+        return False
+    if not isinstance(document, _Members):
+        return False
+    schemas = [value for name, value in document.pairs if name == "schema_version"]
+    synthetic = [value for name, value in document.pairs if name == "synthetic"]
+    marked = any(isinstance(value, str) and value == schema for value in schemas)
+    return marked and not (synthetic and all(value is True for value in synthetic))
+
+
 def git_files(root: Path) -> list[str]:
     p = subprocess.run(
         ["git", "-C", str(root), "ls-files"], text=True, capture_output=True
@@ -239,6 +350,23 @@ def main(argv: list[str] | None = None) -> int:
                 failures.append(
                     {"type": "secret_like_literal", "finding_id": fid, "path": rel}
                 )
+
+    # Answer keys belong to the private key file only: report path and slug, never a value.
+    curriculum_globs = [
+        pattern.lower()
+        for pattern in string_list(
+            policy.get("curriculum_data_globs", list(CURRICULUM_DATA_GLOBS))
+        )
+    ]
+    key_schema = policy.get("private_key_schema", PRIVATE_KEY_SCHEMA)
+    if not isinstance(key_schema, str) or not key_schema:
+        raise BoundaryError("The boundary policy names no private key schema.")
+    for rel in files:
+        low = rel.lower()
+        if any(fnmatch.fnmatchcase(low, pattern) for pattern in curriculum_globs):
+            failures.extend(curriculum_key_failures(root, rel))
+        if low.endswith(".json") and is_private_key_file(root / rel, key_schema):
+            failures.append({"type": "private_lesson_keys", "path": rel})
 
     actor = None
     try:
