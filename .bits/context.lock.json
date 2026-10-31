@@ -242,7 +242,7 @@
     },
     {
       "area": "governance",
-      "evidence": ".bits/queue/VCC-BUILDANDDO-GUILDMASTER-001.md: 6/6 tasks done; mark SRS-BUILDANDDO-GUILDMASTER-001 delivered once merged and verified, or add the task that remains",
+      "evidence": ".bits/queue/VCC-BUILDANDDO-GUILDMASTER-001.md: 7/7 tasks done; mark SRS-BUILDANDDO-GUILDMASTER-001 delivered once merged and verified, or add the task that remains",
       "severity": "medium",
       "srs": "SRS-BUILDANDDO-GUILDMASTER-001",
       "statement": "VCC-BUILDANDDO-GUILDMASTER-001 has every task done but SRS-BUILDANDDO-GUILDMASTER-001 is still in_progress"
@@ -885,7 +885,7 @@
       "wired_into_ci": true
     }
   ],
-  "generated_at": "2026-10-31T03:58:12.225109+00:00",
+  "generated_at": "2026-10-31T12:09:31.765586+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -1533,8 +1533,8 @@
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 1921,
-    "web_source_files": 389
+    "tracked_files": 1923,
+    "web_source_files": 391
   },
   "schema_version": 1,
   "sprint_readiness": {
@@ -1613,7 +1613,7 @@
         "why": "Competition readiness requires an evidence-backed learning-through-work journey, a reproducible replay and actual submission criteria."
       }
     ],
-    "source_sha256": "50dd5393fd610e1c0dbf6952843f0b81ce9d766af18e824aff85f94bc352609f",
+    "source_sha256": "823ec7d0c6fe3247b9eddac24791891f2066da011325c40de0b4f32b60b9a8ce",
     "state": "PASS"
   },
   "summary": {
@@ -1628,7 +1628,7 @@
     "js_runners": [
       "vitest"
     ],
-    "js_test_files": 109,
+    "js_test_files": 111,
     "js_test_script": true,
     "junit_configured": true,
     "python_suite_entrypoints": [
