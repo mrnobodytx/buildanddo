@@ -8,9 +8,9 @@
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-16
-# Depends:     apps/web/src/pages/workspace/ClassroomsPage.jsx, apps/web/src/hooks/useClassrooms.js, apps/web/src/hooks/useOpenClasses.js, apps/pocketbase/pb_hooks/classrooms.js, apps/pocketbase/pb_hooks/classroom-media.js, apps/pocketbase/pb_hooks/classroom-presence.pb.js, apps/pocketbase/pb_hooks/guildmasters.js, apps/pocketbase/pb_hooks/guild-lessons.js, apps/pocketbase/pb_migrations/1792400002_guild_lessons.js, apps/pocketbase/pb_hooks/guild-classes.js, apps/pocketbase/pb_migrations/1792500000_guild_class_schedule.js, tests/upgrade/test_classroom_native.py, tests/upgrade/classroom-recovery.test.mjs, tests/upgrade/classroom-presence.test.mjs, tests/upgrade/guild-lessons.test.mjs, tests/upgrade/guild-classes.test.mjs
+# Depends:     apps/web/src/pages/workspace/ClassroomsPage.jsx, apps/web/src/hooks/useClassrooms.js, apps/web/src/hooks/useOpenClasses.js, apps/pocketbase/pb_hooks/classrooms.js, apps/pocketbase/pb_hooks/classroom-media.js, apps/pocketbase/pb_hooks/classroom-presence.pb.js, apps/pocketbase/pb_hooks/guildmasters.js, apps/pocketbase/pb_hooks/guild-lessons.js, apps/pocketbase/pb_migrations/1792400002_guild_lessons.js, apps/pocketbase/pb_hooks/guild-classes.js, apps/pocketbase/pb_migrations/1792500000_guild_class_schedule.js, tests/upgrade/test_classroom_native.py, tests/upgrade/classroom-recovery.test.mjs, tests/upgrade/classroom-presence.test.mjs, tests/upgrade/guild-lessons.test.mjs, tests/upgrade/guild-classes.test.mjs, apps/web/src/lib/classrooms.js, apps/web/src/lib/__tests__/classrooms.test.js, apps/web/src/pages/workspace/__tests__/ClassroomsGuildMaterial.test.jsx
 # EnumType:    Doc
-# EnumEdges:   CONSUMES apps/web/src/pages/workspace/ClassroomsPage.jsx; CONSUMES apps/web/src/hooks/useClassrooms.js; CONSUMES apps/web/src/hooks/useOpenClasses.js; CONSUMES apps/pocketbase/pb_hooks/classrooms.js; CONSUMES apps/pocketbase/pb_hooks/classroom-media.js; CONSUMES apps/pocketbase/pb_hooks/classroom-presence.pb.js; CONSUMES apps/pocketbase/pb_hooks/guildmasters.js; CONSUMES apps/pocketbase/pb_hooks/guild-lessons.js; DEPENDS_ON apps/pocketbase/pb_migrations/1792400002_guild_lessons.js; CONSUMES apps/pocketbase/pb_hooks/guild-classes.js; DEPENDS_ON apps/pocketbase/pb_migrations/1792500000_guild_class_schedule.js; VERIFIED_BY tests/upgrade/test_classroom_native.py; VERIFIED_BY tests/upgrade/classroom-recovery.test.mjs; VERIFIED_BY tests/upgrade/classroom-presence.test.mjs; VERIFIED_BY tests/upgrade/guild-lessons.test.mjs; VERIFIED_BY tests/upgrade/guild-classes.test.mjs
+# EnumEdges:   CONSUMES apps/web/src/pages/workspace/ClassroomsPage.jsx; CONSUMES apps/web/src/hooks/useClassrooms.js; CONSUMES apps/web/src/hooks/useOpenClasses.js; CONSUMES apps/pocketbase/pb_hooks/classrooms.js; CONSUMES apps/pocketbase/pb_hooks/classroom-media.js; CONSUMES apps/pocketbase/pb_hooks/classroom-presence.pb.js; CONSUMES apps/pocketbase/pb_hooks/guildmasters.js; CONSUMES apps/pocketbase/pb_hooks/guild-lessons.js; DEPENDS_ON apps/pocketbase/pb_migrations/1792400002_guild_lessons.js; CONSUMES apps/pocketbase/pb_hooks/guild-classes.js; DEPENDS_ON apps/pocketbase/pb_migrations/1792500000_guild_class_schedule.js; VERIFIED_BY tests/upgrade/test_classroom_native.py; VERIFIED_BY tests/upgrade/classroom-recovery.test.mjs; VERIFIED_BY tests/upgrade/classroom-presence.test.mjs; VERIFIED_BY tests/upgrade/guild-lessons.test.mjs; VERIFIED_BY tests/upgrade/guild-classes.test.mjs; CONSUMES apps/web/src/lib/classrooms.js; VERIFIED_BY apps/web/src/lib/__tests__/classrooms.test.js; VERIFIED_BY apps/web/src/pages/workspace/__tests__/ClassroomsGuildMaterial.test.jsx
 # DAG Node:    none
 # Intent:      Describe the classroom user flow, installed-backend requirements and acceptance limits without representing a shared lesson as a video stream.
 # ───────────────────────────────────────────────────────────────
@@ -131,9 +131,22 @@ tutorial. `room.lesson` and `room.update` put a tutorial back and clear the mate
 withdrawn lesson is refused with 400 and another workspace's with 404; classroom detail reads a
 withdrawn or unreadable material as no lesson, and such a class cannot start until the host shares
 something else. Until the migration is installed `room.material` answers 503 and every other action
-is unchanged. The browser classroom adapter (`apps/web/src/lib/classrooms.js`) still expects the
-shared lesson to be the room's tutorial, so a material-backed class is not yet rendered in the web
-classroom page; that adapter is outside this slice.
+is unchanged.
+
+The web classroom page opens such a class like any other. The browser adapter
+(`apps/web/src/lib/classrooms.js`) accepts a shared lesson only in one of two shapes. A tutorial's `id` must be
+the room's `tutorial` and its body must be a full catalogue lesson. Guild material must have `source:
+'guild_lesson'`, its `id` must be the room's `material`, and its body must be keyless, with exactly the keys
+the server validates (`schema_version` 1, one to twenty sections, optional outcomes and HTTPS
+references). Anything else, a `check` or `answer` included, makes the whole read broken. The shared
+lesson panel shows the material's sections, outcomes and references, with no exercise and no Field
+Manual link. The host's Previous and Next section buttons send `room.material`. Picking a tutorial from
+the lesson list sends `room.lesson`, which replaces the material. A withdrawn material reads as
+unavailable, and the room, its attendance, discussion and Join, Leave and End controls stay usable.
+`apps/web/src/lib/__tests__/classrooms.test.js` drives the adapter with the server's own detail
+response. `apps/web/src/pages/workspace/__tests__/ClassroomsGuildMaterial.test.jsx` drives the page
+against the real hooks: the host starts the class and moves its sections, a member joins it, and the
+host ends it.
 
 `tests/upgrade/guild-lessons.test.mjs` covers these rules against storage doubles. The native case
 `test_native_guild_lesson_is_published_by_the_seat_then_shared_and_started` signs in the fixture seat,
