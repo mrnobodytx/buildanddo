@@ -30,7 +30,8 @@
 WHO TEACHES. The weekly guild class rota (libs/guildmasters/rota.py, the same rota the server's
 guild_class_rota cron schedules) decides the cast. The class happening now or next names the host;
 the joiners are its auditor and then the next two attendees in rota order; the first attendee left
-over is the CONTROL outsider. --at fixes the instant, so a run can be reproduced. --host and --join
+over who is not already a member of the host's workspace is the CONTROL outsider. --at fixes the
+instant, so a run can be reproduced. --host and --join
 override the rota by seat id (forge, scholar, oracle, alex, sterling, muse, quill, director); there
 is no Forge default, and an unknown seat or a joiner who is the host is refused before any request.
 
@@ -49,8 +50,11 @@ live on the boxes and staging holds the box public keys, so signing them here re
 writing this machine's fingerprints into the staging seat registry.
 
 CONTROLS. A run where everything succeeds has not shown a governed classroom. A seat that is not a
-member of the host's workspace must be refused, and that refusal is required for a PASS: a run with
-no outsider left to try, or whose outsider cannot sign in, reports the control as not run and fails.
+member of the host's workspace must be refused, and that refusal is required for a PASS. Every run
+seats its joiners in the host's workspace and none removes them, so the outsider is checked against
+the host's member list first: a seat an earlier run made a member is skipped, never used as the
+control. A run with no outsider left to try, whose member list cannot be read, or whose outsider
+cannot sign in, reports the control as not run and fails.
 """
 from __future__ import annotations
 
@@ -86,6 +90,8 @@ SCHEMA = "buildanddo.ocn-classroom-live/v1"
 # purpose; see the module docstring.
 GUILDMASTERS = {g.seat: g.guild for g in CANON}
 ROTA_KEYS = ("week", "slot", "host", "auditor", "starts_at")
+# The admin snapshot lists members 20 to a page; a list longer than this many pages is not read.
+MEMBER_PAGES = 50
 
 
 def display(seat: str) -> str:
@@ -148,9 +154,34 @@ def participants(at: dt.datetime, host: str | None = None,
     return chosen, list(join), plan
 
 
+def outsiders(plan: dict[str, Any], host: str, joiners: list[str]) -> list[str]:
+    """The CONTROL candidates: every rota attendee not cast, in rota order."""
+    return [seat for seat in _pool(plan, host) if seat not in joiners]
+
+
 def outsider_of(plan: dict[str, Any], host: str, joiners: list[str]) -> str:
-    """The CONTROL outsider: the first rota attendee not cast, or '' when everyone is."""
-    return next((seat for seat in _pool(plan, host) if seat not in joiners), "")
+    """The first CONTROL candidate, or '' when everyone is cast. Offline, this cannot know who is
+    already a member of the host's workspace; run() skips any candidate that is."""
+    return next(iter(outsiders(plan, host, joiners)), "")
+
+
+def members_of(admin_path: str, token: str) -> set[str] | None:
+    """Every member account id of the host's workspace, from its admin snapshot.
+
+    None when a page is refused or malformed, or the list runs past MEMBER_PAGES: a member list that
+    cannot be read cannot show that an outsider is outside.
+    """
+    found: set[str] = set()
+    for page in range(1, MEMBER_PAGES + 1):
+        status, snapshot = http(f"{admin_path}?members_page={page}", token)
+        members = snapshot.get("members") if status == 200 and isinstance(snapshot, dict) else None
+        items = members.get("items") if isinstance(members, dict) else None
+        if not isinstance(items, list) or not isinstance(members.get("has_more"), bool):
+            return None
+        found.update(str(item["user"]) for item in items if isinstance(item, dict) and item.get("user"))
+        if not members["has_more"]:
+            return found
+    return None
 
 
 def rota_of(plan: dict[str, Any]) -> dict[str, Any]:
@@ -234,12 +265,11 @@ def refused(reason: str) -> dict[str, Any]:
 
 def run(host_seat: str, joiners: list[str], plan: dict[str, Any]) -> dict[str, Any]:
     """Hold one class: the host schedules and starts it, the others join and speak."""
-    outsider = outsider_of(plan, host_seat, joiners)
     out: dict[str, Any] = {"schema": SCHEMA, "command": "run", "observed_at": utc(),
                            "environment": "staging", "host": host_seat, "joiners": joiners,
                            "host_persona": persona(host_seat),
                            "joiner_personas": [persona(seat) for seat in joiners],
-                           "rota": rota_of(plan), "outsider": outsider or None,
+                           "rota": rota_of(plan), "outsider": None, "already_seated": [],
                            "identity_model": "FOUR_IDENTITIES_ONE_MACHINE"}
     checks: list[dict] = []
     sessions: dict[str, dict] = {}
@@ -327,19 +357,37 @@ def run(host_seat: str, joiners: list[str], plan: dict[str, Any]) -> dict[str, A
                                room_revision(room, seat), seat)
         note(checks, f"{display(seat)} speaks in the class", status, body, "200", status == 200)
 
-    # CONTROL: a guildmaster who was never seated in this workspace must be refused. The outsider
-    # is the first rota attendee not cast; a control that could not run is reported, never skipped.
+    # CONTROL: a guildmaster who is not a member of this workspace must be refused. Runs seat their
+    # joiners here and never remove them, so a rota attendee left over may already be a member from an
+    # earlier run; that seat would read the class and break a contract the server kept. The outsider
+    # is the first candidate the host's member list does not hold. A control that could not run is
+    # reported, never skipped.
     out["control"] = {"state": "NOT_RUN", "reason": "every guildmaster is cast"}
-    if outsider:
-        guest = login(outsider)
-        if guest.get("state") == "OK":
-            status, body = http(f"{path}/{room}", guest["token"])
-            note(checks, f"CONTROL unseated {display(outsider)} cannot read the class", status, body,
-                 "not 200 - no membership in this workspace", status != 200)
-            out["control"] = {"state": "RUN", "persona": persona(outsider)}
-        else:
-            out["control"] = {"state": "NOT_RUN", "persona": persona(outsider),
+    candidates = outsiders(plan, host_seat, joiners)
+    members = members_of(admin_path, host["token"]) if candidates else set()
+    if members is None:
+        out["control"] = {"state": "NOT_RUN", "reason": "the host's workspace members could not be read"}
+        candidates = []
+    for seat in candidates:
+        guest = login(seat)
+        if guest.get("state") != "OK" or not guest.get("uid"):
+            out["outsider"] = seat
+            out["control"] = {"state": "NOT_RUN", "persona": persona(seat),
                               "reason": f"the outsider could not sign in ({guest.get('state')})"}
+            break
+        if guest["uid"] in members:
+            out["already_seated"].append(seat)
+            continue
+        out["outsider"] = seat
+        status, body = http(f"{path}/{room}", guest["token"])
+        note(checks, f"CONTROL unseated {display(seat)} cannot read the class", status, body,
+             "not 200 - no membership in this workspace", status != 200)
+        out["control"] = {"state": "RUN", "persona": persona(seat)}
+        break
+    else:
+        if out["already_seated"]:
+            out["control"] = {"state": "NOT_RUN",
+                              "reason": "every guildmaster left over is already a member of the host's workspace"}
 
     status, body = http(f"{path}/{room}", host["token"])
     room_body = body.get("room") or body
@@ -409,6 +457,8 @@ def table(result: dict[str, Any]) -> str:
     if broken:
         lines.append(f"  CONTRACT BROKEN: {', '.join(broken)}")
     control = result.get("control") or {}
+    if result.get("already_seated"):
+        lines.append("  CONTROL skipped, already members: " + ", ".join(display(str(s)) for s in result["already_seated"]))
     if control.get("state") == "NOT_RUN":
         lines.append(f"  CONTROL NOT RUN: {control.get('reason')}")
     lines.append("  RULE  four identities on one machine is not four machines; say which was shown")

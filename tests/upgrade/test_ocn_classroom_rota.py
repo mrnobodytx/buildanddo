@@ -330,21 +330,37 @@ class LiveMainTests(unittest.TestCase):
 
 
 class FakeStaging:
-    """In-memory classroom backend for the live verifier's http() seam."""
+    """In-memory classroom backend for the live verifier's http() seam.
 
-    def __init__(self, host: str) -> None:
+    Membership persists for the life of the double, as it does on staging: member.set adds a seat
+    and nothing removes it. The admin snapshot lists members `page_size` to a page.
+    """
+
+    def __init__(self, host: str, page_size: int = 20, members_readable: bool = True) -> None:
         self.host = host
+        self.page_size = page_size
+        self.members_readable = members_readable
         self.members: set[str] = set()
         self.calls: list[tuple] = []
 
     def __call__(self, path: str, token: str = "", body=None, method: str = "") -> tuple[int, dict]:
         seat = token.removeprefix("token-")
         self.calls.append((seat, path, (body or {}).get("action")))
+        route, _, query = path.partition("?")
         if path.startswith("/api/collections/workspaces/records"):
             return 200, {"items": [{"id": "workspacealpha", "owner": "uid-" + self.host, "name": "Guild hall"}]}
-        if path.endswith("/admin"):
+        if route.endswith("/admin"):
             if body is None:
-                return 200, {"settings": {"revision": 3}}
+                if not query:
+                    return 200, {"settings": {"revision": 3}}
+                if not self.members_readable:
+                    return 403, {"message": "forbidden"}
+                page = int(query.removeprefix("members_page="))
+                ordered = sorted(self.members)
+                items = ordered[(page - 1) * self.page_size:page * self.page_size]
+                return 200, {"settings": {"revision": 3},
+                             "members": {"items": [{"user": user, "role": "editor"} for user in items], "page": page,
+                                         "has_more": page * self.page_size < len(ordered)}}
             self.members.add(body["payload"]["user"])
             return 200, {}
         if path.startswith("/api/collections/tutorials/records"):
@@ -371,9 +387,10 @@ def signed_in(refuse: tuple[str, ...] = ()):
 class LiveRunTests(unittest.TestCase):
     """A full live run against the double: the outsider control is required for a PASS."""
 
-    def hold(self, at: datetime, join=None, refuse: tuple[str, ...] = ()) -> tuple[dict, FakeStaging, dict]:
+    def hold(self, at: datetime, join=None, refuse: tuple[str, ...] = (),
+             staging: FakeStaging | None = None) -> tuple[dict, FakeStaging, dict]:
         host, joiners, plan = live.participants(at, join=join)
-        staging = FakeStaging(host)
+        staging = staging or FakeStaging(host)
         with patch.object(live, "login", side_effect=signed_in(refuse)), patch.object(live, "http", staging):
             return live.run(host, joiners, plan), staging, plan
 
@@ -405,8 +422,59 @@ class LiveRunTests(unittest.TestCase):
         self.assertEqual(result["summary"]["contract_broken"], [])
         self.assertEqual(result["control"]["state"], "NOT_RUN")
         self.assertEqual(result["control"]["persona"], "alex")
+        self.assertEqual(result["outsider"], "alex")
         self.assertEqual(result["state"], "FAIL")
         self.assertIn("CONTROL NOT RUN", live.table(result))
+
+    def test_a_seat_an_earlier_run_seated_is_never_the_control_outsider(self) -> None:
+        # Runs seat their joiners in the host's workspace and nothing removes them. In 2026-W48 Forge's
+        # class leaves Alex over, whom the W45 to W47 runs seated; reading the class as Alex would get
+        # 200 and report CONTRACT_BROKEN although the server behaved correctly.
+        staging = FakeStaging("forge", page_size=2)
+        weeks = []
+        for offset in range(4):
+            starts = next(item["starts_at"] for item in rota.week(EPOCH + timedelta(weeks=offset))["classes"]
+                          if item["host"] == "forge")
+            at = datetime.fromisoformat(starts.replace("Z", "+00:00")) + timedelta(minutes=30)
+            seated = set(staging.members)
+            result, _, plan = self.hold(at, staging=staging)
+            weeks.append((plan["week"], result["outsider"], result["already_seated"]))
+            self.assertEqual(result["state"], "PASS", result.get("summary"))
+            self.assertEqual(result["control"], {"state": "RUN", "persona": live.persona(result["outsider"])})
+            self.assertNotIn("uid-" + result["outsider"], seated)
+            self.assertTrue(all("uid-" + seat in seated for seat in result["already_seated"]))
+            candidates = live.outsiders(plan, "forge", result["joiners"])
+            self.assertEqual(candidates[:len(result["already_seated"]) + 1], [*result["already_seated"], result["outsider"]])
+        self.assertEqual(weeks[:3], [("2026-W45", "sterling", []), ("2026-W46", "sterling", []), ("2026-W47", "sterling", [])])
+        self.assertEqual(weeks[3][0], "2026-W48")
+        self.assertEqual(weeks[3][2], ["alex"])
+        self.assertNotEqual(weeks[3][1], "alex")
+        self.assertIn("CONTROL skipped, already members: Alex", live.table(result))
+
+    def test_no_outsider_outside_the_workspace_means_the_control_did_not_run(self) -> None:
+        staging = FakeStaging("director")
+        staging.members = {"uid-" + seat for seat in ORDER if seat != "director"}
+        result, _, _ = self.hold(DIRECTOR_CLASS, staging=staging)
+        self.assertEqual(result["summary"]["contract_broken"], [])
+        self.assertEqual(result["control"], {"state": "NOT_RUN",
+                                             "reason": "every guildmaster left over is already a member of the host's workspace"})
+        self.assertIsNone(result["outsider"])
+        self.assertEqual(result["already_seated"], live.outsiders(rota.current(DIRECTOR_CLASS), "director",
+                                                                  ["forge", "scholar", "oracle"]))
+        self.assertEqual(result["state"], "FAIL")
+
+    def test_an_unreadable_member_list_means_the_control_did_not_run(self) -> None:
+        host, joiners, plan = live.participants(DIRECTOR_CLASS)
+        staging = FakeStaging(host, members_readable=False)
+        result, _, _ = self.hold(DIRECTOR_CLASS, staging=staging)
+        self.assertEqual(result["control"], {"state": "NOT_RUN", "reason": "the host's workspace members could not be read"})
+        self.assertIsNone(result["outsider"])
+        self.assertEqual(result["state"], "FAIL")
+        self.assertNotIn("alex", {call[0] for call in staging.calls})
+        with patch.object(live, "http", return_value=(200, {"members": {"items": [], "has_more": True}})):
+            self.assertIsNone(live.members_of("/admin", "token"))
+        with patch.object(live, "http", return_value=(200, ["not", "a", "snapshot"])):
+            self.assertIsNone(live.members_of("/admin", "token"))
 
 
 class FakeFleet:

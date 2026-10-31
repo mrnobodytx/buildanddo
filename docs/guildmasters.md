@@ -161,9 +161,14 @@ belongs to SRS-BUILDANDDO-CLASSROOM-GLOBAL-001.
 
 The staging classroom verifiers cast from the same rota. `scripts/ci/ocn_classroom_live.py` and
 `scripts/ci/ocn_classroom_fleet.py` hold the class happening now or next (`--at` fixes the instant): its
-host teaches, its auditor and the next two attendees join, and the first attendee left over is the
-control outsider, whose refusal a run needs to pass. Neither has a Forge or fixed-box default. The live
-verifier refuses an unknown seat, or a joiner who is the host, before any request. The fleet verifier
+host teaches, its auditor and the next two attendees join, and an attendee left over is the control
+outsider, whose refusal a run needs to pass. Neither has a Forge or fixed-box default. The live
+verifier refuses an unknown seat, or a joiner who is the host, before any request. It seats its joiners
+in the host's workspace and never removes them. Its outsider is therefore the first attendee left over
+that the host's member list (read through the admin snapshot) does not hold. Seats that earlier runs
+made members are listed as `already_seated`. If none is left, or the list cannot be read, the control
+is reported as not run and the run fails. The fleet verifier instead removes its outsider's membership
+for the control and restores it afterwards. The fleet verifier
 resolves each fleet-map record to one of the eight at run time and refuses with `ROTA_HOST_UNSEATED`
 when no box carries the rota's host, rather than letting another box stand in. Boxes still sign as
 their own box seats until SRS-BUILDANDDO-LIVE-UTILIZATION-001 binds a key to each persona seat; the
