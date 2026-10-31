@@ -1,10 +1,10 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        tests/upgrade/public-lessons.test.mjs
 // Stage:       08_TEST
-// SRS:         SRS-BUILDANDDO-TRUST-001, SRS-BUILDANDDO-QUIZ-001
+// SRS:         SRS-BUILDANDDO-TRUST-001, SRS-BUILDANDDO-QUIZ-001, SRS-BUILDANDDO-CURRICULUM-PRIVATE-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-TRUST-001, VCC-BUILDANDDO-QUIZ-001
+// Dispatch:    VCC-BUILDANDDO-TRUST-001, VCC-BUILDANDDO-QUIZ-001, VCC-BUILDANDDO-CURRICULUM-PRIVATE-001
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-23
@@ -73,24 +73,26 @@ test('application code imports lesson curricula only through the public projecti
     assert.match(source('apps/web/tools/build.mjs'), /findLessonAnswers\(output\)/);
 });
 
-test('the post-build scan finds a shipped explanation however the minifier quotes it and passes clean assets', () => {
+test('the post-build scan passes clean assets, and the stripped curricula leave it no explanation to fingerprint', () => {
+    // SRS-BUILDANDDO-CURRICULUM-PRIVATE-001 strips every knowledge-check explanation from the tracked curricula, so they
+    // supply no fingerprints any more. Dispatch task 6 (T5) restores the planted-explanation proof with fingerprints
+    // taken from the private key file; until then the structural JSON scan below is what the build applies.
+    assert.equal(explanationFingerprints().length, 0, 'the tracked curricula carry no explanation');
     const directory = mkdtempSync(join(tmpdir(), 'buildanddo-public-lessons-'));
     try {
         mkdirSync(join(directory, 'assets', 'nested'), { recursive: true });
-        const [, second] = explanationFingerprints();
         writeFileSync(join(directory, 'assets', 'clean.js'), 'export const lesson={check:{question:"Q",choices:["A","B"]}};');
         writeFileSync(join(directory, 'community-catalog.json'), JSON.stringify({ lessons: [{ slug: 's', lesson: { check: { question: 'Q', choices: ['A', 'B'] } } }] }));
         writeFileSync(join(directory, 'index.html'), '<!doctype html><title>Answer key</title>');
         assert.deepEqual(findLessonAnswers(directory), []);
-        writeFileSync(join(directory, 'assets', 'nested', 'leak.js'), `var a={answer:1,explanation:\`${second.fingerprint}\\u2014more\`};`);
-        assert.deepEqual(findLessonAnswers(directory), [{ file: join('assets', 'nested', 'leak.js'), slug: second.slug }]);
+        writeFileSync(join(directory, 'assets', 'nested', 'feed.json'),
+            JSON.stringify({ lessons: [{ slug: 'planted-lesson', lesson: { check: { question: 'Q', choices: ['A', 'B'], answer: 1 } } }] }));
+        assert.deepEqual(findLessonAnswers(directory), [{ file: join('assets', 'nested', 'feed.json'), slug: 'planted-lesson' }]);
     } finally { rmSync(directory, { recursive: true, force: true }); }
-    assert.ok(explanationFingerprints().every(({ fingerprint }) => fingerprint.length >= 24));
 });
 
 test('the scan covers every output file, so a planted answer or explanation in community-catalog.json fails the build', () => {
     const directory = mkdtempSync(join(tmpdir(), 'buildanddo-public-catalogue-'));
-    const [first] = explanationFingerprints();
     const release = { version: '38+abc1234', commit_sha: 'abc1234' + '0'.repeat(33) };
     const write = (value) => writeFileSync(join(directory, 'community-catalog.json'), JSON.stringify(value));
     try {
@@ -105,14 +107,8 @@ test('the scan covers every output file, so a planted answer or explanation in c
         explained.lessons[0].lesson.check.explanation = 'Short.';
         write(explained);
         assert.deepEqual(findLessonAnswers(directory), [{ file: 'community-catalog.json', slug: catalogue.lessons[0].slug }]);
-        write({ note: `Background: ${first.fingerprint}` });
-        assert.deepEqual(findLessonAnswers(directory), [{ file: 'community-catalog.json', slug: first.slug }], 'authored text anywhere in the file');
-        writeFileSync(join(directory, 'community-catalog.json'), `{"broken": "${first.fingerprint}`);
-        assert.deepEqual(findLessonAnswers(directory), [{ file: 'community-catalog.json', slug: first.slug }], 'unparseable JSON is still scanned');
-        rmSync(join(directory, 'community-catalog.json'));
-        mkdirSync(join(directory, 'feeds'));
-        writeFileSync(join(directory, 'feeds', 'lessons.txt'), first.fingerprint);
-        assert.deepEqual(findLessonAnswers(directory), [{ file: join('feeds', 'lessons.txt'), slug: first.slug }]);
+        // Authored explanation text elsewhere in a file is found by fingerprint. The stripped curricula supply none, so
+        // that proof returns with the private key file's fingerprints in dispatch task 6 (T5).
     } finally { rmSync(directory, { recursive: true, force: true }); }
     assert.match(source('apps/web/tools/build.mjs'), /generateCommunityCatalogue\(output, release\);\n[\s\S]*findLessonAnswers\(output\)/, 'the scan runs after the catalogue is written');
 });

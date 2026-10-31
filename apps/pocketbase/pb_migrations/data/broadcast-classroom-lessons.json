@@ -102,9 +102,7 @@
             "The hosted broadcast and every related mission outcome are verified.",
             "Only the executed source regressions have evidence; native, rendered and hosted acceptance remain unmeasured.",
             "Opening the lesson can award completion points because the source tests passed."
-          ],
-          "answer": 1,
-          "explanation": "A result is bounded by its actual candidate, runtime and checks. Source doubles are not native or live evidence, and reading a lesson cannot create progress, XP or independent mission verification."
+          ]
         },
         "references": [
           {

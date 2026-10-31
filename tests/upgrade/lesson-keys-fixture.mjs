@@ -16,7 +16,7 @@
 //              CONSUMES apps/pocketbase/pb_migrations/data/broadcast-classroom-lessons.json; VALIDATES scripts/ci/lesson_keys.py
 // DAG Node:    none
 // Intent:      Build synthetic lesson key files at test time from public lesson text only, byte for byte as
-//              lesson_keys.py synthetic writes them, plus absent, invalid and tampered variants.
+//              lesson_keys.py synthetic writes them, plus absent, invalid and tampered variants, and serve them to hook fixtures.
 // ───────────────────────────────────────────────────────────────
 
 // SYNTHETIC KEYS ONLY.
@@ -47,6 +47,9 @@ export const CURRICULA = Object.freeze([
     'broadcast-classroom-lessons.json',
 ]);
 export const KEY_MEMBERS = Object.freeze(['answer', 'explanation']);
+// Where hook fixtures serve the key file: the resolver's default path, lesson-keys.json in the PocketBase data directory.
+export const KEY_DATA_DIR = '/pb_data';
+export const KEY_PATH = `${KEY_DATA_DIR}/lesson-keys.json`;
 
 export const sha256 = (text) => createHash('sha256').update(text, 'utf8').digest('hex');
 
@@ -156,8 +159,12 @@ export const entryFor = (id, version, check, answer, explanation) =>
 export const keyDocument = (entries, { synthetic, kind = 'git', revision = SYNTHETIC_REVISION }) =>
     ({ schema_version: SCHEMA, synthetic, source: { kind, revision }, integrity: integrity(entries), lessons: entries });
 
+let curriculumLessons = null;
+/** publicLessons() over the tracked curricula, read once per process: fixtures build many documents from the same text. */
+const defaultLessons = () => curriculumLessons || (curriculumLessons = publicLessons());
+
 /** lesson_keys.py synthetic_document(): the same entries, salt and labels, from public text only. */
-export function syntheticDocument({ salt = 'synthetic', lessons = publicLessons() } = {}) {
+export function syntheticDocument({ salt = 'synthetic', lessons = defaultLessons() } = {}) {
     const entries = {};
     for (const [slug, lesson] of Object.entries(lessons)) {
         if (!lesson.check.choices.length) throw new Error(`a lesson has no choices: ${slug}`);
@@ -235,4 +242,38 @@ export function keyRuntime({ files = {}, env = {} } = {}) {
         toString: (bytes) => Buffer.from(bytes).toString('utf8'),
     };
     return { runtime, files, env, reads };
+}
+
+/**
+ * A synthetic key file served to a hook fixture at KEY_PATH, with the synthetic opt-in set, as a contributor would run locally.
+ * @param {'synthetic'|'private'|'absent'|'invalid'|'tampered'} variant Which file to serve first (see keyFile).
+ * @param {object} options env: more variables; salt, lessons, slug, field: as for keyFile.
+ * @returns {object} The keyRuntime pieces (runtime, files, env, reads), plus document (the synthetic set every variant is built
+ * from), serve(variant, options) to switch the file mid-test, answerFor(slug) and explanationFor(slug) from that set,
+ * keyed(slug, lesson) for a lesson body carrying its synthetic key as a database-held key would, and attach(app) to give a
+ * fixture app the data directory the resolver reads.
+ */
+export function lessonKeyServer(variant = 'synthetic', { env = {}, ...options } = {}) {
+    const served = keyRuntime({ env: { [SYNTHETIC_VARIABLE]: '1', ...env } });
+    let document = null;
+    const serve = (next = 'synthetic', more = {}) => {
+        const settings = { ...options, ...more };
+        document = syntheticDocument({ salt: settings.salt, lessons: settings.lessons });
+        const text = keyFile(next, settings);
+        if (text === null) delete served.files[KEY_PATH]; else served.files[KEY_PATH] = text;
+    };
+    serve(variant);
+    const entry = (slug) => {
+        if (!Object.prototype.hasOwnProperty.call(document.lessons, slug)) throw new Error(`no synthetic key for lesson ${slug}`);
+        return document.lessons[slug];
+    };
+    return {
+        ...served,
+        get document() { return document; },
+        serve,
+        answerFor: (slug) => entry(slug).answer,
+        explanationFor: (slug) => entry(slug).explanation,
+        keyed: (slug, lesson) => keyedLesson(lesson, entry(slug)),
+        attach: (app) => { app.dataDir = () => KEY_DATA_DIR; return app; },
+    };
 }

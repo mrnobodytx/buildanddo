@@ -1,16 +1,16 @@
 // --- CGRF Header ------------------------------------------------
 // File:        tests/upgrade/broadcast-lessons.test.mjs
 // Stage:       08_TEST
-// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-TRUST-001
+// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-TRUST-001, SRS-BUILDANDDO-CURRICULUM-PRIVATE-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-TRUST-001
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-TRUST-001, VCC-BUILDANDDO-CURRICULUM-PRIVATE-001
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-23
-// Depends:     tests/upgrade/admin-fixture.mjs, apps/pocketbase/pb_hooks/tutorial-learning.js, apps/pocketbase/pb_migrations/1791400001_broadcast_classroom_lessons.js, apps/pocketbase/pb_migrations/data/broadcast-classroom-lessons.json, apps/web/src/lib/tutorialCurriculum.js
+// Depends:     tests/upgrade/admin-fixture.mjs, tests/upgrade/lesson-keys-fixture.mjs, apps/pocketbase/pb_hooks/tutorial-learning.js, apps/pocketbase/pb_migrations/1791400001_broadcast_classroom_lessons.js, apps/pocketbase/pb_migrations/data/broadcast-classroom-lessons.json, apps/web/src/lib/tutorialCurriculum.js
 // EnumType:    Test
-// EnumEdges:   CONSUMES tests/upgrade/admin-fixture.mjs; CONSUMES apps/pocketbase/pb_hooks/tutorial-learning.js; VALIDATES apps/pocketbase/pb_migrations/1791400001_broadcast_classroom_lessons.js; VALIDATES apps/pocketbase/pb_migrations/data/broadcast-classroom-lessons.json; CONSUMES apps/web/src/lib/tutorialCurriculum.js
+// EnumEdges:   CONSUMES tests/upgrade/admin-fixture.mjs; CONSUMES tests/upgrade/lesson-keys-fixture.mjs; CONSUMES apps/pocketbase/pb_hooks/tutorial-learning.js; VALIDATES apps/pocketbase/pb_migrations/1791400001_broadcast_classroom_lessons.js; VALIDATES apps/pocketbase/pb_migrations/data/broadcast-classroom-lessons.json; CONSUMES apps/web/src/lib/tutorialCurriculum.js
 // DAG Node:    none
 // Intent:      Exercise real lesson creation and native learning source validation without fabricating evidence or replacing history.
 // ----------------------------------------------------------------
@@ -22,6 +22,7 @@ import test from 'node:test';
 import { fixture, plain, repoPath, source } from './admin-fixture.mjs';
 import { lessonLink, mergeTutorials, validLesson } from '../../apps/web/src/lib/tutorialCurriculum.js';
 import { DBX, faithfulCountRecords } from './tutorial-learning-fixture.mjs';
+import { KEY_PATH, lessonKeyServer } from './lesson-keys-fixture.mjs';
 import publicLessonsPlugin from '../../apps/web/plugins/vite-plugin-public-lessons.js';
 
 const DATA = 'apps/pocketbase/pb_migrations/data/broadcast-classroom-lessons.json';
@@ -29,6 +30,8 @@ const MIGRATION = 'apps/pocketbase/pb_migrations/1791400001_broadcast_classroom_
 const bundle = JSON.parse(source(DATA));
 const seed = bundle.lessons[0];
 const starter = JSON.parse(source('apps/pocketbase/pb_migrations/data/starter-tutorials.json'));
+// Synthetic grading keys generated at test time from public lesson text, served as the private key file.
+const keys = lessonKeyServer();
 
 test('both source-case catalogue imports strip grading fields without losing their human-readable evidence limits', () => {
     const catalog = 'apps/web/src/components/workspace/TutorialCatalog.jsx';
@@ -47,17 +50,20 @@ test('both source-case catalogue imports strip grading fields without losing the
             assert.deepEqual(Object.keys(record.lesson.check).sort(), ['choices', 'question']);
             assert.deepEqual(record.lesson.sections, authored.lessons[index].lesson.sections);
             assert.ok(record.lesson.sections.some((section) => section.paragraphs?.includes(authored.source_evidence.boundary)));
-            assert.equal(JSON.stringify(record).includes(authored.lessons[index].lesson.check.explanation), false);
+            assert.deepEqual(Object.keys(authored.lessons[index].lesson.check).sort(), ['choices', 'question'], 'the authored source carries no key');
+            assert.equal(JSON.stringify(record).includes(keys.explanationFor(record.slug)), false);
         }
     }
 });
 
 function installed(data = bundle) {
+    const served = lessonKeyServer();
     const f = fixture({ runtime: { $dbx: DBX,
-        toString: String,
+        ...served.runtime,
         $dbx: DBX,
         $security: { sha256: (text) => createHash('sha256').update(text).digest('hex') },
-        $os: { readFile: (path) => {
+        $os: { ...served.runtime.$os, readFile: (path) => {
+            if (path === KEY_PATH) return served.runtime.$os.readFile(path);
             if (path === '/pb_migrations/data/broadcast-classroom-lessons.json') return JSON.stringify(data);
             assert.equal(path, '/pb_migrations/data/starter-tutorials.json');
             return source('apps/pocketbase/pb_migrations/data/starter-tutorials.json');
@@ -69,6 +75,7 @@ function installed(data = bundle) {
     // The learning hook counts with dbx expressions, as PocketBase requires; a filter-string double
     // agreed with the old call and let GET /api/buildanddo/learning answer 400 everywhere.
     faithfulCountRecords(f.app);
+    served.attach(f.app);
     return f;
 }
 
@@ -155,7 +162,11 @@ test('recorded source evidence binds its stated file scope without upgrading blo
         assert.match(raw, new RegExp('^# ' + name + ' ' + value + '$', 'm'));
     const text = JSON.stringify(seed.lesson);
     for (const term of ['foreign', 'ended', 'stale', 'left', 'revoked', 'unknown session', 'another room', 'late', 'markup', 'positive control']) assert.ok(text.includes(term), term);
-    assert.match(seed.lesson.check.choices[seed.lesson.check.answer], /acceptance remain unmeasured/);
+    // The correct choice is private golden data (SRS-BUILDANDDO-CURRICULUM-PRIVATE-001): the public check carries its
+    // question and choices only, and the key that grades it is generated synthetically for this suite.
+    assert.deepEqual(Object.keys(seed.lesson.check).sort(), ['choices', 'question']);
+    const answer = keys.answerFor(seed.slug);
+    assert.ok(Number.isInteger(answer) && answer >= 0 && answer < seed.lesson.check.choices.length, 'the synthetic key indexes a listed choice');
 });
 
 test('migration creates a truly missing tutorial, changes no rules, and writes no evidence or learner state', () => {
@@ -202,7 +213,7 @@ test('replay and data-only down preserve operator edits, frozen snapshots, certi
     command('start');
     seed.lesson.sections.forEach((_section, index) => command('section', { index }));
     command('practice', { checks: seed.lesson.exercise.checklist.map(() => true) });
-    command('answer', { choice: seed.lesson.check.answer });
+    command('answer', { choice: keys.answerFor(seed.slug) });
     const snapshot = detail();
     const record = f.app.findRecordById('tutorials', seed.id);
     record.set('title', 'Operator revision'); record.set('curriculum_version', 'operator.2');

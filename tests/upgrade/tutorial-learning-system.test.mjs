@@ -1,10 +1,10 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        tests/upgrade/tutorial-learning-system.test.mjs
 // Stage:       08_TEST
-// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-TRUST-001
+// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-TRUST-001, SRS-BUILDANDDO-CURRICULUM-PRIVATE-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-TRUST-001
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-TRUST-001, VCC-BUILDANDDO-CURRICULUM-PRIVATE-001
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-19
@@ -15,8 +15,12 @@
 // Intent:      Prevent unearned certificates, duplicate credit, cross-account reads and partial completion receipts.
 // ───────────────────────────────────────────────────────────────
 
+// Grading keys are synthetic, generated at test time from public lesson text (tests/upgrade/lesson-keys-fixture.mjs).
+// Comparisons that touch key material use isDeepStrictEqual or ===, so a failure names the check, never a value.
+
 import assert from 'node:assert/strict';
 import test from 'node:test';
+import { isDeepStrictEqual } from 'node:util';
 import vm from 'node:vm';
 import { plain, source } from './admin-fixture.mjs';
 import { learningFixture, MIGRATION, PROGRESS_MIGRATION, WAIT_MIGRATION } from './tutorial-learning-fixture.mjs';
@@ -62,24 +66,24 @@ test('reading does not enroll; checkpoints, practice and correct answer award on
 
 test('cannot skip sections, practice, or the server-checked answer', () => {
     const f = learningFixture();
-    assert.throws(() => f.command('answer', { choice: f.lessons[0].lesson.check.answer }), /Start/);
+    assert.throws(() => f.command('answer', { choice: f.answerFor() }), /Start/);
     f.command('start');
     assert.throws(() => f.command('section', { index: 1 }), /order/);
     assert.throws(() => f.command('practice', { checks: [true] }), /sections/);
-    assert.throws(() => f.command('answer', { choice: f.lessons[0].lesson.check.answer }), /practice/);
+    assert.throws(() => f.command('answer', { choice: f.answerFor() }), /practice/);
     for (let index = 0; index < f.lessons[0].lesson.sections.length; index++) f.command('section', { index });
     assert.throws(() => f.command('practice', { checks: [true] }), /checklist/);
     const checks = f.lessons[0].lesson.exercise.checklist.map(() => true);
     assert.throws(() => f.command('practice', { checks: checks.map(() => false) }), /checklist/);
     f.command('practice', { checks });
-    const wrong = f.command('answer', { choice: (f.lessons[0].lesson.check.answer + 1) % 3 });
+    const wrong = f.command('answer', { choice: (f.answerFor() + 1) % 3 });
     assert.equal(wrong.feedback.correct, false);
     assert.equal(wrong.enrollment.certificate, null);
     assert.equal(wrong.enrollment.points, 0);
     assert.equal(f.data.tutorial_progress.length, 0);
     assert.equal(f.list().completed, 0);
     f.expire();
-    assert.equal(f.command('answer', { choice: f.lessons[0].lesson.check.answer }).feedback.correct, true);
+    assert.equal(f.command('answer', { choice: f.answerFor() }).feedback.correct, true);
 });
 
 test('learner lessons stay keyless after completion and only earned feedback explains the answer', () => {
@@ -91,24 +95,24 @@ test('learner lessons stay keyless after completion and only earned feedback exp
     assert.ok(hidden(f.command('start')));
     for (let index = 0; index < lesson.lesson.sections.length; index++) assert.ok(hidden(f.command('section', { index })));
     assert.ok(hidden(f.command('practice', { checks: lesson.lesson.exercise.checklist.map(() => true) })));
-    const wrong = f.command('answer', { choice: (lesson.lesson.check.answer + 1) % 3 });
+    const wrong = f.command('answer', { choice: (f.answerFor() + 1) % 3 });
     assert.ok(hidden(wrong)); assert.ok(hidden(f.detail()));
-    assert.equal(wrong.feedback.explanation.includes(lesson.lesson.check.explanation), false, 'a wrong attempt does not explain the right choice');
+    assert.equal(wrong.feedback.explanation.includes(f.explanationFor()), false, 'a wrong attempt does not explain the right choice');
     assert.equal(wrong.feedback.retry_after, 30);
     assert.equal(f.detail().tutorial.content_digest, before.tutorial.content_digest, 'the digest still covers the full stored lesson');
     assert.equal(f.detail(undefined, 'otherowner').tutorial.lesson.check.answer, undefined);
     f.expire();
-    const passed = f.command('answer', { choice: lesson.lesson.check.answer });
+    const passed = f.command('answer', { choice: f.answerFor() });
     assert.ok(hidden(passed), 'completed receipts still use the keyless learner contract');
-    assert.equal(passed.feedback.explanation, lesson.lesson.check.explanation);
+    assert.ok(passed.feedback.explanation === f.explanationFor(), 'a correct answer explains it with the resolved key');
     assert.equal(f.detail().tutorial.lesson.check.answer, undefined);
     assert.equal(f.detail().tutorial.lesson.check.explanation, undefined);
     assert.equal(f.detail(undefined, 'otherowner').tutorial.lesson.check.answer, undefined, 'another account has not earned it');
-    assert.equal(f.data.tutorial_learning[0].snapshot.lesson.check.answer, lesson.lesson.check.answer, 'the stored snapshot is unchanged');
+    assert.ok(f.data.tutorial_learning[0].snapshot.lesson.check.answer === f.answerFor(), 'the stored snapshot is unchanged');
 });
 
 test('a wrong answer pauses further answers on the server, then allows a retry without a lockout', () => {
-    const f = learningFixture(), lesson = f.lessons[0], right = lesson.lesson.check.answer;
+    const f = learningFixture(), lesson = f.lessons[0], right = f.answerFor();
     f.command('start');
     for (let index = 0; index < lesson.lesson.sections.length; index++) f.command('section', { index });
     f.command('practice', { checks: lesson.lesson.exercise.checklist.map(() => true) });
@@ -198,7 +202,8 @@ test('progress authority and answer waits install together and replay without ch
 
 test('catalogue reads hide the answer and explanation from every client but superusers', () => {
     const f = learningFixture(), lesson = f.lessons[0];
-    const read = (auth, value = lesson.lesson) => {
+    // A database row may still hold its key (the owner keeps production keys), so every client read must strip it.
+    const read = (auth, value = f.keyed()) => {
         const record = f.record('tutorials', { id: lesson.id, title: lesson.title, lesson: value });
         f.service.enrich({ record, requestInfo: auth === undefined ? undefined : { auth } });
         return plain(record.get('lesson'));
@@ -210,11 +215,11 @@ test('catalogue reads hide the answer and explanation from every client but supe
         assert.deepEqual(shown.check.choices, lesson.lesson.check.choices);
         assert.deepEqual(shown.sections, lesson.lesson.sections);
     }
-    assert.deepEqual(read(superuser), lesson.lesson, 'operators keep the full authored lesson');
+    assert.ok(isDeepStrictEqual(read(superuser), f.keyed()), 'operators keep the full authored lesson');
     assert.equal(read(user, null), null);
     assert.equal(read(user, '{broken'), null, 'an unreadable body is not passed through');
     assert.deepEqual(read(user, { schema_version: 1 }), { schema_version: 1 });
-    assert.equal(f.data.tutorials.find((row) => row.id === lesson.id).lesson.check.answer, lesson.lesson.check.answer, 'stored lessons are unchanged');
+    assert.deepEqual(f.data.tutorials.find((row) => row.id === lesson.id).lesson, lesson.lesson, 'stored lessons are unchanged');
 });
 
 test('retries, replay after completion and repeated enrollment cannot farm points or replace a certificate', () => {
@@ -237,9 +242,12 @@ test('enrollment freezes content and records the original version even if the ca
     stored.curriculum_version = 'next';
     assert.equal(f.detail().tutorial.title, first.tutorial.title);
     assert.deepEqual(f.detail().tutorial.lesson.check, first.tutorial.lesson.check);
-    assert.equal(f.data.tutorial_learning[0].snapshot.lesson.check.answer, f.lessons[0].lesson.check.answer);
+    const enrolled = f.answerFor();
+    assert.ok(f.data.tutorial_learning[0].snapshot.lesson.check.answer === enrolled, 'the snapshot keeps the key resolved at enrollment');
     assert.equal(f.detail().tutorial.lesson.check.answer, undefined);
-    assert.equal(f.data.tutorial_learning[0].snapshot.lesson.check.answer, f.answerFor(), 'grading uses the enrolled answer');
+    f.keys.serve('synthetic', { salt: 'alternate' });
+    f.detail();
+    assert.ok(f.data.tutorial_learning[0].snapshot.lesson.check.answer === enrolled, 'grading uses the enrolled answer, not a later key file');
     assert.equal(f.finish().enrollment.certificate.curriculum_version, first.tutorial.curriculum_version);
     assert.equal(f.list().certificates.items[0].certificate.title, first.tutorial.title);
 });
@@ -297,7 +305,7 @@ test('completion checkpoints and certificate roll back together on storage failu
     const before = plain(f.data);
     const save = f.app.save;
     f.app.save = function (record) { save.call(this, record); throw new Error('storage unavailable'); };
-    assert.throws(() => f.command('answer', { choice: f.lessons[0].lesson.check.answer }), /storage unavailable/);
+    assert.throws(() => f.command('answer', { choice: f.answerFor() }), /storage unavailable/);
     assert.deepEqual(f.data, before);
     f.app.save = save;
     assert.equal(f.finish().enrollment.points, 100);
@@ -321,28 +329,28 @@ test('legacy completed progress is retained without creating retroactive credit'
 
 test('learner detail and command responses are keyless while frozen snapshots and grading stay full', () => {
     const f = learningFixture();
-    const check = f.lessons[0].lesson.check;
+    const check = f.lessons[0].lesson.check, answer = f.answerFor(), explanation = f.explanationFor();
     const keyless = (value) => {
         assert.deepEqual(value.tutorial.lesson.check, { question: check.question, choices: check.choices });
-        assert.equal(JSON.stringify(value.tutorial).includes(check.explanation), false);
+        assert.equal(JSON.stringify(value.tutorial).includes(explanation), false);
     };
     const initial = f.detail(); keyless(initial);
     const started = f.command('start'); keyless(started);
     const snapshot = plain(f.data.tutorial_learning[0].snapshot);
-    assert.deepEqual(snapshot.lesson, f.lessons[0].lesson);
+    assert.ok(isDeepStrictEqual(snapshot.lesson, f.keyed()), 'the frozen snapshot holds the lesson with its resolved key');
     assert.equal(started.tutorial.content_digest, initial.tutorial.content_digest);
     for (let index = 0; index < f.lessons[0].lesson.sections.length; index++) keyless(f.command('section', { index }));
     keyless(f.command('practice', { checks: f.lessons[0].lesson.exercise.checklist.map(() => true) }));
-    const wrong = f.command('answer', { choice: (check.answer + 1) % check.choices.length }); keyless(wrong);
-    assert.deepEqual(wrong.feedback, { correct: false,
-        explanation: 'Not the expected answer. Review the lesson sections, then try again.', retry_after: 30 });
+    const wrong = f.command('answer', { choice: (answer + 1) % check.choices.length }); keyless(wrong);
+    assert.ok(isDeepStrictEqual(wrong.feedback, { correct: false,
+        explanation: 'Not the expected answer. Review the lesson sections, then try again.', retry_after: 30 }), 'a wrong answer carries the generic retry feedback only');
     f.expire();
-    const finished = f.command('answer', { choice: check.answer }); keyless(finished); keyless(f.detail());
-    assert.deepEqual(finished.feedback, { correct: true, explanation: check.explanation });
+    const finished = f.command('answer', { choice: answer }); keyless(finished); keyless(f.detail());
+    assert.ok(isDeepStrictEqual(finished.feedback, { correct: true, explanation }), 'the earned feedback carries the resolved explanation');
     assert.match(finished.enrollment.certificate.scope, /open-book tutorial completion; practice self-reported/);
     assert.deepEqual(f.data.tutorial_learning[0].snapshot, snapshot);
     assert.equal(f.data.tutorial_learning[0].content_digest, initial.tutorial.content_digest);
-    assert.equal(f.command('answer', { choice: check.answer }).replayed, true);
+    assert.equal(f.command('answer', { choice: answer }).replayed, true);
     assert.deepEqual(f.detail().enrollment.certificate, finished.enrollment.certificate);
 });
 
@@ -626,4 +634,130 @@ test('routes require native users auth and keep responses uncached with bounded 
         assert.equal(headers['Cache-Control'], 'no-store');
         if (verb === 'POST') assert.equal(limit.bytes, 4000);
     }
+});
+
+// ---- private lesson keys (SRS-BUILDANDDO-CURRICULUM-PRIVATE-001) ----------------------------------------------
+// Every key below is synthetic. A failing comparison names the lesson or the check, never a key or a digest.
+
+const NOT_INSTALLED = 'This lesson\'s knowledge check is not installed on this server yet. You can still read the lesson.';
+const KEYS_REVIEW = 'Lesson grading keys need an operator review.';
+const LESSON_REVIEW = 'This lesson\'s knowledge check needs an operator review.';
+const refusedWith = (status, message) => (error) => error.status === status && error.message === message;
+const ANY_DIGEST = 'a'.repeat(64);
+const walk = (f, id) => {
+    const started = f.command('start', {}, { id });
+    for (let index = 0; index < started.tutorial.lesson.sections.length; index++) f.command('section', { index }, { id });
+    f.command('practice', { checks: started.tutorial.lesson.exercise.checklist.map(() => true) }, { id });
+    return started;
+};
+
+test('a lesson whose key is not installed answers 503 before any enrollment and is never graded', () => {
+    const f = learningFixture({ keys: 'absent' });
+    assert.throws(() => f.detail(), refusedWith(503, NOT_INSTALLED));
+    for (const [action, payload] of [['start', {}], ['answer', { choice: 0 }], ['section', { index: 0 }]])
+        assert.throws(() => f.command(action, payload, { digest: ANY_DIGEST }), refusedWith(503, NOT_INSTALLED), action);
+    assert.equal(f.data.tutorial_learning.length, 0, 'no enrollment is created');
+    assert.equal(f.list().points, 0);
+    // Installing the key file makes the same seeded lesson gradable, with no data migration.
+    f.keys.serve('synthetic');
+    assert.equal(f.finish().enrollment.points, 100);
+    // A lesson that is unsupported for another reason keeps the existing 400, whatever the key file's state.
+    for (const variant of ['absent', 'invalid', 'synthetic']) {
+        const g = learningFixture({ keys: variant });
+        g.data.tutorials.find((row) => row.id === g.lessons[0].id).lesson.sections = [];
+        assert.throws(() => g.detail(), (error) => error.status === 400 && /supported lesson/.test(error.message), variant);
+    }
+});
+
+test('an enrolled learner finishes from the frozen snapshot after the key file is removed, reading no file', () => {
+    const f = learningFixture();
+    const started = walk(f, f.lessons[0].id), answer = f.answerFor();
+    // With a different key file in place, an enrolled learner's reads and commands still never open it.
+    f.keys.serve('synthetic', { salt: 'alternate' });
+    const reads = f.keys.reads.length;
+    f.detail(); f.list(); f.service.states(f.event('owner', {}, { query: { page: '1' } }));
+    f.command('section', { index: 0 }, { digest: started.tutorial.content_digest });
+    assert.equal(f.keys.reads.length, reads, 'enrolled reads and commands never read the key file');
+    // With no key file at all, the learner answers from the snapshot and is certified against the enrolled digest.
+    f.keys.serve('absent');
+    const passed = f.command('answer', { choice: answer }, { digest: started.tutorial.content_digest });
+    assert.equal(passed.enrollment.points, 100);
+    assert.equal(passed.enrollment.certificate.content_digest, started.tutorial.content_digest);
+    assert.equal(f.keys.reads.length, reads);
+    assert.throws(() => f.detail(f.lessons[1].id), refusedWith(503, NOT_INSTALLED), 'a lesson not yet started still needs its key');
+});
+
+test('an unusable key file still grades lessons whose keys the database holds and fails closed for the rest', () => {
+    const f = learningFixture({ keys: 'invalid' });
+    const [held, needs] = f.lessons;
+    f.data.tutorials.find((row) => row.id === held.id).lesson = f.keyed(held.id);
+    assert.equal(f.finish({ id: held.id }).enrollment.points, 100, 'a database-held key keeps grading');
+    assert.throws(() => f.detail(needs.id), refusedWith(503, KEYS_REVIEW));
+    assert.throws(() => f.command('start', {}, { id: needs.id, digest: ANY_DIGEST }), refusedWith(503, KEYS_REVIEW));
+    assert.equal(f.data.tutorial_learning.length, 1);
+    // Synthetic keys without the explicit opt-in are unusable in the same way; with it they grade.
+    f.keys.serve('synthetic');
+    delete f.keys.env.BUILDANDDO_LESSON_KEYS_SYNTHETIC;
+    assert.throws(() => f.detail(needs.id), refusedWith(503, KEYS_REVIEW));
+    f.keys.env.BUILDANDDO_LESSON_KEYS_SYNTHETIC = '1';
+    assert.equal(f.finish({ id: needs.id }).enrollment.points, 100);
+});
+
+test('a key that disagrees with its lesson fails closed for that lesson only', () => {
+    const base = learningFixture();
+    const target = base.lessons[2], other = base.lessons[3];
+    for (const field of ['check_sha256', 'curriculum_version']) {
+        const f = learningFixture({ keys: 'tampered', keyOptions: { slug: target.slug, field } });
+        assert.throws(() => f.detail(target.id), refusedWith(503, LESSON_REVIEW), field);
+        assert.throws(() => f.command('start', {}, { id: target.id, digest: ANY_DIGEST }), refusedWith(503, LESSON_REVIEW), field);
+        assert.equal(f.data.tutorial_learning.length, 0);
+        assert.equal(f.finish({ id: other.id }).enrollment.points, 100, `${field}: other lessons keep grading`);
+    }
+    // A key the database holds that differs from the file entry is refused, never silently preferred.
+    const row = base.data.tutorials.find((item) => item.id === target.id);
+    const keyed = base.keyed(target.id);
+    row.lesson = { ...keyed, check: { ...keyed.check, answer: (keyed.check.answer + 1) % keyed.check.choices.length } };
+    assert.throws(() => base.detail(target.id), refusedWith(503, LESSON_REVIEW));
+    row.lesson = keyed;
+    assert.equal(base.finish({ id: target.id }).enrollment.points, 100, 'a database key equal to the file entry grades');
+});
+
+test('correctness follows the key: one lesson under two synthetic salts accepts only its own answer', () => {
+    const first = learningFixture(), second = learningFixture({ keyOptions: { salt: 'alternate' } });
+    const lesson = first.lessons.find((item) => first.answerFor(item.id) !== second.answerFor(item.id));
+    assert.ok(lesson, 'the salts give at least one lesson different answers');
+    for (const [f, other] of [[first, second], [second, first]]) {
+        walk(f, lesson.id);
+        assert.equal(f.command('answer', { choice: other.answerFor(lesson.id) }, { id: lesson.id }).feedback.correct, false);
+        f.expire();
+        assert.equal(f.command('answer', { choice: f.answerFor(lesson.id) }, { id: lesson.id }).feedback.correct, true);
+    }
+});
+
+test('one digest formula: a lesson keyed by the database or by the file has the same digest, and tutorials are never written', () => {
+    const file = learningFixture(), database = learningFixture({ keys: 'absent' });
+    for (const lesson of database.lessons) database.data.tutorials.find((row) => row.id === lesson.id).lesson = database.keyed(lesson.id);
+    const written = [], save = file.app.save;
+    file.app.save = (value) => { written.push(value.collection().name); return save.call(file.app, value); };
+    const before = JSON.stringify(file.data.tutorials);
+    for (const lesson of file.lessons) {
+        const digest = file.detail(lesson.id).tutorial.content_digest;
+        assert.ok(digest === database.detail(lesson.id).tutorial.content_digest, `${lesson.slug}: file-keyed equals database-keyed`);
+        const record = file.app.findRecordById('tutorials', lesson.id);
+        assert.ok(file.service.contentDigest(record, file.service.gradable(file.app, record)) === digest, `${lesson.slug}: contentDigest`);
+        assert.equal(file.service.interactive(record, file.app), true);
+    }
+    const finished = file.finish();
+    assert.ok(finished.enrollment.certificate.content_digest === file.detail().tutorial.content_digest, 'the certificate digest');
+    assert.deepEqual([...new Set(written)], ['tutorial_learning'], 'only the learner record is written');
+    assert.equal(JSON.stringify(file.data.tutorials), before, 'tutorials are unchanged');
+    // gradable() answers null for a lesson it cannot grade and lets a review error through; interactive() is false for both.
+    const absent = learningFixture({ keys: 'absent' }), invalid = learningFixture({ keys: 'invalid' });
+    const recordOf = (f) => f.app.findRecordById('tutorials', f.lessons[0].id);
+    assert.equal(absent.service.gradable(absent.app, recordOf(absent)), null);
+    assert.throws(() => invalid.service.gradable(invalid.app, recordOf(invalid)), refusedWith(503, KEYS_REVIEW));
+    assert.equal(absent.service.interactive(recordOf(absent), absent.app), false);
+    assert.equal(invalid.service.interactive(recordOf(invalid), invalid.app), false);
+    const reading = absent.seed('tutorials', { id: 'readingonly0001', title: 'Reading', lesson: null });
+    assert.equal(absent.service.gradable(absent.app, reading), null);
 });

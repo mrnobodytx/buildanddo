@@ -1,10 +1,10 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        tests/upgrade/tutorial-learning-client.test.mjs
 // Stage:       08_TEST
-// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-TRUST-001
+// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-TRUST-001, SRS-BUILDANDDO-CURRICULUM-PRIVATE-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-TRUST-001
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-TRUST-001, VCC-BUILDANDDO-CURRICULUM-PRIVATE-001
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-19
@@ -169,9 +169,10 @@ test('wrong answers retain their feedback, wait on the server and cannot claim c
     }
 });
 
-test('the guided client requires keyless lessons while public rendering accepts stripped previews and server grading requires full source', async () => {
+test('the guided client requires keyless lessons while public rendering accepts stripped previews and server grading requires the lesson key', async () => {
     const { f, state, client, tutorial, act } = setup();
-    const check = f.lessons[0].lesson.check;
+    // Grading keys are synthetic, generated at test time; the public curriculum carries none.
+    const check = f.lessons[0].lesson.check, answer = f.answerFor(), explanation = f.explanationFor();
     const learner = (value) => {
         value.tutorial.lesson.check = { question: check.question, choices: check.choices };
         return value;
@@ -180,19 +181,19 @@ test('the guided client requires keyless lessons while public rendering accepts 
     assert.equal((await client.read(tutorial.id)).ok, true);
     assert.equal(validLesson(learner(plain({ tutorial })).tutorial.lesson), true, 'public rendering supports stripped previews');
     assert.equal(validLesson(f.lessons[0].lesson), true);
-    const other = learningFixture();
-    other.data.tutorials.find((row) => row.id === tutorial.id).lesson.check = plain(tutorial.lesson.check);
-    assert.throws(() => other.detail(), /supported lesson/, 'the server never grades a stripped authored lesson');
+    const other = learningFixture({ keys: 'absent' });
+    assert.throws(() => other.detail(), (error) => error.status === 503 && /not installed on this server yet/.test(error.message),
+        'the server never grades a stripped authored lesson without its key');
     assert.equal((await act('start')).ok, true);
     for (let index = 0; index < tutorial.lesson.sections.length; index++) assert.equal((await act('section', { index })).ok, true);
     assert.equal((await act('practice', { checks: tutorial.lesson.exercise.checklist.map(() => true) })).ok, true);
-    const wrong = await act('answer', { choice: (check.answer + 1) % check.choices.length });
+    const wrong = await act('answer', { choice: (answer + 1) % check.choices.length });
     assert.equal(wrong.ok, true); assert.equal(wrong.data.feedback.correct, false);
     f.expire();
-    const right = await act('answer', { choice: check.answer });
+    const right = await act('answer', { choice: answer });
     assert.equal(right.ok, true); assert.equal(right.data.feedback.correct, true);
     assert.equal(right.data.enrollment.points, 100);
-    for (const extra of [{ answer: check.answer }, { explanation: check.explanation }, { grading: { answer: check.answer } }]) {
+    for (const extra of [{ answer }, { explanation }, { grading: { answer } }]) {
         state.mutate = (value) => { learner(value); Object.assign(value.tutorial.lesson.check, extra); return value; };
         assert.equal((await client.read(tutorial.id)).ok, false, 'a full authored response is not a learner response');
     }
@@ -201,7 +202,7 @@ test('the guided client requires keyless lessons while public rendering accepts 
 test('learner validation rejects malformed content, unsafe references and every grading-field variant', () => {
     const f = learningFixture(), body = f.detail().tutorial.lesson;
     assert.equal(validLearnerLesson(body), true);
-    assert.equal(validLearnerLesson(f.lessons[0].lesson), false);
+    assert.equal(validLearnerLesson(f.keyed()), false, 'a lesson carrying its key is not a learner lesson');
     for (const invalid of [null, false, {}, { ...body, schema_version: 2 }, { ...body, outcomes: [] },
         { ...body, why: ' ' }, { ...body, why: 'x'.repeat(5001) }, { ...body, preparation: [false] }, { ...body, sections: [] },
         { ...body, sections: [{ heading: 'Mixed', paragraphs: [false], steps: ['Step'] }] },
@@ -224,7 +225,7 @@ test('answer feedback must be present, typed, and backed by saved practice and a
     for (const feedback of [null, {}, { correct: 'true', explanation: 'No' }, { correct: true, explanation: '' },
         ...[-1, 0.5, 3601, '30'].map((retry_after) => ({ correct: false, explanation: 'Wait', retry_after }))]) {
         state.mutate = (value) => ({ ...value, feedback });
-        assert.equal((await act('answer', { choice: f.lessons[0].lesson.check.answer })).reason, 'uncertain');
+        assert.equal((await act('answer', { choice: f.answerFor() })).reason, 'uncertain');
     }
     state.mutate = (value) => value;
     assert.equal((await client.retry()).ok, true);
@@ -232,7 +233,7 @@ test('answer feedback must be present, typed, and backed by saved practice and a
     const lesson = another.f.lessons[0].lesson;
     for (let index = 0; index < lesson.sections.length; index++) another.f.command('section', { index });
     another.f.command('practice', { checks: lesson.exercise.checklist.map(() => true) });
-    const wrong = (lesson.check.answer + 1) % lesson.check.choices.length;
+    const wrong = (another.f.answerFor() + 1) % lesson.check.choices.length;
     another.state.mutate = (value) => ({ ...value, feedback: { correct: true, explanation: 'Unsupported success' } });
     assert.equal((await another.act('answer', { choice: wrong })).reason, 'uncertain');
     another.state.mutate = (value) => ({ ...value, enrollment: { ...value.enrollment, practiced: false,
@@ -278,7 +279,9 @@ test('Buddi keeps the server summary contract separate from canonical catalogue 
 test('a revoked restricted enrollment keeps aggregate progress unknown without blocking authorized public detail or commands', async () => {
     const { f, client, tutorial, act } = setup();
     installGovernment(f, ['owner']);
-    const restricted = f.seed('tutorials', { ...f.lessons[1], id: 'restricted00001', slug: 'restricted-fixture', category: 'Government submissions' });
+    // Its slug has no entry in the key file, so it holds its key in the database, as production rows may.
+    const restricted = f.seed('tutorials', { ...f.lessons[1], id: 'restricted00001', slug: 'restricted-fixture', category: 'Government submissions',
+        lesson: f.keyed(f.lessons[1].id) });
     const started = f.command('start', {}, { id: restricted.id });
     const saved = plain(f.data.tutorial_learning[0]);
     f.data.government_memberships[0].status = 'revoked';
