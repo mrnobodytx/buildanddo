@@ -1,16 +1,16 @@
 # --- CGRF Header ------------------------------------------------
 # File:        tests/upgrade/test_native_fixture_contracts.py
 # Stage:       08_TEST
-# SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-SITE-001
+# SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-SITE-001, SRS-BUILDANDDO-CURRICULUM-PRIVATE-001
 # CAPS:        pending
 # CK:          pending
-# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-CURRICULUM-PRIVATE-001
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-23
-# Depends:     tests/upgrade/test_classroom_native.py, tests/upgrade/test_workspace_native.py, tests/upgrade/test_tutorial_learning_native.py, tests/upgrade/test_domain_verification_native.py
+# Depends:     tests/upgrade/test_classroom_native.py, tests/upgrade/test_workspace_native.py, tests/upgrade/test_tutorial_learning_native.py, tests/upgrade/test_domain_verification_native.py, tests/upgrade/test_public_api_native.py
 # EnumType:    Test
-# EnumEdges:   VALIDATES tests/upgrade/test_classroom_native.py; VALIDATES tests/upgrade/test_workspace_native.py; VALIDATES tests/upgrade/test_tutorial_learning_native.py; VALIDATES tests/upgrade/test_domain_verification_native.py
+# EnumEdges:   VALIDATES tests/upgrade/test_classroom_native.py; VALIDATES tests/upgrade/test_workspace_native.py; VALIDATES tests/upgrade/test_tutorial_learning_native.py; VALIDATES tests/upgrade/test_domain_verification_native.py; VALIDATES tests/upgrade/test_public_api_native.py
 # DAG Node:    none
 # Intent:      Detect incomplete native fixtures and unsafe failure diagnostics without claiming native execution from subprocess doubles.
 # ----------------------------------------------------------------
@@ -35,9 +35,12 @@ from unittest.mock import Mock, patch
 
 from tests.upgrade import test_classroom_native as classroom
 from tests.upgrade import test_domain_verification_native as domain
+from tests.upgrade import test_public_api_native as public_api
 from tests.upgrade import test_tutorial_learning_native as learning
 from tests.upgrade import test_workspace_native as workspace
+from tests.upgrade.test_dossier_native import NativeServer
 from scripts.ci.hostinger_checks import CHECKS, runtime_version
+from scripts.ci import lesson_keys
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -58,7 +61,45 @@ def staged(
             server.close()
 
 
+def missing_dependencies(hooks: Path) -> list[str]:
+    """Hook modules a copied hook requires at load, at module scope, that the fixture did not copy."""
+    return sorted(
+        dependency
+        for path in hooks.glob("*.js")
+        for dependency in re.findall(
+            r"^const \w+ = require\(`\$\{__hooks\}/([^`]+)`\);", path.read_text(), re.MULTILINE
+        )
+        if not (hooks / dependency).is_file()
+    )
+
+
 class NativeFixtureContractTests(unittest.TestCase):
+    def assert_key_file_staged(self, server: object, data_dirs: tuple[Path, ...], hooks: Path) -> None:
+        """The fixture's key file is synthetic, owner-only, named by the environment and outside every data directory."""
+        named = Path(server.environment["BUILDANDDO_LESSON_KEYS_FILE"]).resolve()
+        self.assertEqual(named, (server.root / learning.KEY_FILE).resolve())
+        self.assertEqual(server.environment["BUILDANDDO_LESSON_KEYS_SYNTHETIC"], "1")
+        self.assertTrue(named.is_file())
+        for directory in (*data_dirs, hooks):
+            self.assertFalse(named.is_relative_to(directory.resolve()), f"key file staged inside {directory.name}")
+        if os.name != "nt":
+            self.assertEqual(named.stat().st_mode & 0o777, 0o600)
+        document = json.loads(named.read_text(encoding="utf-8"))
+        self.assertEqual(document["schema_version"], lesson_keys.SCHEMA)
+        self.assertIs(document["synthetic"], True)
+        self.assertEqual(document["source"], {"kind": "git", "revision": lesson_keys.SYNTHETIC_REVISION})
+        # Regenerated from the public text, it is byte-identical to the stdlib tool's own synthetic output.
+        self.assertTrue(
+            named.read_bytes() == lesson_keys.dump(lesson_keys.synthetic_document(ROOT, "synthetic")),
+            "the staged key file is not the tool's synthetic output",
+        )
+        self.assertTrue(
+            all(entry["explanation"].startswith(lesson_keys.SYNTHETIC_PREFIX) for entry in document["lessons"].values()),
+            "a staged key carries a non-synthetic explanation",
+        )
+        for name in learning.KEY_HOOKS:
+            self.assertEqual((hooks / name).read_bytes(), (ROOT / "apps/pocketbase/pb_hooks" / name).read_bytes())
+
     def node(self, script: str) -> None:
         """Execute production JS source locally with explicit host-API doubles."""
         self.assertIsNotNone(
@@ -289,6 +330,38 @@ class NativeFixtureContractTests(unittest.TestCase):
             authority = json.loads((data_dir / "authority-repairs-lessons.json").read_text())
             self.assertEqual(authority["lessons"][0]["id"], "bdoauthority001")
             self.assertNotIn("new Record(progress)", (server.root / "migrations/1791500000_learning_progress_authority.js").read_text())
+            # The staged curricula are the public, stripped files: no check carries a key.
+            for name in ("starter-tutorials.json", "broadcast-classroom-lessons.json", "authority-repairs-lessons.json"):
+                for lesson in json.loads((data_dir / name).read_text())["lessons"]:
+                    self.assertEqual(set(lesson["lesson"]["check"]), {"question", "choices"}, lesson["slug"])
+            # Grading keys come from a synthetic file outside both the PocketBase data directory and the curricula.
+            self.assert_key_file_staged(server, (server.root / "data", data_dir), server.root / "hooks")
+            staged_slugs = {
+                lesson["slug"]
+                for name in ("starter-tutorials.json", "broadcast-classroom-lessons.json", "authority-repairs-lessons.json")
+                for lesson in json.loads((data_dir / name).read_text())["lessons"]
+            }
+            self.assertLessEqual(staged_slugs, set(server.keys))
+            self.assertEqual(missing_dependencies(server.root / "hooks"), [])
+
+    def test_public_api_fixture_stages_the_learning_closure_and_a_synthetic_key_file(self) -> None:
+        with (
+            patch.object(public_api.PublicApiServer, "migrate"),
+            patch.object(NativeServer, "start"),
+        ):
+            server = public_api.PublicApiServer("/fixture-only/pocketbase", {})
+        try:
+            hooks = server.root / "pb_hooks"
+            # tutorial-learning.js requires government-access.js and lesson-keys.js at load.
+            self.assertEqual(missing_dependencies(hooks), [])
+            self.assert_key_file_staged(server, (server.root / "pb_data", server.root / "pb_migrations/data"), hooks)
+            for name in lesson_keys.CURRICULA:
+                self.assertEqual(
+                    (server.root / "pb_migrations/data" / name).read_bytes(),
+                    (ROOT / "apps/pocketbase/pb_migrations/data" / name).read_bytes(),
+                )
+        finally:
+            server.close()
 
     def test_workspace_installs_usage_migration_and_unmodified_registered_hook(
         self,
@@ -482,7 +555,9 @@ class NativeFixtureContractTests(unittest.TestCase):
                     self.assertLessEqual(
                         set(server.environment),
                         {"PATH", "BUILDANDDO_CLASSROOM_PUBLISHERS"}
-                        | ({"SystemRoot"} if os.name == "nt" else set()),
+                        | ({"SystemRoot"} if os.name == "nt" else set())
+                        # Only the learning fixture names its staged synthetic key file and the opt-in.
+                        | (set(learning.KEY_VARIABLES) if server_type is learning.LearningServer else set()),
                     )
                     self.assertNotIn(
                         "synthetic-environment-only", str(server.environment)
@@ -570,6 +645,23 @@ class NativeDiagnosticTests(unittest.TestCase):
         self.assertNotIn("fixture-user@", sanitized)
         self.assertNotIn("\x1b", sanitized)
         self.assertLessEqual(len(classroom.sanitize_diagnostics("x" * 100000)), 12000)
+
+    def test_sanitizer_drops_lines_that_carry_lesson_keys(self) -> None:
+        marker = lesson_keys.SYNTHETIC_PREFIX + " explanation placeholder for fixture-lesson."
+        raw = (
+            "Error: tutorial_learning snapshot rejected\n"
+            + "UPDATE `tutorial_learning` SET `snapshot`='{\"check\":{\"answer\":2}}'\n"
+            + 'INSERT INTO x VALUES (\'{\\"explanation\\": \"fixture-only\"}\')\n'
+            + "feedback " + marker + "\n"
+            + "answer_retry_at is a field name, not a key\n"
+        )
+        sanitized = classroom.sanitize_diagnostics(raw)
+        self.assertIn("Error: tutorial_learning snapshot rejected", sanitized)
+        self.assertIn("answer_retry_at is a field name, not a key", sanitized)
+        self.assertEqual(sanitized.count("[redacted lesson key diagnostic]"), 3)
+        self.assertNotIn(lesson_keys.SYNTHETIC_PREFIX, sanitized)
+        self.assertNotIn("fixture-only", sanitized)
+        self.assertNotIn('"answer":', sanitized)
 
     def test_migration_failure_survives_cleanup_with_sanitized_diagnostics(
         self,
