@@ -96,7 +96,8 @@ The eight guildmasters have OCN seat accounts (`<seat>@ocn.buildanddo.invalid`, 
    directly: Daily Editions (the TRUST-001 amendment below, guildmaster authors only), social
    content (self-review with the four checks), forum topics and replies (skipping pending
    moderation), wiki pages, and new workspace guild lessons that `room.material` shares into
-   a class. Guild lessons carry no answer keys and never touch the tutorials catalogue.
+   a class, which the web classroom page reads and renders. Guild lessons carry no answer keys
+   and never touch the tutorials catalogue.
 6. **Audit and withdrawal.** Every guildmaster publication writes one `guild_publications`
    audit row: actor, seat, persona, kind, target, title, content digest and time. Owner/admin
    withdraw any guild publication through one audited command, `publication.withdraw`. A web
@@ -115,7 +116,9 @@ The eight guildmasters have OCN seat accounts (`<seat>@ocn.buildanddo.invalid`, 
 10. **Governance and docs.** This spec, its registry entry and dispatch, the `AGENTS.md`
     seat-protocol line, `docs/guildmasters.md`, `docs/claim-authority.md`, `docs/classrooms.md`,
     `docs/workspace-administration.md`, `.env.example` and `docker-compose.yml` (variable name
-    only, empty default), and the context and readiness locks.
+    only, empty default), the generated Libraries catalogue row in `README.md` that
+    `readme_check` requires for `libs/guildmasters/README.md`, and the context, readiness and
+    growth locks, each regenerated only by its own script.
 
 ## Amendment to SRS-BUILDANDDO-TRUST-001
 
