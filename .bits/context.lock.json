@@ -39,7 +39,7 @@
     },
     {
       "area": "ci",
-      "evidence": "referenced by: tests/upgrade/test_classroom_native.py, tests/upgrade/test_lesson_keys.py, tests/upgrade/test_public_boundary.py, tests/upgrade/test_tutorial_learning_native.py",
+      "evidence": "referenced by: tests/upgrade/test_classroom_native.py, tests/upgrade/test_gitlab_acceptance.py, tests/upgrade/test_gitlab_plane.py, tests/upgrade/test_lesson_keys.py, tests/upgrade/test_public_boundary.py, tests/upgrade/test_tutorial_learning_native.py",
       "severity": "high",
       "srs": "",
       "statement": "scripts/ci/lesson_keys.py is not configured in reachable GitLab jobs"
@@ -591,6 +591,8 @@
       "path": "scripts/ci/lesson_keys.py",
       "referenced_by": [
         "tests/upgrade/test_classroom_native.py",
+        "tests/upgrade/test_gitlab_acceptance.py",
+        "tests/upgrade/test_gitlab_plane.py",
         "tests/upgrade/test_lesson_keys.py",
         "tests/upgrade/test_public_boundary.py",
         "tests/upgrade/test_tutorial_learning_native.py"
@@ -893,7 +895,7 @@
       "wired_into_ci": true
     }
   ],
-  "generated_at": "2026-10-31T04:07:51.521684+00:00",
+  "generated_at": "2026-10-31T10:49:49.988486+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -1464,7 +1466,9 @@
         "supply_chain_weekly",
         "evidence_epoch",
         "main_writeback",
-        "ci_report"
+        "ci_report",
+        "lesson_keys_bundle",
+        "lesson_keys_private"
       ],
       "kind": "include",
       "local_actions": [],
@@ -1621,7 +1625,7 @@
         "why": "Competition readiness requires an evidence-backed learning-through-work journey, a reproducible replay and actual submission criteria."
       }
     ],
-    "source_sha256": "20326e3078e4287da73ed614d4deb4006e371b0f8d56b79d6919ff199d3b6db2",
+    "source_sha256": "9176fc05a1c2a0876b81dfd9c7dda4f6685302c0283be9429d4bc6c9936b3226",
     "state": "PASS"
   },
   "summary": {
