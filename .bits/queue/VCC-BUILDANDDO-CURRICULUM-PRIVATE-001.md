@@ -40,7 +40,7 @@ registration; rows 2-9 are the plan's tasks T1-T8.
 | 6 | T5 non-vacuous bundle gate with private fingerprints and a built-ins-only CLI | `node --test tests/upgrade/public-lessons.test.mjs && npm run build 2>&1 \| grep -qF 'SKIP: lesson explanation fingerprints' && ! BUILDANDDO_LESSON_KEYS_REQUIRED=1 npm run build >/dev/null 2>&1 && echo PASS` | done |
 | 7 | T6 public boundary rule and path policy for keyed data and key files | `python3 scripts/ci/verify_public_boundary.py --root . && python3 -m unittest tests.upgrade.test_public_boundary && echo PASS` | done |
 | 8 | T7 GitLab keyed lane (disabled by default) and the automerge keyed-surface guard | `python3 -m unittest tests.upgrade.test_gitlab_acceptance tests.upgrade.test_gitlab_plane && python3 scripts/ci/agent_context.py --check && echo PASS` | done |
-| 9 | T8 docs, staging readback, variable names, A3 handoff, readiness review and refresh, governance locks | `python3 scripts/ci/hostinger_readiness.py --check && python3 scripts/ci/submission_readiness.py --check && python3 scripts/ci/agent_context.py --check && python3 scripts/ci/verify_public_boundary.py --root . && node --test tests/upgrade/staging-contract.test.mjs && echo PASS` | todo |
+| 9 | T8 docs, staging readback, variable names, A3 handoff, readiness review and refresh, governance locks | `python3 scripts/ci/hostinger_readiness.py --check && python3 scripts/ci/submission_readiness.py --check && python3 scripts/ci/agent_context.py --check && python3 scripts/ci/verify_public_boundary.py --root . && node --test tests/upgrade/staging-contract.test.mjs && echo PASS` | done |
 
 Every gate prints PASS only when all of its commands succeed; a gate that does
 not print PASS has failed.

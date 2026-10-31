@@ -277,8 +277,9 @@ carries it out.
   - `public-lessons.test.mjs` plants a synthetic explanation and an
     answer-bearing JSON check in a temp dist and requires both to be detected.
   - With `BUILD_SHA` pinned to one 40-hex value, the dist tree hash at the
-    merge-base equals the hash at the PR head. Both hashes are recorded in the
-    PR description.
+    merge-base equals the hash at the PR head, computed over every file except
+    `platform-health.json` (finding 12). Both hashes are recorded in the PR
+    description.
 - **A10.** GitLab contract (`test_gitlab_acceptance.py`):
   - `lesson_keys_bundle` and `lesson_keys_private` run only on push or web to
     protected `buildanddo-source` with `BUILDANDDO_LESSON_KEYS_ENABLED=1`, and
@@ -343,13 +344,57 @@ in the last step of the dispatch. No agent executes any of it.
    omitted both since TRUST-001, so the assessment would report every check as
    unanswerable. It needs its own fix.
 3. **`CONTRIBUTING.md:83-86`** says `verify_public_boundary.py` fails on secrets,
-   internal hostnames or anything outside the public allowlist. That overstates
-   what the check enforces.
+   internal hostnames or anything outside the public allowlist. The check
+   enforces forbidden prefixes and file names, secret-like literals, actor
+   evidence and, since this SRS, the two lesson-key rules. It has no
+   internal-hostname rule and does not enforce `public_allowed_prefixes`, so the
+   text still overstates it.
 4. **`.gitignore:56-59`** says the GitLab CI config must never land in the
    public repository and ignores `/.gitlab-ci.yml`, yet that file is tracked.
    The comment is stale.
 5. **SRS-BUILDANDDO-QUIZ-001 and SRS-BUILDANDDO-TRUST-001** are still
    `in_progress` in the registry, while every task in both dispatches is done.
+
+The findings below were met while running this dispatch's gates. Each one
+fails identically at the merge-base, so none is caused by this SRS, and none is
+fixed here.
+
+6. **`apps/pocketbase/pb_hooks/metrics.pb.js` stops PocketBase 0.39.8 from
+   starting.** Its `routerUse(new Middleware({func, priority}))` call raises a
+   SyntaxError at load, so every `test_classroom_native` case and the assurance
+   classroom paths fail at startup. The Node double in
+   `test_native_fixture_contracts` accepts the object form, so the source tests
+   pass.
+7. **Mission propose returns 400 on `priority`** in `test_workspace_native`
+   (two failures and one error), and the assurance mission journey fails with
+   it.
+8. **`test_public_api_native` expects 33 lessons.** The catalogue has 35, so
+   three cases fail on that constant alone. With the count corrected, every
+   public-read case passes, including this SRS's key-text assertions.
+9. **`tests/assurance/runtime.py` stages too few migrations.** Its
+   `EXTRA_MIGRATIONS` list lacks `1791500000_learning_progress_authority.js`,
+   `1791500100_tutorial_answer_wait.js` and the classroom kind and attendance
+   migrations, so under `BUILDANDDO_ASSURANCE_FULL` the learning and classroom
+   routes answer 503 "not installed". Six of the eight `test_runtime` cases
+   fail.
+10. **Three Vitest cases fail before this SRS:** TalkToBuddi "replaces a stalled
+    connection" (timeout), DailyEditionPage "keeps publication disabled for an
+    editor" (no Publish button) and WorkflowRuns "renders finished receipts"
+    (receipt text missing). They make `npm --prefix apps/web run test`, part of
+    the row 4 gate and acceptance A8, red. One run of the InteractiveTutorial
+    and TutorialCatalog files also failed once out of four, with neither file
+    changed.
+11. **The key tool's tests are not in a GitLab job.**
+    `tests.upgrade.test_lesson_keys` runs in no job, and `agent_context.py`
+    reports `scripts/ci/lesson_keys.py` as unwired because its collector counts
+    required jobs only. By design `lesson_keys_private` is optional and
+    disabled. Wiring the tests needs `.gitlab/ci/day21-submission.yml` or
+    `.gitlab/ci/source-validation.yml`, which this SRS must not touch.
+12. **The web dist tree hash is not reproducible.** `platform-health.json` is
+    stamped with a wall-clock `generated_at` by `scripts/ci/fleet_report.py`,
+    so the full `tree_sha256` differs between any two builds, even of one
+    commit. Over the other 243 files, the public build at the merge-base and at
+    this SRS's head hash equal, which is the comparison A9 now names.
 
 ## Relationship to SRS-BUILDANDDO-QUIZ-001
 
@@ -368,12 +413,18 @@ QUIZ-001's spec and registry entry are not edited.
   key-file hash is ever published.
 - Every fresh install needs the key file, or guided grading and the quiz stay
   unavailable. The failure is closed, never a misgrade.
+- `scripts/deploy/staging-readback.sh` reads `/api` at the origin root, as the
+  docker staging stack serves it. `lesson_keys.py digests` takes a bare origin
+  and reads `/api/v1/public` at its root. On a deployment where PocketBase sits
+  behind the same-origin backend prefix, the handoff uses the edge route or a
+  local port forward instead.
 
 ## Verification
 
 `python3 scripts/ci/agent_context.py --check`,
 `python3 scripts/ci/verify_public_boundary.py --root .`,
-`node --test tests/upgrade/*.test.mjs`,
+`node --test tests/upgrade/*.test.mjs` (it includes
+`tests/upgrade/staging-contract.test.mjs`),
 `npm --prefix apps/web run test`,
 `python3 -m unittest tests.upgrade.test_lesson_keys tests.upgrade.test_public_boundary`,
 the four native drivers with `--require-binary`,
