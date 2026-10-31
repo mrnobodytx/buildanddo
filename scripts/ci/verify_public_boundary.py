@@ -40,6 +40,19 @@ CURRICULUM_DATA_GLOBS = ("apps/pocketbase/pb_migrations/data/*.json",)
 PRIVATE_KEY_SCHEMA = "buildanddo.lesson-keys/1"
 KEY_MEMBERS = ("answer", "explanation")
 SLUG = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*")
+# Sources that name the key schema as a JSON member in order to write, read or test key files.
+# They hold no key document, so only the whole-file JSON check applies to them.
+KEY_SCHEMA_SOURCES = frozenset({
+    "apps/pocketbase/pb_hooks/lesson-keys.js",
+    "apps/web/tools/check-public-lessons.mjs",
+    "scripts/ci/lesson_keys.py",
+    "scripts/ci/verify_public_boundary.py",
+    "tests/upgrade/lesson-keys-fixture.mjs",
+    "tests/upgrade/lesson-keys.test.mjs",
+    "tests/upgrade/public-lessons.test.mjs",
+    "tests/upgrade/test_lesson_keys.py",
+    "tests/upgrade/test_public_boundary.py",
+})
 
 SECRET_PATTERNS = [
     ("private_key", re.compile(r"-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----")),
@@ -250,29 +263,53 @@ def _members(pairs: list[tuple[str, object]]) -> _Members:
     return result
 
 
-def is_private_key_file(path: Path, schema: str) -> bool:
-    """A tracked JSON document marked with the key schema and not labelled ``synthetic: true``.
+def _marked(document: object, schema: str) -> bool:
+    """Whether any object at any depth carries a ``schema_version`` copy equal to the key schema."""
+    stack: list[object] = [document]
+    while stack:
+        value = stack.pop()
+        if isinstance(value, _Members):
+            if any(name == "schema_version" and item == schema for name, item in value.pairs):
+                return True
+            stack.extend(item for _name, item in value.pairs)
+        elif isinstance(value, list):
+            stack.extend(value)
+    return False
 
-    Parsing is lenient so that a file any JSON reader accepts is covered: a byte
-    order mark, invalid UTF-8 and repeated member names do not hide it. A repeated
-    ``schema_version`` counts if any copy carries the marker, and every
-    ``synthetic`` copy must be ``true``. A symbolic link publishes no content.
+
+def schema_member(schema: str) -> re.Pattern[str]:
+    """The key schema written as a JSON ``schema_version`` member, with or without an escaped slash."""
+    marker = re.escape(schema).replace("/", r"(?:/|\\/)")
+    return re.compile(r'"schema_version"\s*:\s*"' + marker + '"')
+
+
+def is_private_key_file(path: Path, schema: str, rel: str = "") -> bool:
+    """A tracked file that holds a lesson key document, whatever its name, extension or label.
+
+    No key file is ever tracked, so the self-declared ``synthetic`` label exempts
+    nothing. Any file that parses as JSON is walked for an object at any depth whose
+    ``schema_version`` (any repeated copy) is the key schema; parsing is lenient, so
+    a byte order mark, invalid UTF-8 or repeated member names do not hide one. Any
+    other file fails when its text writes that member, which catches truncated and
+    embedded copies; the known sources that name the schema are exempt from that
+    text check only. A symbolic link publishes no content.
     """
     if path.is_symlink() or not path.is_file():
         return False
     try:
-        document = json.loads(
-            path.read_bytes().decode("utf-8-sig", errors="replace"),
-            object_pairs_hook=_members,
-        )
-    except (OSError, ValueError, RecursionError):
+        text = path.read_bytes().decode("utf-8-sig", errors="replace")
+    except OSError:
         return False
-    if not isinstance(document, _Members):
+    if text.lstrip()[:1] in ("{", "["):
+        try:
+            document = json.loads(text, object_pairs_hook=_members)
+        except (ValueError, RecursionError):
+            document = None
+        if document is not None and _marked(document, schema):
+            return True
+    if rel in KEY_SCHEMA_SOURCES:
         return False
-    schemas = [value for name, value in document.pairs if name == "schema_version"]
-    synthetic = [value for name, value in document.pairs if name == "synthetic"]
-    marked = any(isinstance(value, str) and value == schema for value in schemas)
-    return marked and not (synthetic and all(value is True for value in synthetic))
+    return bool(schema_member(schema).search(text))
 
 
 def git_files(root: Path) -> list[str]:
@@ -352,6 +389,7 @@ def main(argv: list[str] | None = None) -> int:
                 )
 
     # Answer keys belong to the private key file only: report path and slug, never a value.
+    # Every tracked file is checked for a key document, whatever its name or extension.
     curriculum_globs = [
         pattern.lower()
         for pattern in string_list(
@@ -365,7 +403,7 @@ def main(argv: list[str] | None = None) -> int:
         low = rel.lower()
         if any(fnmatch.fnmatchcase(low, pattern) for pattern in curriculum_globs):
             failures.extend(curriculum_key_failures(root, rel))
-        if low.endswith(".json") and is_private_key_file(root / rel, key_schema):
+        if is_private_key_file(root / rel, key_schema, rel):
             failures.append({"type": "private_lesson_keys", "path": rel})
 
     actor = None

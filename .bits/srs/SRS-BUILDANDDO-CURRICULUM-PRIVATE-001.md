@@ -149,8 +149,11 @@ carries it out.
     `.buildanddo/public/path-policy.json`. The check fails when:
     - a tracked data-file check carries `answer` or `explanation`;
     - a file named `lesson-keys.json` is tracked;
-    - any tracked JSON has `schema_version` `buildanddo.lesson-keys/1` without
-      `synthetic: true`.
+    - any tracked file holds a key document, whatever its name, extension or
+      `synthetic` label: JSON with an object at any depth whose
+      `schema_version` is `buildanddo.lesson-keys/1`, or text that writes that
+      member outside the known sources naming the schema. No key file,
+      synthetic or not, is ever committed, so the label exempts nothing.
 
     Failures report path and slug, never values.
 11. **GitLab keyed lane**, disabled unless `BUILDANDDO_LESSON_KEYS_ENABLED=1`,
@@ -227,8 +230,11 @@ carries it out.
 - **A1.** `verify_public_boundary.py --root .` reports PASS with the new
   `curriculum_answer_key` and `private_lesson_keys` rules active.
   `test_public_boundary.py` proves on a temp repo that each rule fails for a
-  keyed data file, a tracked `lesson-keys.json` and a renamed non-synthetic key
-  file, and that a `synthetic: true` file passes.
+  keyed data file, a tracked `lesson-keys.json`, a renamed key file, a key file
+  labelled `synthetic: true` (generated or relabelled), and a key document
+  saved under a backup or editor name, another extension, wrapped in an array
+  or object, embedded in Markdown or truncated. The known sources that name
+  the schema, prose that names it and non-key JSON pass.
 - **A2.** `git diff --numstat <merge-base> -- apps/pocketbase/pb_migrations/data/`
   touches exactly the four files, with 35 insertions and 105 deletions. Every
   inserted line matches `^\s*\]$`. `python3 -I scripts/ci/lesson_keys.py strip --check`

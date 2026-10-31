@@ -509,9 +509,10 @@ class CurriculumKeyBoundaryTests(unittest.TestCase):
             sorted(item["path"] for item in self.failures(report, "forbidden_filename")),
             sorted([synthetic, private]),
         )
+        # The synthetic label exempts nothing: a key file of either kind is never tracked.
         self.assertEqual(
-            self.failures(report, "private_lesson_keys"),
-            [{"type": "private_lesson_keys", "path": private}],
+            sorted(item["path"] for item in self.failures(report, "private_lesson_keys")),
+            sorted([synthetic, private]),
         )
         self.assert_no_key_text(output)
 
@@ -546,7 +547,8 @@ class CurriculumKeyBoundaryTests(unittest.TestCase):
         self.assertEqual(len(report["failures"]), len(variants))
         self.assert_no_key_text(output)
 
-    def test_synthetic_key_files_and_non_key_json_pass(self) -> None:
+    def test_synthetic_and_relabelled_key_files_fail(self) -> None:
+        """No key file is tracked, synthetic or not; the label is self-declared and exempts nothing."""
         with tempfile.TemporaryDirectory(prefix="boundary-synthetic-") as scratch:
             out = Path(scratch) / "keys.json"
             made = subprocess.run(
@@ -557,15 +559,77 @@ class CurriculumKeyBoundaryTests(unittest.TestCase):
             )
             self.assertEqual(made.returncode, 0, "lesson_keys.py synthetic failed")
             self.track("tests/fixtures/synthetic-keys.json", out.read_bytes())
+        relabelled = self.key_document("relabel", synthetic=False)
+        relabelled["synthetic"] = True
+        variants = {
+            "tests/fixtures/synthetic-keys.json",
+            "tests/fixtures/minimal-synthetic.json",
+            "tests/fixtures/relabelled-true.json",
+            "tests/fixtures/escaped-synthetic.json",
+        }
+        # An escaped member name defeats the text check, so only the parsed document can reveal this one.
+        self.track(
+            "tests/fixtures/escaped-synthetic.json",
+            json.dumps(relabelled).replace('"schema_version"', '"schema_\\u0076ersion"'),
+        )
         self.track(
             "tests/fixtures/minimal-synthetic.json",
             json.dumps({"schema_version": lesson_keys.SCHEMA, "synthetic": True}),
         )
+        # A real export whose label was flipped to true is the case the old exemption let through.
+        self.track("tests/fixtures/relabelled-true.json", json.dumps(relabelled))
+        code, report, output = self.run_gate()
+        self.assertEqual(code, 1)
+        self.assertEqual(
+            sorted(self.failures(report, "private_lesson_keys"), key=by_path),
+            sorted(({"type": "private_lesson_keys", "path": name} for name in variants), key=by_path),
+        )
+        self.assertEqual(len(report["failures"]), len(variants))
+        self.assert_no_key_text(output)
+
+    def test_key_documents_under_any_name_or_wrapping_fail(self) -> None:
+        """Backup and editor copies, other extensions, wrapped and embedded documents are all key files."""
+        document = json.dumps(self.key_document("backup", synthetic=False), indent=2)
+        variants: dict[str, str | bytes] = {
+            "docs/c-private.json.bak": document,
+            "docs/keys.json~": document,
+            "lesson-keys.json.bak": document,
+            "docs/lesson-keys.json.orig": document,
+            "docs/lesson-keys": document,
+            "docs/keys.txt": document,
+            "docs/escaped-slash.data": document.replace("lesson-keys/1", "lesson-keys\\/1"),
+            "docs/wrapped.json": json.dumps([{"note": "copied"}, json.loads(document)]),
+            "docs/nested.json": json.dumps({"backup": {"keys": json.loads(document)}}),
+            "docs/escaped-member.json": json.dumps([{"keys": json.loads(document)}]).replace(
+                '"schema_version"', '"schema_\\u0076ersion"'),
+            "docs/notes.md": "# Notes\n\n```json\n" + document + "\n```\n",
+            "docs/truncated.log": document[: len(document) // 2],
+        }
+        for name, content in variants.items():
+            self.track(name, content)
+        code, report, output = self.run_gate()
+        self.assertEqual(code, 1)
+        self.assertEqual(
+            sorted(self.failures(report, "private_lesson_keys"), key=by_path),
+            sorted(({"type": "private_lesson_keys", "path": name} for name in variants), key=by_path),
+        )
+        self.assertEqual(len(report["failures"]), len(variants))
+        self.assert_no_key_text(output)
+
+    def test_sources_that_name_the_schema_and_non_key_files_pass(self) -> None:
+        member = '"schema_version": ' + json.dumps(lesson_keys.SCHEMA)
+        # The known sources name the schema in JSON form to read, write or test key files.
+        for name in sorted(boundary.KEY_SCHEMA_SOURCES):
+            self.track(name, "Example key file member: {" + member + ", \"synthetic\": false}\n")
         self.track(
             "tests/fixtures/digests.json",
             json.dumps({"schema_version": lesson_keys.DIGEST_SCHEMA, "synthetic": False}),
         )
         self.track("tests/fixtures/commented.json", "// not JSON\n{\"schema_version\": \"x\"}\n")
+        # Naming the schema in prose or as another member's value is not a key document.
+        self.track("docs/keys.md", "Key files use the schema `" + lesson_keys.SCHEMA + "`.\n")
+        self.track("docs/policy.json", json.dumps({"private_key_schema": lesson_keys.SCHEMA}))
+        self.track("docs/binary.bin", b"\x00\xff" + lesson_keys.SCHEMA.encode() + b"\x00")
         outside = self.root.parent / f"{self.root.name}-outside-keys.json"
         outside.write_text(json.dumps(self.key_document("linked", synthetic=False)))
         self.addCleanup(outside.unlink)
@@ -574,6 +638,12 @@ class CurriculumKeyBoundaryTests(unittest.TestCase):
         code, report, output = self.run_gate()
         self.assertEqual((code, report["failures"]), (0, []))
         self.assert_no_key_text(output)
+        # The same member outside a known source is an embedded key document.
+        self.track("docs/example.md", "Example key file member: {" + member + ", \"synthetic\": false}\n")
+        code, report, output = self.run_gate()
+        self.assertEqual(
+            (code, report["failures"]), (1, [{"type": "private_lesson_keys", "path": "docs/example.md"}])
+        )
 
     def test_policy_defaults_keep_the_rules_and_malformed_fields_refuse(self) -> None:
         legacy = {key: value for key, value in self.policy.items()
