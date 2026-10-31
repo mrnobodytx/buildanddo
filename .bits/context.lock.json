@@ -39,6 +39,13 @@
     },
     {
       "area": "ci",
+      "evidence": "referenced by: tests/upgrade/test_lesson_keys.py",
+      "severity": "high",
+      "srs": "",
+      "statement": "scripts/ci/lesson_keys.py is not configured in reachable GitLab jobs"
+    },
+    {
+      "area": "ci",
       "evidence": "referenced by: nothing in this repo",
       "severity": "high",
       "srs": "",
@@ -581,6 +588,14 @@
     },
     {
       "configured_providers": [],
+      "path": "scripts/ci/lesson_keys.py",
+      "referenced_by": [
+        "tests/upgrade/test_lesson_keys.py"
+      ],
+      "wired_into_ci": false
+    },
+    {
+      "configured_providers": [],
       "path": "scripts/ci/migration_preflight.py",
       "referenced_by": [],
       "wired_into_ci": false
@@ -875,7 +890,7 @@
       "wired_into_ci": true
     }
   ],
-  "generated_at": "2026-10-31T01:22:40.717626+00:00",
+  "generated_at": "2026-10-31T01:44:42.379343+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -1519,11 +1534,11 @@
       "scripts/deploy/staging-readback.sh"
     ],
     "migrations": 77,
-    "python_files": 484,
+    "python_files": 486,
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 1890,
+    "tracked_files": 1892,
     "web_source_files": 386
   },
   "schema_version": 1,
@@ -1603,16 +1618,16 @@
         "why": "Competition readiness requires an evidence-backed learning-through-work journey, a reproducible replay and actual submission criteria."
       }
     ],
-    "source_sha256": "e87f730fe08e91b65710e87c6ac0f22c15b3d177978bf815bbcdaca65c9ba6fb",
+    "source_sha256": "18dff0f14e20d44abd14d6253a8adf1aa534630443b9af00357d8881150e2aaf",
     "state": "PASS"
   },
   "summary": {
-    "findings": 58,
-    "findings_high": 25,
+    "findings": 59,
+    "findings_high": 26,
     "pipelines": 4,
     "srs_open": 58,
     "srs_total": 62,
-    "unwired_gates": 25
+    "unwired_gates": 26
   },
   "tests": {
     "js_runners": [
