@@ -39,7 +39,7 @@
     },
     {
       "area": "ci",
-      "evidence": "referenced by: tests/upgrade/test_classroom_native.py, tests/upgrade/test_lesson_keys.py, tests/upgrade/test_tutorial_learning_native.py",
+      "evidence": "referenced by: tests/upgrade/test_classroom_native.py, tests/upgrade/test_lesson_keys.py, tests/upgrade/test_public_boundary.py, tests/upgrade/test_tutorial_learning_native.py",
       "severity": "high",
       "srs": "",
       "statement": "scripts/ci/lesson_keys.py is not configured in reachable GitLab jobs"
@@ -592,6 +592,7 @@
       "referenced_by": [
         "tests/upgrade/test_classroom_native.py",
         "tests/upgrade/test_lesson_keys.py",
+        "tests/upgrade/test_public_boundary.py",
         "tests/upgrade/test_tutorial_learning_native.py"
       ],
       "wired_into_ci": false
@@ -892,7 +893,7 @@
       "wired_into_ci": true
     }
   ],
-  "generated_at": "2026-10-31T03:49:41.317010+00:00",
+  "generated_at": "2026-10-31T04:07:51.521684+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -1620,7 +1621,7 @@
         "why": "Competition readiness requires an evidence-backed learning-through-work journey, a reproducible replay and actual submission criteria."
       }
     ],
-    "source_sha256": "fe95906739e370b7b8f34b829ab14028824896f9bbd8ce98e4c27117c2e68d89",
+    "source_sha256": "20326e3078e4287da73ed614d4deb4006e371b0f8d56b79d6919ff199d3b6db2",
     "state": "PASS"
   },
   "summary": {
