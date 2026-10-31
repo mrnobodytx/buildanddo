@@ -485,10 +485,11 @@ anywhere fails the check until it appears here.
 </details>
 
 <details>
-<summary><strong>Libraries</strong> · 2</summary>
+<summary><strong>Libraries</strong> · 3</summary>
 
 | README | Location | What it covers |
 |---|---|---|
+| [libs.guildmasters](./libs/guildmasters/README.md) | `libs/guildmasters` | Tell script authors where the guildmaster roster comes from and what this mirror will not do. |
 | [Living Semantic System Twin — Phase 0 contracts](./libs/semantic_twin/README.md) | `libs/semantic_twin` | Explain the frozen contracts, explicit version break and evidence trust boundary before runtime integration. |
 | [BuildAndDo Phase 1 ingestion](./libs/semantic_twin/phase1/README.md) | `libs/semantic_twin/phase1` | Document reproducible v2 ingestion, evidence inputs and the limits of release and context proof claims. |
 
