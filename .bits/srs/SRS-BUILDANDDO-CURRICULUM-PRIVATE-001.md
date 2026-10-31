@@ -284,6 +284,18 @@ carries it out.
   A missing binary is BLOCKED, never a pass. Tool and test output never
   contains any synthetic explanation string; tests assert this on captured
   stdout and stderr.
+
+  **Observed at the PR head: not met.** The node suite and the Python suites
+  listed above pass, and so does `test_tutorial_learning_native`. Four
+  commands stay red, each identically at the merge-base and each recorded as a
+  finding this SRS must not fix: `npm --prefix apps/web run test` (three
+  pre-existing Vitest cases, finding 10), `test_public_api_native` (the stale
+  33-lesson count, finding 8), `test_classroom_native` (the `metrics.pb.js`
+  startup panic, finding 6) and `test_workspace_native` (propose `priority`,
+  finding 7). `tests.assurance.test_runtime`, whose answer paths this SRS
+  edited, also fails six of eight cases at both revisions (finding 9). A8 stays
+  open until those follow-ups land, and dispatch rows 4 and 5 are `blocked` on
+  them.
 - **A9.** Build:
   - `npm run build` prints `SKIP: lesson explanation fingerprints need BUILDANDDO_LESSON_KEYS_FILE`
     and passes.
@@ -398,17 +410,46 @@ fixed here.
     the row 4 gate and acceptance A8, red. One run of the InteractiveTutorial
     and TutorialCatalog files also failed once out of four, with neither file
     changed.
-11. **The key tool's tests are not in a GitLab job.**
-    `tests.upgrade.test_lesson_keys` runs in no job, and `agent_context.py`
-    reports `scripts/ci/lesson_keys.py` as unwired because its collector counts
-    required jobs only. By design `lesson_keys_private` is optional and
-    disabled. Wiring the tests needs `.gitlab/ci/day21-submission.yml` or
-    `.gitlab/ci/source-validation.yml`, which this SRS must not touch.
+11. **Only the key tool's own invocation is unwired.** Its tests already run
+    in CI: the Day-21 `day21_full_acceptance` job runs every non-native check
+    in `scripts/ci/hostinger_checks.py`, where `source_python` expands
+    `@python_tests` to every non-native `tests/upgrade/test_*.py`, including
+    `tests.upgrade.test_lesson_keys`, and `source_node` runs
+    `lesson-keys.test.mjs` and `public-lessons.test.mjs`. What no required job
+    runs is `scripts/ci/lesson_keys.py verify` itself: `agent_context.py`
+    reports it as unwired because its collector counts required jobs only, and
+    the job that runs it, `lesson_keys_private`, is optional and ships disabled
+    by design. No CI include needs to change.
 12. **The web dist tree hash is not reproducible.** `platform-health.json` is
     stamped with a wall-clock `generated_at` by `scripts/ci/fleet_report.py`,
     so the full `tree_sha256` differs between any two builds, even of one
     commit. Over the other 243 files, the public build at the merge-base and at
     this SRS's head hash equal, which is the comparison A9 now names.
+
+Found in review and confirmed natively; it predates this SRS and is not fixed
+here.
+
+13. **Keys held in the database can be read through record filters.** By owner
+    decision, production keeps the keys already stored in `tutorials.lesson`.
+    The tutorials list and view rules,
+    `@request.auth.id != '' && category != 'Government submissions'` (set in
+    `1791200000_government_membership.js`), let any signed-in member filter on
+    that JSON field, for example with `lesson.check.answer = N` or
+    `lesson ~ '"answer":N'`. A row comes back only for the stored index, so a
+    member can read a stored key in a few guesses. The enrich hook in
+    `tutorial-learning.js` removes `answer` and `explanation` from response
+    bodies only, after the SQL filter has run, and `tutorials` has no
+    `onRecordsListRequest` or `onRecordViewRequest` guard. A PocketBase 0.39.8
+    probe with synthetic keys confirmed both filter forms. Keys held only by the
+    file are not exposed this way: the resolver never writes them, and
+    `tutorial_learning` has no API rules. Today this exposes only values that
+    are already in public history, while keys-health and the docs describe the
+    keys as private. **Precondition for the re-authoring follow-up:** no
+    re-authored or corrected key may be stored in the database, by a restore,
+    a hand fix or a future hydration, until one of these holds: the database
+    holds no keys; a `tutorials` list and view guard refuses non-superuser
+    filter and sort expressions that reference `lesson`; or an operator-run A3
+    strip has removed the stored keys once the file is installed everywhere.
 
 ## Relationship to SRS-BUILDANDDO-QUIZ-001
 

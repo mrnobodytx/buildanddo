@@ -35,8 +35,8 @@ registration; rows 2-9 are the plan's tasks T1-T8.
 | 1 | Register the SRS, the registry entry and this dispatch; record the owner request and decisions | `python3 scripts/ci/agent_context.py --check && python3 scripts/ci/verify_public_boundary.py --root . && grep -q 'code: SRS-BUILDANDDO-CURRICULUM-PRIVATE-001' .bits/srs_registry.yml && test -f .bits/queue/VCC-BUILDANDDO-CURRICULUM-PRIVATE-001.md && echo PASS` | done |
 | 2 | T1 key tooling: stdlib-only `scripts/ci/lesson_keys.py` (export, verify, synthetic, strip, digests) | `python3 -m unittest tests.upgrade.test_lesson_keys && python3 -I scripts/ci/lesson_keys.py --help >/dev/null && echo PASS` | done |
 | 3 | T2 resolver library, `pocketbase lesson-keys check` and the keys-health route | `node --test tests/upgrade/lesson-keys.test.mjs && echo PASS` | done |
-| 4 | T3 wire the graders, strip the four data files, move node and Vitest suites to synthetic keys | `node --test tests/upgrade/*.test.mjs && npm --prefix apps/web run test && python3 -I scripts/ci/lesson_keys.py strip --check && git diff --quiet $(git merge-base HEAD origin/main) -- 'apps/pocketbase/pb_migrations/*.js' && echo PASS` | done |
-| 5 | T4 native and assurance lanes on synthetic keys (a missing binary is BLOCKED, never a pass) | `python3 tests/upgrade/test_tutorial_learning_native.py --require-binary && python3 tests/upgrade/test_public_api_native.py --require-binary && python3 tests/upgrade/test_classroom_native.py --require-binary && python3 tests/upgrade/test_workspace_native.py --require-binary && python3 -m unittest tests.upgrade.test_native_fixture_contracts && echo PASS` | done |
+| 4 | T3 wire the graders, strip the four data files, move node and Vitest suites to synthetic keys. Blocked: `npm --prefix apps/web run test` fails on three Vitest cases that fail identically at the merge-base (SRS finding 10) | `node --test tests/upgrade/*.test.mjs && npm --prefix apps/web run test && python3 -I scripts/ci/lesson_keys.py strip --check && git diff --quiet $(git merge-base HEAD origin/main) -- 'apps/pocketbase/pb_migrations/*.js' && echo PASS` | blocked |
+| 5 | T4 native and assurance lanes on synthetic keys (a missing binary is BLOCKED, never a pass). Blocked: `test_public_api_native` (finding 8), `test_classroom_native` (finding 6) and `test_workspace_native` (finding 7) fail identically at the merge-base; the assurance files are edited but this gate runs no assurance test, and `tests.assurance.test_runtime` fails six of eight cases at both revisions (finding 9) | `python3 tests/upgrade/test_tutorial_learning_native.py --require-binary && python3 tests/upgrade/test_public_api_native.py --require-binary && python3 tests/upgrade/test_classroom_native.py --require-binary && python3 tests/upgrade/test_workspace_native.py --require-binary && python3 -m unittest tests.upgrade.test_native_fixture_contracts && echo PASS` | blocked |
 | 6 | T5 non-vacuous bundle gate with private fingerprints and a built-ins-only CLI | `node --test tests/upgrade/public-lessons.test.mjs && npm run build 2>&1 \| grep -qF 'SKIP: lesson explanation fingerprints' && ! BUILDANDDO_LESSON_KEYS_REQUIRED=1 npm run build >/dev/null 2>&1 && echo PASS` | done |
 | 7 | T6 public boundary rule and path policy for keyed data and key files | `python3 scripts/ci/verify_public_boundary.py --root . && python3 -m unittest tests.upgrade.test_public_boundary && echo PASS` | done |
 | 8 | T7 GitLab keyed lane (disabled by default) and the automerge keyed-surface guard | `python3 -m unittest tests.upgrade.test_gitlab_acceptance tests.upgrade.test_gitlab_plane && python3 scripts/ci/agent_context.py --check && echo PASS` | done |
@@ -44,6 +44,14 @@ registration; rows 2-9 are the plan's tasks T1-T8.
 
 Every gate prints PASS only when all of its commands succeed; a gate that does
 not print PASS has failed.
+
+Rows 4 and 5 are `blocked`, not `done`. The parts this SRS owns pass: the
+node suite, `strip --check`, the migration diff, the `InteractiveTutorial` and
+`TutorialCatalog` Vitest files, `test_tutorial_learning_native`,
+`test_native_fixture_contracts`, and the key and digest cases in
+`test_public_api_native`. The rest of each gate fails for causes recorded as
+SRS findings 6-10, which this SRS must not fix. Each row unblocks when those
+follow-ups land, and acceptance A8 records the same observed state.
 
 ## Constraints
 
