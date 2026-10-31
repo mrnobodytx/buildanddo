@@ -1,16 +1,16 @@
 # ─── CGRF Header ───────────────────────────────────────────────
 # File:        docs/workspace-administration.md
 # Stage:       06_PLAN
-# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-GUILDMASTER-001
 # CAPS:        pending
 # CK:          pending
-# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-GUILDMASTER-001
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-15
-# Depends:     apps/pocketbase/pb_hooks/administration.pb.js, apps/pocketbase/pb_hooks/workspace-administration.js, apps/pocketbase/pb_hooks/workspace-community.js, apps/pocketbase/pb_migrations/1789900000_secure_workspace_rbac.js, apps/pocketbase/pb_migrations/1790000000_workspace_administration.js, apps/web/src/lib/workspaceControl.js, tests/upgrade/workspace-administration.test.mjs, tests/upgrade/workspace-community.test.mjs, tests/upgrade/workspace-control-client.test.mjs
+# Depends:     apps/pocketbase/pb_hooks/administration.pb.js, apps/pocketbase/pb_hooks/workspace-administration.js, apps/pocketbase/pb_hooks/workspace-community.js, apps/pocketbase/pb_hooks/guild-publishing.js, apps/pocketbase/pb_migrations/1789900000_secure_workspace_rbac.js, apps/pocketbase/pb_migrations/1790000000_workspace_administration.js, apps/pocketbase/pb_migrations/1792400000_guild_publications.js, apps/web/src/lib/workspaceControl.js, tests/upgrade/workspace-administration.test.mjs, tests/upgrade/workspace-community.test.mjs, tests/upgrade/workspace-control-client.test.mjs, tests/upgrade/guild-publishing.test.mjs
 # EnumType:    Doc
-# EnumEdges:   CONSUMES apps/pocketbase/pb_hooks/administration.pb.js; CONSUMES apps/pocketbase/pb_hooks/workspace-administration.js; CONSUMES apps/pocketbase/pb_hooks/workspace-community.js; CONSUMES apps/pocketbase/pb_migrations/1789900000_secure_workspace_rbac.js; CONSUMES apps/pocketbase/pb_migrations/1790000000_workspace_administration.js; CONSUMES apps/web/src/lib/workspaceControl.js; VERIFIED_BY tests/upgrade/workspace-administration.test.mjs; VERIFIED_BY tests/upgrade/workspace-community.test.mjs; VERIFIED_BY tests/upgrade/workspace-control-client.test.mjs
+# EnumEdges:   CONSUMES apps/pocketbase/pb_hooks/administration.pb.js; CONSUMES apps/pocketbase/pb_hooks/workspace-administration.js; CONSUMES apps/pocketbase/pb_hooks/workspace-community.js; CONSUMES apps/pocketbase/pb_hooks/guild-publishing.js; CONSUMES apps/pocketbase/pb_migrations/1789900000_secure_workspace_rbac.js; CONSUMES apps/pocketbase/pb_migrations/1790000000_workspace_administration.js; CONSUMES apps/web/src/lib/workspaceControl.js; VERIFIED_BY tests/upgrade/workspace-administration.test.mjs; VERIFIED_BY tests/upgrade/workspace-community.test.mjs; VERIFIED_BY tests/upgrade/workspace-control-client.test.mjs; VERIFIED_BY tests/upgrade/guild-publishing.test.mjs
 # DAG Node:    none
 # Intent:      Explain workspace authority, retained administration records and concrete native/browser acceptance before activating community and integration controls.
 # ───────────────────────────────────────────────────────────────
@@ -42,6 +42,8 @@ administrator capabilities without ownership transfer or administrator grants.
 | Create wiki drafts and forum contributions | yes | yes | yes | no |
 | Edit another author's wiki draft | yes | yes | no | no |
 | Publish/archive wiki or moderate discussions | yes | yes | no | no |
+| Publish own wiki draft, post topics/replies without pending review (guildmaster seat only) | yes | yes | yes | no |
+| Read guild publications and withdraw one | yes | yes | no | no |
 | Read audit history | yes | yes | no | no |
 | Edit audit receipts or report an integration healthy from the browser | no | no | no | no |
 
@@ -84,7 +86,21 @@ role, hidden button or user-editable field is never an authorization grant.
    to approve, hide or lock a topic, or approve/hide a reply. Hidden topics are
    unavailable to ordinary members, including the author. Locked/pending/hidden
    topics reject new replies at the server. Viewers read approved discussions.
-5. Administrators configure an integration, request enabled/disabled state, or
+5. A guildmaster seat (see `docs/guildmasters.md`) holding editor or higher role
+   publishes directly: it publishes its own wiki draft, and its topics and replies
+   are open and visible even with moderation on. It cannot archive, return a page to
+   draft, publish another author's page or moderate. Each such publication writes
+   one `guild_publications` row (seat, persona, kind, target, title and a SHA-256
+   content digest) in the same transaction; a replayed retry key adds none. People
+   are unaffected: an editor's wiki page still needs an administrator and an editor's
+   discussion still waits for moderation.
+6. The **Guild publications** tab in Administration lists those rows for owners and
+   administrators, newest first, with the persona name and the record's current
+   state. **Withdraw** asks for a reason and sends `publication.withdraw`: Daily
+   Editions, social content and guild lessons become `withdrawn`, topics and replies
+   `hidden` (with the reason as the moderation note), wiki pages `archived`. Nothing
+   is deleted, and the withdrawal writes its own `withdrawn` row with the note.
+7. Administrators configure an integration, request enabled/disabled state, or
    request a health check. The latest observation carries a timestamp and receipt
    reference. A request alone cannot change the observed state to healthy or
    prove that disabling has taken effect. Old service/channel cards are retained
@@ -144,6 +160,18 @@ and topics use zero; replies use the current topic revision.
 | `wiki.transition` | id, status |
 | `forum.create` / `forum.reply` | title, body / topic, body |
 | `forum.moderate` | kind (topic/reply), id, status, note |
+
+Guild publications have their own route,
+`/api/buildanddo/workspaces/{workspace}/guild-publications` (users authentication,
+no-store). GET returns a page of twenty rows to owners and administrators only:
+action, kind, target, title, persona, actor account id, seat, digest, note, time,
+the target's current state and revision, and whether it can still be withdrawn. It
+carries no email. POST takes the same envelope with action `publication.withdraw`,
+the target's current revision and payload exactly `kind`, `target` and `note` (1-800
+characters). It answers 404 when no guildmaster published that record, 409 for a
+stale revision or a record that is no longer published, 403 for anyone but an owner or
+administrator and 503 until `1792400000_guild_publications.js` is installed. Withdrawn
+editions and social content also need `1792400001_guild_withdrawn_status.js`.
 
 The command and immutable audit receipt are saved in one transaction. A matching
 retry returns its original minimal result; conflicting key reuse or stale

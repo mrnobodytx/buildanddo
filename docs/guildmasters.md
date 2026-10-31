@@ -8,9 +8,9 @@
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-10-31
-# Depends:     apps/pocketbase/pb_hooks/guildmasters.js, apps/pocketbase/pb_hooks/guildmasters.pb.js, apps/pocketbase/pb_migrations/1792200000_guildmaster_seat_display.js, libs/guildmasters/__init__.py
+# Depends:     apps/pocketbase/pb_hooks/guildmasters.js, apps/pocketbase/pb_hooks/guildmasters.pb.js, apps/pocketbase/pb_migrations/1792200000_guildmaster_seat_display.js, libs/guildmasters/__init__.py, apps/pocketbase/pb_hooks/guild-publishing.js, apps/pocketbase/pb_hooks/guild-lessons.js
 # EnumType:    Doc
-# EnumEdges:   CONSUMES apps/pocketbase/pb_hooks/guildmasters.js; CONSUMES apps/pocketbase/pb_hooks/guildmasters.pb.js; CONSUMES apps/pocketbase/pb_migrations/1792200000_guildmaster_seat_display.js; CONSUMES libs/guildmasters/__init__.py; VERIFIED_BY tests/upgrade/guildmaster-registry.test.mjs; VERIFIED_BY tests/upgrade/test_guildmasters.py
+# EnumEdges:   CONSUMES apps/pocketbase/pb_hooks/guildmasters.js; CONSUMES apps/pocketbase/pb_hooks/guildmasters.pb.js; CONSUMES apps/pocketbase/pb_migrations/1792200000_guildmaster_seat_display.js; CONSUMES libs/guildmasters/__init__.py; CONSUMES apps/pocketbase/pb_hooks/guild-publishing.js; CONSUMES apps/pocketbase/pb_hooks/guild-lessons.js; VERIFIED_BY tests/upgrade/guildmaster-registry.test.mjs; VERIFIED_BY tests/upgrade/test_guildmasters.py; VERIFIED_BY tests/upgrade/guild-publishing.test.mjs; VERIFIED_BY tests/upgrade/guild-lessons.test.mjs
 # DAG Node:    none
 # Intent:      State who the eight guildmasters are, how the server recognises one, and what it deliberately does not recognise.
 # ───────────────────────────────────────────────────────────────
@@ -92,6 +92,35 @@ since is kept. Down restores `OCN seat: <seat>` only where the name is still the
 Both directions are idempotent and read no environment. The map is a frozen literal snapshot
 of the registry, and the parity test proves the two agree.
 
+## Direct publishing and withdrawal
+
+Owner decision (1) of 2026-10-31: guildmasters publish directly, with an audit trail and owner/admin
+moderation. A seat recognised by `seatOf` that holds editor or higher role in the workspace may
+publish its own work without an administrator:
+
+| What | How it publishes | Withdrawal leaves it |
+|------|------------------|----------------------|
+| Daily Edition | `edition.publish` on its own draft (amends TRUST-001 R3 for guildmaster authors only) | `withdrawn` |
+| Social content | `approved` with the four checks and a note, then `published` with an HTTPS URL, on its own content | `withdrawn` |
+| Forum topic or reply | open or visible at once, even with moderation on | `hidden`, with the note |
+| Wiki page | `wiki.transition` to `published` on its own draft | `archived` |
+| Guild lesson | `lesson.publish` on its own draft (see `docs/classrooms.md`) | `withdrawn` |
+
+It cannot publish another member's record, archive or unpublish anything, or moderate. A
+guildmaster viewer cannot publish at all, and people are unaffected: a non-guildmaster editor still
+cannot publish an edition. Every guildmaster publication writes exactly one row in the locked
+`guild_publications` collection, in the publishing transaction: account id, seat, persona, kind,
+target, title and a SHA-256 digest of the published fields. A replayed retry key writes none. A
+guildmaster seat holding admin role is recorded the same way; people's administrator publications
+are not.
+
+Owners and administrators see the rows on the **Guild publications** tab in Administration and
+withdraw one with a reason (`publication.withdraw`). Withdrawal is audited by its own `withdrawn`
+row and deletes nothing. Withdrawn editions, content and lessons are terminal: they cannot be
+edited or republished. Without `1792400000_guild_publications.js` a guildmaster publication
+answers 503 and changes nothing, and every human path keeps working. The API contract is in
+`docs/workspace-administration.md` and `docs/claim-authority.md`.
+
 ## What is not a guildmaster
 
 The persona seats above are the only guildmaster identities this SRS recognises.
@@ -112,8 +141,12 @@ seat renamed by 1792200000. This is cosmetic. Identity is decided by the email r
 
 ## Verification boundary
 
-`guildmaster-registry.test.mjs` runs the real hook and migration sources against storage doubles.
-It proves the decision logic and the parity, not native behaviour. The guard, `seatOf` and the
-display migration were also exercised on a disposable loopback PocketBase 0.39.8. Committed native
-coverage lands with the classroom badge in `tests/upgrade/test_classroom_native.py`. Nothing here
-is deployed or enabled on staging or production.
+`guildmaster-registry.test.mjs`, `guild-publishing.test.mjs` and `guild-lessons.test.mjs` run the
+real hook and migration sources against storage doubles. They prove the decision logic and the
+parity, not native behaviour. The guard, `seatOf` and the display migration were also exercised on a
+disposable loopback PocketBase 0.39.8. Committed native coverage is in
+`tests/upgrade/test_classroom_native.py`: the classroom badge, and a seat that publishes a guild
+lesson which the host shares and starts. Those cases pass on 0.39.8 only with the temporary copy of
+`metrics.pb.js` rewritten to the positional `Middleware` form; the committed hook stops 0.39.8 at
+startup, a defect outside this SRS. Nothing here is deployed or enabled on staging or production,
+and the persona seats cannot sign in until SRS-BUILDANDDO-LIVE-UTILIZATION-001 binds their keys.
