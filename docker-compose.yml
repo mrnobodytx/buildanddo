@@ -102,6 +102,9 @@ services:
       CLOUDFLARE_REALTIME_APP_ID: ${CLOUDFLARE_REALTIME_APP_ID:-}
       CLOUDFLARE_REALTIME_APP_SECRET: ${CLOUDFLARE_REALTIME_APP_SECRET:-}
       BUILDANDDO_CLASSROOM_PUBLISHERS: ${BUILDANDDO_CLASSROOM_PUBLISHERS:-}
+      # Weekly guild class rota (pb_hooks/guild-classes.pb.js). Empty disables the cron;
+      # a workspace id schedules seated guildmaster hosts' classes there.
+      BUILDANDDO_GUILD_CLASS_WORKSPACE: ${BUILDANDDO_GUILD_CLASS_WORKSPACE:-}
       # Domain verification DNS-over-HTTPS resolver (https only); empty uses Cloudflare's.
       BUILDANDDO_DOH_URL: ${BUILDANDDO_DOH_URL:-}
     ports:

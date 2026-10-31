@@ -1,16 +1,16 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/src/pages/workspace/AdminPage.jsx
 // Stage:       07_BUILD
-// SRS:         SRS-BUILDANDDO-UPGRADE-001
+// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-GUILDMASTER-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-GUILDMASTER-001
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-15
-// Depends:     apps/web/src/hooks/useWorkspaceControl.js, apps/web/src/components/workspace/ControlPrimitives.jsx
+// Depends:     apps/web/src/hooks/useWorkspaceControl.js, apps/web/src/components/workspace/ControlPrimitives.jsx, apps/web/src/components/workspace/GuildPublicationsPanel.jsx
 // EnumType:    Widget
-// EnumEdges:   CONSUMES apps/web/src/hooks/useWorkspaceControl.js; CONSUMES apps/web/src/components/workspace/ControlPrimitives.jsx
+// EnumEdges:   CONSUMES apps/web/src/hooks/useWorkspaceControl.js; CONSUMES apps/web/src/components/workspace/ControlPrimitives.jsx; CONSUMES apps/web/src/components/workspace/GuildPublicationsPanel.jsx
 // DAG Node:    none
 // Intent:      Let authorized workspace administrators manage profile, members and community settings with visible audit and conflict recovery.
 // ───────────────────────────────────────────────────────────────
@@ -23,6 +23,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { PageHeader } from '@/components/workspace/workspaceHelpers';
 import { ControlState, ControlFeedback, PageControls, controlInput, dateLabel, focusPendingRetry } from '@/components/workspace/ControlPrimitives';
+import GuildPublicationsPanel from '@/components/workspace/GuildPublicationsPanel';
 import { useAuth } from '@/contexts/AuthContext';
 import { useWorkspace } from '@/contexts/WorkspaceContext';
 import { useWorkspaceAccess } from '@/contexts/WorkspaceAccessContext';
@@ -114,12 +115,14 @@ function Members({ control, onPage }) {
 }
 
 function AdminDesk({ control, membersPage, auditPage, tab, setTab }) {
+    const { active } = useWorkspace(); const admin = ['owner', 'admin'].includes(control.data.role);
     return <div className="space-y-5">
         <div className="flex flex-wrap items-center justify-between gap-3"><p className="text-sm">Your role: <strong>{roleNames[control.data.role]}</strong></p>
             <Link to="/app/integrations" className="text-sm underline underline-offset-4">Manage sinks and extensions</Link></div>
         <ControlFeedback control={control} />
         <Tabs value={tab} onValueChange={setTab}><TabsList className="h-auto flex-wrap justify-start">
             <TabsTrigger value="profile">Profile & features</TabsTrigger><TabsTrigger value="members">Members & roles</TabsTrigger><TabsTrigger value="audit">Audit history</TabsTrigger>
+            {admin && <TabsTrigger value="guild">Guild publications</TabsTrigger>}
         </TabsList>
             <TabsContent value="profile" className="mt-5"><SettingsForm control={control} /></TabsContent>
             <TabsContent value="members" className="mt-5"><Members control={control} onPage={membersPage} /></TabsContent>
@@ -133,6 +136,7 @@ function AdminDesk({ control, membersPage, auditPage, tab, setTab }) {
                 {!control.data.audit.items.length && <p className="text-sm text-muted-foreground">No audit entries on this page.</p>}
                 <PageControls label="Audit" page={control.data.audit.page} hasMore={control.data.audit.has_more} onPage={auditPage} disabled={control.saving || control.uncertain} />
             </TabsContent>
+            {admin && <TabsContent value="guild" className="mt-5"><GuildPublicationsPanel workspaceId={active?.id} canAdmin={admin} /></TabsContent>}
         </Tabs>
     </div>;
 }

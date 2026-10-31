@@ -1,20 +1,20 @@
 // --- CGRF Header ------------------------------------------------
 // File:        tests/upgrade/classroom-presence.test.mjs
 // Stage:       08_TEST
-// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-PRESENCE-001
+// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-PRESENCE-001, SRS-BUILDANDDO-GUILDMASTER-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-PRESENCE-001
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-PRESENCE-001, VCC-BUILDANDDO-GUILDMASTER-001
 // Seat:        BITS-CODEGEN, C-ONE (the SFU echo outcomes)
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-18
-// Depends:     tests/upgrade/admin-fixture.mjs, tests/upgrade/classroom-media-fixture.mjs, apps/pocketbase/pb_hooks/classroom-presence.pb.js
+// Depends:     tests/upgrade/admin-fixture.mjs, tests/upgrade/classroom-media-fixture.mjs, apps/pocketbase/pb_hooks/classroom-presence.pb.js, apps/pocketbase/pb_hooks/guildmasters.js
 // EnumType:    Test
 // EnumEdges:   CONSUMES tests/upgrade/admin-fixture.mjs; CONSUMES tests/upgrade/classroom-media-fixture.mjs;
-//              VALIDATES apps/pocketbase/pb_hooks/classroom-presence.pb.js;
+//              VALIDATES apps/pocketbase/pb_hooks/classroom-presence.pb.js; VALIDATES apps/pocketbase/pb_hooks/guildmasters.js;
 //              VALIDATES apps/pocketbase/pb_migrations/1790600000_classroom_presence.js
 // DAG Node:    none
-// Intent:      Exercise presence through bound session and publication sources while rejecting stale or foreign authority and retaining expiry, privacy and migration regressions.
+// Intent:      Exercise presence through bound session and publication sources while rejecting stale or foreign authority, refusing a guildmaster badge to anyone but that guildmaster's seat, and retaining expiry, privacy and migration regressions.
 // ----------------------------------------------------------------
 // The shared fixture executes the registered routes and native command sources.
 // Storage, configuration and HTTP are explicit local doubles, not live providers
@@ -126,10 +126,22 @@ test('empty, oversized or malformed advertised tracks are refused rather than st
     assert.equal(f.data.classroom_presence.length, 0);
 });
 
-test('context, bare track strings and gm:forge work for an authorized attending host', () => {
-    const f = mediaFixture({ publishers: 'forge@citadel-nexus.com' });
-    f.seed('users', { id: 'forge', email: 'forge@citadel-nexus.com', name: 'Forge' });
-    f.seed('workspace_members', { workspace: 'ws1', user: 'forge', role: 'editor' });
+// A guildmaster persona seat, as the seat migrations create it: a verified account flagged
+// ocn_seat whose email is <seat>@ocn.buildanddo.invalid (guildmasters.seatOf). The account name is
+// deliberately not the persona name, so a canonical display_name is the server's, not the row's.
+// Fixture-only: no credential, and the reserved .invalid domain cannot receive mail.
+const SEAT_DOMAIN = '@ocn.buildanddo.invalid';
+function seat(f, id, { email = `${id}${SEAT_DOMAIN}`, name = `OCN seat: ${id}`, verified = true, ocn_seat = true } = {}) {
+    f.seed('users', { id, email, name, verified, ocn_seat });
+    f.seed('workspace_members', { workspace: 'ws1', user: id, role: 'editor' });
+    f.env.BUILDANDDO_CLASSROOM_PUBLISHERS = `${f.env.BUILDANDDO_CLASSROOM_PUBLISHERS},${email}`;
+    return id;
+}
+const BADGE_REFUSAL = /Only a guildmaster's own seat may carry its badge/;
+
+test('context, bare track strings and gm:forge work for the attending forge seat', () => {
+    const f = mediaFixture({ publishers: '' });
+    seat(f, 'forge');
     const room = f.start({ actor: 'forge' }), body = published(f, room, 'forge', 'gm:forge/voice');
     const wrote = advertise(f, { context: `CLASSROOM:${room}`, session_id: body.session_id,
         tracks: ['gm:forge/voice'], persona_id: 'gm:forge', expires_at: future(),
@@ -139,12 +151,186 @@ test('context, bare track strings and gm:forge work for an authorized attending 
     assert.equal(row.room, room);
     assert.equal(row.persona_id, 'gm-forge', 'gm:forge and gm-forge must store as one spelling');
     assert.equal(row.role, 'guildmaster', 'a persona row defaults to guildmaster with no role in the body');
+    assert.equal(row.display_name, 'Forge', 'the badge carries the canonical name, not the account name');
     assert.deepEqual(row.tracks, [{ trackName: 'gm:forge/voice', kind: 'audio' }]);
     assert.equal(row.access_basis, 'host');
     const listed = read(f, `classroom:${room}`, 'forge');
     assert.equal(listed.status, 200);
     assert.equal(listed.body.items[0].manifest_id, 'fixture-manifest');
     assert.equal(listed.body.items[0].capsule_digest, 'a'.repeat(64));
+    assert.equal(listed.body.items[0].persona_id, 'gm-forge');
+    assert.equal(listed.body.items[0].display_name, 'Forge');
+    assert.equal(listed.body.items[0].role, 'guildmaster');
+});
+
+test('an attending human host or admin cannot wear a guildmaster badge, whatever they are called', () => {
+    const f = mediaFixture(), room = f.start();
+    f.data.users.find((row) => row.id === 'owner').name = 'Forge';
+    f.command('room.join', { id: room }, { actor: 'admin' });
+    const host = published(f, room), admin = published(f, room, 'admin', 'seat:admin/mic');
+    const before = f.requests.length;
+    for (const [actor, body] of [['owner', host], ['admin', admin]]) {
+        for (const claim of [{ persona_id: 'gm-forge' }, { persona_id: 'gm:forge', role: 'guildmaster' }, { role: 'guildmaster' },
+            { persona_id: 'Forge' }, { persona_id: 'gm-director-nexus' }, { persona_id: 'gm-zeta' }]) {
+            const denied = advertise(f, { ...body, ...claim }, actor);
+            assert.equal(denied.status, 403, `${actor} ${JSON.stringify(claim)}`);
+            assert.match(denied.body.message, BADGE_REFUSAL);
+        }
+    }
+    assert.deepEqual(f.data.classroom_presence, [], 'a refused badge stores nothing');
+    assert.equal(f.requests.length, before, 'a refused badge contacts no provider');
+    // The same sessions are served as the people they are once no badge is claimed.
+    assert.equal(advertise(f, host).status, 200);
+    assert.equal(advertise(f, { ...admin, role: 'assistant' }, 'admin').status, 200);
+    assert.deepEqual(f.data.classroom_presence.map((row) => [row.publisher, row.role, row.persona_id, row.display_name]),
+        [['owner', 'teacher', '', 'Forge'], ['admin', 'assistant', '', 'Classroom publisher']]);
+    assert.equal(f.requests.length, before);
+});
+
+test('a guildmaster seat cannot wear another guildmaster badge or an unknown one', () => {
+    const f = mediaFixture();
+    seat(f, 'forge');
+    const room = f.start({ actor: 'forge' }), body = published(f, room, 'forge', 'gm:forge/voice');
+    const before = f.requests.length;
+    for (const persona_id of ['gm-oracle', 'gm:oracle', 'Oracle', 'gm-director-nexus', 'director', 'gm-forgery', 'gm-zeta']) {
+        const denied = advertise(f, { ...body, persona_id }, 'forge');
+        assert.equal(denied.status, 403, persona_id);
+        assert.match(denied.body.message, BADGE_REFUSAL);
+        assert.equal(advertise(f, { ...body, persona_id, role: 'guildmaster' }, 'forge').status, 403, persona_id);
+    }
+    assert.deepEqual(f.data.classroom_presence, []);
+    assert.equal(f.requests.length, before);
+    for (const persona_id of ['gm-forge', 'gm:forge', 'GM-Forge', 'gm-builder-forge', 'forge']) {
+        const wrote = advertise(f, { ...body, persona_id }, 'forge');
+        assert.equal(wrote.status, 200, persona_id);
+        assert.deepEqual([f.data.classroom_presence.length, f.data.classroom_presence[0].persona_id], [1, 'gm-forge'], persona_id);
+    }
+});
+
+test('the director seat is badged as Director Nexus from gm:director, its slug or no persona at all', () => {
+    const f = mediaFixture();
+    seat(f, 'director');
+    const room = f.start({ actor: 'director' }), body = published(f, room, 'director', 'gm:director/voice');
+    for (const claim of [{ persona_id: 'gm:director' }, {}, { role: 'guildmaster' }, { persona_id: 'gm-director-nexus' },
+        { persona_id: 'gm-ent-director' }, { persona_id: 'Director Nexus', role: 'guildmaster' }]) {
+        const wrote = advertise(f, { ...body, ...claim }, 'director');
+        assert.equal(wrote.status, 200, JSON.stringify(claim));
+        assert.equal(f.data.classroom_presence.length, 1);
+        const row = f.data.classroom_presence[0];
+        assert.deepEqual([row.persona_id, row.role, row.display_name], ['gm-director-nexus', 'guildmaster', 'Director Nexus'],
+            JSON.stringify(claim));
+        const item = read(f, room, 'director').body.items[0];
+        assert.deepEqual([item.persona_id, item.role, item.display_name], ['gm-director-nexus', 'guildmaster', 'Director Nexus']);
+    }
+    assert.equal(advertise(f, { ...body, persona_id: 'gm-forge' }, 'director').status, 403);
+    assert.equal(f.data.classroom_presence[0].persona_id, 'gm-director-nexus', 'a refused claim leaves the stored row');
+});
+
+test('a guildmaster seat may choose to advertise as a teacher or assistant, without the badge', () => {
+    const f = mediaFixture();
+    seat(f, 'forge');
+    const room = f.start({ actor: 'forge' }), body = published(f, room, 'forge', 'gm:forge/voice');
+    for (const role of ['teacher', 'assistant']) {
+        const wrote = advertise(f, { ...body, role }, 'forge');
+        assert.equal(wrote.status, 200, role);
+        const row = f.data.classroom_presence[0];
+        assert.deepEqual([row.persona_id, row.role, row.display_name], ['', role, 'OCN seat: forge'], role);
+        const item = read(f, room, 'forge').body.items[0];
+        assert.deepEqual([item.persona_id, item.role, item.display_name], ['', role, 'OCN seat: forge'], role);
+        // A persona still requires the guildmaster role, before any account is read.
+        assert.equal(advertise(f, { ...body, role, persona_id: 'gm-forge' }, 'forge').status, 400, role);
+    }
+});
+
+for (const flaw of ['ocn_seat false', 'verified false', 'non-guildmaster seat', 'foreign domain']) {
+    test(`an account that is not a guildmaster seat (${flaw}) gets no badge but may still advertise`, () => {
+        const f = mediaFixture();
+        const options = flaw === 'ocn_seat false' ? { ocn_seat: false } : flaw === 'verified false' ? { verified: false }
+            : flaw === 'non-guildmaster seat' ? { email: `c-one${SEAT_DOMAIN}` } : { email: 'forge@ocn.buildanddo.example' };
+        seat(f, 'forge', options);
+        const room = f.start({ actor: 'forge' }), body = published(f, room, 'forge', 'gm:forge/voice');
+        const before = f.requests.length;
+        for (const claim of [{ persona_id: 'gm-forge' }, { role: 'guildmaster' }, { persona_id: 'gm:forge', role: 'guildmaster' }]) {
+            const denied = advertise(f, { ...body, ...claim }, 'forge');
+            assert.equal(denied.status, 403, JSON.stringify(claim));
+            assert.match(denied.body.message, BADGE_REFUSAL);
+        }
+        assert.deepEqual(f.data.classroom_presence, []);
+        assert.equal(f.requests.length, before);
+        const wrote = advertise(f, body, 'forge');
+        assert.equal(wrote.status, 200, JSON.stringify(wrote.body));
+        const row = f.data.classroom_presence[0];
+        assert.deepEqual([row.persona_id, row.role, row.display_name], ['', 'teacher', 'OCN seat: forge']);
+    });
+}
+
+test('a legacy badge on a row whose publisher is not that seat is removed on read, and the row is left alone', () => {
+    const f = mediaFixture(), room = f.start();
+    f.command('room.join', { id: room }, { actor: 'admin' });
+    assert.equal(advertise(f, published(f, room)).status, 200);
+    assert.equal(advertise(f, published(f, room, 'admin', 'seat:admin/mic'), 'admin').status, 200);
+    // As the route stored them before the badge rule: a persona, the guildmaster role, and the
+    // persona as the display name of an account with no name.
+    for (const legacy of [{ persona_id: 'gm-forge', role: 'guildmaster', display_name: 'gm-forge' },
+        { persona_id: '', role: 'guildmaster', display_name: 'Forge' }, { persona_id: 'gm-forge', role: 'teacher', display_name: 'Forge' }]) {
+        for (const row of f.data.classroom_presence) Object.assign(row, legacy);
+        const stored = plain(f.data.classroom_presence);
+        const listed = read(f, room);
+        assert.equal(listed.status, 200);
+        assert.deepEqual(listed.body.items.map((item) => [item.access_basis, item.role, item.persona_id, item.display_name]).sort(),
+            [['host', 'teacher', '', 'Classroom publisher'], ['member', 'assistant', '', 'Classroom publisher']], JSON.stringify(legacy));
+        assert.deepEqual(f.data.classroom_presence, stored, 'a read repairs nothing');
+    }
+});
+
+test('a seat badge is served only while the publisher account is still that guildmaster seat', () => {
+    const f = mediaFixture();
+    seat(f, 'forge');
+    const room = f.start({ actor: 'forge' }), body = published(f, room, 'forge', 'gm:forge/voice');
+    assert.equal(advertise(f, body, 'forge').status, 200);
+    f.command('room.join', { id: room }, { actor: 'viewer' });
+    const shown = () => {
+        const item = read(f, room, 'viewer').body.items[0];
+        return [item.persona_id, item.role, item.display_name];
+    };
+    const row = f.data.classroom_presence[0], account = f.data.users.find((user) => user.id === 'forge');
+    assert.deepEqual(shown(), ['gm-forge', 'guildmaster', 'Forge']);
+    Object.assign(row, { persona_id: 'gm-builder-forge', display_name: 'Impostor' });
+    assert.deepEqual(shown(), ['gm-forge', 'guildmaster', 'Forge'], 'a verified badge is served canonically');
+    Object.assign(row, { persona_id: 'gm-oracle', display_name: 'Oracle' });
+    assert.deepEqual(shown(), ['', 'teacher', 'OCN seat: forge'], 'a seat row naming another guildmaster loses the badge');
+    Object.assign(row, { persona_id: 'gm-forge', display_name: 'Forge' });
+    for (const change of [{ ocn_seat: false }, { verified: false }]) {
+        Object.assign(account, change);
+        assert.deepEqual(shown(), ['', 'teacher', 'OCN seat: forge'], JSON.stringify(change));
+        Object.assign(account, { ocn_seat: true, verified: true });
+        assert.deepEqual(shown(), ['gm-forge', 'guildmaster', 'Forge']);
+    }
+    assert.equal(f.data.classroom_presence[0].display_name, 'Forge');
+});
+
+test('both handlers load the guildmaster registry themselves, because PocketBase isolates each handler', () => {
+    const lines = source(HOOK).split(/\r?\n/);
+    const loads = lines.filter((line) => line.includes('require(`${__hooks}/guildmasters.js`)'));
+    assert.equal(loads.length, 2, 'one load in the POST handler and one in the GET handler');
+    assert.ok(loads.every((line) => /^\s{4,}const guildmasters = /.test(line)), 'never a file-scope helper');
+    assert.equal(lines.some((line) => /^(const|let|var)\s.*require\(/.test(line)), false);
+});
+
+test('the seat email is never returned, logged or stored by a badged advertisement', () => {
+    const f = mediaFixture({ publishers: '' });
+    seat(f, 'forge');
+    const room = f.start({ actor: 'forge' }), body = published(f, room, 'forge', 'gm:forge/voice');
+    const denied = advertise(f, { ...body, persona_id: 'gm-oracle' }, 'forge');
+    const wrote = advertise(f, body, 'forge');
+    f.command('room.join', { id: room }, { actor: 'viewer' });
+    const listed = read(f, room, 'viewer');
+    assert.deepEqual([denied.status, wrote.status, listed.status], [403, 200, 200]);
+    assert.equal(listed.body.items[0].persona_id, 'gm-forge');
+    for (const value of [denied, wrote, listed, f.logs, f.data.classroom_presence, f.data.classroom_media_sessions]) {
+        assert.equal(JSON.stringify(value).includes(`forge${SEAT_DOMAIN}`), false, 'no seat email may escape');
+        assert.equal(JSON.stringify(value).includes('ocn.buildanddo'), false);
+    }
 });
 
 test('allowlisting alone grants neither attendance nor classroom management', () => {

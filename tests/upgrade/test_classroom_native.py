@@ -1,16 +1,16 @@
 # ─── CGRF Header ───────────────────────────────────────────────
 # File:        tests/upgrade/test_classroom_native.py
 # Stage:       08_TEST
-# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-GUILDMASTER-001
 # CAPS:        pending
 # CK:          pending
-# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-GUILDMASTER-001
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-16
-# Depends:     tests/upgrade/test_dossier_native.py, apps/pocketbase/pb_hooks/classrooms.js, apps/pocketbase/pb_hooks/classroom-media.js, apps/pocketbase/pb_migrations/1791400000_classroom_media_sessions.js
+# Depends:     tests/upgrade/test_dossier_native.py, apps/pocketbase/pb_hooks/classrooms.js, apps/pocketbase/pb_hooks/classroom-media.js, apps/pocketbase/pb_migrations/1791400000_classroom_media_sessions.js, apps/pocketbase/pb_hooks/guildmasters.js, apps/pocketbase/pb_hooks/guild-lessons.js, apps/pocketbase/pb_hooks/guild-publishing.js, apps/pocketbase/pb_migrations/1792400000_guild_publications.js, apps/pocketbase/pb_migrations/1792400002_guild_lessons.js, apps/pocketbase/pb_hooks/guild-classes.js, apps/pocketbase/pb_migrations/1792500000_guild_class_schedule.js, libs/guildmasters/rota.py
 # EnumType:    Test
-# EnumEdges:   CONSUMES tests/upgrade/test_dossier_native.py; VALIDATES apps/pocketbase/pb_hooks/classrooms.js; VALIDATES apps/pocketbase/pb_hooks/classroom-media.js; VALIDATES apps/pocketbase/pb_migrations/1791400000_classroom_media_sessions.js
+# EnumEdges:   CONSUMES tests/upgrade/test_dossier_native.py; VALIDATES apps/pocketbase/pb_hooks/classrooms.js; VALIDATES apps/pocketbase/pb_hooks/classroom-media.js; VALIDATES apps/pocketbase/pb_migrations/1791400000_classroom_media_sessions.js; VALIDATES apps/pocketbase/pb_hooks/guildmasters.js; VALIDATES apps/pocketbase/pb_hooks/guild-lessons.js; VALIDATES apps/pocketbase/pb_hooks/guild-publishing.js; VALIDATES apps/pocketbase/pb_migrations/1792400000_guild_publications.js; VALIDATES apps/pocketbase/pb_migrations/1792400002_guild_lessons.js; VALIDATES apps/pocketbase/pb_hooks/guild-classes.js; VALIDATES apps/pocketbase/pb_migrations/1792500000_guild_class_schedule.js; CONSUMES libs/guildmasters/rota.py
 # DAG Node:    none
 # Intent:      Require native classroom authentication, date serialization, concurrent receipt recovery and reversible schema before accepting an installed backend.
 # ───────────────────────────────────────────────────────────────
@@ -32,6 +32,7 @@ import sqlite3
 import subprocess
 import sys
 import tempfile
+import time
 from typing import Any
 import unittest
 
@@ -39,6 +40,7 @@ ROOT = Path(__file__).resolve().parents[2]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 from tests.upgrade.test_dossier_native import NO_WINDOW, NativeServer  # noqa: E402
+from libs.guildmasters import rota as guild_rota  # noqa: E402
 
 BINARY = os.environ.get("BUILDANDDO_TEST_POCKETBASE", "")
 WORKSPACE = "workspacealpha1"
@@ -54,6 +56,13 @@ MIGRATIONS = (
     "1791400000_classroom_media_sessions.js",
     "1791400001_broadcast_classroom_lessons.js",
     "1791500002_authority_repair_lessons.js",
+    # Guild lessons a host shares with room.material, and the audit row their publication writes.
+    # 1792400001 (the withdrawn editorial status) needs the editorial collections this fixture
+    # does not have, and classrooms never read it.
+    "1792400000_guild_publications.js",
+    "1792400002_guild_lessons.js",
+    # The weekly guild class schedule the guild_class_rota cron writes.
+    "1792500000_guild_class_schedule.js",
 )
 HOOKS = (
     "classrooms.pb.js",
@@ -68,7 +77,19 @@ HOOKS = (
     "government-access.js",
     "workflow-policy.js",
     "business-action-policy.js",
+    "guildmasters.js",
+    "guild-lessons.pb.js",
+    "guild-lessons.js",
+    "guild-publishing.js",
+    "guild-rota.js",
+    "guild-classes.js",
+    "guild-classes.pb.js",
 )
+# The one guildmaster persona seat in this fixture, shaped as the seat migrations create it and as
+# guildmasters.seatOf recognises it: verified, flagged ocn_seat, email <seat>@ocn.buildanddo.invalid.
+# Its account name is not the persona name, so a badge's "Forge" comes from the server registry.
+SEAT_ACCOUNT = "accountforge001"
+SEAT_IDENTITY = "forge@ocn.buildanddo.invalid"
 OFFER = {"type": "offer", "sdp": "v=0\r\ns=fixture-only; no media negotiated\r\n"}
 ANSWER = {**OFFER, "type": "answer"}
 SEED = r"""
@@ -79,12 +100,16 @@ migrate((app) => {
     users.authRule = ''; users.authAlert = { enabled: false };
     users.passwordAuth = { enabled: true, identityFields: ['email'] };
     if (!users.fields.getByName('name')) users.fields.add(new TextField({ name: 'name', max: 120 }));
+    if (!users.fields.getByName('ocn_seat')) users.fields.add(new BoolField({ name: 'ocn_seat' }));
     app.save(users);
     for (const [id, name] of [['accountalice001', 'alice'], ['accountbravo001', 'bravo'], ['accountview0001', 'viewer'], ['accountguest001', 'guest']]) {
         const record = new Record(users); record.id = id; record.set('name', name);
         record.set('email', name + '@fixture.invalid'); record.set('verified', true);
         record.setPassword('local-fixture-password-only'); app.save(record);
     }
+    const seat = new Record(users); seat.id = 'accountforge001'; seat.set('name', 'OCN seat: forge');
+    seat.set('email', 'forge@ocn.buildanddo.invalid'); seat.set('verified', true); seat.set('ocn_seat', true);
+    seat.setPassword('local-fixture-password-only'); app.save(seat);
     const relation = (name, target) => ({ name, type: 'relation', required: true, maxSelect: 1, collectionId: app.findCollectionByNameOrId(target).id });
     const create = (name, fields, readable = false) => {
         const collection = new Collection({ name, type: 'base', listRule: readable ? '@request.auth.id != ""' : null,
@@ -95,7 +120,7 @@ migrate((app) => {
     const workspace = new Record(workspaces); workspace.id = 'workspacealpha1'; workspace.set('owner', 'accountalice001'); app.save(workspace);
     const foreign = new Record(workspaces); foreign.id = 'workspacebravo1'; foreign.set('owner', 'accountguest001'); app.save(foreign);
     const members = create('workspace_members', [relation('workspace', 'workspaces'), relation('user', 'users'), { name: 'role', type: 'text' }]);
-    for (const [user, role] of [['accountbravo001', 'editor'], ['accountview0001', 'viewer']]) {
+    for (const [user, role] of [['accountbravo001', 'editor'], ['accountview0001', 'viewer'], ['accountforge001', 'editor']]) {
         const member = new Record(members); member.set('workspace', workspace.id); member.set('user', user); member.set('role', role); app.save(member);
     }
     const tutorials = create('tutorials', [{ name: 'title', type: 'text' }, { name: 'summary', type: 'text' }, { name: 'category', type: 'text' },
@@ -277,6 +302,9 @@ class DiagnosticNativeServer(NativeServer):
             "tutorial_progress",
             "evidence",
             "missions",
+            "guild_lessons",
+            "guild_publications",
+            "guild_classes",
         }
         if name not in allowed:
             raise ValueError("Choose a public synthetic fixture table.")
@@ -306,7 +334,7 @@ class DiagnosticNativeServer(NativeServer):
 class ClassroomServer(DiagnosticNativeServer):
     """Install the complete classroom hooks with real security and no provider I/O."""
 
-    def __init__(self, binary: str) -> None:
+    def __init__(self, binary: str, environment: dict[str, str] | None = None) -> None:
         self.directory = tempfile.TemporaryDirectory(
             prefix="buildanddo-classroom-native-"
         )
@@ -316,7 +344,8 @@ class ClassroomServer(DiagnosticNativeServer):
         self.log = tempfile.TemporaryFile(mode="w+b")
         self.environment = {
             "PATH": os.environ.get("PATH", ""),
-            "BUILDANDDO_CLASSROOM_PUBLISHERS": "alice@fixture.invalid,bravo@fixture.invalid,viewer@fixture.invalid,guest@fixture.invalid",
+            "BUILDANDDO_CLASSROOM_PUBLISHERS": "alice@fixture.invalid,bravo@fixture.invalid,viewer@fixture.invalid,guest@fixture.invalid,"
+            + SEAT_IDENTITY,
             # Windows initializes Winsock from SystemRoot. Without it the child
             # exits before health with "socket: The requested service provider
             # could not be loaded or initialized"; the env stays otherwise restricted.
@@ -325,6 +354,9 @@ class ClassroomServer(DiagnosticNativeServer):
                 if os.name == "nt" and "SystemRoot" in os.environ
                 else {}
             ),
+            # A case may add fixture-only variables, such as the guild class workspace; the
+            # default server sets none of them, so the rota cron stays disabled there.
+            **(environment or {}),
         }
         try:
             hooks = self.root / "hooks"
@@ -378,6 +410,31 @@ class ClassroomServer(DiagnosticNativeServer):
         """Read the fixture-only transport audit containing no SDP or credentials."""
         path = self.root / "fixture-provider-calls.txt"
         return path.read_text().splitlines() if path.exists() else []
+
+    def superuser(self) -> str:
+        """Sign in as the throwaway superuser NativeServer.seed_superuser created for this directory."""
+        status, data = self.request(
+            "POST",
+            "/api/collections/_superusers/auth-with-password",
+            {"identity": "fixture@localhost.invalid", "password": "fixture-local-disposable-instance"},
+        )
+        if status != 200 or not isinstance(data.get("token"), str):
+            raise AssertionError("Fixture superuser authentication failed.")
+        return data["token"]
+
+    def rota_logs(self) -> list[tuple[str, dict[str, Any]]]:
+        """Read only the guild class rota's own log lines (workspace id, week and counts).
+
+        PocketBase writes app logs to auxiliary.db in batches, within a few seconds.
+        """
+        path = self.root / "data/auxiliary.db"
+        if not path.exists():
+            return []
+        with closing(sqlite3.connect(path.as_uri() + "?mode=ro", uri=True)) as database:
+            rows = database.execute(
+                "select message, data from _logs where message like 'guild class rota%' order by created, rowid"
+            ).fetchall()
+        return [(message, json.loads(data or "{}")) for message, data in rows]
 
 
 @unittest.skipUnless(
@@ -1445,6 +1502,363 @@ class NativeClassroomTests(unittest.TestCase):
         self.denied_before_provider(
             "GET", "/api/classroom/presence?room=" + room, None, self.owner
         )
+
+    def pushed_session(self, room: str, token: str, track: str) -> str:
+        """Bind a media session and record one pushed track through the provider double."""
+        session = self.media_session(room, token)
+        status, _ = self.server.request(
+            "POST",
+            "/api/classroom/tracks",
+            {
+                "room": room,
+                "sessionId": session,
+                "action": "push",
+                "sessionDescription": OFFER,
+                "tracks": [
+                    {"location": "local", "mid": "0", "trackName": track, "kind": "audio"}
+                ],
+            },
+            token,
+        )
+        self.assertEqual(status, 200)
+        return session
+
+    def test_native_presence_badge_requires_the_guildmaster_seat(self) -> None:
+        self.server.enable_fixture_provider()
+        status, signed_in = self.server.request(
+            "POST",
+            "/api/collections/users/auth-with-password",
+            {"identity": SEAT_IDENTITY, "password": "local-fixture-password-only"},
+        )
+        self.assertEqual(status, 200, "The synthetic seat account must sign in natively.")
+        seat = str(signed_in["token"])
+
+        # A human host may advertise, but never with a guildmaster badge: refused before any
+        # provider call, and nothing is stored.
+        room = self.live_room()
+        human = self.pushed_session(room, self.owner, "fixture-audio")
+        for claim in (
+            {"persona_id": "gm-forge"},
+            {"persona_id": "gm:forge", "role": "guildmaster"},
+            {"role": "guildmaster"},
+        ):
+            with self.subTest(claim=claim):
+                self.denied_before_provider(
+                    "POST",
+                    "/api/classroom/presence",
+                    {**self.presence_body(room, human), **claim},
+                    self.owner,
+                    (403,),
+                )
+        self.assertEqual(self.server.stored("classroom_presence"), [])
+        status, _ = self.server.request(
+            "POST", "/api/classroom/presence", self.presence_body(room, human), self.owner
+        )
+        self.assertEqual(status, 200)
+        self.assertEqual(
+            [(row["persona_id"], row["role"]) for row in self.server.stored("classroom_presence")],
+            [("", "teacher")],
+        )
+
+        # The forge seat hosts its own class and is badged as itself, canonically, and only as
+        # itself. The write still never contacts the provider.
+        seat_room = self.live_room(seat)
+        session = self.pushed_session(seat_room, seat, "fixture-forge-voice")
+        self.denied_before_provider(
+            "POST",
+            "/api/classroom/presence",
+            {**self.presence_body(seat_room, session, "fixture-forge-voice"), "persona_id": "gm-oracle"},
+            seat,
+            (403,),
+        )
+        before = self.server.provider_calls()
+        status, advertised = self.server.request(
+            "POST",
+            "/api/classroom/presence",
+            {**self.presence_body(seat_room, session, "fixture-forge-voice"), "persona_id": "gm:forge"},
+            seat,
+        )
+        self.assertEqual(status, 200)
+        self.assertEqual(self.server.provider_calls(), before)
+        row = next(
+            row for row in self.server.stored("classroom_presence") if row["id"] == advertised["id"]
+        )
+        self.assertEqual(
+            (row["publisher"], row["persona_id"], row["role"], row["display_name"], row["access_basis"]),
+            (SEAT_ACCOUNT, "gm-forge", "guildmaster", "Forge", "host"),
+        )
+        status, listed = self.server.request(
+            "GET", "/api/classroom/presence?room=" + seat_room, token=seat
+        )
+        self.assertEqual(status, 200)
+        self.assertEqual(
+            [(item["persona_id"], item["role"], item["display_name"]) for item in listed["items"]],
+            [("gm-forge", "guildmaster", "Forge")],
+        )
+        for value in (advertised, listed, self.server.stored("classroom_presence")):
+            self.assertNotIn(SEAT_IDENTITY, json.dumps(value))
+
+        # The badge is re-decided on every read: once the operator clears the seat flag, the
+        # same stored row is served without it, and a new badge claim is refused.
+        self.server.fixture_change(
+            "const seat = app.findRecordById('users', "
+            + json.dumps(SEAT_ACCOUNT)
+            + "); seat.set('ocn_seat', false); app.save(seat);"
+        )
+        status, listed = self.server.request(
+            "GET", "/api/classroom/presence?room=" + seat_room, token=seat
+        )
+        self.assertEqual(status, 200)
+        self.assertEqual(
+            [(item["persona_id"], item["role"], item["display_name"]) for item in listed["items"]],
+            [("", "teacher", "OCN seat: forge")],
+        )
+        self.assertEqual(
+            next(
+                row for row in self.server.stored("classroom_presence") if row["id"] == advertised["id"]
+            )["persona_id"],
+            "gm-forge",
+            "A read repairs nothing.",
+        )
+        self.denied_before_provider(
+            "POST",
+            "/api/classroom/presence",
+            {**self.presence_body(seat_room, session, "fixture-forge-voice"), "persona_id": "gm-forge"},
+            seat,
+            (403,),
+        )
+
+    def guild_lesson_seat(self) -> str:
+        """Install the lesson receipts table and sign the fixture seat in; returns the seat's token."""
+        # guild-lessons.js records retry receipts in workspace_admin_events, which the classroom
+        # fixture otherwise has no use for; give it the locked table the workspace migration creates.
+        self.server.fixture_change(
+            "const relation = (name, target) => ({ name, type: 'relation', required: true, maxSelect: 1,"
+            " collectionId: app.findCollectionByNameOrId(target).id });"
+            " app.save(new Collection({ name: 'workspace_admin_events', type: 'base', listRule: null, viewRule: null,"
+            " createRule: null, updateRule: null, deleteRule: null, fields: [relation('workspace', 'workspaces'),"
+            " relation('actor', 'users'), { name: 'request_key', type: 'text', max: 80 }, { name: 'action', type: 'text', max: 40 },"
+            " { name: 'target', type: 'text', max: 64 }, { name: 'revision', type: 'number' },"
+            " { name: 'command', type: 'json', maxSize: 131072 }, { name: 'result', type: 'json', maxSize: 131072 }] }));"
+        )
+        status, signed_in = self.server.request(
+            "POST",
+            "/api/collections/users/auth-with-password",
+            {"identity": SEAT_IDENTITY, "password": "local-fixture-password-only"},
+        )
+        self.assertEqual(status, 200, "The synthetic seat account must sign in natively.")
+        return str(signed_in["token"])
+
+    def test_native_guild_lesson_limit_is_the_stored_size(self) -> None:
+        # PocketBase checks guild_lessons.lesson (maxSize 30000) against Go's encoding/json output,
+        # which writes <, > and & as six-byte escapes. Material far inside 24000 characters is
+        # refused with its reason before save, and a body of exactly 30000 stored bytes is kept.
+        seat = self.guild_lesson_seat()
+        lessons = f"/api/buildanddo/workspaces/{WORKSPACE}/guild-lessons"
+
+        def body(paragraphs: list[str]) -> dict[str, Any]:
+            return {"schema_version": 1, "sections": [{"heading": "Markup", "paragraphs": paragraphs}]}
+
+        def stored_size(value: dict[str, Any]) -> int:
+            text = json.dumps(value, separators=(",", ":"), ensure_ascii=False)
+            return sum(6 if char in "<>&\u2028\u2029" else len(char.encode("utf-8")) for char in text)
+
+        def save(lesson: dict[str, Any], key: str) -> tuple[int, dict[str, Any]]:
+            payload = {"id": "", "title": "Markup in practice", "summary": "", "lesson": lesson}
+            return self.server.request(
+                "POST", lessons, {"action": "lesson.save", "revision": 0, "request_key": key, "payload": payload}, seat
+            )
+
+        ampersands = body(["&" * 2000] * 3)
+        self.assertLess(len(json.dumps(ampersands)), 24000)
+        status, refused = save(ampersands, "native_guild_lesson_ampersands")
+        self.assertEqual(status, 400, refused)
+        self.assertIn("Keep class material within 30000 stored bytes", refused.get("message", ""))
+        self.assertEqual(self.server.stored("guild_lessons"), [])
+        # 4900 '<' plus ASCII padding reaches the field's size exactly: kept. One byte more is refused.
+        exact = body(["<" * 1000] * 4 + ["<" * 900])
+        exact["sections"][0]["paragraphs"].append("a" * (30000 - stored_size(exact) - 3))
+        self.assertEqual(stored_size(exact), 30000)
+        status, saved = save(exact, "native_guild_lesson_exact")
+        self.assertEqual((status, saved.get("status")), (200, "draft"), saved)
+        over = body([*exact["sections"][0]["paragraphs"][:-1], exact["sections"][0]["paragraphs"][-1] + "a"])
+        self.assertEqual(stored_size(over), 30001)
+        status, refused = save(over, "native_guild_lesson_over")
+        self.assertEqual(status, 400, refused)
+        self.assertIn("Keep class material within 30000 stored bytes", refused.get("message", ""))
+        rows = self.server.stored("guild_lessons")
+        self.assertEqual([row["id"] for row in rows], [saved["id"]])
+        self.assertEqual(json.loads(rows[0]["lesson"]) if isinstance(rows[0]["lesson"], str) else rows[0]["lesson"], exact)
+
+    def test_native_guild_lesson_is_published_by_the_seat_then_shared_and_started(self) -> None:
+        seat = self.guild_lesson_seat()
+        lessons = f"/api/buildanddo/workspaces/{WORKSPACE}/guild-lessons"
+        material = {
+            "schema_version": 1,
+            "outcomes": ["Name what was observed before acting."],
+            "sections": [
+                {"heading": "Observe first", "paragraphs": ["Record what the source returned."]},
+                {"heading": "Then act", "steps": ["Choose one bounded step.", "Record what happened."]},
+            ],
+            "references": [{"label": "Workspace guide", "url": "https://example.test/guide"}],
+        }
+        tutorials = self.server.stored("tutorials")
+
+        def lesson(action: str, payload: dict[str, Any], revision: int, token: str, key: str) -> tuple[int, dict[str, Any]]:
+            return self.server.request(
+                "POST", lessons, {"action": action, "revision": revision, "request_key": key, "payload": payload}, token
+            )
+
+        draft = {"id": "", "title": "Evidence before action", "summary": "A weekly guild class.", "lesson": material}
+        # A person cannot author class material, and an answer key is refused before anything is stored.
+        self.assertEqual(lesson("lesson.save", draft, 0, self.editor, "native_guild_lesson_human")[0], 403)
+        keyed = {**draft, "lesson": {**material, "check": {"question": "Which?", "choices": ["A", "B"], "answer": 0}}}
+        self.assertEqual(lesson("lesson.save", keyed, 0, seat, "native_guild_lesson_keyed")[0], 400)
+        self.assertEqual(self.server.stored("guild_lessons"), [])
+        status, saved = lesson("lesson.save", draft, 0, seat, "native_guild_lesson_save")
+        self.assertEqual((status, saved["status"], saved["revision"]), (200, "draft", 1), saved)
+        identifier = saved["id"]
+        status, published = lesson("lesson.publish", {"id": identifier}, 1, seat, "native_guild_lesson_publish")
+        self.assertEqual((status, published["status"]), (200, "published"), published)
+        status, replayed = lesson("lesson.publish", {"id": identifier}, 1, seat, "native_guild_lesson_publish")
+        self.assertEqual((status, replayed["replayed"]), (200, True))
+        rows = self.server.stored("guild_publications")
+        self.assertEqual(
+            [(row["kind"], row["target"], row["actor"], row["actor_seat"], row["persona"], row["action"]) for row in rows],
+            [("guild_lesson", identifier, SEAT_ACCOUNT, "forge", "forge", "published")],
+        )
+        self.assertRegex(rows[0]["content_digest"], r"^[0-9a-f]{64}$")
+        status, listed = self.server.request("GET", lessons, token=self.viewer)
+        self.assertEqual((status, [item["id"] for item in listed["items"]]), (200, [identifier]))
+
+        # The seat hosts a class, prepares it with the lesson, and starts it with no tutorial.
+        status, created = self.create(token=seat)
+        self.assertEqual(status, 200)
+        room = created["id"]
+        share = {"id": room, "material": identifier, "section": 1}
+        self.assertEqual(self.command("room.material", share, 1, self.editor)[0], 403)
+        status, shared = self.command("room.material", share, 1, seat)
+        self.assertEqual((status, shared["revision"]), (200, 2), shared)
+        self.assertEqual(self.command("room.start", {"id": room}, 2, seat)[0], 200)
+        stored = next(row for row in self.server.stored("classroom_rooms") if row["id"] == room)
+        self.assertEqual((stored["status"], stored["tutorial"], stored["material"], stored["section"]), ("live", "", identifier, 1))
+        status, view = self.detail(room, self.viewer)
+        self.assertEqual(status, 200, view)
+        self.assertEqual((view["room"]["material"], view["room"]["tutorial"]), (identifier, ""))
+        self.assertEqual((view["lesson"]["id"], view["lesson"]["source"], view["lesson"]["persona"]), (identifier, "guild_lesson", "forge"))
+        self.assertEqual(view["lesson"]["lesson"]["sections"], material["sections"])
+        self.assertNotRegex(json.dumps(view["lesson"]), r"answer|check")
+        for value in (saved, published, listed, shared, view):
+            self.assertNotIn(SEAT_IDENTITY, json.dumps(value))
+        self.assertEqual(self.server.stored("tutorials"), tutorials)
+
+    def run_rota(self, server: ClassroomServer) -> None:
+        """Run the registered cron through PocketBase's superuser route, which answers before the job ends."""
+        status, _ = server.request("POST", "/api/crons/guild_class_rota", None, server.superuser())
+        self.assertEqual(status, 204)
+
+    def wait_for(self, read: Any, count: int, seconds: float = 10.0) -> list[Any]:
+        """Poll a disposable read until it holds `count` items, then require exactly that many."""
+        deadline = time.monotonic() + seconds
+        while True:
+            items = read()
+            if len(items) >= count or time.monotonic() > deadline:
+                self.assertEqual(len(items), count, items)
+                return items
+            time.sleep(0.1)
+
+    def test_native_guild_class_rota_writes_nothing_without_its_workspace(self) -> None:
+        status, jobs = self.server.request("GET", "/api/crons", None, self.server.superuser())
+        self.assertEqual(status, 200)
+        self.assertIn({"id": "guild_class_rota", "expression": "17 * * * *"}, jobs)
+        self.run_rota(self.server)
+        # A configured run writes within a second and logs within a few; wait past both.
+        deadline = time.monotonic() + 5
+        while time.monotonic() < deadline:
+            self.assertEqual(self.server.stored("guild_classes"), [])
+            time.sleep(0.25)
+        self.assertEqual(self.server.stored("classroom_rooms"), [])
+        self.assertEqual(self.server.rota_logs(), [])
+
+    def test_native_guild_class_rota_schedules_seated_hosts_once(self) -> None:
+        server = ClassroomServer(BINARY, {"BUILDANDDO_GUILD_CLASS_WORKSPACE": WORKSPACE})
+        self.addCleanup(server.close)
+        # Two more persona seats, shaped as the seat migrations create them: director an editor,
+        # oracle only a viewer. The other five have no account here.
+        server.fixture_change(
+            "const users = app.findCollectionByNameOrId('users');"
+            " const members = app.findCollectionByNameOrId('workspace_members');"
+            " for (const [id, seat, role] of [['accountdirect01', 'director', 'editor'], ['accountoracle01', 'oracle', 'viewer']]) {"
+            " const record = new Record(users); record.id = id; record.set('name', 'OCN seat: ' + seat);"
+            " record.set('email', seat + '@ocn.buildanddo.invalid'); record.set('verified', true); record.set('ocn_seat', true);"
+            " record.setPassword('local-fixture-password-only'); app.save(record);"
+            " const member = new Record(members); member.set('workspace', 'workspacealpha1'); member.set('user', id);"
+            " member.set('role', role); app.save(member); }"
+        )
+        accounts = {"forge": SEAT_ACCOUNT, "director": "accountdirect01", "oracle": "accountoracle01"}
+        before = datetime.now(timezone.utc)
+        self.run_rota(server)
+        rows = self.wait_for(lambda: server.stored("guild_classes"), 2)
+        after = datetime.now(timezone.utc)
+        # The coming week by the server clock, from the Python mirror of the rota.
+        plans = {
+            plan["week"]: plan
+            for plan in (guild_rota.week(guild_rota.monday_of(moment) + guild_rota.WEEK) for moment in (before, after))
+        }
+        self.assertEqual(len({row["week"] for row in rows}), 1)
+        plan = plans[rows[0]["week"]]
+        iso = lambda value: str(value).replace(" ", "T")  # noqa: E731
+        expected = [item for item in plan["classes"] if item["host"] in ("forge", "director")]
+        self.assertEqual(
+            sorted((row["slot"], row["host_seat"], row["host"], row["auditor_seat"], row["auditor"], iso(row["starts_at"]),
+                    row["workspace"]) for row in rows),
+            [(item["slot"], item["host"], accounts[item["host"]], item["auditor"], accounts.get(item["auditor"], ""),
+              item["starts_at"], WORKSPACE) for item in expected],
+        )
+        rooms = {room["id"]: room for room in server.stored("classroom_rooms")}
+        self.assertEqual(len(rooms), 2)
+        for row in rows:
+            item = plan["classes"][row["slot"]]
+            room = rooms[row["room"]]
+            self.assertEqual(
+                (room["workspace"], room["host"], room["host_name"], room["kind"], room["status"], room["tutorial"],
+                 room["material"], iso(room["starts_at"]), room["revision"], room["protocol_version"]),
+                (WORKSPACE, accounts[item["host"]], item["name"], "class", "scheduled", "", "", item["starts_at"], 1, 1),
+            )
+            self.assertEqual(room["title"], f"{item['name']} hosts the {item['guild']} guild class")
+        # Exactly one line: a seat with no account or no editor role is a skip reason, not a slot failure.
+        logs = self.wait_for(server.rota_logs, 1)
+        self.assertEqual(logs[0], ("guild class rota scheduled",
+                                   {"workspace": WORKSPACE, "week": plan["week"], "created": 2, "existing": 0, "skipped": 6}))
+        # A second run finds the week scheduled and creates nothing.
+        self.run_rota(server)
+        logs = self.wait_for(server.rota_logs, 2)
+        self.assertEqual(logs[1][1], {"workspace": WORKSPACE, "week": plan["week"], "created": 0, "existing": 2, "skipped": 6})
+        self.assertEqual(server.stored("guild_classes"), rows)
+        self.assertEqual(len(server.stored("classroom_rooms")), 2)
+        # Members read the schedule by persona; an outsider cannot; no email is served.
+        path = f"/api/buildanddo/workspaces/{WORKSPACE}/guild-classes?week={plan['week']}"
+        status, listed = server.request("GET", path, token=server.login("viewer"))
+        self.assertEqual((status, listed["week"], listed["rota"]), (200, plan["week"], plan["classes"]), listed)
+        self.assertEqual(
+            [(item["slot"], item["host_persona"], item["room_status"], item["starts_at"]) for item in listed["scheduled"]],
+            [(item["slot"], item["persona"], "scheduled", item["starts_at"]) for item in expected],
+        )
+        self.assertNotIn("@", json.dumps(listed))
+        self.assertEqual(server.request("GET", path, token=server.login("guest"))[0], 403)
+        # The seat's class is an ordinary scheduled class: only its host may start it, and only with a lesson.
+        forge_room = next(row["room"] for row in rows if row["host_seat"] == "forge")
+        status, signed_in = server.request(
+            "POST", "/api/collections/users/auth-with-password",
+            {"identity": SEAT_IDENTITY, "password": "local-fixture-password-only"},
+        )
+        self.assertEqual(status, 200)
+        start = {"action": "room.start", "payload": {"id": forge_room}, "revision": 1}
+        classrooms = f"/api/buildanddo/workspaces/{WORKSPACE}/classrooms"
+        self.assertEqual(server.request("POST", classrooms, {**start, "request_key": "native_rota_start_editor"},
+                                        server.login("bravo"))[0], 403)
+        self.assertEqual(server.request("POST", classrooms, {**start, "request_key": "native_rota_start_seat01"},
+                                        str(signed_in["token"]))[0], 400)
 
 
 if __name__ == "__main__":

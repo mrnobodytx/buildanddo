@@ -97,6 +97,8 @@ export const RUN_RESULT = {
 export const EDITION_STATUS = {
     draft: { label: 'Draft', tone: 'neutral' },
     published: { label: 'Published', tone: 'teal' },
+    // An owner or admin withdrew a guildmaster's edition (SRS-BUILDANDDO-GUILDMASTER-001); it is retained.
+    withdrawn: { label: 'Withdrawn', tone: 'amber' },
 };
 
 export const DOMAIN_STATUS = {
