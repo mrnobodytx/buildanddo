@@ -30,12 +30,25 @@ const RULES = ['listRule', 'viewRule', 'createRule', 'updateRule', 'deleteRule']
 const FIELDS = ['workspace', 'owner', 'title', 'summary', 'lesson', 'status', 'revision', 'published_at'];
 const KEYLESS = 'Class material carries no answer key or check.';
 const LIMIT = 24000;
+// guild_lessons.lesson is a json field of maxSize 30000 bytes (1792400002), checked against Go's
+// encoding/json output. That writes <, > and & as six-byte \u escapes, as it does U+2028 and U+2029,
+// and every other character as UTF-8, so 24000 characters can need far more than 30000 bytes.
+const STORED = 30000;
 
 const plainObject = (value) => value !== null && typeof value === 'object' && !Array.isArray(value);
 function strings(value, count, max) {
     if (!Array.isArray(value) || value.length > count || !value.every((item) => typeof item === 'string' && item.trim() && item.length <= max))
         access.invalid(`Use at most ${count} non-empty text items of at most ${max} characters.`);
     return value.map((item) => item.trim());
+}
+/** The bytes PocketBase stores for a JSON value, measured as Go's encoding/json writes it. */
+function storedSize(value) {
+    let size = 0;
+    for (const char of JSON.stringify(value)) {
+        const code = char.codePointAt(0);
+        size += '<>&\u2028\u2029'.includes(char) ? 6 : code < 0x80 ? 1 : code < 0x800 ? 2 : code < 0x10000 ? 3 : 4;
+    }
+    return size;
 }
 function httpsUrl(value) {
     return typeof value === 'string' && value.length <= 2048 &&
@@ -68,6 +81,9 @@ function body(value) {
         });
     }
     if (access.canonical(result).length > LIMIT) access.invalid(`Keep class material within ${LIMIT} characters.`);
+    // Refused here with its reason rather than at save, where the field limit is a generic 400.
+    if (storedSize(result) > STORED)
+        access.invalid(`Keep class material within ${STORED} stored bytes: each <, > or & is stored as six bytes, and a character outside ASCII as two to four.`);
     return result;
 }
 

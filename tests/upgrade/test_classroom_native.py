@@ -1628,7 +1628,8 @@ class NativeClassroomTests(unittest.TestCase):
             (403,),
         )
 
-    def test_native_guild_lesson_is_published_by_the_seat_then_shared_and_started(self) -> None:
+    def guild_lesson_seat(self) -> str:
+        """Install the lesson receipts table and sign the fixture seat in; returns the seat's token."""
         # guild-lessons.js records retry receipts in workspace_admin_events, which the classroom
         # fixture otherwise has no use for; give it the locked table the workspace migration creates.
         self.server.fixture_change(
@@ -1646,7 +1647,51 @@ class NativeClassroomTests(unittest.TestCase):
             {"identity": SEAT_IDENTITY, "password": "local-fixture-password-only"},
         )
         self.assertEqual(status, 200, "The synthetic seat account must sign in natively.")
-        seat = str(signed_in["token"])
+        return str(signed_in["token"])
+
+    def test_native_guild_lesson_limit_is_the_stored_size(self) -> None:
+        # PocketBase checks guild_lessons.lesson (maxSize 30000) against Go's encoding/json output,
+        # which writes <, > and & as six-byte escapes. Material far inside 24000 characters is
+        # refused with its reason before save, and a body of exactly 30000 stored bytes is kept.
+        seat = self.guild_lesson_seat()
+        lessons = f"/api/buildanddo/workspaces/{WORKSPACE}/guild-lessons"
+
+        def body(paragraphs: list[str]) -> dict[str, Any]:
+            return {"schema_version": 1, "sections": [{"heading": "Markup", "paragraphs": paragraphs}]}
+
+        def stored_size(value: dict[str, Any]) -> int:
+            text = json.dumps(value, separators=(",", ":"), ensure_ascii=False)
+            return sum(6 if char in "<>&\u2028\u2029" else len(char.encode("utf-8")) for char in text)
+
+        def save(lesson: dict[str, Any], key: str) -> tuple[int, dict[str, Any]]:
+            payload = {"id": "", "title": "Markup in practice", "summary": "", "lesson": lesson}
+            return self.server.request(
+                "POST", lessons, {"action": "lesson.save", "revision": 0, "request_key": key, "payload": payload}, seat
+            )
+
+        ampersands = body(["&" * 2000] * 3)
+        self.assertLess(len(json.dumps(ampersands)), 24000)
+        status, refused = save(ampersands, "native_guild_lesson_ampersands")
+        self.assertEqual(status, 400, refused)
+        self.assertIn("Keep class material within 30000 stored bytes", refused.get("message", ""))
+        self.assertEqual(self.server.stored("guild_lessons"), [])
+        # 4900 '<' plus ASCII padding reaches the field's size exactly: kept. One byte more is refused.
+        exact = body(["<" * 1000] * 4 + ["<" * 900])
+        exact["sections"][0]["paragraphs"].append("a" * (30000 - stored_size(exact) - 3))
+        self.assertEqual(stored_size(exact), 30000)
+        status, saved = save(exact, "native_guild_lesson_exact")
+        self.assertEqual((status, saved.get("status")), (200, "draft"), saved)
+        over = body([*exact["sections"][0]["paragraphs"][:-1], exact["sections"][0]["paragraphs"][-1] + "a"])
+        self.assertEqual(stored_size(over), 30001)
+        status, refused = save(over, "native_guild_lesson_over")
+        self.assertEqual(status, 400, refused)
+        self.assertIn("Keep class material within 30000 stored bytes", refused.get("message", ""))
+        rows = self.server.stored("guild_lessons")
+        self.assertEqual([row["id"] for row in rows], [saved["id"]])
+        self.assertEqual(json.loads(rows[0]["lesson"]) if isinstance(rows[0]["lesson"], str) else rows[0]["lesson"], exact)
+
+    def test_native_guild_lesson_is_published_by_the_seat_then_shared_and_started(self) -> None:
+        seat = self.guild_lesson_seat()
         lessons = f"/api/buildanddo/workspaces/{WORKSPACE}/guild-lessons"
         material = {
             "schema_version": 1,

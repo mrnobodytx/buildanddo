@@ -113,6 +113,11 @@ material as a workspace guild lesson (`1792400002_guild_lessons.js`, `guild-less
 guildmaster can teach its weekly class without an installed tutorial. A guild lesson is reading
 material only: `schema_version: 1`, one to twenty `sections` (`heading` plus `paragraphs` and/or
 `steps`), at most ten `outcomes` and at most twelve HTTPS `references`, within 24,000 characters.
+It must also fit the `lesson` field's 30,000 bytes as PocketBase stores them. Go's JSON encoder writes
+each `<`, `>` and `&` (and U+2028, U+2029) as a six-byte escape and other non-ASCII characters as two to
+four UTF-8 bytes, so code-heavy or non-Latin material can reach that limit well inside 24,000
+characters. The validator refuses such material with 400 "Keep class material within 30000 stored
+bytes…", before saving. Without that check, the save would fail with PocketBase's generic error.
 A `check`, `answer`, `exercise`, `explanation` or any other key is refused with 400 ("Class material
 carries no answer key or check."). Guild lessons never read or write the tutorials catalogue, and
 graded learning stays with `tutorial-learning.js`.

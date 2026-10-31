@@ -77,6 +77,31 @@ test('class material refuses answer keys, checks, exercises, explanations, unkno
     assert.deepEqual(f.data, before);
 });
 
+test('class material is measured as PocketBase stores it, so escaped and non-ASCII text cannot pass the validator and fail at save', () => {
+    const f = lessonFixture();
+    const { body } = f.load('guild-lessons.js');
+    const of = (text, count) => ({ schema_version: 1, sections: [{ heading: 'Markup', paragraphs: Array(count).fill(text) }] });
+    // Go's encoding/json writes <, > and & as six-byte \u escapes, U+2028 and U+2029 too, and other
+    // text as UTF-8. Each body below is far inside 24000 characters but over the field's 30000 bytes.
+    const sample = 'if [ -f a ] && [ -f b ]; then echo \'<div class="x">a &amp; b</div>\' > out.html; fi ';
+    const code = (count) => of(sample.repeat(23).slice(0, 1990).trim(), count);
+    const before = plain(f.data);
+    for (const [label, oversized] of [['&', of('&'.repeat(2000), 3)], ['<', of('<'.repeat(1000), 5)], ['code', code(11)],
+        ['CJK', of('中'.repeat(2000), 6)], ['emoji', of('\u{1F9F1}'.repeat(1000), 8)], ['separator', of('a '.repeat(1000), 6)]]) {
+        assert.ok(JSON.stringify(oversized).length < 24000, label);
+        assert.throws(() => body(oversized), /Keep class material within 30000 stored bytes/, label);
+        denied(() => f.save({ lesson: oversized }), 400);
+    }
+    assert.deepEqual(f.data, before);
+    // The same kinds of text that fit the stored size are kept unchanged.
+    for (const fitting of [of('<'.repeat(1000), 4), code(6), of('中'.repeat(2000), 4), of('\u{1F9F1}'.repeat(1000), 7)]) {
+        assert.deepEqual(plain(body(fitting)), fitting);
+        assert.equal(f.save({ lesson: fitting }).status, 'draft');
+    }
+    // The character limit still applies to plain text that would fit the field.
+    assert.throws(() => body(of('z'.repeat(1990), 13)), /within 24000 characters/);
+});
+
 test('only a guildmaster seat with editor role authors guild lessons, edits only its own drafts and publishes once', () => {
     const f = lessonFixture();
     const tutorials = plain(f.data.tutorials);
