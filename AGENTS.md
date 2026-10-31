@@ -156,8 +156,10 @@ Rules that make the protocol worth having:
 - **A handoff is not a push.** It records the request; the cross-seat artefact
   still goes in `.bits/handoffs/<DATE>-<FROM>-<TO>.md`.
 - **The server stamps the speaker.** A browser event is `actor_type: human`
-  with `seat` = the signed-in account id; anything else is refused
-  (SRS-BUILDANDDO-TRUST-001). Agent seats publish through the server.
+  with `seat` = the signed-in account id. An authenticated guildmaster seat's
+  report is stamped `actor_type: agent` with its persona, from the stored seat
+  account (SRS-BUILDANDDO-GUILDMASTER-001). Anything else is refused
+  (SRS-BUILDANDDO-TRUST-001).
 - Seat events stay on the public plane inside PocketBase. Bridging them to
   `citadel.bits.*` on NATS is private-stack work — write a handoff and stop.
 

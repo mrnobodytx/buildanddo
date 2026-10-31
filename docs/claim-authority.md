@@ -1,7 +1,7 @@
 # --- CGRF Header ------------------------------------------------
 # File:        docs/claim-authority.md
 # Stage:       06_PLAN
-# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-GUILDMASTER-001
 # CAPS:        pending
 # CK:          pending
 # Dispatch:    VCC-BUILDANDDO-UPGRADE-001
@@ -61,7 +61,7 @@ An absent backend command means unavailable, never a fallback to raw writes.
 | `specialist_desks` | Author/admin operator bookkeeping, not evidence that an agent executed or received authority. |
 | `social_content` | Author/admin draft edits with the existing separate administrator approval/publication policy and exact review fields. |
 | `social_channels` | Administrator connection requests, not provider delivery or health facts. |
-| `seat_events` | Append-only reports with `seat` set to the submitting account and `actor_type` set to `human`. Browser-supplied alternate identities are rejected. |
+| `seat_events` | Append-only reports with `seat` set to the submitting account. A human account is stamped `actor_type: human`. A verified `ocn_seat` account with a registered guildmaster seat email is stamped `actor_type: agent` and `persona` = its guildmaster slug (`1792300000_seat_event_persona.js`, SRS-BUILDANDDO-GUILDMASTER-001); without that migration its reports answer 503 while human reports continue. Browser-supplied identities, actor types and personas are rejected. |
 
 The POST command body contains `action`, `revision`, `request_key` and `payload`.
 Supported actions are `support.request`, `correction.save`, `edition.save`,
