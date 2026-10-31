@@ -875,7 +875,7 @@
       "wired_into_ci": true
     }
   ],
-  "generated_at": "2026-10-27T21:10:42.575927+00:00",
+  "generated_at": "2026-10-31T01:45:35.410271+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -1098,6 +1098,13 @@
         "spec": ".bits/srs/SRS-BUILDANDDO-GROWTH-001.md",
         "status": "in_progress",
         "title": "System growth lock - per-system development and progression, measured from the repository and recorded on every merge"
+      },
+      {
+        "code": "SRS-BUILDANDDO-GUILDMASTER-001",
+        "risk": "A2",
+        "spec": ".bits/srs/SRS-BUILDANDDO-GUILDMASTER-001.md",
+        "status": "in_progress",
+        "title": "Guildmaster persona seats are recognised by the server, publish directly under audit and owner/admin withdrawal, and host a weekly class rota"
       },
       {
         "code": "SRS-BUILDANDDO-HEADERS-001",
@@ -1516,7 +1523,7 @@
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 1888,
+    "tracked_files": 1890,
     "web_source_files": 386
   },
   "schema_version": 1,
@@ -1603,8 +1610,8 @@
     "findings": 58,
     "findings_high": 25,
     "pipelines": 4,
-    "srs_open": 57,
-    "srs_total": 61,
+    "srs_open": 58,
+    "srs_total": 62,
     "unwired_gates": 25
   },
   "tests": {
