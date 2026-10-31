@@ -182,6 +182,18 @@ class CanonTests(unittest.TestCase):
             for needle in needles:
                 self.assertNotIn(needle, rest, f"{path.name} names a machine outside SSH_KEYS")
 
+    def test_this_module_never_reads_the_real_box_ids(self) -> None:
+        # The fleet's SSH_KEYS names real boxes. A test here may only replace it wholesale
+        # (patch.dict with clear=True), never read it, so no real box is paired with a persona at run
+        # time either - a pairing the literal scan above cannot see.
+        tree = ast.parse(Path(__file__).read_text(encoding="utf-8"))
+        replaced = {id(call.args[0]) for call in ast.walk(tree)
+                    if isinstance(call, ast.Call) and ast.unparse(call.func) == "patch.dict" and call.args
+                    and any(k.arg == "clear" and getattr(k.value, "value", None) is True for k in call.keywords)}
+        reads = [node.lineno for node in ast.walk(tree)
+                 if isinstance(node, ast.Attribute) and node.attr == "SSH_KEYS" and id(node) not in replaced]
+        self.assertEqual(reads, [], "read fleet.SSH_KEYS only through patch.dict(..., clear=True)")
+
     def test_neither_script_restates_the_roster(self) -> None:
         for path in (LIVE_SCRIPT, FLEET_SCRIPT):
             tree = ast.parse(path.read_text(encoding="utf-8"))
@@ -552,18 +564,25 @@ class FleetRunTests(unittest.TestCase):
         self.assertIn("CONTROL NOT RUN", fleet.table(result))
 
     def test_seats_and_selftest_use_canonical_names(self) -> None:
-        keyed = list(fleet.SSH_KEYS)[:2]
-        records = {keyed[0]: {"guildmaster": "director", "public_ip": address(7)},
-                   keyed[1]: {"guildmaster": "not a persona", "public_ip": address(8, 1)}}
+        # seats() reports only boxes it holds a key for. The keys are replaced with invented box ids,
+        # so no real fleet box is ever paired with a persona in this public test.
+        keys = {"seat-alpha": "invented-key", "seat-bravo": "invented-key"}
+        records = {"seat-alpha": {"guildmaster": "director", "public_ip": address(7)},
+                   "seat-bravo": {"guildmaster": "not a persona", "public_ip": address(8, 1)},
+                   "seat-charlie": {"guildmaster": "oracle", "public_ip": address(9, 2)}}
         hop = Mock(return_value={"stage": "login", "http": 0, "error": "double"})
-        with patch.object(fleet, "fleet", return_value=records), patch.object(fleet, "on_box", hop):
+        with patch.dict(fleet.SSH_KEYS, keys, clear=True), patch.object(fleet, "fleet", return_value=records), \
+                patch.object(fleet, "on_box", hop):
             rows = fleet.seats()["seats"]
             checked = fleet.selftest(DIRECTOR_CLASS)
+        self.assertEqual([row["box"] for row in rows], ["seat-alpha", "seat-bravo"])
+        self.assertEqual(sorted(checked["ssh_keys_present"]), ["seat-alpha", "seat-bravo"])
+        self.assertEqual([call.args[0] for call in hop.call_args_list], ["seat-alpha", "seat-bravo"])
         self.assertEqual([(row["guildmaster"], row["persona"]) for row in rows],
                          [("Director Nexus", "director-nexus"), (None, None)])
         self.assertEqual(checked["guildmasters"], list(ORDER))
         self.assertEqual(checked["rota"]["host"], "director")
-        self.assertEqual(checked["seated"], ["director"])
+        self.assertEqual(checked["seated"], ["oracle", "director"])
         self.assertTrue(checked["reason"].startswith("ROTA_ATTENDEES_UNSEATED"))
 
 
