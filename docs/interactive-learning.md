@@ -58,7 +58,9 @@ from the public data with
 make that file the server's key file and set
 `BUILDANDDO_LESSON_KEYS_SYNTHETIC=1`. Synthetic answers are made up. Never use
 them against a shared, staging or production database; without that variable
-PocketBase refuses a synthetic file.
+PocketBase refuses a synthetic file. Relabelling it does not help: the file's
+integrity seal covers its `synthetic` label, and its placeholder explanations
+mark it as synthetic whatever the label says.
 
 ## Persistent growth
 

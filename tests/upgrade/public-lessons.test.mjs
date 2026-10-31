@@ -210,7 +210,7 @@ test('without a key file the scan is structural and says so, and required keys m
     }
     rmSync(join(output, 'feed.json'));
     // A fixture file relabelled private still carries fixture explanations, so it is still synthetic.
-    for (const keysFile of [writeKeys('synthetic.json', keyFile('synthetic')), writeKeys('relabelled.json', keyFile('private'))]) {
+    for (const keysFile of [writeKeys('synthetic.json', keyFile('synthetic')), writeKeys('relabelled.json', keyFile('relabelled'))]) {
         assert.equal(findLessonAnswers(output, { keysFile }).mode, 'synthetic');
         const error = refusal(() => findLessonAnswers(output, { keysFile, requireKeys: true }));
         assert.equal(refused(error, 1, keysFile) && /synthetic/.test(error.message), true, 'synthetic keys cannot satisfy a requirement');

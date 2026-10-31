@@ -319,7 +319,7 @@ class ExportTests(ToolCase):
         self.assertEqual(set(doc), lk.TOP_FIELDS)
         self.assertEqual((doc["schema_version"], doc["synthetic"]), (lk.SCHEMA, False))
         self.assertEqual(doc["source"], {"kind": "git", "revision": keyed})
-        self.assertEqual(doc["integrity"], lk.integrity(doc["lessons"]))
+        self.assertEqual(doc["integrity"], lk.integrity(doc))
         keys = fixture_keys()
         self.assertTrue(all(doc["lessons"][slug]["answer"] == keys[slug]["answer"]
                             and doc["lessons"][slug]["explanation"] == keys[slug]["explanation"] for slug in ALL_SLUGS),
@@ -384,6 +384,68 @@ class ExportTests(ToolCase):
         self.assertTrue(all(entry["id"].startswith("db") for entry in doc["lessons"].values()))
         self.assertEqual(self.run_tool(repo, "verify", "--keys", str(out), "--require-private")[0], 0)
 
+    def production_like(self, repo: Repo) -> Path:
+        """A database copy as production holds it after migrate up: two lessons seeded stripped, one record missing,
+        and one stored key that differs from the revision's."""
+        database = self.database(repo)
+        connection = sqlite3.connect(database)
+        for slug in ("fixture-broadcast", "fixture-authority"):
+            (text,) = connection.execute("SELECT lesson FROM tutorials WHERE slug = ?", (slug,)).fetchone()
+            lesson = json.loads(text)
+            for member in lk.KEY_MEMBERS:
+                del lesson["check"][member]
+            connection.execute("UPDATE tutorials SET lesson = ? WHERE slug = ?", (json.dumps(lesson), slug))
+        connection.execute("DELETE FROM tutorials WHERE slug = 'fixture-gov-review'")
+        (text,) = connection.execute("SELECT lesson FROM tutorials WHERE slug = 'fixture-signals'").fetchone()
+        lesson = json.loads(text)
+        lesson["check"]["answer"] = (lesson["check"]["answer"] + 1) % 3
+        lesson["check"]["explanation"] = f"{FIXTURE_MARK} held only by this database."
+        connection.execute("UPDATE tutorials SET lesson = ? WHERE slug = 'fixture-signals'", (json.dumps(lesson),))
+        connection.commit()
+        connection.close()
+        return database
+
+    def test_a_partial_database_refusal_names_the_lessons_it_lacks(self) -> None:
+        repo, _keyed, _head = self.stripped_repo()
+        out = repo.outside / "keys.json"
+        code, _out, err = self.run_tool(repo, "export", "--from-db", str(self.production_like(repo)), "--out", str(out))
+        self.assertEqual(code, 1)
+        self.assertIn("2 public lessons have no stored key and 1 have no record", err)
+        self.assertIn("fixture-authority, fixture-broadcast, fixture-gov-review", err)
+        self.assertIn("--source-rev", err)
+        self.assertFalse(out.exists())
+
+    def test_export_fills_a_partial_database_from_a_keyed_revision(self) -> None:
+        repo, keyed, head = self.stripped_repo()
+        database = self.production_like(repo)
+        out = repo.outside / "keys.json"
+        code, stdout, _err = self.run_tool(
+            repo, "export", "--from-db", str(database), "--source-rev", keyed, "--out", str(out))
+        self.assertEqual(code, 0)
+        result = self.report(stdout)
+        self.assertEqual(
+            {name: result[name] for name in ("state", "lessons", "source", "from_db", "from_rev", "from_rev_slugs",
+                                             "differs_from_rev", "differs_slugs")},
+            {"state": "OK", "lessons": 7, "source": "pocketbase", "from_db": 4, "from_rev": 3,
+             "from_rev_slugs": ["fixture-authority", "fixture-broadcast", "fixture-gov-review"],
+             "differs_from_rev": 1, "differs_slugs": ["fixture-signals"]})
+        self.assertEqual(out.stat().st_mode & 0o777, 0o600)
+        doc = json.loads(out.read_text(encoding="utf-8"))
+        keys = fixture_keys()
+        # The database's own key wins where it holds one: the resolver refuses a file entry that disagrees with it.
+        self.assertTrue(doc["lessons"]["fixture-signals"]["answer"] != keys["fixture-signals"]["answer"]
+                        and doc["lessons"]["fixture-signals"]["explanation"].endswith("held only by this database."),
+                        "the database key is kept")
+        self.assertTrue(all(doc["lessons"][slug]["answer"] == keys[slug]["answer"]
+                            and doc["lessons"][slug]["explanation"] == keys[slug]["explanation"]
+                            for slug in result["from_rev_slugs"]), "lessons the database lacks come from the revision")
+        self.assertEqual(self.run_tool(repo, "verify", "--keys", str(out), "--require-private")[0], 0)
+        # A revision that carries no keys cannot fill the gap.
+        code, _out, err = self.run_tool(
+            repo, "export", "--from-db", str(database), "--source-rev", head, "--out", str(repo.outside / "other.json"))
+        self.assertEqual(code, 1)
+        self.assertIn("carry no key", err)
+
     def test_export_refuses_a_database_without_keys(self) -> None:
         repo, _keyed, _head = self.stripped_repo()
         out = repo.outside / "keys.json"
@@ -409,8 +471,8 @@ class VerifyTests(ToolCase):
         mutate(doc)
         if fix_integrity and isinstance(doc.get("lessons"), dict):
             try:
-                doc["integrity"] = lk.integrity(doc["lessons"])
-            except lk.Refusal:
+                doc["integrity"] = lk.integrity(doc)
+            except (lk.Refusal, KeyError):
                 pass
         path = self.repo.outside / "variant.json"
         path.write_text(json.dumps(doc, ensure_ascii=False), encoding="utf-8")
@@ -486,11 +548,32 @@ class VerifyTests(ToolCase):
         code, result = self.verify(synthetic, "--require-private")
         self.assertEqual((code, result["private"]), (1, False))
         doc = json.loads(synthetic.read_text(encoding="utf-8"))
-        doc["synthetic"] = False
-        synthetic.write_text(json.dumps(doc), encoding="utf-8")
-        self.assertEqual(self.verify(synthetic)[0], 0)
+        # The seal covers the label and the source, so neither can change without resealing.
+        for change in ({"synthetic": False}, {"source": {"kind": "git", "revision": "0" * 40}}):
+            with self.subTest(changed=sorted(change)):
+                synthetic.write_text(json.dumps({**doc, **change}), encoding="utf-8")
+                for flags in ((), ("--allow-synthetic",), ("--require-private",)):
+                    code, result = self.verify(synthetic, *flags)
+                    self.assertEqual((code, result["integrity"]), (1, False), flags)
+        # Resealed, a relabelled file still carries placeholder explanations, so it is still synthetic.
+        relabelled = {**doc, "synthetic": False, "source": {"kind": "git", "revision": "0" * 40}}
+        relabelled["integrity"] = lk.integrity(relabelled)
+        synthetic.write_text(json.dumps(relabelled), encoding="utf-8")
+        code, result = self.verify(synthetic)
+        self.assertEqual((code, result["integrity"], result["synthetic"], result.get("synthetic_refused")), (1, True, True, True))
+        self.assertEqual(self.verify(synthetic, "--allow-synthetic")[0], 0)
         code, result = self.verify(synthetic, "--require-private")
         self.assertEqual((code, result["private"]), (1, False), "a relabelled synthetic file is not private")
+
+    def test_the_seal_covers_the_label_the_source_and_every_entry(self) -> None:
+        seals = {lk.integrity(self.doc)}
+        for change in ({"synthetic": True}, {"source": {**self.doc["source"], "revision": "0" * 40}},
+                       {"source": {**self.doc["source"], "kind": "pocketbase"}},
+                       {"lessons": {**self.doc["lessons"], ALL_SLUGS[0]: {**self.doc["lessons"][ALL_SLUGS[0]],
+                                                                     "answer": (self.doc["lessons"][ALL_SLUGS[0]]["answer"] + 1) % 3}}}):
+            seals.add(lk.integrity({**self.doc, **change}))
+        self.assertEqual(len(seals), 5, "every sealed member changes the seal")
+        self.assertEqual(lk.integrity({**self.doc, "integrity": "0" * 64}), lk.integrity(self.doc), "the seal never covers itself")
 
     def test_require_private_wants_a_full_commit_for_a_git_source(self) -> None:
         path = self.write_variant(lambda doc: doc["source"].update(revision="main"))
@@ -510,7 +593,7 @@ class OracleTests(ToolCase):
     def tampered(self, repo: Repo, keys: Path, slug: str, **changes) -> Path:
         doc = json.loads(keys.read_text(encoding="utf-8"))
         doc["lessons"][slug].update(changes)
-        doc["integrity"] = lk.integrity(doc["lessons"])
+        doc["integrity"] = lk.integrity(doc)
         path = repo.outside / "tampered.json"
         path.write_text(json.dumps(doc, ensure_ascii=False), encoding="utf-8")
         return path

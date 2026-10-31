@@ -91,7 +91,8 @@ export function canonical(value, depth = 0) {
 
 /** sha256 of canonical({question, choices}): the public text an entry grades. */
 export const binding = (check) => sha256(canonical({ question: check.question, choices: check.choices }));
-export const integrity = (lessons) => sha256(canonical(lessons));
+/** lesson_keys.py integrity(): the seal over the lessons, the source and the synthetic label, so a relabel breaks it. */
+export const integrity = (doc) => sha256(canonical({ lessons: doc.lessons, source: doc.source, synthetic: doc.synthetic }));
 
 // Python's sort_keys orders by code point; JavaScript's default sort orders by UTF-16 code unit.
 function byCodePoint(left, right) {
@@ -152,12 +153,17 @@ export function publicLessons(records = curriculumRecords()) {
 export const syntheticAnswer = (slug, choices, salt = 'synthetic') =>
     Number.parseInt(sha256(`${salt}:${slug}`).slice(0, 8), 16) % choices;
 export const syntheticExplanation = (slug) => `${SYNTHETIC_PREFIX} explanation placeholder for ${slug}.`;
+// A key file labelled private must carry explanations without the fixture prefix, or every reader treats it as fixture keys.
+export const STAND_IN_PREFIX = 'Stand-in test explanation';
+export const standInExplanation = (slug) => `${STAND_IN_PREFIX} for ${slug}, written when the test runs.`;
 
 export const entryFor = (id, version, check, answer, explanation) =>
     ({ id, curriculum_version: version, check_sha256: binding(check), answer, explanation });
 
-export const keyDocument = (entries, { synthetic, kind = 'git', revision = SYNTHETIC_REVISION }) =>
-    ({ schema_version: SCHEMA, synthetic, source: { kind, revision }, integrity: integrity(entries), lessons: entries });
+export function keyDocument(entries, { synthetic, kind = 'git', revision = SYNTHETIC_REVISION }) {
+    const doc = { schema_version: SCHEMA, synthetic, source: { kind, revision }, lessons: entries };
+    return { ...doc, integrity: integrity(doc) };
+}
 
 let curriculumLessons = null;
 /** publicLessons() over the tracked curricula, read once per process: fixtures build many documents from the same text. */
@@ -178,23 +184,43 @@ export function syntheticDocument({ salt = 'synthetic', lessons = defaultLessons
 export function resealed(doc, change) {
     const copy = JSON.parse(JSON.stringify(doc));
     change(copy);
-    copy.integrity = integrity(copy.lessons);
+    copy.integrity = integrity(copy);
     return copy;
 }
 
 /**
- * @param {'synthetic'|'private'|'absent'|'invalid'|'tampered'} variant Which key file to serve.
+ * The synthetic answers labelled private: synthetic:false, a 40-hex git revision and stand-in explanations written at
+ * test time, sealed. Its answers are the synthetic ones, so it exercises the PRIVATE state without any real key.
+ */
+export function privateDocument({ salt, lessons } = {}) {
+    return resealed(syntheticDocument({ salt, lessons }), (copy) => {
+        copy.synthetic = false;
+        copy.source.revision = '0'.repeat(40);
+        for (const [slug, entry] of Object.entries(copy.lessons)) entry.explanation = standInExplanation(slug);
+    });
+}
+
+/**
+ * @param {'synthetic'|'private'|'relabelled'|'flipped'|'absent'|'invalid'|'tampered'} variant Which key file to serve.
  * @param {object} options salt and lessons for the document; slug and field for 'tampered'.
  * @returns {string|null} The key file text, or null for an absent file.
- * 'private' is the synthetic document relabelled synthetic:false, for tests of the PRIVATE state. 'invalid'
- * breaks the integrity seal. 'tampered' changes one entry's check_sha256 (or curriculum_version) and reseals
- * the file, so it loads and only that lesson fails its binding.
+ * 'private' is privateDocument(), for tests of the PRIVATE state. 'relabelled' is the synthetic document labelled
+ * synthetic:false and resealed, so its placeholder explanations alone mark it as fixture keys. 'flipped' changes only
+ * the text "synthetic": true to "synthetic": false, which the seal must catch. 'invalid' breaks the integrity seal.
+ * 'tampered' changes one entry's check_sha256 (or curriculum_version) and reseals the file, so it loads and only that
+ * lesson fails its binding.
  */
 export function keyFile(variant = 'synthetic', { salt, lessons, slug, field = 'check_sha256' } = {}) {
     if (variant === 'absent') return null;
     const doc = syntheticDocument({ salt, lessons });
     if (variant === 'synthetic') return dump(doc);
-    if (variant === 'private') return dump(resealed(doc, (copy) => { copy.synthetic = false; copy.source.revision = '0'.repeat(40); }));
+    if (variant === 'private') return dump(privateDocument({ salt, lessons }));
+    if (variant === 'relabelled') return dump(resealed(doc, (copy) => { copy.synthetic = false; copy.source.revision = '0'.repeat(40); }));
+    if (variant === 'flipped') {
+        const text = dump(doc);
+        if (text.split('"synthetic": true').length !== 2) throw new Error('the synthetic label appears once');
+        return text.replace('"synthetic": true', '"synthetic": false');
+    }
     if (variant === 'invalid') return dump({ ...doc, integrity: doc.integrity.replace(/^./, (first) => (first === '0' ? '1' : '0')) });
     if (variant === 'tampered') {
         const target = slug ?? Object.keys(doc.lessons).sort()[0];
@@ -246,19 +272,20 @@ export function keyRuntime({ files = {}, env = {} } = {}) {
 
 /**
  * A synthetic key file served to a hook fixture at KEY_PATH, with the synthetic opt-in set, as a contributor would run locally.
- * @param {'synthetic'|'private'|'absent'|'invalid'|'tampered'} variant Which file to serve first (see keyFile).
+ * @param {'synthetic'|'private'|'relabelled'|'flipped'|'absent'|'invalid'|'tampered'} variant Which file to serve first (see keyFile).
  * @param {object} options env: more variables; salt, lessons, slug, field: as for keyFile.
- * @returns {object} The keyRuntime pieces (runtime, files, env, reads), plus document (the synthetic set every variant is built
- * from), serve(variant, options) to switch the file mid-test, answerFor(slug) and explanationFor(slug) from that set,
- * keyed(slug, lesson) for a lesson body carrying its synthetic key as a database-held key would, and attach(app) to give a
- * fixture app the data directory the resolver reads.
+ * @returns {object} The keyRuntime pieces (runtime, files, env, reads), plus document (the key set the served variant is
+ * built from: privateDocument() for 'private', the synthetic document otherwise), serve(variant, options) to switch the
+ * file mid-test, answerFor(slug) and explanationFor(slug) from that set, keyed(slug, lesson) for a lesson body carrying
+ * its key as a database-held key would, and attach(app) to give a fixture app the data directory the resolver reads.
  */
 export function lessonKeyServer(variant = 'synthetic', { env = {}, ...options } = {}) {
     const served = keyRuntime({ env: { [SYNTHETIC_VARIABLE]: '1', ...env } });
     let document = null;
     const serve = (next = 'synthetic', more = {}) => {
         const settings = { ...options, ...more };
-        document = syntheticDocument({ salt: settings.salt, lessons: settings.lessons });
+        const build = next === 'private' ? privateDocument : syntheticDocument;
+        document = build({ salt: settings.salt, lessons: settings.lessons });
         const text = keyFile(next, settings);
         if (text === null) delete served.files[KEY_PATH]; else served.files[KEY_PATH] = text;
     };

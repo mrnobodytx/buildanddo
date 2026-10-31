@@ -49,6 +49,7 @@ const sameJson = (actual, expected, label) => assert.ok(JSON.stringify(actual) =
 const refused = (status, message) => (error) => error.status === status && error.message === message;
 const quiet = (text, label) => {
     assert.ok(!text.includes(keys.SYNTHETIC_PREFIX), `${label} carries a synthetic explanation`);
+    assert.ok(!text.includes(keys.STAND_IN_PREFIX), `${label} carries a stand-in explanation`);
     assert.ok(!/[0-9a-f]{64}/.test(text), `${label} carries a hash`);
 };
 const flip = (hex) => hex.replace(/^./, (first) => (first === '0' ? '1' : '0'));
@@ -169,7 +170,7 @@ test('refuses every malformed or unsealed key file as INVALID, naming a reason c
         [keys.keyFile('synthetic') + ' '.repeat(256 * 1024), 'too_large'],
         [keys.keyFile('invalid'), 'integrity'],
         [edit((doc) => { doc.extra = true; }), 'schema'],
-        [edit((doc) => { delete doc.source; }), 'schema'],
+        [keys.dump((({ source: _source, ...rest }) => rest)(SYNTHETIC)), 'schema'],
         [edit((doc) => { doc.schema_version = 'buildanddo.lesson-keys/2'; }), 'schema'],
         [edit((doc) => { doc.synthetic = 'true'; }), 'schema'],
         [keys.dump({ ...SYNTHETIC, integrity: SYNTHETIC.integrity.toUpperCase() }), 'schema'],
@@ -212,6 +213,42 @@ test('refuses every malformed or unsealed key file as INVALID, naming a reason c
     assert.equal(reason(keys.keyFile('private')), 'PRIVATE', 'a private file needs no opt-in');
 });
 
+test('a fixture key file never passes as PRIVATE: the seal covers its label and source, and placeholders mark it synthetic', () => {
+    const total = SLUGS.length;
+    const first = SLUGS[0];
+    // Each is a fixture file an operator could relabel by hand; none may load as PRIVATE.
+    const movedSource = keys.dump({ ...SYNTHETIC, source: { ...SYNTHETIC.source, revision: '0'.repeat(40) } });
+    const onePlaceholder = keys.dump(keys.resealed(keys.privateDocument({ lessons: LESSONS }), (doc) => {
+        doc.lessons[first].explanation = keys.syntheticExplanation(first);
+    }));
+    for (const env of [{}, OPT_IN]) {
+        const opted = Object.keys(env).length > 0;
+        const f = keysFixture({ env: { ...env, [keys.FILE_VARIABLE]: NAMED } });
+        const reason = (text) => {
+            f.files[NAMED] = text;
+            const result = f.load();
+            return result.state === 'INVALID' ? result.reason : result.state;
+        };
+        const fixtureKeys = opted ? 'SYNTHETIC' : 'synthetic_not_allowed';
+        assert.equal(reason(keys.keyFile('flipped')), 'integrity', 'a label changed without resealing breaks the seal');
+        assert.equal(reason(movedSource), 'integrity', 'a source changed without resealing breaks the seal');
+        assert.equal(reason(keys.keyFile('relabelled')), fixtureKeys, 'a resealed relabel is still fixture keys');
+        assert.equal(reason(onePlaceholder), fixtureKeys, 'one placeholder explanation marks the whole file');
+        assert.equal(reason(keys.keyFile('private')), 'PRIVATE', 'stand-in explanations under a private label load as PRIVATE');
+    }
+    // Without the opt-in every server-side guard reports a relabelled fixture file as unusable, and nothing grades from it.
+    for (const variant of ['flipped', 'relabelled']) {
+        const f = keysFixture({ files: { [DEFAULT]: keys.keyFile(variant) } });
+        const command = routes(f);
+        assert.deepEqual(command.health().body, { schema_version: 1, keys: 'INVALID', lessons: total, gradable: 0, unavailable: total }, variant);
+        const result = command.check();
+        assert.deepEqual([result.report.state, result.report.unavailable, result.exits], ['INVALID', total, [1]], variant);
+        assert.throws(() => f.service.resolve(f.service.load(f.app), f.record(first), f.stored(first)),
+            refused(503, 'Lesson grading keys need an operator review.'), variant);
+        assert.equal(f.saves.length, 0);
+    }
+});
+
 test('an unusable file is logged by reason code only, at most once a minute, and never by the check command', () => {
     const f = keysFixture({ env: { [keys.FILE_VARIABLE]: NAMED }, files: { [NAMED]: keys.keyFile('invalid') } });
     f.load(); f.load();
@@ -237,11 +274,13 @@ test('resolves every lesson from the file in memory, leaving the stored lesson a
         const f = keysFixture({ env: { ...OPT_IN, [keys.FILE_VARIABLE]: NAMED }, files: { [NAMED]: keys.keyFile(variant) } });
         const before = f.tutorials();
         const loaded = f.service.load(f.app);
+        assert.equal(loaded.state, variant.toUpperCase());
+        const document = variant === 'private' ? keys.privateDocument({ lessons: LESSONS }) : SYNTHETIC;
         for (const slug of SLUGS) {
             const stored = f.stored(slug);
             const copy = JSON.stringify(stored);
             const resolved = plain(f.service.resolve(loaded, f.record(slug), stored));
-            const entry = SYNTHETIC.lessons[slug];
+            const entry = document.lessons[slug];
             same(resolved.check.answer, entry.answer, slug);
             same(resolved.check.explanation, entry.explanation, slug);
             sameJson(resolved.check.question, stored.check.question, slug);

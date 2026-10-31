@@ -30,6 +30,11 @@
 // of the lesson in memory, and only when the entry is bound to the lesson's curriculum_version and
 // to sha256(canonical({question, choices})), and agrees with any key the database already holds.
 //
+// The integrity seal is sha256(canonical({lessons, source, synthetic})), so the synthetic label cannot
+// be flipped without resealing. A file is fixture keys when it is labelled synthetic or when any
+// explanation starts with the fixture placeholder prefix, the rule lesson_keys.py verify and
+// check-public-lessons.mjs share, so a relabelled fixture file can never load as PRIVATE.
+//
 // No message, log line or report from this file carries a key, an explanation or a hash of either.
 
 const access = require(`${__hooks}/workspace-access.js`);
@@ -38,6 +43,8 @@ const SCHEMA = 'buildanddo.lesson-keys/1';
 const FILE_VARIABLE = 'BUILDANDDO_LESSON_KEYS_FILE';
 const SYNTHETIC_VARIABLE = 'BUILDANDDO_LESSON_KEYS_SYNTHETIC';
 const DEFAULT_FILE = 'lesson-keys.json';
+// The explanation prefix of every synthetic fixture key (scripts/ci/lesson_keys.py SYNTHETIC_PREFIX).
+const SYNTHETIC_PREFIX = 'SYNTHETIC FIXTURE:';
 // The same limits scripts/ci/lesson_keys.py applies, so a file the tool passes is one this loads.
 const LIMITS = Object.freeze({ bytes: 256 * 1024, entries: 500, answer: 5, explanation: 5000, version: 40, slug: 80, catalogue: 500 });
 const STATES = Object.freeze({ PRIVATE: 'PRIVATE', SYNTHETIC: 'SYNTHETIC', ABSENT: 'ABSENT', INVALID: 'INVALID' });
@@ -113,11 +120,15 @@ function parse(doc) {
     if (slugs.length > LIMITS.entries) return invalid('too_many_entries');
     if (!slugs.every((slug) => entryValid(slug, doc.lessons[slug]))) return invalid('entry');
     let digest = '';
-    try { digest = $security.sha256(access.canonical(doc.lessons)); } catch { return invalid('integrity'); }
+    try {
+        digest = $security.sha256(access.canonical({ lessons: doc.lessons, source: doc.source, synthetic: doc.synthetic }));
+    } catch { return invalid('integrity'); }
     if (digest !== doc.integrity) return invalid('integrity');
-    // Synthetic fixture keys would misgrade real learners, so they load only on an explicit opt-in.
-    if (doc.synthetic && $os.getenv(SYNTHETIC_VARIABLE) !== '1') return invalid('synthetic_not_allowed');
-    return { state: doc.synthetic ? STATES.SYNTHETIC : STATES.PRIVATE, reason: '', entries: doc.lessons };
+    // Synthetic fixture keys would misgrade real learners, so they load only on an explicit opt-in. A placeholder
+    // explanation marks fixture keys whatever the label says.
+    const synthetic = doc.synthetic || slugs.some((slug) => doc.lessons[slug].explanation.startsWith(SYNTHETIC_PREFIX));
+    if (synthetic && $os.getenv(SYNTHETIC_VARIABLE) !== '1') return invalid('synthetic_not_allowed');
+    return { state: synthetic ? STATES.SYNTHETIC : STATES.PRIVATE, reason: '', entries: doc.lessons };
 }
 
 function read(path, configured) {
@@ -277,5 +288,5 @@ function check(app, file = '') {
     return { ok, body };
 }
 
-module.exports = { SCHEMA, FILE_VARIABLE, SYNTHETIC_VARIABLE, DEFAULT_FILE, LIMITS, STATES, KEYS_REVIEW, LESSON_REVIEW,
+module.exports = { SCHEMA, FILE_VARIABLE, SYNTHETIC_VARIABLE, SYNTHETIC_PREFIX, DEFAULT_FILE, LIMITS, STATES, KEYS_REVIEW, LESSON_REVIEW,
     load, binding, resolve, complete, survey, health, check };

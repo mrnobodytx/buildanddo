@@ -116,7 +116,9 @@ carries it out.
      zero unavailable lessons.
 7. **Key tooling.** A stdlib-only tool, `scripts/ci/lesson_keys.py`, with these
    subcommands:
-   - `export`, from `--source-rev` or `--from-db` on a database copy;
+   - `export`, from `--source-rev`, from `--from-db` on a database copy, or
+     from both: the copy's stored key wins, and the revision fills every
+     public lesson the copy holds no key for;
    - `verify`, for coverage, binding, range and integrity, with
      `--require-private` and an `--against-rev` byte-identity oracle against
      the pre-strip readiness lock;
@@ -212,9 +214,12 @@ carries it out.
 - The resolver never writes. It never calls `app.save` on `tutorials`.
 - Tests never read real keys. Synthetic keys are generated at test time and
   never committed. A real or synthetic key file is never committed anywhere.
-- Synthetic keys load only when the file says `synthetic: true` and the
-  environment sets `BUILDANDDO_LESSON_KEYS_SYNTHETIC=1`. Otherwise the file is
-  INVALID.
+- A key file is synthetic when it says `synthetic: true` or when any
+  explanation starts with the fixture placeholder prefix. Its integrity seal
+  covers the label and the source as well as the lessons, so a relabel without
+  resealing is INVALID. Synthetic keys load only when the environment sets
+  `BUILDANDDO_LESSON_KEYS_SYNTHETIC=1`. Otherwise the file is INVALID, and a
+  synthetic file never reports PRIVATE.
 - Configuration is by variable name only. No host placement and no addresses.
 
 ## Acceptance
@@ -238,6 +243,9 @@ carries it out.
   - An invalid file with DB-held keys still grades; an invalid file without DB
     keys gives 503.
   - A synthetic file without `BUILDANDDO_LESSON_KEYS_SYNTHETIC=1` is INVALID.
+    So is a synthetic file relabelled `synthetic: false`: unsealed it fails
+    integrity, resealed its placeholder explanations still mark it synthetic.
+    Neither keys-health nor `lesson-keys check` ever reports it as PRIVATE.
   - A tampered `check_sha256` or `curriculum_version` gives 503 for that lesson
     only.
   - A stored key that differs from the file gives 503.

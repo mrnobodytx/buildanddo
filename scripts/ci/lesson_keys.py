@@ -30,18 +30,22 @@ Key file, schema ``buildanddo.lesson-keys/1``::
 
     {"schema_version": "buildanddo.lesson-keys/1", "synthetic": false,
      "source": {"kind": "git" | "pocketbase", "revision": "..."},
-     "integrity": "<sha256 of canonical(lessons)>",
+     "integrity": "<sha256 of canonical({lessons, source, synthetic})>",
      "lessons": {"<slug>": {"id", "curriculum_version", "check_sha256",
                             "answer", "explanation"}}}
 
 ``check_sha256`` binds an entry to the public text it grades: sha256 over the
 UTF-8 of canonical({question, choices}). canonical() is the rule
 workspace-access.js uses: keys sorted, compact separators, non-ASCII kept, and
-lone surrogates refused.
+lone surrogates refused. ``integrity`` seals every member a reader trusts, so
+neither the ``synthetic`` label nor the source can be edited without resealing.
+A file is synthetic when it is labelled so or when any explanation starts with
+the fixture placeholder prefix; every reader treats it the same way.
 
-    lesson_keys.py export (--source-rev REV | --from-db DATA_DB_COPY) --out FILE
+    lesson_keys.py export (--source-rev REV | --from-db DATA_DB_COPY [--source-rev REV]) --out FILE
         keys from a git revision that still carries them, or from a copy of a
-        PocketBase data.db opened read-only
+        PocketBase data.db opened read-only; with both, the database's own key
+        wins and the revision fills every public lesson the copy holds no key for
     lesson_keys.py verify --keys FILE [--require-private | --allow-synthetic] [--against-rev REV]
         schema, integrity, coverage, version, binding, range; --against-rev also
         proves that stripping REV gives HEAD and that HEAD plus the keys gives
@@ -157,8 +161,15 @@ def binding(check: dict) -> str:
     return sha256_text(canonical({"question": check["question"], "choices": check["choices"]}))
 
 
-def integrity(lessons: dict) -> str:
-    return sha256_text(canonical(lessons))
+def integrity(doc: dict) -> str:
+    """The seal: sha256 of canonical({lessons, source, synthetic}). It covers the label, so a relabel breaks it."""
+    return sha256_text(canonical({"lessons": doc["lessons"], "source": doc["source"], "synthetic": doc["synthetic"]}))
+
+
+def placeholders(lessons: dict) -> int:
+    """How many entries carry the fixture placeholder explanation; any at all makes the file synthetic."""
+    return sum(isinstance(entry, dict) and isinstance(entry.get("explanation"), str)
+               and entry["explanation"].startswith(SYNTHETIC_PREFIX) for entry in lessons.values())
 
 
 def js_length(value: str) -> int:
@@ -442,8 +453,10 @@ def report(body: dict) -> None:
 # ---- key file --------------------------------------------------------------------------------
 
 def key_document(entries: dict, *, synthetic: bool, kind: str, revision: str) -> dict:
-    return {"schema_version": SCHEMA, "synthetic": synthetic, "source": {"kind": kind, "revision": revision},
-            "integrity": integrity(entries), "lessons": entries}
+    doc = {"schema_version": SCHEMA, "synthetic": synthetic, "source": {"kind": kind, "revision": revision},
+           "lessons": entries}
+    doc["integrity"] = integrity(doc)
+    return doc
 
 
 def entry_for(lesson_id: Any, version: str, check: dict, answer: int, explanation: str) -> dict:
@@ -516,10 +529,11 @@ def check_document(raw: bytes) -> tuple[dict | None, dict]:
     findings["malformed_slugs"] = sorted(_slug(slug) for slug in malformed)
     findings["malformed_fields"] = sorted({problem for problems in malformed.values() for problem in problems})
     try:
-        findings["integrity"] = integrity(lessons) == doc["integrity"]
+        findings["integrity"] = integrity(doc) == doc["integrity"]
     except Refusal:
         findings["integrity"] = False
-    findings["synthetic"] = doc["synthetic"]
+    # The runtime resolver applies the same rule: a placeholder explanation marks fixture keys whatever the label says.
+    findings["synthetic"] = doc["synthetic"] or placeholders(lessons) > 0
     return doc, findings
 
 
@@ -557,28 +571,37 @@ def against_revision(root: Path, revision: str, entries: dict) -> dict:
 
 # ---- subcommands -----------------------------------------------------------------------------
 
+def revision_entries(root: Path, revision: str) -> tuple[dict, str]:
+    """Entries for every lesson of a revision whose curriculum files still carry keys, and its full commit."""
+    commit = commit_of(root, revision)
+    entries: dict = {}
+    for name in CURRICULA:
+        doc = parse_curriculum(decode(git(root, "show", f"{commit}:{DATA_DIR}/{name}"), name), name)
+        keys = keys_of(doc, name)
+        for lesson in doc["lessons"]:
+            key = keys[lesson["slug"]]
+            entries[lesson["slug"]] = entry_for(lesson.get("id"), doc["version"], lesson["lesson"]["check"],
+                                                key["answer"], key["explanation"])
+    return entries, commit
+
+
 def cmd_export(args: argparse.Namespace) -> int:
+    if not args.source_rev and not args.from_db:
+        raise Refusal("name --source-rev, --from-db or both")
     root = Path(args.root)
     out = guard_out(root, args.out)
     public = public_lessons(root)
-    if args.source_rev:
-        commit = commit_of(root, args.source_rev)
-        entries: dict = {}
-        for name in CURRICULA:
-            doc = parse_curriculum(decode(git(root, "show", f"{commit}:{DATA_DIR}/{name}"), name), name)
-            keys = keys_of(doc, name)
-            for lesson in doc["lessons"]:
-                key = keys[lesson["slug"]]
-                entries[lesson["slug"]] = entry_for(lesson.get("id"), doc["version"], lesson["lesson"]["check"],
-                                                    key["answer"], key["explanation"])
-        kind, revision = "git", commit
-    else:
-        entries, revision = from_database(Path(args.from_db), public)
+    keyed, commit = revision_entries(root, args.source_rev) if args.source_rev else (None, "")
+    extra: dict = {}
+    if args.from_db:
+        entries, revision, extra = from_database(Path(args.from_db), public, keyed)
         kind = "pocketbase"
+    else:
+        entries, revision, kind = keyed or {}, commit, "git"
     refuse_malformed(entries)
     write_atomic(out, dump(key_document(entries, synthetic=False, kind=kind, revision=revision)))
     report({"state": "OK", "lessons": len(entries), "public": len(public), "source": kind, "synthetic": False,
-            "mode": "0600"})
+            "mode": "0600", **extra})
     return EXIT_OK
 
 
@@ -588,8 +611,16 @@ def refuse_malformed(entries: dict) -> None:
         raise Refusal(f"{len(bad)} entries are malformed: {', '.join(bad)}")
 
 
-def from_database(path: Path, public: dict) -> tuple[dict, str]:
-    """Keys for the public slugs from a copy of a PocketBase data.db, opened read-only."""
+def from_database(path: Path, public: dict, fill: dict | None = None) -> tuple[dict, str, dict]:
+    """Keys for the public slugs from a copy of a PocketBase data.db, opened read-only.
+
+    A public lesson whose record stores no key, or that has no record (a lesson a pending
+    migration inserts, or one an overwrite migration re-seeded from the stripped file), is
+    refused by name unless ``fill`` holds entries from a keyed revision; those lessons then take
+    the revision's entry. Where the copy stores a key, that key wins, because the resolver
+    refuses a file entry that disagrees with a key the database holds. Returns the entries, the
+    copy's latest update stamp and, when filling, counts and slugs of where each entry came from.
+    """
     if not path.is_file():
         raise Refusal("the database copy is not a file")
     uri = "file:" + urllib.parse.quote(str(path.resolve())) + "?mode=ro"
@@ -626,16 +657,31 @@ def from_database(path: Path, public: dict) -> tuple[dict, str]:
                 or not isinstance(check.get("choices"), list)):
             raise Refusal(f"{_slug(slug)} has no readable knowledge check")
         if not all(member in check for member in KEY_MEMBERS):
-            keyless.append(_slug(slug))
+            keyless.append(slug)
             continue
         entries[slug] = entry_for(record_id, version, check, check["answer"], check["explanation"])
         latest = max(latest, str(stamp or ""))
-    absent = sorted(_slug(slug) for slug in public if slug not in entries and _slug(slug) not in keyless)
-    if keyless or absent:
+    absent = [slug for slug in public if slug not in entries and slug not in keyless]
+    lacking = sorted(keyless + absent)
+    if lacking and fill is None:
         raise Refusal(f"{len(keyless)} public lessons have no stored key and {len(absent)} have no record; "
-                        f"{len(entries)} of {len(public)} carry keys")
+                      f"{len(entries)} of {len(public)} carry keys: {', '.join(_slug(slug) for slug in lacking)}. "
+                      "Add --source-rev with a keyed revision to fill them")
     revision = latest[:64] if REVISION.fullmatch(latest[:64]) else ""
-    return entries, revision
+    if fill is None:
+        return entries, revision, {}
+    unfilled = [slug for slug in lacking if slug not in fill]
+    if unfilled:
+        raise Refusal(f"{len(unfilled)} public lessons have no key in the database copy or at the revision: "
+                      f"{', '.join(_slug(slug) for slug in unfilled)}")
+    differs = sorted(slug for slug, entry in entries.items() if slug in fill and (
+        entry["answer"], entry["explanation"]) != (fill[slug]["answer"], fill[slug]["explanation"]))
+    from_db = len(entries)
+    for slug in lacking:
+        entries[slug] = fill[slug]
+    return entries, revision, {"from_db": from_db, "from_rev": len(lacking),
+                               "from_rev_slugs": [_slug(slug) for slug in lacking],
+                               "differs_from_rev": len(differs), "differs_slugs": [_slug(slug) for slug in differs]}
 
 
 def cmd_verify(args: argparse.Namespace) -> int:
@@ -679,13 +725,12 @@ def cmd_verify(args: argparse.Namespace) -> int:
                       version_match=version_match, version_mismatch_slugs=sorted(wrong_version),
                       in_range=in_range, out_of_range_slugs=sorted(out_of_range))
         ok = ok and not missing and not extra and bound == version_match == in_range == len(public)
-        placeholder = sum(isinstance(entry, dict) and isinstance(entry.get("explanation"), str)
-                          and entry["explanation"].startswith(SYNTHETIC_PREFIX) for entry in lessons.values())
-        if doc["synthetic"] and not args.allow_synthetic:
+        synthetic = findings["synthetic"]
+        if synthetic and not args.allow_synthetic:
             result["synthetic_refused"] = True
             ok = False
         if args.require_private:
-            private = (not doc["synthetic"] and placeholder == 0
+            private = (not synthetic
                        and (doc["source"]["kind"] != "git" or bool(HEX40.fullmatch(doc["source"]["revision"]))))
             result["private"] = private
             ok = ok and private
@@ -856,9 +901,9 @@ def parser() -> argparse.ArgumentParser:
     sub = top.add_subparsers(dest="command", required=True)
 
     export = sub.add_parser("export", parents=[common], help="write a private key file from a revision or a database copy")
-    source = export.add_mutually_exclusive_group(required=True)
-    source.add_argument("--source-rev", help="a git revision whose curriculum files still carry keys")
-    source.add_argument("--from-db", help="a copy of a PocketBase data.db (opened read-only)")
+    export.add_argument("--source-rev", help="a git revision whose curriculum files still carry keys; with --from-db, "
+                                             "fills the lessons the database copy holds no key for")
+    export.add_argument("--from-db", help="a copy of a PocketBase data.db (opened read-only)")
     export.add_argument("--out", required=True, help="outside the work tree, or a path git ignores")
     export.set_defaults(handler=cmd_export)
 

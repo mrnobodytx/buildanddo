@@ -901,6 +901,38 @@ class NativeLearningTests(unittest.TestCase):
             {"schema_version": 1, "keys": "INVALID", "lessons": 27, "gradable": 0, "unavailable": 27},
         )
 
+    def test_a_relabelled_synthetic_file_is_refused_and_never_reports_private(self) -> None:
+        unusable = {"schema_version": 1, "keys": "INVALID", "lessons": 27, "gradable": 0, "unavailable": 27}
+        synthetic = key_tool.dump(key_tool.key_document(
+            self.server.keys, synthetic=True, kind="git", revision=key_tool.SYNTHETIC_REVISION
+        ))
+        # Only the label flipped: the seal covers it. Relabelled and resealed: the placeholder explanations remain.
+        flipped = synthetic.replace(b'"synthetic": true', b'"synthetic": false', 1)
+        self.assertNotEqual(flipped, synthetic)
+        resealed = key_tool.dump(key_tool.key_document(self.server.keys, synthetic=False, kind="git", revision="0" * 40))
+        for label, text, reason in (("flipped", flipped, "integrity"), ("resealed", resealed, "synthetic_not_allowed")):
+            with self.subTest(label):
+                self.server.key_file.write_bytes(text)
+                self.server.restart(BUILDANDDO_LESSON_KEYS_SYNTHETIC=None)
+                owner = self.server.login("alice")
+                self.assert_refused(self.path, owner, KEYS_REVIEW)
+                status, body = self.server.request(
+                    "POST", self.path, {"action": "start", "payload": {}, "content_digest": self.digest}, token=owner
+                )
+                self.assertEqual((status, body.get("message")), (503, KEYS_REVIEW))
+                self.assertEqual(self.server.stored("tutorial_learning"), [])
+                self.assertEqual(self.health(), unusable)
+                self.server.stop()
+                code, report, output = self.server.lesson_keys_check()
+                self.assertFalse(carries_key_text(output, self.server.keys), "lesson-keys check printed key text")
+                self.assertEqual(
+                    (code, report.get("state"), report.get("reason"), report.get("unavailable")), (1, "INVALID", reason, 27)
+                )
+                self.server.start()
+        # With the contributor opt-in the resealed relabel is still fixture keys: SYNTHETIC, never PRIVATE.
+        self.server.restart(BUILDANDDO_LESSON_KEYS_SYNTHETIC="1")
+        self.assertEqual(self.health()["keys"], "SYNTHETIC")
+
     def test_a_tampered_binding_or_version_refuses_only_that_lesson(self) -> None:
         slug = self.server.lesson["slug"]
         other = next(identity for name, identity in self.tutorial_ids().items() if name != slug)

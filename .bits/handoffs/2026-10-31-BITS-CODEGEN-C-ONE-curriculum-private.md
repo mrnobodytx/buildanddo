@@ -86,13 +86,17 @@ Never `cat`, paste, attach or log a key file, and never put one in a ticket.
 **H1. Export and verify the keys** (trusted workstation, full clone). This can run before merge
 because history still holds the keys.
 
+- Create the output directory first: `install -d -m 0700 state/private`. `/state/` is
+  git-ignored, so a fresh clone has neither directory, and the tool refuses an output path
+  whose directory does not exist.
 - Export: `python3 -I scripts/ci/lesson_keys.py export --source-rev <merge-base> --out state/private/lesson-keys.json`.
   The tool writes the file with mode 0600, and `/state/` is git-ignored.
 - Check out the PR head, then run:
   `python3 -I scripts/ci/lesson_keys.py verify --keys state/private/lesson-keys.json --require-private --against-rev <merge-base>`.
-- Verify: exit 0, state OK, lessons 35, bound 35, version_match 35, in_range 35,
-  integrity true, private true, strip_equal 4/4 and lock_match 4/4.
-  `git status --short --ignored state/` shows `state/` only as ignored (`!!`).
+- Verify: `stat -c '%a' state/private` prints `700`. The verify run exits 0 with state OK,
+  lessons 35, bound 35, version_match 35, in_range 35, integrity true, private true,
+  strip_equal 4/4 and lock_match 4/4. `git status --short --ignored state/` shows `state/`
+  only as ignored (`!!`).
 
 **H2. Private GitLab project.**
 
@@ -151,19 +155,35 @@ deployed hooks ignore the file.
 - Verify: exit 0, and the JSON shows `"state":"PRIVATE"`, `"mismatch":0`, `"unavailable":0`, and
   `lessons` equal to the installed lesson count.
 - On any mismatch:
-  - Run `python3 -I scripts/ci/lesson_keys.py export --from-db <rehearsal>/pb_data/data.db --out /root/lesson-keys-db.json`
-    and keep the output on the host.
+  - Export from the dated `data.db` backup taken at the start of this step, which predates
+    `migrate up`, and fill the lessons it holds no key for from the merge-base. Run it from a
+    checkout of the merged SHA whose history includes the merge-base, and keep the output on the
+    host:
+    `python3 -I scripts/ci/lesson_keys.py export --from-db <dated data.db backup> --source-rev <merge-base> --out /root/lesson-keys-db.json`.
+  - Each lesson whose record stores a key keeps the database's key. The merge-base fills the
+    rest: the broadcast and authority lessons that pending insert seeds add, and any lesson that
+    has no record or is stored without its key. The report counts both sources
+    (`from_db`, `from_rev`) and names the filled lessons (`from_rev_slugs`) and the lessons whose
+    stored key differs from the merge-base (`differs_slugs`). It never prints a key.
+  - Without `--source-rev`, a database copy that lacks any public lesson's key is refused, and
+    the refusal names those lessons.
+  - Verify: the export exits 0 with `lessons` equal to `public`, and
+    `python3 -I scripts/ci/lesson_keys.py verify --keys /root/lesson-keys-db.json --require-private`
+    exits 0.
   - Decide privately which source is canonical, update the private project and H3, then re-run
     this step.
 - Delete the rehearsal directory afterwards. Verify with `test ! -e <rehearsal> && echo removed`.
 
 **H6. Digest baseline.**
 
+- On a workstation without it, create the output directory as in H1:
+  `install -d -m 0700 state/private`.
 - Run `python3 -I scripts/ci/lesson_keys.py digests --base-url <public API origin> --out state/private/digests-staging-before.json`.
   This records every public lesson's `content_digest`. The values are public, but keep the file
   out of the repository.
-- Verify: exit 0 with state OK and errors 0. `published` counts the lessons staging serves now,
-  and `missing` counts the lessons it has not installed yet.
+- Verify: `stat -c '%a' state/private` prints `700`. The digests run exits 0 with state OK and
+  errors 0. `published` counts the lessons staging serves now, and `missing` counts the lessons
+  it has not installed yet.
 
 **H7. Deploy and verify staging.**
 
