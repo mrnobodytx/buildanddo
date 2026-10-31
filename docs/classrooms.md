@@ -8,9 +8,9 @@
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-16
-# Depends:     apps/web/src/pages/workspace/ClassroomsPage.jsx, apps/web/src/hooks/useClassrooms.js, apps/web/src/hooks/useOpenClasses.js, apps/pocketbase/pb_hooks/classrooms.js, apps/pocketbase/pb_hooks/classroom-media.js, apps/pocketbase/pb_hooks/classroom-presence.pb.js, apps/pocketbase/pb_hooks/guildmasters.js, tests/upgrade/test_classroom_native.py, tests/upgrade/classroom-recovery.test.mjs, tests/upgrade/classroom-presence.test.mjs
+# Depends:     apps/web/src/pages/workspace/ClassroomsPage.jsx, apps/web/src/hooks/useClassrooms.js, apps/web/src/hooks/useOpenClasses.js, apps/pocketbase/pb_hooks/classrooms.js, apps/pocketbase/pb_hooks/classroom-media.js, apps/pocketbase/pb_hooks/classroom-presence.pb.js, apps/pocketbase/pb_hooks/guildmasters.js, apps/pocketbase/pb_hooks/guild-lessons.js, apps/pocketbase/pb_migrations/1792400002_guild_lessons.js, tests/upgrade/test_classroom_native.py, tests/upgrade/classroom-recovery.test.mjs, tests/upgrade/classroom-presence.test.mjs, tests/upgrade/guild-lessons.test.mjs
 # EnumType:    Doc
-# EnumEdges:   CONSUMES apps/web/src/pages/workspace/ClassroomsPage.jsx; CONSUMES apps/web/src/hooks/useClassrooms.js; CONSUMES apps/web/src/hooks/useOpenClasses.js; CONSUMES apps/pocketbase/pb_hooks/classrooms.js; CONSUMES apps/pocketbase/pb_hooks/classroom-media.js; CONSUMES apps/pocketbase/pb_hooks/classroom-presence.pb.js; CONSUMES apps/pocketbase/pb_hooks/guildmasters.js; VERIFIED_BY tests/upgrade/test_classroom_native.py; VERIFIED_BY tests/upgrade/classroom-recovery.test.mjs; VERIFIED_BY tests/upgrade/classroom-presence.test.mjs
+# EnumEdges:   CONSUMES apps/web/src/pages/workspace/ClassroomsPage.jsx; CONSUMES apps/web/src/hooks/useClassrooms.js; CONSUMES apps/web/src/hooks/useOpenClasses.js; CONSUMES apps/pocketbase/pb_hooks/classrooms.js; CONSUMES apps/pocketbase/pb_hooks/classroom-media.js; CONSUMES apps/pocketbase/pb_hooks/classroom-presence.pb.js; CONSUMES apps/pocketbase/pb_hooks/guildmasters.js; CONSUMES apps/pocketbase/pb_hooks/guild-lessons.js; DEPENDS_ON apps/pocketbase/pb_migrations/1792400002_guild_lessons.js; VERIFIED_BY tests/upgrade/test_classroom_native.py; VERIFIED_BY tests/upgrade/classroom-recovery.test.mjs; VERIFIED_BY tests/upgrade/classroom-presence.test.mjs; VERIFIED_BY tests/upgrade/guild-lessons.test.mjs
 # DAG Node:    none
 # Intent:      Describe the classroom user flow, installed-backend requirements and acceptance limits without representing a shared lesson as a video stream.
 # ───────────────────────────────────────────────────────────────
@@ -106,6 +106,40 @@ rewritten to the positional `Middleware` form. The committed `metrics.pb.js` sto
 startup, so every native classroom case fails before running until that defect is fixed (it is
 outside SRS-BUILDANDDO-GUILDMASTER-001). Nothing here is enabled on staging or production.
 
+## Guild lessons as class material
+
+A guildmaster seat (see `docs/guildmasters.md`) with editor or higher role writes its own class
+material as a workspace guild lesson (`1792400002_guild_lessons.js`, `guild-lessons.js`), so a
+guildmaster can teach its weekly class without an installed tutorial. A guild lesson is reading
+material only: `schema_version: 1`, one to twenty `sections` (`heading` plus `paragraphs` and/or
+`steps`), at most ten `outcomes` and at most twelve HTTPS `references`, within 24,000 characters.
+A `check`, `answer`, `exercise`, `explanation` or any other key is refused with 400 ("Class material
+carries no answer key or check."). Guild lessons never read or write the tutorials catalogue, and
+graded learning stays with `tutorial-learning.js`.
+
+`GET`/`POST /api/buildanddo/workspaces/{workspace}/guild-lessons` take `lesson.save` (payload `id`,
+`title`, `summary`, `lesson`) and `lesson.publish` (payload `id`) in the usual envelope. Only the
+authoring seat edits a lesson, and only while it is a draft. Publishing writes the
+`guild_publications` audit row that an owner or administrator can withdraw, after which the lesson
+is `withdrawn`. Members read published lessons and their own drafts; owners and administrators read
+all of them.
+
+The host or an administrator shares a published lesson of the same workspace into a scheduled or live
+class with `room.material` (payload exactly `id`, `material`, `section`). It sets
+`classroom_rooms.material` and the section and clears the tutorial, so the class starts with no
+tutorial. `room.lesson` and `room.update` put a tutorial back and clear the material. A draft or
+withdrawn lesson is refused with 400 and another workspace's with 404; classroom detail reads a
+withdrawn or unreadable material as no lesson, and such a class cannot start until the host shares
+something else. Until the migration is installed `room.material` answers 503 and every other action
+is unchanged. The browser classroom adapter (`apps/web/src/lib/classrooms.js`) still expects the
+shared lesson to be the room's tutorial, so a material-backed class is not yet rendered in the web
+classroom page; that adapter is outside this slice.
+
+`tests/upgrade/guild-lessons.test.mjs` covers these rules against storage doubles. The native case
+`test_native_guild_lesson_is_published_by_the_seat_then_shared_and_started` signs in the fixture seat,
+publishes a lesson, shares it and starts the class on PocketBase 0.39.8, with the same temporary
+`metrics.pb.js` rewrite as the badge case above.
+
 ## Use a classroom
 
 1. Open **Classrooms**, sign in and select your workspace. An existing room
@@ -198,8 +232,8 @@ the following routes:
 | POST | `/{room}/presence` | Renew the current attendance generation |
 
 Command bodies have exactly `action`, `payload`, `revision` and `request_key`.
-Actions are `room.create`, `room.update`, `room.start`, `room.end`, `room.lesson`,
-`room.join`, `room.leave` and `room.message`. Request bodies are bounded to
+Actions are `room.create`, `room.chat`, `room.update`, `room.start`, `room.end`, `room.lesson`,
+`room.material`, `room.join`, `room.leave` and `room.message`. Request bodies are bounded to
 30,000 bytes; presence bodies to 2,000 bytes. The presence body contains exactly
 `membership` and `revision`. Route responses use `Cache-Control: no-store`.
 All record/account names shown by the API come from the authenticated server

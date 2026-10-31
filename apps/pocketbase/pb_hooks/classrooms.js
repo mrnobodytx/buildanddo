@@ -1,16 +1,16 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/pocketbase/pb_hooks/classrooms.js
 // Stage:       07_BUILD
-// SRS:         SRS-BUILDANDDO-UPGRADE-001
+// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-GUILDMASTER-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-GUILDMASTER-001
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-16
-// Depends:     apps/pocketbase/pb_hooks/workspace-access.js, apps/pocketbase/pb_migrations/1790400000_classroom_rooms.js, apps/pocketbase/pb_hooks/government-access.js
+// Depends:     apps/pocketbase/pb_hooks/workspace-access.js, apps/pocketbase/pb_migrations/1790400000_classroom_rooms.js, apps/pocketbase/pb_hooks/government-access.js, apps/pocketbase/pb_hooks/guild-lessons.js, apps/pocketbase/pb_migrations/1792400002_guild_lessons.js
 // EnumType:    Service
-// EnumEdges:   DEPENDS_ON apps/pocketbase/pb_hooks/workspace-access.js; DEPENDS_ON apps/pocketbase/pb_migrations/1790400000_classroom_rooms.js; CONSUMES apps/pocketbase/pb_hooks/government-access.js
+// EnumEdges:   DEPENDS_ON apps/pocketbase/pb_hooks/workspace-access.js; DEPENDS_ON apps/pocketbase/pb_migrations/1790400000_classroom_rooms.js; CONSUMES apps/pocketbase/pb_hooks/government-access.js; CONSUMES apps/pocketbase/pb_hooks/guild-lessons.js; DEPENDS_ON apps/pocketbase/pb_migrations/1792400002_guild_lessons.js
 // DAG Node:    none
 // Intent:      Make shared lessons, host lifecycle and expiring classroom presence authoritative to the current workspace account.
 // ───────────────────────────────────────────────────────────────
@@ -20,10 +20,13 @@ const government = require(`${__hooks}/government-access.js`);
 const TTL = 75000;
 const CAPACITY = 100;
 const WRITERS = ['owner', 'admin', 'editor'];
-const ACTIONS = ['room.create', 'room.chat', 'room.update', 'room.start', 'room.end', 'room.lesson', 'room.join', 'room.leave', 'room.message'];
+const ACTIONS = ['room.create', 'room.chat', 'room.update', 'room.start', 'room.end', 'room.lesson', 'room.join', 'room.leave', 'room.message', 'room.material'];
 // A chatroom and a classroom are the same governed room with different rules. 'room.chat' is a
 // separate action rather than a `kind` added to room.create because access.exact() requires an
-// EXACT field set, so extending that payload would refuse every existing caller.
+// EXACT field set, so extending that payload would refuse every existing caller. 'room.material'
+// (a published guild lesson in place of a tutorial, SRS-BUILDANDDO-GUILDMASTER-001) is separate for
+// the same reason. Its optional `material` field is deliberately not in SHAPES: a backend without the
+// guild lesson migration answers 503 to room.material and keeps every other action as it was.
 const SHAPES = {
     classroom_rooms: ['workspace', 'host', 'title', 'description', 'tutorial', 'section', 'status', 'revision', 'protocol_version', 'kind'],
     classroom_members: ['workspace', 'room', 'owner', 'active', 'last_seen', 'revision'],
@@ -61,7 +64,7 @@ function roomFor(app, workspace, id) {
 function output(room, scope, auth) {
     const result = { id: room.id, revision: Number(room.get('revision')), section: Number(room.get('section')),
         can_manage: canManage(scope, auth, room) };
-    for (const key of ['workspace', 'host', 'host_name', 'title', 'description', 'tutorial', 'status', 'starts_at', 'started_at', 'ended_at', 'created'])
+    for (const key of ['workspace', 'host', 'host_name', 'title', 'description', 'tutorial', 'material', 'status', 'starts_at', 'started_at', 'ended_at', 'created'])
         result[key] = room.getString(key);
     // Rooms written before the kind existed carry an empty value and are classes, which is what
     // they have always been; a client must never have to guess that.
@@ -82,6 +85,16 @@ function lessonFor(app, id, info) {
         access.invalid('Choose an installed lesson with a supported lesson body.');
     return { id: lesson.id, title: lesson.getString('title'), summary: lesson.getString('summary'), category: lesson.getString('category'),
         effort_minutes: Number(lesson.get('effort_minutes')), lesson: body };
+}
+function hasMaterial(app) {
+    try { return Boolean(app.findCollectionByNameOrId('classroom_rooms').fields.getByName('material')); }
+    catch (_err) { return false; }
+}
+/** The room's shared lesson: its published guild material when set, otherwise its tutorial. */
+function roomLesson(app, room, info) {
+    if (room.getString('material'))
+        return require(`${__hooks}/guild-lessons.js`).materialFor(app, room.getString('workspace'), room.getString('material'));
+    return lessonFor(app, room.getString('tutorial'), info);
 }
 function lessons(app, info) {
     const rows = app.findRecordsByFilter('tutorials', 'id != ""', 'order,id', 201, 0);
@@ -192,6 +205,7 @@ function command(e) {
         'room.chat': ['title', 'description'],
         'room.update': ['id', 'title', 'description', 'tutorial', 'starts_at'],
         'room.lesson': ['id', 'tutorial', 'section'], 'room.message': ['id', 'body'],
+        'room.material': ['id', 'material', 'section'],
         'room.leave': ['id', 'membership_revision'],
     };
     access.exact(body.payload, payloadFields[body.action] || ['id']);
@@ -204,13 +218,15 @@ function command(e) {
         const participation = ['room.join', 'room.leave'].includes(body.action);
         // The two kinds are not interchangeable: a chatroom carries no lesson, so teaching
         // commands are refused there rather than quietly writing a section nobody can see.
-        if (room && room.getString('kind') === 'chat' && body.action === 'room.lesson')
+        if (room && room.getString('kind') === 'chat' && ['room.lesson', 'room.material'].includes(body.action))
             access.invalid('A chatroom has no lesson. Open a classroom to teach one.');
         if (!participation && !WRITERS.includes(scope.role)) throw new ForbiddenError('An editor or host must make this change.');
         if (room && !participation && body.action !== 'room.message' && !canManage(scope, e.auth, room))
             throw new ForbiddenError('Only this room\'s host or a workspace administrator may manage the class.');
         if (room) roomMembership(app, e.auth, room);
         if (body.payload.tutorial) lessonFor(app, body.payload.tutorial, e.requestInfo());
+        if (body.action === 'room.material' && !require(`${__hooks}/guild-lessons.js`).installed(app))
+            throw new ApiError(503, 'Install the guild lesson migration before sharing class material.');
         result = receipt(app, e, workspace, body, () => {
             if (creating) {
                 if (body.revision !== 0) access.invalid('A new room starts at revision zero.');
@@ -244,21 +260,29 @@ function command(e) {
                 if (body.action === 'room.update') {
                     if (status !== 'scheduled') access.conflict('Edit the schedule before starting the class.');
                     assign(room, draft(app, body, e));
+                    if (hasMaterial(app)) room.set('material', '');
                 } else if (body.action === 'room.start') {
                     if (status !== 'scheduled') access.conflict('This class has already started.');
-                    lessonFor(app, room.getString('tutorial'), e.requestInfo());
+                    roomLesson(app, room, e.requestInfo());
                     assign(room, { status: 'live', started_at: new Date().toISOString() });
                     attend(app, room, e.auth.id, 'start');
                     present(app, e, room, true);
                 } else if (body.action === 'room.end') {
                     assign(room, { status: 'ended', ended_at: new Date().toISOString() });
                     attend(app, room, e.auth.id, 'end');
+                } else if (body.action === 'room.material') {
+                    // A scheduled class may be prepared with its material; an ended one was refused above.
+                    const lesson = require(`${__hooks}/guild-lessons.js`).materialFor(app, workspace, body.payload.material);
+                    if (!Number.isSafeInteger(body.payload.section) || body.payload.section < 0 || body.payload.section >= lesson.lesson.sections.length)
+                        access.invalid('Choose a section from the selected lesson.');
+                    assign(room, { material: lesson.id, section: body.payload.section, tutorial: '' });
                 } else {
                     if (status !== 'live') access.conflict('Start the class before changing the shared lesson.');
                     const lesson = lessonFor(app, body.payload.tutorial, e.requestInfo());
                     if (!Number.isSafeInteger(body.payload.section) || body.payload.section < 0 || body.payload.section >= lesson.lesson.sections.length)
                         access.invalid('Choose a section from the selected lesson.');
                     assign(room, { tutorial: lesson.id, section: body.payload.section });
+                    if (hasMaterial(app)) room.set('material', '');
                 }
                 room.set('revision', Number(room.get('revision')) + 1); app.save(room);
             }
@@ -314,8 +338,9 @@ function detail(e) {
     const discussion = access.list(e.app, 'classroom_messages', 'workspace = {:workspace} && room = {:room}',
         { workspace, room: room.id }, access.page(e));
     let lesson = null;
-    try { lesson = lessonFor(e.app, room.getString('tutorial'), e.requestInfo()); }
-    catch (error) { if (![400, 403, 404].includes(error.status)) throw error; }
+    // Draft, withdrawn or foreign material reads as no lesson, exactly like an unreadable tutorial.
+    try { lesson = roomLesson(e.app, room, e.requestInfo()); }
+    catch (error) { if (![400, 403, 404].includes(error.status) && !(room.getString('material') && error.status === 503)) throw error; }
     return { workspace, role: scope.role, room: output(room, scope, e.auth), lesson, lessons: lessons(e.app, e.requestInfo()),
         membership: { id: mine?.id || '', revision: Number(mine?.get('revision') || 0), active: live && fresh(mine) },
         participants: live ? members(e.app, workspace, room.id).map((row) => ({ id: row.id, name: row.getString('name'), is_host: row.getString('owner') === room.getString('host') })) : [],

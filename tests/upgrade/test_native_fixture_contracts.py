@@ -115,6 +115,8 @@ class NativeFixtureContractTests(unittest.TestCase):
                 "1791400000_classroom_media_sessions.js",
                 "1791400001_broadcast_classroom_lessons.js",
                 "1791500002_authority_repair_lessons.js",
+                "1792400000_guild_publications.js",
+                "1792400002_guild_lessons.js",
             }
             self.assertEqual(set(classroom.MIGRATIONS), expected)
             self.assertEqual(

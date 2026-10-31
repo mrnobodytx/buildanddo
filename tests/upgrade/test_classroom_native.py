@@ -8,9 +8,9 @@
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-16
-# Depends:     tests/upgrade/test_dossier_native.py, apps/pocketbase/pb_hooks/classrooms.js, apps/pocketbase/pb_hooks/classroom-media.js, apps/pocketbase/pb_migrations/1791400000_classroom_media_sessions.js, apps/pocketbase/pb_hooks/guildmasters.js
+# Depends:     tests/upgrade/test_dossier_native.py, apps/pocketbase/pb_hooks/classrooms.js, apps/pocketbase/pb_hooks/classroom-media.js, apps/pocketbase/pb_migrations/1791400000_classroom_media_sessions.js, apps/pocketbase/pb_hooks/guildmasters.js, apps/pocketbase/pb_hooks/guild-lessons.js, apps/pocketbase/pb_hooks/guild-publishing.js, apps/pocketbase/pb_migrations/1792400000_guild_publications.js, apps/pocketbase/pb_migrations/1792400002_guild_lessons.js
 # EnumType:    Test
-# EnumEdges:   CONSUMES tests/upgrade/test_dossier_native.py; VALIDATES apps/pocketbase/pb_hooks/classrooms.js; VALIDATES apps/pocketbase/pb_hooks/classroom-media.js; VALIDATES apps/pocketbase/pb_migrations/1791400000_classroom_media_sessions.js; VALIDATES apps/pocketbase/pb_hooks/guildmasters.js
+# EnumEdges:   CONSUMES tests/upgrade/test_dossier_native.py; VALIDATES apps/pocketbase/pb_hooks/classrooms.js; VALIDATES apps/pocketbase/pb_hooks/classroom-media.js; VALIDATES apps/pocketbase/pb_migrations/1791400000_classroom_media_sessions.js; VALIDATES apps/pocketbase/pb_hooks/guildmasters.js; VALIDATES apps/pocketbase/pb_hooks/guild-lessons.js; VALIDATES apps/pocketbase/pb_hooks/guild-publishing.js; VALIDATES apps/pocketbase/pb_migrations/1792400000_guild_publications.js; VALIDATES apps/pocketbase/pb_migrations/1792400002_guild_lessons.js
 # DAG Node:    none
 # Intent:      Require native classroom authentication, date serialization, concurrent receipt recovery and reversible schema before accepting an installed backend.
 # ───────────────────────────────────────────────────────────────
@@ -54,6 +54,11 @@ MIGRATIONS = (
     "1791400000_classroom_media_sessions.js",
     "1791400001_broadcast_classroom_lessons.js",
     "1791500002_authority_repair_lessons.js",
+    # Guild lessons a host shares with room.material, and the audit row their publication writes.
+    # 1792400001 (the withdrawn editorial status) needs the editorial collections this fixture
+    # does not have, and classrooms never read it.
+    "1792400000_guild_publications.js",
+    "1792400002_guild_lessons.js",
 )
 HOOKS = (
     "classrooms.pb.js",
@@ -69,6 +74,9 @@ HOOKS = (
     "workflow-policy.js",
     "business-action-policy.js",
     "guildmasters.js",
+    "guild-lessons.pb.js",
+    "guild-lessons.js",
+    "guild-publishing.js",
 )
 # The one guildmaster persona seat in this fixture, shaped as the seat migrations create it and as
 # guildmasters.seatOf recognises it: verified, flagged ocn_seat, email <seat>@ocn.buildanddo.invalid.
@@ -287,6 +295,8 @@ class DiagnosticNativeServer(NativeServer):
             "tutorial_progress",
             "evidence",
             "missions",
+            "guild_lessons",
+            "guild_publications",
         }
         if name not in allowed:
             raise ValueError("Choose a public synthetic fixture table.")
@@ -1581,6 +1591,85 @@ class NativeClassroomTests(unittest.TestCase):
             seat,
             (403,),
         )
+
+    def test_native_guild_lesson_is_published_by_the_seat_then_shared_and_started(self) -> None:
+        # guild-lessons.js records retry receipts in workspace_admin_events, which the classroom
+        # fixture otherwise has no use for; give it the locked table the workspace migration creates.
+        self.server.fixture_change(
+            "const relation = (name, target) => ({ name, type: 'relation', required: true, maxSelect: 1,"
+            " collectionId: app.findCollectionByNameOrId(target).id });"
+            " app.save(new Collection({ name: 'workspace_admin_events', type: 'base', listRule: null, viewRule: null,"
+            " createRule: null, updateRule: null, deleteRule: null, fields: [relation('workspace', 'workspaces'),"
+            " relation('actor', 'users'), { name: 'request_key', type: 'text', max: 80 }, { name: 'action', type: 'text', max: 40 },"
+            " { name: 'target', type: 'text', max: 64 }, { name: 'revision', type: 'number' },"
+            " { name: 'command', type: 'json', maxSize: 131072 }, { name: 'result', type: 'json', maxSize: 131072 }] }));"
+        )
+        status, signed_in = self.server.request(
+            "POST",
+            "/api/collections/users/auth-with-password",
+            {"identity": SEAT_IDENTITY, "password": "local-fixture-password-only"},
+        )
+        self.assertEqual(status, 200, "The synthetic seat account must sign in natively.")
+        seat = str(signed_in["token"])
+        lessons = f"/api/buildanddo/workspaces/{WORKSPACE}/guild-lessons"
+        material = {
+            "schema_version": 1,
+            "outcomes": ["Name what was observed before acting."],
+            "sections": [
+                {"heading": "Observe first", "paragraphs": ["Record what the source returned."]},
+                {"heading": "Then act", "steps": ["Choose one bounded step.", "Record what happened."]},
+            ],
+            "references": [{"label": "Workspace guide", "url": "https://example.test/guide"}],
+        }
+        tutorials = self.server.stored("tutorials")
+
+        def lesson(action: str, payload: dict[str, Any], revision: int, token: str, key: str) -> tuple[int, dict[str, Any]]:
+            return self.server.request(
+                "POST", lessons, {"action": action, "revision": revision, "request_key": key, "payload": payload}, token
+            )
+
+        draft = {"id": "", "title": "Evidence before action", "summary": "A weekly guild class.", "lesson": material}
+        # A person cannot author class material, and an answer key is refused before anything is stored.
+        self.assertEqual(lesson("lesson.save", draft, 0, self.editor, "native_guild_lesson_human")[0], 403)
+        keyed = {**draft, "lesson": {**material, "check": {"question": "Which?", "choices": ["A", "B"], "answer": 0}}}
+        self.assertEqual(lesson("lesson.save", keyed, 0, seat, "native_guild_lesson_keyed")[0], 400)
+        self.assertEqual(self.server.stored("guild_lessons"), [])
+        status, saved = lesson("lesson.save", draft, 0, seat, "native_guild_lesson_save")
+        self.assertEqual((status, saved["status"], saved["revision"]), (200, "draft", 1), saved)
+        identifier = saved["id"]
+        status, published = lesson("lesson.publish", {"id": identifier}, 1, seat, "native_guild_lesson_publish")
+        self.assertEqual((status, published["status"]), (200, "published"), published)
+        status, replayed = lesson("lesson.publish", {"id": identifier}, 1, seat, "native_guild_lesson_publish")
+        self.assertEqual((status, replayed["replayed"]), (200, True))
+        rows = self.server.stored("guild_publications")
+        self.assertEqual(
+            [(row["kind"], row["target"], row["actor"], row["actor_seat"], row["persona"], row["action"]) for row in rows],
+            [("guild_lesson", identifier, SEAT_ACCOUNT, "forge", "forge", "published")],
+        )
+        self.assertRegex(rows[0]["content_digest"], r"^[0-9a-f]{64}$")
+        status, listed = self.server.request("GET", lessons, token=self.viewer)
+        self.assertEqual((status, [item["id"] for item in listed["items"]]), (200, [identifier]))
+
+        # The seat hosts a class, prepares it with the lesson, and starts it with no tutorial.
+        status, created = self.create(token=seat)
+        self.assertEqual(status, 200)
+        room = created["id"]
+        share = {"id": room, "material": identifier, "section": 1}
+        self.assertEqual(self.command("room.material", share, 1, self.editor)[0], 403)
+        status, shared = self.command("room.material", share, 1, seat)
+        self.assertEqual((status, shared["revision"]), (200, 2), shared)
+        self.assertEqual(self.command("room.start", {"id": room}, 2, seat)[0], 200)
+        stored = next(row for row in self.server.stored("classroom_rooms") if row["id"] == room)
+        self.assertEqual((stored["status"], stored["tutorial"], stored["material"], stored["section"]), ("live", "", identifier, 1))
+        status, view = self.detail(room, self.viewer)
+        self.assertEqual(status, 200, view)
+        self.assertEqual((view["room"]["material"], view["room"]["tutorial"]), (identifier, ""))
+        self.assertEqual((view["lesson"]["id"], view["lesson"]["source"], view["lesson"]["persona"]), (identifier, "guild_lesson", "forge"))
+        self.assertEqual(view["lesson"]["lesson"]["sections"], material["sections"])
+        self.assertNotRegex(json.dumps(view["lesson"]), r"answer|check")
+        for value in (saved, published, listed, shared, view):
+            self.assertNotIn(SEAT_IDENTITY, json.dumps(value))
+        self.assertEqual(self.server.stored("tutorials"), tutorials)
 
 
 if __name__ == "__main__":
