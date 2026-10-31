@@ -221,13 +221,6 @@
     },
     {
       "area": "governance",
-      "evidence": ".bits/queue/VCC-BUILDANDDO-CURRICULUM-PRIVATE-001.md: 9/9 tasks done; mark SRS-BUILDANDDO-CURRICULUM-PRIVATE-001 delivered once merged and verified, or add the task that remains",
-      "severity": "medium",
-      "srs": "SRS-BUILDANDDO-CURRICULUM-PRIVATE-001",
-      "statement": "VCC-BUILDANDDO-CURRICULUM-PRIVATE-001 has every task done but SRS-BUILDANDDO-CURRICULUM-PRIVATE-001 is still in_progress"
-    },
-    {
-      "area": "governance",
       "evidence": ".bits/queue/VCC-BUILDANDDO-DECISION-001.md: 7/7 tasks done; mark SRS-BUILDANDDO-DECISION-001 delivered once merged and verified, or add the task that remains",
       "severity": "medium",
       "srs": "SRS-BUILDANDDO-DECISION-001",
@@ -902,7 +895,7 @@
       "wired_into_ci": true
     }
   ],
-  "generated_at": "2026-10-31T11:08:31.925151+00:00",
+  "generated_at": "2026-10-31T12:30:47.744501+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -1632,11 +1625,11 @@
         "why": "Competition readiness requires an evidence-backed learning-through-work journey, a reproducible replay and actual submission criteria."
       }
     ],
-    "source_sha256": "9cc6ae8c7c90f8d1d39783b3d8d1fd2f020166eda4027f3fb6145006da7b3d85",
+    "source_sha256": "654056af91cd806a2d24897844267139a67d06dbd91ade8fffb213efde7b7687",
     "state": "PASS"
   },
   "summary": {
-    "findings": 60,
+    "findings": 59,
     "findings_high": 26,
     "pipelines": 4,
     "srs_open": 58,
