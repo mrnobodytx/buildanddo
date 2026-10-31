@@ -462,3 +462,10 @@ srs:
     spec: .bits/srs/SRS-BUILDANDDO-MAIL-001.md
     owner: C-ONE
     notes: Operator decision 2026-09-25 - BuildAndDo mail goes through Customer.io. Both environments were measured with no working mail transport. Open/click tracking and body retention are off per message; the key and sender are configured on the host, never in the repository. Live sends, host configuration and a buildanddo.com sending domain are A3 and need the operator
+  - code: SRS-BUILDANDDO-GUILDMASTER-001
+    title: Guildmaster persona seats are recognised by the server, publish directly under audit and owner/admin withdrawal, and host a weekly class rota
+    status: in_progress
+    risk: A2
+    spec: .bits/srs/SRS-BUILDANDDO-GUILDMASTER-001.md
+    owner: BITS-CODEGEN
+    notes: Owner decisions 2026-10-31 in chat - guildmasters publish directly with an audit trail and owner/admin moderation; each guildmaster hosts one class a week while the others attend and one audits; one seat per guildmaster, each signing in as its own persona seat; start the repo work now. Amends TRUST-001 R3 for authenticated guildmaster authors of their own Daily Edition only. The rota cron is off unless BUILDANDDO_GUILD_CLASS_WORKSPACE names an existing workspace. Excludes the classroom_audit hook, classroom_access and global classes (CLASSROOM-GLOBAL-001), the login verifier and persona key binding (LIVE-UTILIZATION-001), OCN telemetry receipts (OCN-TELEMETRY-001), curriculum answer keys, Discord gating and any staging or production enablement. No deployment
