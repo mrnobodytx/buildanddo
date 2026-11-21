@@ -114,6 +114,12 @@
         "tasks_done": 6,
         "tasks_total": 7
       },
+      "VCC-BUILDANDDO-GM-SHIFT-001": {
+        "srs": "SRS-BUILDANDDO-GM-SHIFT-001",
+        "status": "in_progress",
+        "tasks_done": 0,
+        "tasks_total": 0
+      },
       "VCC-BUILDANDDO-GROWTH-001": {
         "srs": "SRS-BUILDANDDO-GROWTH-001",
         "status": "in_progress",
@@ -244,12 +250,12 @@
     "srs": {
       "by_risk": {
         "A0": 2,
-        "A1": 29,
+        "A1": 30,
         "A2": 30
       },
       "by_status": {
         "delivered": 4,
-        "in_progress": 51,
+        "in_progress": 52,
         "proposed": 6
       },
       "specs": {
@@ -282,6 +288,7 @@
         "SRS-BUILDANDDO-FEDERAL-NAVAIR-001": "proposed",
         "SRS-BUILDANDDO-FEDERAL-SEMANTIC-ISR-001": "proposed",
         "SRS-BUILDANDDO-GITLAB-ONLY-CI-001": "in_progress",
+        "SRS-BUILDANDDO-GM-SHIFT-001": "in_progress",
         "SRS-BUILDANDDO-GROWTH-001": "in_progress",
         "SRS-BUILDANDDO-HEADERS-001": "in_progress",
         "SRS-BUILDANDDO-HYGIENE-001": "in_progress",
@@ -315,7 +322,7 @@
         "SRS-BUILDANDDO-WORKSPACE-001": "in_progress",
         "SRS-BUILDANDDO-WORLD-TWIN-001": "in_progress"
       },
-      "total": 61
+      "total": 62
     }
   },
   "schema": "buildanddo.growth-lock/v1",
@@ -326,7 +333,7 @@
     "pocketbase_hooks": 31,
     "pocketbase_migrations": 67,
     "readmes": 50,
-    "tracked_files": 1887
+    "tracked_files": 1889
   },
   "systems": {
     "apps/career": {

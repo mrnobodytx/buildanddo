@@ -403,6 +403,13 @@
     },
     {
       "area": "governance",
+      "evidence": ".bits/queue/VCC-BUILDANDDO-GM-SHIFT-001.md: TEMPLATE.md asks every task to carry a gate command that prints PASS or FAIL",
+      "severity": "info",
+      "srs": "SRS-BUILDANDDO-GM-SHIFT-001",
+      "statement": "VCC-BUILDANDDO-GM-SHIFT-001 has no task table"
+    },
+    {
+      "area": "governance",
       "evidence": ".bits/queue/VCC-BUILDANDDO-UPGRADE-001.md: TEMPLATE.md asks every task to carry a gate command that prints PASS or FAIL",
       "severity": "info",
       "srs": "SRS-BUILDANDDO-UPGRADE-001",
@@ -875,7 +882,7 @@
       "wired_into_ci": true
     }
   ],
-  "generated_at": "2026-10-27T21:10:42.575927+00:00",
+  "generated_at": "2026-11-21T22:51:22.016282+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -1091,6 +1098,13 @@
         "spec": ".bits/srs/SRS-BUILDANDDO-GITLAB-ONLY-CI-001.md",
         "status": "in_progress",
         "title": "GitLab is the only CI; retire GitHub Actions"
+      },
+      {
+        "code": "SRS-BUILDANDDO-GM-SHIFT-001",
+        "risk": "A1",
+        "spec": ".bits/srs/SRS-BUILDANDDO-GM-SHIFT-001.md",
+        "status": "in_progress",
+        "title": "Guildmaster units on buildanddo.com through the Citadel mission loop, peer-graded, armed only by the owner"
       },
       {
         "code": "SRS-BUILDANDDO-GROWTH-001",
@@ -1516,7 +1530,7 @@
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 1888,
+    "tracked_files": 1890,
     "web_source_files": 386
   },
   "schema_version": 1,
@@ -1600,11 +1614,11 @@
     "state": "PASS"
   },
   "summary": {
-    "findings": 58,
+    "findings": 59,
     "findings_high": 25,
     "pipelines": 4,
-    "srs_open": 57,
-    "srs_total": 61,
+    "srs_open": 58,
+    "srs_total": 62,
     "unwired_gates": 25
   },
   "tests": {
