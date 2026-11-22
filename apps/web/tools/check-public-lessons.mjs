@@ -10,7 +10,7 @@
 // Created:     2026-09-23
 // Depends:     apps/pocketbase/pb_migrations/data/starter-tutorials.json, apps/pocketbase/pb_migrations/data/broadcast-classroom-lessons.json, apps/pocketbase/pb_migrations/data/government-submissions.json
 // EnumType:    Service
-// EnumEdges:   CONSUMES apps/pocketbase/pb_migrations/data/starter-tutorials.json; CONSUMES apps/pocketbase/pb_migrations/data/broadcast-classroom-lessons.json; CONSUMES apps/pocketbase/pb_migrations/data/government-submissions.json; VALIDATES dist/apps/web
+// EnumEdges:   CONSUMES apps/pocketbase/pb_migrations/data/agent-mail-intake-lessons.json; CONSUMES apps/pocketbase/pb_migrations/data/starter-tutorials.json; CONSUMES apps/pocketbase/pb_migrations/data/broadcast-classroom-lessons.json; CONSUMES apps/pocketbase/pb_migrations/data/government-submissions.json; VALIDATES dist/apps/web
 // DAG Node:    none
 // Intent:      Fail a build whose output carries a knowledge-check answer or explanation, the text that gives an interactive lesson's answer away.
 // ───────────────────────────────────────────────────────────────
@@ -18,7 +18,8 @@
 import { readdirSync, readFileSync } from 'node:fs';
 import { join, relative } from 'node:path';
 
-const CURRICULA = ['starter-tutorials.json', 'broadcast-classroom-lessons.json', 'government-submissions.json'];
+const CURRICULA = ['starter-tutorials.json', 'broadcast-classroom-lessons.json', 'government-submissions.json',
+    'agent-mail-intake-lessons.json'];
 
 /** @returns {Array<{slug: string, fingerprint: string}>} The longest escape-free run of every authored explanation. */
 export function explanationFingerprints() {

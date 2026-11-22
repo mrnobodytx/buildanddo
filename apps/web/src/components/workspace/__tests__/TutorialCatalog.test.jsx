@@ -21,12 +21,14 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import curriculum from '../../../../../pocketbase/pb_migrations/data/starter-tutorials.json';
 import broadcastCurriculum from '../../../../../pocketbase/pb_migrations/data/broadcast-classroom-lessons.json';
 import authorityCurriculum from '../../../../../pocketbase/pb_migrations/data/authority-repairs-lessons.json';
+import agentMailCurriculum from '../../../../../pocketbase/pb_migrations/data/agent-mail-intake-lessons.json';
 import { learningFixture } from '../../../../../../tests/upgrade/tutorial-learning-fixture.mjs';
 import { installGovernment } from '../../../../../../tests/upgrade/government-fixture.mjs';
 import { plain } from '../../../../../../tests/upgrade/admin-fixture.mjs';
 import publicStarter from '../../../../../pocketbase/pb_migrations/data/starter-tutorials.json?public-lessons';
 import publicBroadcast from '../../../../../pocketbase/pb_migrations/data/broadcast-classroom-lessons.json?public-lessons';
 import publicAuthority from '../../../../../pocketbase/pb_migrations/data/authority-repairs-lessons.json?public-lessons';
+import publicAgentMail from '../../../../../pocketbase/pb_migrations/data/agent-mail-intake-lessons.json?public-lessons';
 import TutorialCatalog from '@/components/workspace/TutorialCatalog';
 import TutorialsPage from '@/pages/workspace/TutorialsPage';
 import DocsPage from '@/pages/DocsPage';
@@ -48,7 +50,8 @@ const lesson = curriculum.lessons[0];
 const broadcastLesson = broadcastCurriculum.lessons[0];
 const authorityLesson = authorityCurriculum.lessons[0];
 const sourceCases = [broadcastCurriculum, authorityCurriculum];
-const publicLessonCount = curriculum.lessons.length + broadcastCurriculum.lessons.length + authorityCurriculum.lessons.length;
+const publicLessonCount = curriculum.lessons.length + broadcastCurriculum.lessons.length + authorityCurriculum.lessons.length +
+    agentMailCurriculum.lessons.length;
 it('opens the saved lesson linked by a classroom and keeps personal progress separate', async () => {
     const user = setupUser();
     renderWithProviders(<TutorialsPage />, { route: `/app/tutorials?lesson=${lesson.id}` });
@@ -103,7 +106,7 @@ it('observes a reader activation in both sinks without the lesson identity or te
 
 describe('complete Field Manual lessons', () => {
     it('bundles the curriculum the catalogue imports without any knowledge-check answer or explanation', () => {
-        const shipped = [...publicStarter.lessons, ...publicBroadcast.lessons, ...publicAuthority.lessons];
+        const shipped = [...publicStarter.lessons, ...publicBroadcast.lessons, ...publicAuthority.lessons, ...publicAgentMail.lessons];
         expect(shipped).toHaveLength(publicLessonCount);
         for (const item of shipped) {
             expect(Object.keys(item.lesson.check).sort()).toEqual(['choices', 'question']);

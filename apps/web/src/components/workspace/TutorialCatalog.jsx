@@ -14,6 +14,7 @@
 // EnumEdges:   CONSUMES apps/web/src/hooks/useWorkspaceRecords.js; CONSUMES apps/web/src/lib/observability/mutations.js;
 //              CONSUMES apps/web/src/lib/tutorialCurriculum.js; CONSUMES apps/web/src/components/workspace/TutorialReader.jsx;
 //              CONSUMES apps/pocketbase/pb_migrations/data/starter-tutorials.json; CONSUMES apps/pocketbase/pb_migrations/data/broadcast-classroom-lessons.json;
+//              CONSUMES apps/pocketbase/pb_migrations/data/agent-mail-intake-lessons.json;
 //              CONSUMES apps/web/src/lib/tutorialLearning.js; CONSUMES apps/web/src/components/workspace/TutorialGrowth.jsx; CONSUMES apps/web/src/components/workspace/InteractiveTutorial.jsx;
 //              CONSUMES apps/web/src/lib/observability/runtime.js; CONSUMES apps/web/src/lib/navigationIntent.js
 // DAG Node:    none
@@ -26,6 +27,7 @@ import { BookOpen, Clock } from 'lucide-react';
 import curriculum from '../../../../pocketbase/pb_migrations/data/starter-tutorials.json?public-lessons';
 import broadcastCurriculum from '../../../../pocketbase/pb_migrations/data/broadcast-classroom-lessons.json?public-lessons';
 import authorityCurriculum from '../../../../pocketbase/pb_migrations/data/authority-repairs-lessons.json?public-lessons';
+import agentMailCurriculum from '../../../../pocketbase/pb_migrations/data/agent-mail-intake-lessons.json?public-lessons';
 import { Button, Card, StatePill } from '@/components/site/ui';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -44,7 +46,8 @@ import { createTutorialLearningClient } from '@/lib/tutorialLearning';
 import pb from '@/lib/pocketbaseClient';
 import { PUBLIC_ACTIONS, trackPublicAction } from '@/lib/publicActions';
 
-const authoredLessons = [...curriculum.lessons, ...broadcastCurriculum.lessons, ...authorityCurriculum.lessons];
+const authoredLessons = [...curriculum.lessons, ...broadcastCurriculum.lessons, ...authorityCurriculum.lessons,
+    ...agentMailCurriculum.lessons];
 function CatalogView({ lessons, progress = [], readingHistory = [], historyKnown = false, progressKnown = false, onGuided, limit = 0, initialCategory = 'all', initialLesson = '', onLinkedLesson }) {
     const [query, setQuery] = useState('');
     const [category, setCategory] = useState(initialCategory);
