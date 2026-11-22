@@ -40,11 +40,11 @@ carries no grader or runtime of its own.
 | A | Back up the 8 run-as workflows and 16 guildmaster agents before any change | Backup manifest with sha256 per file | done — 25 files, outside the repository |
 | B | Control record (`armed: false`), KILL workflow (disarm only), Bits credit tripwire | KILL test run succeeds; control record reads back `armed: false` | done |
 | C | Run-as workflows: API trigger 30 to 4 a day, `tool_calls` output; agent call unchanged | All 8 published, run-as identity unchanged | done |
-| D | Mission workflow: `kind=qa`, Dev through its own run-as workflow, rota peer reviewer through its run-as workflow, read-only prompts, verdict parsing that defaults to BLOCK | Spec validates; self-review refused; local script tests | done — published after E passed |
+| D | Mission workflow: `kind=qa`, Dev through its own run-as workflow, rota peer reviewer through its run-as workflow, read-only prompts, strict verdicts | Spec validates; self-review refused; draft decision-path tests | done — published, then hardened after the review below |
 | E | One supervised QA unit, end to end | Instance succeeds with a parsable verdict naming both guilds | done — Alex (Commerce) authored, Quill (Writers, rota week 2) re-ran the queries and returned PASS |
-| F | Weekday dispatcher, unpublished, gated on `control:global.armed` | Spec validates; does nothing while disarmed | done — "BuildAndDo · guild weekday units" (weekdays 13:23 UTC) is unpublished; a test run while disarmed stopped at the armed check |
-| G | Report verdicts to the `guildmaster-behaviour` PostHog Scout | `guildmaster_operation` events with `project=buildanddo` | pending — owner picks the path (see below) |
-| H | Arm | Owner instruction in their own words | owner |
+| F | Weekday dispatcher, unpublished, gated on `control:global` (armed and unexpired) | Spec validates; does nothing while disarmed; loop tested without agents | done — "BuildAndDo · guild weekday units" (weekdays 13:23 UTC), unpublished |
+| G | Report verdicts to the `guildmaster-behaviour` PostHog Scout | `guildmaster_operation` events with `project=buildanddo`, read back from PostHog | done — display copy after each record; Scout skill v3 checks it |
+| H | Arm | Owner instruction in their own words; the arming checklist below | owner |
 
 ## Evidence, 2026-11-21
 
@@ -57,11 +57,86 @@ carries no grader or runtime of its own.
   - It also reads `control:pauses` (guilds and kinds) and caps the day at `budget:limits.author_per_day`.
   - It records each unit's verdict in the GM Shift records datastore, keyed by dispatcher instance and guild.
   - Every unit stays read-only, and the mission workflow refuses self-review.
-- **G.** The `guildmaster_operation` events the Scout reads come from Citadel's n8n gm-ops emitter (`op`, `guild`, `persona`, `op_id`, `summary`, `refs`). There are two ways to add the BuildAndDo verdicts, and both need an owner-side credential:
-  - Call that emitter's webhook from the dispatcher.
-  - Add a PostHog capture connection in Datadog.
+- **G.** The PostHog project ingest token lives in the control datastore as
+  `config:posthog`; no workflow spec carries it. After each unit's record, the
+  dispatcher posts one `guildmaster_operation` event to PostHog:
+  - `op=mission_graded`, `project=buildanddo`, `$lib=dd-gm-shift`;
+  - distinct id `gm-<seat>`;
+  - event uuid = the mission instance.
 
-  Neither is wired yet.
+  A loop test replayed the real smoke unit, and PostHog accepted it. A read-back query
+  found exactly one `mission_graded` event, labelled `verdict_source=legacy_smoke`. The
+  `guildmaster-behaviour` Scout is at v3, which adds a BuildAndDo units check (missing
+  units, verdict streaks, ERROR and HALTED, rota integrity).
+
+## Adversarial review, 2026-11-22
+
+Before arming, three independent reviewers read the live specs, the action contracts,
+the smoke-run data and the repository rota: one for runtime correctness, one for safety
+and one for grading validity. A skeptic then tried to refute each finding. 29 findings
+survived and 4 were refuted.
+
+| Findings | Disposition |
+|---|---|
+| A failed author or reviewer run counted as BLOCK; a failed author still triggered a review (F1, GRADE-3, GRADE-6) | Fixed: verdicts are PASS, BLOCK, ERROR or HALTED with `verdict_source`; the review is skipped after an author error |
+| Pausing a guild did not stop it reviewing (F2) | Fixed: the plan skips any unit whose reviewer is paused |
+| Greedy verdict regex; PASS without proof of re-checking; author text spliced into the reviewer prompt (GRADE-2, GRADE-4, SEC-4) | Fixed: one whole JSON object only; qa PASS needs structured checks that all reproduced; author text sits inside per-run markers with verdict objects neutralised |
+| Reviewer override could bypass the rota (GRADE-5); no rota parity record (ROTA-2) | Fixed: qa refuses any reviewer but the rota peer; week and rota reviewer are recorded; 480 of 480 pairs match `libs/guildmasters/rota.py` |
+| Same-model reviewer is not independent under `apps/integrity` (GRADE-1) | Labelled `review_kind=same_model_peer` everywhere; never presented as independent |
+| Kill switch could not stop a unit in flight (F6, SEC-2 in part) | Mitigated: the mission rechecks control before the review and returns HALTED; cancelling in-flight runs from KILL is not available |
+| Arming had no expiry and no single owner path (SEC-3 in part) | Fixed in part: an arm needs a future `armed_until`; the UI-only "GM Shift · ARM" workflow is the only arming path built (1 to 14 days) |
+| Timeout headroom, record failures, counters, repeat full runs, cap fairness (F4, F5, F7, F9, ROTA-1) | Fixed: 7500 s wait; record retries with a fallback; completed and halted counters; one full run per UTC day; the cap rotates |
+| PostHog step design (G1, G2, G3, SEC-6, SEC-7, G-1, G-2) | Fixed: emitted from the dispatcher after the record, guarded by a no-op fallback, with a deterministic uuid; accepted by read-back |
+| The metric was described as sent but never was (GRADE-7) | SRS corrected |
+| The records datastore claimed a digest chain it does not have (SEC-5 in part) | Description corrected |
+| Agents hold the full write-capable Datadog MCP, `gm-*` accounts hold the Standard role, and the QA brief reads public text (SEC-1, high) | Owner decision, arming blocker; see the checklist |
+| Restriction policies on the control and records datastores, workflows and budget monitor (SEC-2, SEC-3, SEC-5) | Owner: not reachable through the APIs this session has |
+| Publishing the dispatcher is a separate step (F3) | Owner step in the checklist |
+
+## Test evidence, 2026-11-22
+
+- **Mission draft, overrides only, no agents.** All four ran on the draft, which was
+  then published:
+  - an author error gives ERROR and skips the review;
+  - a structured PASS with reproduced checks gives PASS;
+  - a gated unit while disarmed gives HALTED and skips the review;
+  - a non-rota reviewer override is refused.
+- **Dispatcher, real, disarmed.** It stops at the arm check: "control:global is not
+  armed".
+- **Dispatcher loop.** Datadog cannot override steps inside a loop body, so a test copy
+  was used: it reads a separate `control:test` key and calls a stub mission that
+  returns instantly.
+  - One commerce unit wrote its record and PostHog event (above).
+  - **Full run:** eight units planned and eight completed. The eight reviewer pairs all
+    differ and match the week-2 rota. A missing PostHog configuration fell back without
+    failing a unit.
+  - **Second full run the same UTC day:** refused at the day lock (409) before any unit.
+  - **Armed at the start but disarmed at the per-unit recheck:** halted with zero units
+    and no mission run.
+
+## Arming checklist (owner)
+
+1. Decide SEC-1. The proposal:
+   - re-add the Datadog MCP to the 16 guildmaster agents with an explicit read-only
+     tool list;
+   - give them the GitLab reader as a pinned action tool instead of
+     `execute_datadog_workflow`;
+   - move the eight `gm-*` service accounts to a custom role cloned from Read Only,
+     without `workflows_run`.
+2. Add restriction policies: owner-only editor on the control and records datastores,
+   the dispatcher, mission, run-as, ARM and KILL workflows, and the budget monitor.
+3. Publish "BuildAndDo · guild weekday units".
+4. Run "GM Shift · ARM" from the Datadog UI with a number of days and a reason.
+5. Watch the first 13:23 UTC run: one record and one PostHog event per unit, and the
+   Scout's next report.
+
+Test-only workflows that are still unpublished and can be deleted, which needs owner
+confirmation:
+- "GM Shift · stub mission (test only)";
+- "BuildAndDo · guild weekday units (TEST COPY)";
+- "GM Shift · test cleanup (one-shot)".
+
+The test records and the `control:test` item are already deleted.
 
 ## Constraints
 

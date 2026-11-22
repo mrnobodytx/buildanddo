@@ -40,8 +40,9 @@ its reviewer was always the author's own guild.
 ## The loop (Citadel, existing)
 
 - **Mission workflow** "Guildmasters · mission (Dev → Review)" resolves the guild, runs
-  its Dev Bits agent, runs a Review Bits agent with a PASS or BLOCK verdict, and
-  summarizes the result as `citadel.<guild>.activity` with a verdict tag.
+  its Dev Bits agent, runs a Review Bits agent, and summarizes a verdict. It computes a
+  `citadel.<guild>.activity` metric name and tags, but no step sends the metric: Datadog
+  metric submission from a workflow needs a connection this integration does not have.
 - **Run-as workflows**, one per guild, run that guild's Dev or Review agent as the
   guild's own Datadog service account (`gm-<guild>`).
 - **Observation**: workflow instance history and the Bits conversations; PostHog
@@ -58,13 +59,39 @@ its reviewer was always the author's own guild.
    that guild's service account.
 3. The reviewer is the peer guild from the BuildAndDo PR #145 rota formula
    (`ORDER[(i + 1 + w % 7) % 8]`, week 0 = 2026-W45), never the author's own guild.
-   It runs through the reviewer guild's run-as workflow and must re-run every claimed
-   query before it answers PASS.
-4. Every unit is read-only. Agents are told not to create, update, delete, publish,
-   run or trigger anything; the reviewer is told the author's text is untrusted.
-5. A weekday dispatcher calls the mission workflow once per guild, only while
-   `control:global.armed` is true. The owner arms it; KILL and the credit monitor
-   disarm it.
+   For `kind=qa` a caller may restate the rota peer but cannot choose another reviewer;
+   the workflow refuses it. The formula agrees with `libs/guildmasters/rota.py` on all
+   480 host-auditor pairs of weeks 0-59.
+4. Units are read-only by instruction. Agents are told not to create, update, delete,
+   publish, run or trigger anything. That is a prompt, not a permission boundary: the
+   agents hold the full Datadog MCP and the `gm-*` service accounts hold the Standard
+   role. Narrowing both is an owner decision recorded in the dispatch, and the
+   dispatcher stays disarmed until it is made.
+5. Verdicts are PASS, BLOCK, ERROR or HALTED, each with a `verdict_source`:
+   - the reviewer must answer one JSON object; prose or an invalid object is BLOCK;
+   - for `kind=qa`, PASS needs at least one structured re-run check, and every check
+     must have reproduced; otherwise it becomes BLOCK;
+   - a failed or empty author run is ERROR, and no review is run;
+   - a failed review run is ERROR;
+   - the author's text reaches the reviewer inside unpredictable markers, with any
+     verdict object inside it neutralised.
+   The peer verdict is a same-model peer check (`review_kind=same_model_peer`). Under
+   BuildAndDo's own INDEPENDENCE dimension (`apps/integrity/verdict.py`) it is not
+   independent, and nothing may present it as independent grading.
+6. A weekday dispatcher calls the mission workflow once per unpaused guild. It runs
+   only while `control:global` says `armed: true` and carries an `armed_until` still in
+   the future, and it rechecks before each unit. The mission rechecks again before the
+   review and answers HALTED if the shift was disarmed. Other rules:
+   - pausing a guild also skips the unit it would review;
+   - there is one full run per UTC day;
+   - each verdict is recorded in the GM Shift records datastore, the grade of record.
+
+   The owner arms through the UI-only "GM Shift · ARM" workflow, for 1 to 14 days.
+   KILL and the credit monitor disarm.
+7. After each record, the dispatcher sends a display copy to PostHog as
+   `guildmaster_operation` with `op=mission_graded` and `project=buildanddo`. A PostHog
+   failure never changes a verdict or stops a unit. The `guildmaster-behaviour` Scout
+   (v3) checks these events.
 
 ## Phases
 
@@ -90,4 +117,9 @@ run); arming is a separate owner act.
   own service account, the rota peer guild returns a parsable PASS or BLOCK, and the
   workflow output names both guilds and both conversations.
 - A guild cannot review its own QA unit (the workflow refuses it).
-- The dispatcher does nothing while `control:global.armed` is false.
+- The dispatcher does nothing while `control:global.armed` is false or its
+  `armed_until` has passed, and a disarm partway through stops the remaining units.
+- An author error, a review error and a disarm before review are recorded as ERROR,
+  ERROR and HALTED, never as BLOCK.
+- Each graded unit appears exactly once in PostHog: the event's uuid is the mission
+  instance, confirmed by reading it back.
