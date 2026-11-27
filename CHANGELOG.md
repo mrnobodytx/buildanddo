@@ -35,6 +35,10 @@ the entry.
 - bits: refresh the growth lock after merging main (`6a373bd`)
 - bits: regenerate locks after merging main (`60692dc`, SRS-BUILDANDDO-WEB-COVERAGE-001)
 
+### Fixed
+
+- telemetry: name the /api/classroom/ice route and expect turn_configured in health [SRS-BUILDANDDO-REALTIME-TURN-001] (`3d709a5`, SRS-BUILDANDDO-REALTIME-TURN-001)
+
 ### Other
 
 - Record the PostHog-independent CNWB Scout and its correlation with BuildAndDo (`07de76a`, SRS-CN-GM-SCOUT-001)
