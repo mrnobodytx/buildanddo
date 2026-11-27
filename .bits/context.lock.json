@@ -875,7 +875,7 @@
       "wired_into_ci": true
     }
   ],
-  "generated_at": "2026-10-27T21:10:42.575927+00:00",
+  "generated_at": "2026-11-21T20:17:03.689297+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -1537,7 +1537,7 @@
       },
       {
         "id": "HS-03",
-        "next_step": "Migration rollout is now validated on BOTH environments: preflighted against a disposable copy of live data, applied behind a database backup, and confirmed by an authenticated readback from a second box (production at 72 applied migrations, 79 collections, 33 lessons). Recovery is still unexercised - backups were taken but no restore has been performed, so rollback remains a claim rather than an observation. Exercise a restore onto a disposable profile and record it. The later classroom migrations (media sessions and the broadcast lesson) are not rolled out yet: execute both expanded native runtime profiles, including media-session and lesson installation, typed track responses, ownership/revocation and rollback. Have the release owner install matching backend migrations/hooks before the frontend and measure actual provider delivery and stream revocation on staging.",
+        "next_step": "Migration rollout is now validated on BOTH environments: preflighted against a disposable copy of live data, applied behind a database backup, and confirmed by an authenticated readback from a second box (production at 72 applied migrations, 79 collections, 33 lessons). Recovery is still unexercised - backups were taken but no restore has been performed, so rollback remains a claim rather than an observation. Exercise a restore onto a disposable profile and record it. The later classroom migrations (media sessions and the broadcast lesson) are not rolled out yet: execute both expanded native runtime profiles, including media-session and lesson installation, typed track responses, ownership/revocation and rollback. Hooks from a9b6e71 until the positional Middleware repair (VCC-BUILDANDDO-UPGRADE-001 CX) stop 0.39.8 `serve` at startup and must not be installed; with the repair the native classroom profile runs again. Have the release owner install matching backend migrations/hooks before the frontend and measure actual provider delivery and stream revocation on staging.",
         "owner": "BITS-CODEGEN / IDE1",
         "why": "Persisted work and tenant isolation make the application useful beyond a visual prototype."
       },
@@ -1596,7 +1596,7 @@
         "why": "Competition readiness requires an evidence-backed learning-through-work journey, a reproducible replay and actual submission criteria."
       }
     ],
-    "source_sha256": "e87f730fe08e91b65710e87c6ac0f22c15b3d177978bf815bbcdaca65c9ba6fb",
+    "source_sha256": "9a6887412fa8554f5000144c61993bfc669b3c5a87a8191f7a7f64931b9d0c86",
     "state": "PASS"
   },
   "summary": {
