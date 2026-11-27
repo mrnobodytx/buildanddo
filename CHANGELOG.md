@@ -32,10 +32,12 @@ the entry.
 
 ### Added
 
+- ci: merge green agent PRs unattended and give the plane its own lane [SRS-BUILDANDDO-GITLAB-ONLY-CI-001] (`e39d344e`, SRS-BUILDANDDO-GITLAB-ONLY-CI-001)
 - readiness: count the two checks the staging line added, and refresh the locks [SRS-BUILDANDDO-RECONCILE-001] (`8ba5f5cf`, SRS-BUILDANDDO-RECONCILE-001)
 
 ### Changed
 
+- bits: record EPOCH-20261027-02 in the evidence chain [skip ci] (`327decb7`, SRS-BUILDANDDO-EPOCH-001)
 - bits: record EPOCH-20261027-01 in the evidence chain [skip ci] (`87a24f09`, SRS-BUILDANDDO-EPOCH-001)
 - ci: refresh the context lock for the selftest fix [SRS-BUILDANDDO-ROADMAP-001] (`e28e74a9`, SRS-BUILDANDDO-ROADMAP-001)
 - gitlab: make GitLab the only CI and retire GitHub Actions [SRS-BUILDANDDO-GITLAB-ONLY-CI-001] (`fc3cb691`, SRS-BUILDANDDO-GITLAB-ONLY-CI-001)

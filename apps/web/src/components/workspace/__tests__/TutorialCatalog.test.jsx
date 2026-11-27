@@ -44,6 +44,14 @@ vi.mock('@/lib/pocketbaseClient', async () => {
 });
 vi.mock('@/lib/observability/runtime', () => ({ reportAction: vi.fn(), reportMetric: vi.fn(), trackAuthIdentity: vi.fn(), readFailed: vi.fn() }));
 vi.mock('@/lib/telemetry', () => ({ trackEvent: vi.fn() }));
+// Radix attaches the dialog's Escape listener in the same effect that moves focus into it. On a
+// loaded runner an Escape typed before that effect ran was simply lost and the dialog stayed open
+// (jobs 105160 and 6404), so wait until focus is inside the dialog before pressing it.
+async function escapeDialog(user) {
+    await waitFor(() => expect(screen.getByRole('dialog')).toContainElement(document.activeElement));
+    await user.keyboard('{Escape}');
+}
+
 const lesson = curriculum.lessons[0];
 const broadcastLesson = broadcastCurriculum.lessons[0];
 const authorityLesson = authorityCurriculum.lessons[0];
@@ -55,7 +63,7 @@ it('opens the saved lesson linked by a classroom and keeps personal progress sep
     const dialog = within(await screen.findByRole('dialog'));
     expect(dialog.getByRole('heading', { name: lesson.title })).toBeVisible();
     expect(pb.collection('tutorial_progress').create).not.toHaveBeenCalled();
-    await user.keyboard('{Escape}');
+    await escapeDialog(user);
     // Escape closes the dialog through a state update React still has to flush, so this is a
     // WAIT, not a synchronous read. Asserting it directly passed only because userEvent's
     // default delay of 0 awaited a macrotask first - the race was hidden, never removed.
@@ -167,7 +175,7 @@ describe('complete Field Manual lessons', () => {
         const { user, reader, opener } = await read('Review');
         expect(reader.getByText('Guided tutorial completed. Reading practice does not change your saved completion.')).toBeVisible();
         expect(reader.queryByRole('button', { name: 'Mark lesson complete' })).not.toBeInTheDocument();
-        await user.keyboard('{Escape}');
+        await escapeDialog(user);
         await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
         expect(opener).toHaveFocus();
         expect(pb.__collection('tutorial_progress').update).not.toHaveBeenCalled();
@@ -323,7 +331,7 @@ describe('complete Field Manual lessons', () => {
         expect(reader.getByText(edited.lesson.why)).toBeVisible();
         expect(reader.queryByRole('button', { name: 'Save reading progress' })).not.toBeInTheDocument();
         for (const name of ['tutorial_progress', 'tutorial_learning', 'evidence']) expect(pb.__collection(name).create).not.toHaveBeenCalled();
-        await setupUser().keyboard('{Escape}');
+        await escapeDialog(setupUser());
         await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
         expect(screen.getAllByRole('heading', { name: edited.title })).toHaveLength(1);
         expect(await screen.findByText(`0 of ${publicLessonCount} guided tutorials completed`)).toBeVisible();
