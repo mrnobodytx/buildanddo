@@ -51,6 +51,10 @@ the entry.
 
 ## 2026-11-21
 
+### Added
+
+- web: add the AI agent mail-intake lesson (`642bc36`, SRS-BUILDANDDO-UPGRADE-001)
+
 ### Changed
 
 - bits: refresh context and growth locks for SRS-BUILDANDDO-GM-SHIFT-001 (`18f48ae`, SRS-BUILDANDDO-GM-SHIFT-001)
