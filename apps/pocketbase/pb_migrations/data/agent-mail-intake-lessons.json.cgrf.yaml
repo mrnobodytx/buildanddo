@@ -1,0 +1,21 @@
+# --- CGRF Header ------------------------------------------------
+# File:        apps/pocketbase/pb_migrations/data/agent-mail-intake-lessons.json.cgrf.yaml
+# Stage:       07_BUILD
+# SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-CN-GM-MAIL-INTAKE-001
+# CAPS:        pending
+# CK:          pending
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+# Seat:        C-ONE
+# Owner:       Citadel Nexus Inc.
+# Created:     2026-11-21
+# Depends:     apps/pocketbase/pb_migrations/data/agent-mail-intake-lessons.json
+# EnumType:    ConfigDoc
+# EnumEdges:   VALIDATES apps/pocketbase/pb_migrations/data/agent-mail-intake-lessons.json
+# DAG Node:    none
+# Intent:      Describe one public lesson on safe AI-agent mail intake, built from a measured first mission.
+# ----------------------------------------------------------------
+file: apps/pocketbase/pb_migrations/data/agent-mail-intake-lessons.json
+curriculum_version: '2026.11.mailintake.1'
+lesson_count: 1
+purpose: Teach sender proof from the receiver's first Authentication-Results header, intent with a falsifiable hypothesis, email-never-authorizes, stopping for human challenges, durable intake and measuring what an agent actually saw.
+provenance: Case study of the 2026-11-21 guild-agent analytics invitations; outcomes stated are the measured ones (1 of 8 signups completed and confirmed by the vendor's member list, 7 stopped at a human challenge, 8 of 8 queued and 0 claimed). No hostnames, machine names, addresses or credentials are included.

@@ -58,6 +58,7 @@ CURRICULA = {
                                        {"source_evidence": {"commit": "fixture"}}),
     "broadcast-classroom-lessons.json": (("fixture-broadcast",), "2026.fx.broadcast.1", 2, True,
                                          {"source_evidence": {"commit": "fixture"}}),
+    "agent-mail-intake-lessons.json": (("fixture-mail-intake",), "2026.fx.mailintake.1", 2, True, {}),
 }
 ALL_SLUGS = [slug for slugs, *_ in CURRICULA.values() for slug in slugs]
 
@@ -234,7 +235,7 @@ class StripTests(ToolCase):
         self.assertEqual(code, 0)
         self.assertEqual(self.report(out)["stripped"], len(ALL_SLUGS))
         numstat = repo.git("diff", "--numstat", keyed, "--", lk.DATA_DIR).splitlines()
-        self.assertEqual(len(numstat), 4)
+        self.assertEqual(len(numstat), 5)
         for row in numstat:
             added, deleted, path = row.split("\t")
             lessons = len(CURRICULA[Path(path).name][0])
@@ -379,7 +380,7 @@ class ExportTests(ToolCase):
         self.assertEqual(self.report(stdout)["source"], "pocketbase")
         self.assertEqual(database.read_bytes(), before)
         doc = json.loads(out.read_text(encoding="utf-8"))
-        self.assertEqual(doc["source"], {"kind": "pocketbase", "revision": "2026-10-04 10:00:00.000Z"})
+        self.assertEqual(doc["source"], {"kind": "pocketbase", "revision": "2026-10-05 10:00:00.000Z"})
         self.assertEqual(sorted(doc["lessons"]), sorted(ALL_SLUGS))
         self.assertTrue(all(entry["id"].startswith("db") for entry in doc["lessons"].values()))
         self.assertEqual(self.run_tool(repo, "verify", "--keys", str(out), "--require-private")[0], 0)
@@ -426,7 +427,7 @@ class ExportTests(ToolCase):
         self.assertEqual(
             {name: result[name] for name in ("state", "lessons", "source", "from_db", "from_rev", "from_rev_slugs",
                                              "differs_from_rev", "differs_slugs")},
-            {"state": "OK", "lessons": 7, "source": "pocketbase", "from_db": 4, "from_rev": 3,
+            {"state": "OK", "lessons": 8, "source": "pocketbase", "from_db": 5, "from_rev": 3,
              "from_rev_slugs": ["fixture-authority", "fixture-broadcast", "fixture-gov-review"],
              "differs_from_rev": 1, "differs_slugs": ["fixture-signals"]})
         self.assertEqual(out.stat().st_mode & 0o777, 0o600)
@@ -485,8 +486,8 @@ class VerifyTests(ToolCase):
     def test_a_good_file_passes_with_counts_only(self) -> None:
         code, result = self.verify(self.keys)
         self.assertEqual(code, 0)
-        expected = {"state": "OK", "schema": True, "integrity": True, "lessons": 7, "public": 7, "bound": 7,
-                    "version_match": 7, "in_range": 7, "missing": 0, "extra": 0, "malformed": 0}
+        expected = {"state": "OK", "schema": True, "integrity": True, "lessons": 8, "public": 8, "bound": 8,
+                    "version_match": 8, "in_range": 8, "missing": 0, "extra": 0, "malformed": 0}
         self.assertEqual({name: result[name] for name in expected}, expected)
 
     def test_an_absent_or_empty_file_is_blocked(self) -> None:
@@ -588,7 +589,7 @@ class OracleTests(ToolCase):
         keys = self.export(repo, keyed)
         code, out, _err = self.run_tool(repo, "verify", "--keys", str(keys), "--require-private", "--against-rev", keyed)
         result = self.report(out)
-        self.assertEqual((code, result["strip_equal"], result["lock_match"]), (0, "4/4", "4/4"))
+        self.assertEqual((code, result["strip_equal"], result["lock_match"]), (0, "5/5", "5/5"))
 
     def tampered(self, repo: Repo, keys: Path, slug: str, **changes) -> Path:
         doc = json.loads(keys.read_text(encoding="utf-8"))
@@ -609,7 +610,7 @@ class OracleTests(ToolCase):
                 self.assertEqual(self.run_tool(repo, "verify", "--keys", str(path))[0], 0)
                 code, out, _err = self.run_tool(repo, "verify", "--keys", str(path), "--against-rev", keyed)
                 result = self.report(out)
-                self.assertEqual((code, result["strip_equal"], result["lock_match"]), (1, "4/4", "3/4"))
+                self.assertEqual((code, result["strip_equal"], result["lock_match"]), (1, "5/5", "4/5"))
 
     def test_against_rev_catches_a_changed_public_byte(self) -> None:
         repo, keyed, _head = self.stripped_repo()
@@ -620,7 +621,7 @@ class OracleTests(ToolCase):
         repo.commit("edit a public title")
         code, out, _err = self.run_tool(repo, "verify", "--keys", str(keys), "--against-rev", keyed)
         result = self.report(out)
-        self.assertEqual((code, result["strip_equal"], result["lock_match"]), (1, "3/4", "3/4"))
+        self.assertEqual((code, result["strip_equal"], result["lock_match"]), (1, "4/5", "4/5"))
 
     def test_against_rev_needs_the_recorded_lock(self) -> None:
         repo = Repo(self)
@@ -630,7 +631,7 @@ class OracleTests(ToolCase):
         keys = self.export(repo, keyed)
         code, out, _err = self.run_tool(repo, "verify", "--keys", str(keys), "--against-rev", keyed)
         result = self.report(out)
-        self.assertEqual((code, result["strip_equal"], result["lock_match"]), (1, "4/4", "3/4"))
+        self.assertEqual((code, result["strip_equal"], result["lock_match"]), (1, "5/5", "4/5"))
 
     def test_against_rev_refuses_an_unknown_revision(self) -> None:
         repo, keyed, _head = self.stripped_repo()
@@ -734,13 +735,13 @@ class DigestTests(ToolCase):
     def test_capture_then_compare_unchanged(self) -> None:
         baseline = self.repo.outside / "digests.json"
         code, result, _out = self.digests("--out", str(baseline))
-        self.assertEqual((code, result["published"], result["unavailable"], result["missing"]), (0, 5, 1, 1))
+        self.assertEqual((code, result["published"], result["unavailable"], result["missing"]), (0, 6, 1, 1))
         self.assertEqual(baseline.stat().st_mode & 0o777, 0o600)
         recorded = json.loads(baseline.read_text())
         self.assertEqual(recorded["schema_version"], lk.DIGEST_SCHEMA)
         self.assertEqual(sorted(recorded["digests"]), sorted(ALL_SLUGS))
         code, result, _out = self.digests("--compare", str(baseline))
-        self.assertEqual((code, result["same"], result["changed"], result["lost"]), (0, 5, 0, 0))
+        self.assertEqual((code, result["same"], result["changed"], result["lost"]), (0, 6, 0, 0))
 
     def test_compare_reports_changed_and_lost_lessons(self) -> None:
         baseline = self.repo.outside / "digests.json"

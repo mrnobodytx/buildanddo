@@ -381,9 +381,9 @@
     "github_workflows": 0,
     "gitlab_jobs": 24,
     "pocketbase_hooks": 36,
-    "pocketbase_migrations": 73,
+    "pocketbase_migrations": 74,
     "readmes": 51,
-    "tracked_files": 1970
+    "tracked_files": 1974
   },
   "systems": {
     "apps/career": {
@@ -517,17 +517,17 @@
       "test_files": 3
     },
     "apps/pocketbase": {
-      "cgrf_coverage": 0.8924,
-      "cgrf_files": 141,
-      "files": 171,
+      "cgrf_coverage": 0.8931,
+      "cgrf_files": 142,
+      "files": 174,
       "lines": {
-        "data": 3854,
-        "javascript": 17621,
+        "data": 4002,
+        "javascript": 17661,
         "typescript": 917
       },
       "readme": false,
-      "source_files": 158,
-      "source_lines": 18538,
+      "source_files": 159,
+      "source_lines": 18578,
       "srs_codes": [
         "SRS-BUILDANDDO-BUDDI-001",
         "SRS-BUILDANDDO-BUDDI-002",
@@ -547,6 +547,7 @@
         "SRS-BUILDANDDO-TRUST-001",
         "SRS-BUILDANDDO-UPGRADE-001",
         "SRS-BUILDANDDO-WORKSPACE-001",
+        "SRS-CN-GM-MAIL-INTAKE-001",
         "SRS-CN-PERSONA-RUNTIME-001"
       ],
       "test_files": 22
@@ -589,12 +590,12 @@
         "css": 1101,
         "data": 1449,
         "html": 22,
-        "javascript": 79300,
+        "javascript": 79310,
         "markdown": 129
       },
       "readme": true,
       "source_files": 495,
-      "source_lines": 80423,
+      "source_lines": 80433,
       "srs_codes": [
         "SRS-BUILDANDDO-BUDDI-001",
         "SRS-BUILDANDDO-BUDDI-003",
@@ -746,11 +747,11 @@
       "lines": {
         "data": 708,
         "javascript": 50,
-        "python": 24468
+        "python": 24470
       },
       "readme": false,
       "source_files": 54,
-      "source_lines": 24518,
+      "source_lines": 24520,
       "srs_codes": [
         "SRS-BUILDANDDO-AGENTCTX-001",
         "SRS-BUILDANDDO-CHANGELOG-001",
@@ -860,13 +861,13 @@
     }
   },
   "totals": {
-    "cgrf_coverage": 0.848,
-    "files": 1163,
-    "source_lines": 190762,
+    "cgrf_coverage": 0.8482,
+    "files": 1166,
+    "source_lines": 190814,
     "systems": 25,
     "systems_with_readme": 5,
     "systems_with_tests": 23,
     "test_files": 276,
-    "test_files_unattributed": 129
+    "test_files_unattributed": 130
   }
 }
