@@ -1,9 +1,9 @@
 {
   "progression": {
     "dispatch_tasks": {
-      "done": 196,
-      "progress": 0.8596,
-      "total": 228
+      "done": 200,
+      "progress": 0.8621,
+      "total": 232
     },
     "dispatches": {
       "USO-BUILDANDDO-CRAWL-001": {
@@ -204,6 +204,12 @@
         "tasks_done": 5,
         "tasks_total": 5
       },
+      "VCC-BUILDANDDO-REALTIME-TURN-001": {
+        "srs": "SRS-BUILDANDDO-REALTIME-TURN-001",
+        "status": "in_progress",
+        "tasks_done": 4,
+        "tasks_total": 4
+      },
       "VCC-BUILDANDDO-RECONCILE-001": {
         "srs": "SRS-BUILDANDDO-RECONCILE-001",
         "status": "in_progress",
@@ -263,12 +269,12 @@
       "by_risk": {
         "A0": 2,
         "A1": 30,
-        "A2": 31,
+        "A2": 32,
         "A3": 1
       },
       "by_status": {
         "delivered": 4,
-        "in_progress": 54,
+        "in_progress": 55,
         "proposed": 6
       },
       "specs": {
@@ -319,6 +325,7 @@
         "SRS-BUILDANDDO-PUBLIC-REDACTION-001": "in_progress",
         "SRS-BUILDANDDO-PURPOSE-001": "in_progress",
         "SRS-BUILDANDDO-QUIZ-001": "in_progress",
+        "SRS-BUILDANDDO-REALTIME-TURN-001": "in_progress",
         "SRS-BUILDANDDO-RECONCILE-001": "in_progress",
         "SRS-BUILDANDDO-RELEASE-TAG-001": "in_progress",
         "SRS-BUILDANDDO-ROADMAP-001": "in_progress",
@@ -337,7 +344,7 @@
         "SRS-BUILDANDDO-WORKSPACE-001": "in_progress",
         "SRS-BUILDANDDO-WORLD-TWIN-001": "in_progress"
       },
-      "total": 64
+      "total": 65
     }
   },
   "schema": "buildanddo.growth-lock/v1",
@@ -348,7 +355,7 @@
     "pocketbase_hooks": 31,
     "pocketbase_migrations": 67,
     "readmes": 50,
-    "tracked_files": 1895
+    "tracked_files": 1898
   },
   "systems": {
     "apps/career": {
@@ -487,12 +494,12 @@
       "files": 154,
       "lines": {
         "data": 3924,
-        "javascript": 15604,
+        "javascript": 15677,
         "typescript": 917
       },
       "readme": false,
       "source_files": 141,
-      "source_lines": 16521,
+      "source_lines": 16594,
       "srs_codes": [
         "SRS-BUILDANDDO-BUDDI-001",
         "SRS-BUILDANDDO-BUDDI-002",
@@ -505,6 +512,7 @@
         "SRS-BUILDANDDO-MAIL-001",
         "SRS-BUILDANDDO-PRESENCE-001",
         "SRS-BUILDANDDO-QUIZ-001",
+        "SRS-BUILDANDDO-REALTIME-TURN-001",
         "SRS-BUILDANDDO-SITE-001",
         "SRS-BUILDANDDO-TRUST-001",
         "SRS-BUILDANDDO-UPGRADE-001",
@@ -551,12 +559,12 @@
         "css": 1101,
         "data": 1449,
         "html": 22,
-        "javascript": 73870,
+        "javascript": 73959,
         "markdown": 129
       },
       "readme": true,
       "source_files": 466,
-      "source_lines": 74993,
+      "source_lines": 75082,
       "srs_codes": [
         "SRS-BUILDANDDO-BUDDI-001",
         "SRS-BUILDANDDO-BUDDI-003",
@@ -572,6 +580,7 @@
         "SRS-BUILDANDDO-PUBLIC-REDACTION-001",
         "SRS-BUILDANDDO-PURPOSE-001",
         "SRS-BUILDANDDO-QUIZ-001",
+        "SRS-BUILDANDDO-REALTIME-TURN-001",
         "SRS-BUILDANDDO-ROADMAP-001",
         "SRS-BUILDANDDO-RUM-001",
         "SRS-BUILDANDDO-RUM-002",
@@ -687,7 +696,7 @@
       "cgrf_files": 52,
       "files": 56,
       "lines": {
-        "data": 681,
+        "data": 690,
         "javascript": 50,
         "python": 22984
       },
@@ -802,11 +811,11 @@
   "totals": {
     "cgrf_coverage": 0.8399,
     "files": 1112,
-    "source_lines": 181409,
+    "source_lines": 181571,
     "systems": 24,
     "systems_with_readme": 4,
     "systems_with_tests": 23,
     "test_files": 242,
-    "test_files_unattributed": 124
+    "test_files_unattributed": 125
   }
 }

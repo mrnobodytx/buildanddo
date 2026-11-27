@@ -41,7 +41,7 @@ const SECTIONS = new Set([
 // whose accidental SPA fallback must still be measured. Unknown paths fail closed.
 const ENDPOINTS = [
     '/api/health', '/api/ocn/login', '/api/ocn/health', '/api/files/token',
-    ...['session', 'tracks', 'renegotiate', 'close', 'health', 'presence', 'presence/health'].map((path) => `/api/classroom/${path}`),
+    ...['session', 'tracks', 'renegotiate', 'close', 'health', 'ice', 'presence', 'presence/health'].map((path) => `/api/classroom/${path}`),
     ...['auth-with-password', 'auth-with-oauth2', 'auth-refresh', 'auth-methods', 'request-password-reset',
         'confirm-password-reset', 'request-verification', 'confirm-verification', 'request-email-change',
         'confirm-email-change', 'request-otp', 'auth-with-otp', 'records', 'records/:record',
