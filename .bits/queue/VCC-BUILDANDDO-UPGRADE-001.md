@@ -1921,3 +1921,21 @@ correlated Datadog logs were found. The unchanged npm lock has ten failures
 also present on main; local npm build stops because concurrently is absent.
 The root cause of the hosted Workers failure is not inferred from those local
 limitations. The report preserves both histories and their receiving contracts.
+
+## PocketBase 0.39.8 Middleware repair authorized 2026-11-21
+
+The owner reported on 2026-11-21 that the live room was never put live and
+tested. A local two-browser run and the native classroom suites traced the
+first blocker to `metrics.pb.js`, changed under this dispatch in a9b6e71. The
+0.39.8 binary declares `new Middleware(func, priority?, id?)` and compiles any
+non-function first argument as source, so the definition object became
+"[object Object]" and stopped `serve` with "SyntaxError Line 1:11 Unexpected
+identifier". Every native classroom case failed before running. The three test
+fakes asserted the same wrong signature, so the static suite agreed with the
+defect. The production build 5805bc9 predates a9b6e71 and loads its hook. This
+repair deploys nothing and changes no staging or production setting.
+
+| Phase | Task | Gate command | Status |
+|---|---|---|---|
+| CX | Register request telemetry with the positional 0.39.8 `Middleware(func, priority)` form | `BUILDANDDO_TEST_POCKETBASE=<0.39.8> python3 -m unittest tests.upgrade.test_classroom_native tests.upgrade.test_native_fixture_contracts`; `python3 scripts/ci/classroom_drive.py scenario` | done — native classroom 10/10 (10/10 failed before), fixture contracts 16/16, drive PASS |
+| CY | Make the three Middleware test fakes mirror the binary declaration | `node --test tests/upgrade/*.test.mjs`; the metrics test against the previous hook | done — 1537/1537; against the previous hook the metrics test fails 42/42 |

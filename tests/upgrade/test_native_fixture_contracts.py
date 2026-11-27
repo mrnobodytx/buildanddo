@@ -174,11 +174,13 @@ class NativeFixtureContractTests(unittest.TestCase):
                 const globals = { __hooks: hooks,
                     $os: { getenv: () => '' },
                     $apis: { requireAuth: (...collections) => ({ collections }), bodyLimit: (limit) => ({ limit }) },
-                    Middleware: function (definition) {
-                        assert.equal(typeof definition, 'object', 'Middleware requires a definition object');
-                        assert.equal(typeof definition.func, 'function');
-                        this.func = definition.func;
-                        this.priority = definition.priority ?? 0;
+                    // 0.39.8 declares new Middleware(func, priority?, id?) and compiles a non-function
+                    // first argument as source, so a definition object fails at line 1, column 11.
+                    Middleware: function (func, priority, id) {
+                        if (typeof func !== 'function') throw new SyntaxError('Line 1:11 Unexpected identifier');
+                        this.func = func;
+                        this.priority = priority ?? 0;
+                        this.id = id ?? '';
                         assert.ok(Number.isInteger(this.priority));
                     },
                     routerAdd: (method, path, handler, ...middleware) => routes.set(method + ' ' + path, { handler, middleware }),
