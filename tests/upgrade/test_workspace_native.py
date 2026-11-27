@@ -1,10 +1,10 @@
 # ─── CGRF Header ───────────────────────────────────────────────
 # File:        tests/upgrade/test_workspace_native.py
 # Stage:       08_TEST
-# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-CURRICULUM-PRIVATE-001
 # CAPS:        pending
 # CK:          pending
-# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-CURRICULUM-PRIVATE-001
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-20
@@ -159,12 +159,21 @@ class WorkspaceServer(DiagnosticNativeServer):
                 "evidence.pb.js",
                 "business-policy.js",
                 "tutorial-learning.js",
+                # tutorial-learning.js requires the lesson key resolver at load.
+                "lesson-keys.js",
                 "business.pb.js",
                 "workspace-access.js",
                 "government-access.js",
                 "workspace-record-policy.js",
                 "workspace-claims.js",
                 "workspace-claims.pb.js",
+                # workspace-claims.js requires the guildmaster registry. Its persona migration is
+                # deliberately not installed here, so a guildmaster report fails closed with 503.
+                "guildmasters.js",
+                # workspace-claims.js, business-policy.js and workspace-community.js require the guild
+                # publishing library. Its migrations are not installed here either, so a guildmaster
+                # publication answers 503 while every human and administrator path is unchanged.
+                "guild-publishing.js",
                 "workspace-administration.js",
                 "workspace-community.js",
                 "administration.pb.js",

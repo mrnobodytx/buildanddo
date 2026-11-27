@@ -1,7 +1,7 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/src/hooks/useClassroomMedia.js
 // Stage:       07_BUILD
-// SRS:         SRS-BUILDANDDO-UPGRADE-001
+// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-REALTIME-TURN-001
 // CAPS:        pending
 // CK:          pending
 // Dispatch:    VCC-BUILDANDDO-UPGRADE-001
@@ -36,6 +36,7 @@ import { readFailed, reportAction } from '@/lib/observability/runtime';
 import { trackEvent } from '@/lib/telemetry';
 import {
     joinClassroom,
+    classroomIceServers,
     classroomHealth,
     createPresenceTracker,
     startPresenceHeartbeat,
@@ -83,6 +84,7 @@ export function useClassroomMedia(roomId, { enabled = true } = {}) {
     const [snapshot, setSnapshot] = useState(() => ({ ...IDLE, scope }));
     const trackerRef = useRef(null);
     const audioRef = useRef(null);
+    const iceRef = useRef({ scope: null, servers: undefined });
 
     // The native epoch distinguishes replacement from refresh; token equality does not.
     const currentScope = useCallback(() => Boolean(mounted.current && scopeRef.current === scope &&
@@ -131,6 +133,18 @@ export function useClassroomMedia(roomId, { enabled = true } = {}) {
             });
         return () => { if (generation === healthGeneration.current) healthGeneration.current++; };
     }, [currentScope, update]);
+
+    // ICE servers for the next join, fetched ahead of it so TURN adds no latency to joining
+    // (SRS-BUILDANDDO-REALTIME-TURN-001). Short-lived TURN credentials, kept only in memory for
+    // this scope; classroomIceServers never throws and answers STUN-only when TURN is absent.
+    useEffect(() => {
+        if (!currentScope()) return undefined;
+        let live = true;
+        Promise.resolve(classroomIceServers(pocketbaseClient.authStore.token))
+            .then((ice) => { if (live && currentScope() && Array.isArray(ice?.iceServers)) iceRef.current = { scope, servers: ice.iceServers }; })
+            .catch(() => { /* STUN-only join; the fetcher already reports why. */ });
+        return () => { live = false; };
+    }, [currentScope, scope]);
 
     const leave = useCallback(() => {
         if (!mounted.current || scopeRef.current !== scope) return;
@@ -251,6 +265,8 @@ export function useClassroomMedia(roomId, { enabled = true } = {}) {
         try {
             const next = await joinClassroom({
                 room: roomId,
+                // Prefetched for this scope; until it arrives the join is STUN-only, as before.
+                iceServers: iceRef.current.scope === scope ? iceRef.current.servers : undefined,
                 isCurrent: attempt.current,
                 onCleanup: attempt.addCleanup,
                 onConnectionState: telemetry.connection,
@@ -281,7 +297,7 @@ export function useClassroomMedia(roomId, { enabled = true } = {}) {
             attempt.cancel();
             if (current) update({ status: 'failed', detail: '', error: err?.message || String(err) });
         }
-    }, [roomId, accountId, lifetime, currentScope, update]);
+    }, [roomId, accountId, lifetime, currentScope, update, scope]);
 
     const listen = useCallback(async (row) => {
         const entry = trackerRef.current;

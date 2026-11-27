@@ -1,9 +1,9 @@
 {
   "progression": {
     "dispatch_tasks": {
-      "done": 186,
-      "progress": 0.8611,
-      "total": 216
+      "done": 219,
+      "progress": 0.8656,
+      "total": 253
     },
     "dispatches": {
       "USO-BUILDANDDO-CRAWL-001": {
@@ -54,6 +54,12 @@
         "tasks_done": 3,
         "tasks_total": 3
       },
+      "VCC-BUILDANDDO-CF-WORKERS-BUILD-001": {
+        "srs": "SRS-BUILDANDDO-CF-WORKERS-BUILD-001",
+        "status": "in_progress",
+        "tasks_done": 2,
+        "tasks_total": 2
+      },
       "VCC-BUILDANDDO-CHANGELOG-001": {
         "srs": "SRS-BUILDANDDO-CHANGELOG-001",
         "status": "in_progress",
@@ -72,11 +78,23 @@
         "tasks_done": 0,
         "tasks_total": 5
       },
+      "VCC-BUILDANDDO-CURRICULUM-PRIVATE-001": {
+        "srs": "SRS-BUILDANDDO-CURRICULUM-PRIVATE-001",
+        "status": "in_progress",
+        "tasks_done": 7,
+        "tasks_total": 9
+      },
       "VCC-BUILDANDDO-DAY21-CLOSURE-001": {
         "srs": "SRS-BUILDANDDO-DAY21-CLOSURE-001",
         "status": "unknown",
         "tasks_done": 0,
         "tasks_total": 7
+      },
+      "VCC-BUILDANDDO-DAY21-RUNNER-001": {
+        "srs": "SRS-BUILDANDDO-DAY21-RUNNER-001",
+        "status": "in_progress",
+        "tasks_done": 4,
+        "tasks_total": 5
       },
       "VCC-BUILDANDDO-DECISION-001": {
         "srs": "SRS-BUILDANDDO-DECISION-001",
@@ -114,6 +132,12 @@
         "tasks_done": 6,
         "tasks_total": 7
       },
+      "VCC-BUILDANDDO-GITLAB-RELEASE-001": {
+        "srs": "SRS-BUILDANDDO-GITLAB-RELEASE-001",
+        "status": "in_progress",
+        "tasks_done": 4,
+        "tasks_total": 5
+      },
       "VCC-BUILDANDDO-GM-SHIFT-001": {
         "srs": "SRS-BUILDANDDO-GM-SHIFT-001",
         "status": "in_progress",
@@ -125,6 +149,12 @@
         "status": "in_progress",
         "tasks_done": 5,
         "tasks_total": 5
+      },
+      "VCC-BUILDANDDO-GUILDMASTER-001": {
+        "srs": "SRS-BUILDANDDO-GUILDMASTER-001",
+        "status": "in_progress",
+        "tasks_done": 7,
+        "tasks_total": 7
       },
       "VCC-BUILDANDDO-HEADERS-001": {
         "srs": "SRS-BUILDANDDO-HEADERS-001",
@@ -192,6 +222,12 @@
         "tasks_done": 5,
         "tasks_total": 5
       },
+      "VCC-BUILDANDDO-REALTIME-TURN-001": {
+        "srs": "SRS-BUILDANDDO-REALTIME-TURN-001",
+        "status": "in_progress",
+        "tasks_done": 4,
+        "tasks_total": 4
+      },
       "VCC-BUILDANDDO-RECONCILE-001": {
         "srs": "SRS-BUILDANDDO-RECONCILE-001",
         "status": "in_progress",
@@ -240,6 +276,12 @@
         "tasks_done": 0,
         "tasks_total": 0
       },
+      "VCC-BUILDANDDO-WEB-COVERAGE-001": {
+        "srs": "SRS-BUILDANDDO-WEB-COVERAGE-001",
+        "status": "in_progress",
+        "tasks_done": 5,
+        "tasks_total": 5
+      },
       "VCC-BUILDANDDO-WORLD-TWIN-001": {
         "srs": "SRS-BUILDANDDO-WORLD-TWIN-001",
         "status": "in_progress",
@@ -250,12 +292,13 @@
     "srs": {
       "by_risk": {
         "A0": 2,
-        "A1": 30,
-        "A2": 30
+        "A1": 32,
+        "A2": 34,
+        "A3": 1
       },
       "by_status": {
         "delivered": 4,
-        "in_progress": 52,
+        "in_progress": 59,
         "proposed": 6
       },
       "specs": {
@@ -267,13 +310,16 @@
         "SRS-BUILDANDDO-CAPABILITY-TOKEN-001": "in_progress",
         "SRS-BUILDANDDO-CAREER-001": "in_progress",
         "SRS-BUILDANDDO-CF-IDS-001": "in_progress",
+        "SRS-BUILDANDDO-CF-WORKERS-BUILD-001": "in_progress",
         "SRS-BUILDANDDO-CHANGELOG-001": "in_progress",
         "SRS-BUILDANDDO-CI-001": "delivered",
         "SRS-BUILDANDDO-CLASSROOM-GLOBAL-001": "in_progress",
         "SRS-BUILDANDDO-COMMUNITY-001": "in_progress",
         "SRS-BUILDANDDO-COMMUNITY-WEB-001": "in_progress",
         "SRS-BUILDANDDO-CRAWL-001": "in_progress",
+        "SRS-BUILDANDDO-CURRICULUM-PRIVATE-001": "in_progress",
         "SRS-BUILDANDDO-DAY21-CLOSURE-001": "in_progress",
+        "SRS-BUILDANDDO-DAY21-RUNNER-001": "in_progress",
         "SRS-BUILDANDDO-DECISION-001": "in_progress",
         "SRS-BUILDANDDO-DEPLOY-SWAP-001": "in_progress",
         "SRS-BUILDANDDO-DEVELOPMENT-LOOP-001": "in_progress",
@@ -288,8 +334,10 @@
         "SRS-BUILDANDDO-FEDERAL-NAVAIR-001": "proposed",
         "SRS-BUILDANDDO-FEDERAL-SEMANTIC-ISR-001": "proposed",
         "SRS-BUILDANDDO-GITLAB-ONLY-CI-001": "in_progress",
+        "SRS-BUILDANDDO-GITLAB-RELEASE-001": "in_progress",
         "SRS-BUILDANDDO-GM-SHIFT-001": "in_progress",
         "SRS-BUILDANDDO-GROWTH-001": "in_progress",
+        "SRS-BUILDANDDO-GUILDMASTER-001": "in_progress",
         "SRS-BUILDANDDO-HEADERS-001": "in_progress",
         "SRS-BUILDANDDO-HYGIENE-001": "in_progress",
         "SRS-BUILDANDDO-INTEGRITY-001": "in_progress",
@@ -304,6 +352,7 @@
         "SRS-BUILDANDDO-PUBLIC-REDACTION-001": "in_progress",
         "SRS-BUILDANDDO-PURPOSE-001": "in_progress",
         "SRS-BUILDANDDO-QUIZ-001": "in_progress",
+        "SRS-BUILDANDDO-REALTIME-TURN-001": "in_progress",
         "SRS-BUILDANDDO-RECONCILE-001": "in_progress",
         "SRS-BUILDANDDO-RELEASE-TAG-001": "in_progress",
         "SRS-BUILDANDDO-ROADMAP-001": "in_progress",
@@ -318,22 +367,23 @@
         "SRS-BUILDANDDO-TRADE-ASSIST-001": "in_progress",
         "SRS-BUILDANDDO-TRUST-001": "in_progress",
         "SRS-BUILDANDDO-UPGRADE-001": "in_progress",
+        "SRS-BUILDANDDO-WEB-COVERAGE-001": "in_progress",
         "SRS-BUILDANDDO-WITNESS-001": "in_progress",
         "SRS-BUILDANDDO-WORKSPACE-001": "in_progress",
         "SRS-BUILDANDDO-WORLD-TWIN-001": "in_progress"
       },
-      "total": 62
+      "total": 69
     }
   },
   "schema": "buildanddo.growth-lock/v1",
   "surface": {
-    "docs_pages": 58,
+    "docs_pages": 59,
     "github_workflows": 0,
-    "gitlab_jobs": 20,
-    "pocketbase_hooks": 31,
-    "pocketbase_migrations": 67,
-    "readmes": 50,
-    "tracked_files": 1889
+    "gitlab_jobs": 24,
+    "pocketbase_hooks": 36,
+    "pocketbase_migrations": 73,
+    "readmes": 51,
+    "tracked_files": 1970
   },
   "systems": {
     "apps/career": {
@@ -467,17 +517,17 @@
       "test_files": 3
     },
     "apps/pocketbase": {
-      "cgrf_coverage": 0.8794,
-      "cgrf_files": 124,
-      "files": 154,
+      "cgrf_coverage": 0.8924,
+      "cgrf_files": 141,
+      "files": 171,
       "lines": {
-        "data": 3924,
-        "javascript": 15603,
+        "data": 3854,
+        "javascript": 17621,
         "typescript": 917
       },
       "readme": false,
-      "source_files": 141,
-      "source_lines": 16520,
+      "source_files": 158,
+      "source_lines": 18538,
       "srs_codes": [
         "SRS-BUILDANDDO-BUDDI-001",
         "SRS-BUILDANDDO-BUDDI-002",
@@ -485,18 +535,21 @@
         "SRS-BUILDANDDO-CLASSROOM-001",
         "SRS-BUILDANDDO-CLASSROOM-GLOBAL-001",
         "SRS-BUILDANDDO-COMMUNITY-001",
+        "SRS-BUILDANDDO-CURRICULUM-PRIVATE-001",
         "SRS-BUILDANDDO-DECISION-001",
+        "SRS-BUILDANDDO-GUILDMASTER-001",
         "SRS-BUILDANDDO-LIVE-UTILIZATION-001",
         "SRS-BUILDANDDO-MAIL-001",
         "SRS-BUILDANDDO-PRESENCE-001",
         "SRS-BUILDANDDO-QUIZ-001",
+        "SRS-BUILDANDDO-REALTIME-TURN-001",
         "SRS-BUILDANDDO-SITE-001",
         "SRS-BUILDANDDO-TRUST-001",
         "SRS-BUILDANDDO-UPGRADE-001",
         "SRS-BUILDANDDO-WORKSPACE-001",
         "SRS-CN-PERSONA-RUNTIME-001"
       ],
-      "test_files": 16
+      "test_files": 22
     },
     "apps/research": {
       "cgrf_coverage": 1.0,
@@ -529,19 +582,19 @@
       "test_files": 3
     },
     "apps/web": {
-      "cgrf_coverage": 0.7554,
-      "cgrf_files": 352,
-      "files": 504,
+      "cgrf_coverage": 0.7697,
+      "cgrf_files": 381,
+      "files": 533,
       "lines": {
         "css": 1101,
         "data": 1449,
         "html": 22,
-        "javascript": 73846,
+        "javascript": 79300,
         "markdown": 129
       },
       "readme": true,
-      "source_files": 466,
-      "source_lines": 74969,
+      "source_files": 495,
+      "source_lines": 80423,
       "srs_codes": [
         "SRS-BUILDANDDO-BUDDI-001",
         "SRS-BUILDANDDO-BUDDI-003",
@@ -549,13 +602,17 @@
         "SRS-BUILDANDDO-CLASSROOM-001",
         "SRS-BUILDANDDO-COMMUNITY-001",
         "SRS-BUILDANDDO-COMMUNITY-WEB-001",
+        "SRS-BUILDANDDO-CURRICULUM-PRIVATE-001",
         "SRS-BUILDANDDO-DAY21-CLOSURE-001",
+        "SRS-BUILDANDDO-DAY21-RUNNER-001",
+        "SRS-BUILDANDDO-GUILDMASTER-001",
         "SRS-BUILDANDDO-JOURNEY-001",
         "SRS-BUILDANDDO-LIVE-UTILIZATION-001",
         "SRS-BUILDANDDO-PLATFORM-001",
         "SRS-BUILDANDDO-PUBLIC-REDACTION-001",
         "SRS-BUILDANDDO-PURPOSE-001",
         "SRS-BUILDANDDO-QUIZ-001",
+        "SRS-BUILDANDDO-REALTIME-TURN-001",
         "SRS-BUILDANDDO-ROADMAP-001",
         "SRS-BUILDANDDO-RUM-001",
         "SRS-BUILDANDDO-RUM-002",
@@ -566,7 +623,7 @@
         "SRS-BUILDANDDO-WITNESS-001",
         "SRS-BUILDANDDO-WORKSPACE-001"
       ],
-      "test_files": 112
+      "test_files": 139
     },
     "apps/world_twin": {
       "cgrf_coverage": 1.0,
@@ -648,6 +705,22 @@
       ],
       "test_files": 8
     },
+    "libs/guildmasters": {
+      "cgrf_coverage": 1.0,
+      "cgrf_files": 3,
+      "files": 4,
+      "lines": {
+        "markdown": 77,
+        "python": 391
+      },
+      "readme": true,
+      "source_files": 3,
+      "source_lines": 391,
+      "srs_codes": [
+        "SRS-BUILDANDDO-GUILDMASTER-001"
+      ],
+      "test_files": 0
+    },
     "libs/semantic_twin": {
       "cgrf_coverage": 1.0,
       "cgrf_files": 39,
@@ -667,26 +740,28 @@
       "test_files": 7
     },
     "scripts/ci": {
-      "cgrf_coverage": 0.9811,
-      "cgrf_files": 52,
-      "files": 56,
+      "cgrf_coverage": 0.9815,
+      "cgrf_files": 53,
+      "files": 57,
       "lines": {
-        "data": 681,
+        "data": 690,
         "javascript": 50,
-        "python": 22984
+        "python": 24468
       },
       "readme": false,
-      "source_files": 53,
-      "source_lines": 23034,
+      "source_files": 54,
+      "source_lines": 24518,
       "srs_codes": [
         "SRS-BUILDANDDO-AGENTCTX-001",
         "SRS-BUILDANDDO-CHANGELOG-001",
         "SRS-BUILDANDDO-CI-001",
         "SRS-BUILDANDDO-CLASSROOM-001",
         "SRS-BUILDANDDO-COMMUNITY-WEB-001",
+        "SRS-BUILDANDDO-CURRICULUM-PRIVATE-001",
         "SRS-BUILDANDDO-EPOCH-001",
         "SRS-BUILDANDDO-GITLAB-ONLY-CI-001",
         "SRS-BUILDANDDO-GROWTH-001",
+        "SRS-BUILDANDDO-GUILDMASTER-001",
         "SRS-BUILDANDDO-LIVE-UTILIZATION-001",
         "SRS-BUILDANDDO-OCN-TELEMETRY-001",
         "SRS-BUILDANDDO-PUBLIC-REDACTION-001",
@@ -694,7 +769,7 @@
         "SRS-BUILDANDDO-UPGRADE-001",
         "SRS-BUILDANDDO-WORKSPACE-001"
       ],
-      "test_files": 11
+      "test_files": 12
     },
     "scripts/deploy": {
       "cgrf_coverage": 1.0,
@@ -702,19 +777,20 @@
       "files": 5,
       "lines": {
         "python": 1401,
-        "shell": 85
+        "shell": 116
       },
       "readme": false,
       "source_files": 5,
-      "source_lines": 1486,
+      "source_lines": 1517,
       "srs_codes": [
+        "SRS-BUILDANDDO-CURRICULUM-PRIVATE-001",
         "SRS-BUILDANDDO-PRODCONFIG-001",
         "SRS-BUILDANDDO-PUBLIC-REDACTION-001",
         "SRS-BUILDANDDO-ROADMAP-001",
         "SRS-BUILDANDDO-TELEMETRY-001",
         "SRS-BUILDANDDO-UPGRADE-001"
       ],
-      "test_files": 5
+      "test_files": 6
     },
     "scripts/discordbot": {
       "cgrf_coverage": 1.0,
@@ -768,13 +844,15 @@
       "cgrf_files": 8,
       "files": 13,
       "lines": {
-        "python": 5698
+        "python": 5745
       },
       "readme": false,
       "source_files": 13,
-      "source_lines": 5698,
+      "source_lines": 5745,
       "srs_codes": [
         "SRS-BUILDANDDO-DAY21-CLOSURE-001",
+        "SRS-BUILDANDDO-DAY21-RUNNER-001",
+        "SRS-BUILDANDDO-GITLAB-RELEASE-001",
         "SRS-BUILDANDDO-SUBMISSION-FRESHNESS-001",
         "SRS-BUILDANDDO-UPGRADE-001"
       ],
@@ -782,13 +860,13 @@
     }
   },
   "totals": {
-    "cgrf_coverage": 0.8399,
-    "files": 1112,
-    "source_lines": 181337,
-    "systems": 24,
-    "systems_with_readme": 4,
+    "cgrf_coverage": 0.848,
+    "files": 1163,
+    "source_lines": 190762,
+    "systems": 25,
+    "systems_with_readme": 5,
     "systems_with_tests": 23,
-    "test_files": 241,
-    "test_files_unattributed": 124
+    "test_files": 276,
+    "test_files_unattributed": 129
   }
 }

@@ -1,7 +1,7 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/src/lib/seatComms.js
 // Stage:       07_BUILD
-// SRS:         SRS-BUILDANDDO-COMMUNITY-001, SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-TRUST-001
+// SRS:         SRS-BUILDANDDO-COMMUNITY-001, SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-TRUST-001, SRS-BUILDANDDO-GUILDMASTER-001
 // CAPS:        pending
 // CK:          pending
 // Dispatch:    VCC-BUILDANDDO-UPGRADE-001
@@ -61,6 +61,9 @@ pb.authStore.onChange(syncPublisherAccount);
 /**
  * Normalises a PocketBase `seat_events` record into the shape subscribers see.
  *
+ * `persona` is the guildmaster slug the server stamped from the signed-in seat
+ * account (SRS-BUILDANDDO-GUILDMASTER-001), or null for every other report.
+ *
  * @param {object} record Raw PocketBase record.
  * @returns {object} Seat event with a dotted `name` and camelCase fields.
  */
@@ -71,6 +74,7 @@ function toSeatEvent(record) {
         event: record.event,
         seat: record.seat,
         actorType: record.actor_type,
+        persona: record.persona || null,
         owner: record.owner || null,
         attribution: 'reported',
         subjectType: record.subject_type || null,
@@ -196,6 +200,11 @@ export function isSeatCommsConnected() {
  * The server binds a browser-originated event to `actor_type: 'human'` and
  * `seat` = the authenticated account id, and refuses anything else
  * through the native claim command. Agent seats publish through the server.
+ * A guildmaster seat account is stamped `actor_type: 'agent'` with its persona
+ * by the server (SRS-BUILDANDDO-GUILDMASTER-001). This publisher still sends
+ * `actor_type: 'human'`, so the server refuses it for a guildmaster seat rather
+ * than letting either label stand; a guildmaster seat reports through the claim
+ * command and omits `actor_type`.
  *
  * Reconciles an unresolved prior report using its original key before sending
  * a different report. Workspace visits retain unresolved keys within the current

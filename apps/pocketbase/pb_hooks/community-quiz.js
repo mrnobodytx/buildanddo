@@ -1,16 +1,17 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/pocketbase/pb_hooks/community-quiz.js
 // Stage:       07_BUILD
-// SRS:         SRS-BUILDANDDO-QUIZ-001
+// SRS:         SRS-BUILDANDDO-QUIZ-001, SRS-BUILDANDDO-CURRICULUM-PRIVATE-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-QUIZ-001
+// Dispatch:    VCC-BUILDANDDO-QUIZ-001, VCC-BUILDANDDO-CURRICULUM-PRIVATE-001
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-24
-// Depends:     apps/pocketbase/pb_hooks/workspace-access.js, apps/pocketbase/pb_hooks/tutorial-learning.js
+// Depends:     apps/pocketbase/pb_hooks/workspace-access.js, apps/pocketbase/pb_hooks/tutorial-learning.js, apps/pocketbase/pb_hooks/lesson-keys.js
 // EnumType:    Service
-// EnumEdges:   DEPENDS_ON apps/pocketbase/pb_hooks/workspace-access.js; DEPENDS_ON apps/pocketbase/pb_hooks/tutorial-learning.js; CONSUMES scripts/discordbot/grading.py
+// EnumEdges:   DEPENDS_ON apps/pocketbase/pb_hooks/workspace-access.js; DEPENDS_ON apps/pocketbase/pb_hooks/tutorial-learning.js;
+//              DEPENDS_ON apps/pocketbase/pb_hooks/lesson-keys.js; CONSUMES scripts/discordbot/grading.py
 // DAG Node:    none
 // Intent:      Grade the community bot's practice quiz on the server so no public file needs a lesson's answer.
 // ───────────────────────────────────────────────────────────────
@@ -70,12 +71,13 @@ function check(e) {
     const rows = e.app.findRecordsByFilter('tutorials', 'slug = {:slug}', '', 2, 0, { slug: body.slug });
     if (rows.length > 1) throw new ApiError(503, 'This lesson needs an operator review.');
     const tutorial = rows[0];
-    if (!tutorial || !require(`${__hooks}/tutorial-learning.js`).interactive(tutorial))
-        throw new NotFoundError('This lesson is not available for community grading.');
+    // The lesson with its private key resolved, or null when it cannot be graded here. A key file that disagrees
+    // with the lesson, or an unusable file where the database holds no key, refuses with 503 instead.
+    const lesson = tutorial ? require(`${__hooks}/tutorial-learning.js`).gradable(e.app, tutorial) : null;
+    if (!lesson) throw new NotFoundError('This lesson is not available for community grading.');
     // Members-only lessons are graded on the website, where membership is checked.
     if (tutorial.getString('category') === GOVERNMENT)
         throw new ForbiddenError('Government lessons are graded on the website for current members.');
-    const lesson = access.json(tutorial, 'lesson');
     if (body.choice >= lesson.check.choices.length) access.invalid('Choose a listed answer.');
     // A wrong answer carries nothing that points at the right choice.
     return body.choice === lesson.check.answer ? { correct: true, explanation: lesson.check.explanation } : { correct: false };

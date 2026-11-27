@@ -38,6 +38,11 @@ class DatadogMetricTests(unittest.TestCase):
         self.temporary = tempfile.TemporaryDirectory()
         self.addCleanup(self.temporary.cleanup)
         self.root = Path(self.temporary.name)
+        # Fleet runners export CITADEL_* paths for the real emitter. Those defaults outrank the
+        # conventional state paths these tests exercise, so a runner-provided value must not leak in.
+        self.enterContext(mock.patch.dict(os.environ, {
+            key: value for key, value in os.environ.items() if not key.startswith("CITADEL_")
+        }, clear=True))
 
     def write(self, relative: str, payload: object) -> Path:
         """Write one JSON projection below the isolated test directory."""

@@ -70,15 +70,16 @@ onRecordAfterDeleteError((event) => {
 // routerUse=function. onServe here aborted startup at jsvm registerHooks.
 // Wrap the built-in early middleware too: authorization/rate-limit refusals
 // must be observed, not bypassed or converted into a second response.
-routerUse(new Middleware({
-    func: (request) => {
-        let telemetry;
-        try {
-            telemetry = require(`${__hooks}/telemetry.js`);
-        } catch (_) {
-            return request.next();
-        }
-        return telemetry.observeRequest(request);
-    },
-    priority: -2000,
-}));
+// The 0.39.8 binary declares `new Middleware(func, priority?, id?)` and
+// compiles any non-function first argument as source. A definition object
+// became "[object Object]" and stopped `serve` with "SyntaxError Line 1:11
+// Unexpected identifier", so the arguments are positional.
+routerUse(new Middleware((request) => {
+    let telemetry;
+    try {
+        telemetry = require(`${__hooks}/telemetry.js`);
+    } catch (_) {
+        return request.next();
+    }
+    return telemetry.observeRequest(request);
+}, -2000));

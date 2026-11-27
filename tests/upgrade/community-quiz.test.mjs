@@ -1,24 +1,29 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        tests/upgrade/community-quiz.test.mjs
 // Stage:       08_TEST
-// SRS:         SRS-BUILDANDDO-QUIZ-001
+// SRS:         SRS-BUILDANDDO-QUIZ-001, SRS-BUILDANDDO-CURRICULUM-PRIVATE-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-QUIZ-001
+// Dispatch:    VCC-BUILDANDDO-QUIZ-001, VCC-BUILDANDDO-CURRICULUM-PRIVATE-001
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-24
-// Depends:     tests/upgrade/admin-fixture.mjs, apps/pocketbase/pb_hooks/community-quiz.js, apps/pocketbase/pb_hooks/community-quiz.pb.js, apps/web/tools/generate-community.mjs
+// Depends:     tests/upgrade/admin-fixture.mjs, tests/upgrade/lesson-keys-fixture.mjs, apps/pocketbase/pb_hooks/community-quiz.js, apps/pocketbase/pb_hooks/community-quiz.pb.js, apps/web/tools/generate-community.mjs
 // EnumType:    Test
-// EnumEdges:   CONSUMES tests/upgrade/admin-fixture.mjs; VALIDATES apps/pocketbase/pb_hooks/community-quiz.js; VALIDATES apps/pocketbase/pb_hooks/community-quiz.pb.js; CONSUMES apps/web/tools/generate-community.mjs
+// EnumEdges:   CONSUMES tests/upgrade/admin-fixture.mjs; CONSUMES tests/upgrade/lesson-keys-fixture.mjs; VALIDATES apps/pocketbase/pb_hooks/community-quiz.js; VALIDATES apps/pocketbase/pb_hooks/community-quiz.pb.js; CONSUMES apps/web/tools/generate-community.mjs
 // DAG Node:    none
 // Intent:      Prove the community quiz is graded on the server for the bot only, never reveals the right choice on a wrong answer and stays bounded.
 // ───────────────────────────────────────────────────────────────
 
+// Grading keys are synthetic, generated at test time from public lesson text and served as the private key file.
+// Assertions on key material use === or isDeepStrictEqual, so a failure names the lesson, never a key.
+
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import test from 'node:test';
+import { isDeepStrictEqual } from 'node:util';
 import { fixture, plain, source } from './admin-fixture.mjs';
+import { lessonKeyServer } from './lesson-keys-fixture.mjs';
 import { buildCommunityCatalogue } from '../../apps/web/tools/generate-community.mjs';
 
 // Synthetic test credential; never a deployed value.
@@ -28,14 +33,16 @@ const release = { version: '38+abc1234', commit_sha: 'abc1234' + '0'.repeat(33) 
 const starter = JSON.parse(source('apps/pocketbase/pb_migrations/data/starter-tutorials.json'));
 const government = JSON.parse(source('apps/pocketbase/pb_migrations/data/government-submissions.json'));
 
-function quizFixture() {
-    const env = { BUILDANDDO_COMMUNITY_BOT_TOKEN: TOKEN };
+function quizFixture({ keys = 'synthetic', keyOptions = {} } = {}) {
+    const served = lessonKeyServer(keys, { ...keyOptions, env: { BUILDANDDO_COMMUNITY_BOT_TOKEN: TOKEN } });
+    const env = served.env;
     const comparisons = [];
     const sha256 = (text) => createHash('sha256').update(text).digest('hex');
     const f = fixture({ runtime: {
-        $os: { getenv: (name) => env[name] ?? '' },
+        ...served.runtime,
         $security: { sha256, equal: (a, b) => { comparisons.push([a.length, b.length]); return a === b; } },
     } });
+    served.attach(f.app);
     for (const name of ['slug', 'lesson', 'curriculum_version']) f.collections.tutorials.fields.add({ name });
     for (const curriculum of [starter, government])
         for (const lesson of curriculum.lessons) f.seed('tutorials', { ...lesson, curriculum_version: curriculum.version });
@@ -50,18 +57,22 @@ function quizFixture() {
     const grade = (slug, choice, { person = PERSON, authorization } = {}) =>
         plain(service.check(event({ slug, choice, discord_user_id: person }, authorization)));
     const check = (body) => plain(service.check(event(body)));
-    return { ...f, env, comparisons, shared, service, grade, check };
+    return { ...f, env, comparisons, shared, service, grade, check, keys: served };
 }
 const refused = (status, pattern) => (error) => error.status === status && (!pattern || pattern.test(error.message));
+const keys = lessonKeyServer();
 const lesson = starter.lessons[0];
-const right = lesson.lesson.check.answer;
+const right = keys.answerFor(lesson.slug);
 const wrong = (right + 1) % lesson.lesson.check.choices.length;
 
 test('the published community catalogue asks every lesson without its answer or explanation', () => {
     const catalogue = buildCommunityCatalogue(release);
     const text = JSON.stringify(catalogue);
     assert.equal(/"answer"|"explanation"/.test(text), false);
-    for (const record of [...starter.lessons, ...government.lessons]) assert.equal(text.includes(record.lesson.check.explanation), false, record.slug);
+    for (const record of [...starter.lessons, ...government.lessons]) {
+        assert.deepEqual(Object.keys(record.lesson.check).sort(), ['choices', 'question'], `${record.slug}: the authored source carries no key`);
+        assert.equal(text.includes(keys.explanationFor(record.slug)), false, record.slug);
+    }
     for (const [index, record] of catalogue.lessons.entries()) {
         const authored = [...starter.lessons, ...government.lessons][index];
         assert.deepEqual(record.lesson.check, { question: authored.lesson.check.question, choices: authored.lesson.check.choices });
@@ -70,18 +81,46 @@ test('the published community catalogue asks every lesson without its answer or 
 
 test('a right choice is confirmed with its explanation; a wrong one carries nothing that points at the answer', () => {
     const f = quizFixture();
-    assert.deepEqual(f.grade(lesson.slug, wrong), { correct: false });
+    assert.ok(isDeepStrictEqual(f.grade(lesson.slug, wrong), { correct: false }), 'a wrong choice carries nothing more');
     const passed = f.grade(lesson.slug, right);
-    assert.deepEqual(passed, { correct: true, explanation: lesson.lesson.check.explanation });
+    assert.ok(isDeepStrictEqual(passed, { correct: true, explanation: keys.explanationFor(lesson.slug) }), 'the right choice is explained');
     for (const [index, record] of starter.lessons.entries()) {
         const person = String(200000000000000000n + BigInt(index));
-        const other = (record.lesson.check.answer + 1) % record.lesson.check.choices.length;
+        const answer = keys.answerFor(record.slug);
+        const other = (answer + 1) % record.lesson.check.choices.length;
         const miss = f.grade(record.slug, other, { person });
         assert.deepEqual(Object.keys(miss), ['correct'], record.slug);
-        assert.equal(JSON.stringify(miss).includes(record.lesson.check.choices[record.lesson.check.answer]), false);
-        assert.equal(f.grade(record.slug, record.lesson.check.answer, { person }).explanation, record.lesson.check.explanation, record.slug);
+        assert.equal(JSON.stringify(miss).includes(record.lesson.check.choices[answer]), false);
+        assert.ok(f.grade(record.slug, answer, { person }).explanation === keys.explanationFor(record.slug), record.slug);
     }
-    assert.equal(JSON.stringify(f.data.tutorials.find((row) => row.slug === lesson.slug).lesson.check.answer), String(right), 'stored lessons are unchanged');
+    assert.deepEqual(f.data.tutorials.find((row) => row.slug === lesson.slug).lesson, lesson.lesson, 'stored lessons are unchanged and keyless');
+});
+
+test('grading follows the private key: only the served key set answers right, and no key means no grade', () => {
+    // Two synthetic salts give some lesson different answers; each fixture accepts only its own.
+    const alternate = lessonKeyServer('synthetic', { salt: 'alternate' });
+    const record = starter.lessons.find((item) => keys.answerFor(item.slug) !== alternate.answerFor(item.slug));
+    assert.ok(record, 'the salts give at least one lesson different answers');
+    for (const [salt, own, other] of [['synthetic', keys, alternate], ['alternate', alternate, keys]]) {
+        const f = quizFixture({ keyOptions: { salt } });
+        assert.ok(isDeepStrictEqual(f.grade(record.slug, other.answerFor(record.slug)), { correct: false }), salt);
+        assert.equal(f.grade(record.slug, own.answerFor(record.slug)).correct, true, salt);
+    }
+    // No key file and no database key: the lesson cannot be graded here, so it is 404, never a pass or a guess.
+    const absent = quizFixture({ keys: 'absent' });
+    for (const choice of [0, 1]) assert.throws(() => absent.grade(lesson.slug, choice), refused(404));
+    // A key file that cannot be used refuses with 503 where the database holds no key, and grades where it does.
+    const invalid = quizFixture({ keys: 'invalid' });
+    assert.throws(() => invalid.grade(lesson.slug, right), refused(503, /need an operator review/));
+    const row = invalid.data.tutorials.find((item) => item.slug === lesson.slug);
+    row.lesson = keys.keyed(lesson.slug, row.lesson);
+    assert.equal(invalid.grade(lesson.slug, right, { person: '223456789012345678' }).correct, true, 'a database-held key keeps grading');
+    // An entry that disagrees with its lesson refuses that lesson only.
+    const target = starter.lessons[4];
+    const tampered = quizFixture({ keys: 'tampered', keyOptions: { slug: target.slug } });
+    assert.throws(() => tampered.grade(target.slug, keys.answerFor(target.slug)), refused(503, /needs an operator review/));
+    assert.equal(tampered.grade(lesson.slug, right).correct, true, 'other lessons keep grading');
+    assert.equal(absent.data.tutorials.find((item) => item.slug === lesson.slug).lesson.check.answer, undefined, 'grading never writes a key');
 });
 
 test('grading fails closed with 503 when the bot token is unset or shorter than 32 characters', () => {
@@ -112,9 +151,10 @@ test('members-only government lessons are never graded anonymously, whatever the
     const f = quizFixture();
     for (const [index, record] of government.lessons.entries()) {
         const person = String(300000000000000000n + BigInt(index));
-        for (const choice of [record.lesson.check.answer, (record.lesson.check.answer + 1) % record.lesson.check.choices.length])
+        const answer = keys.answerFor(record.slug);
+        for (const choice of [answer, (answer + 1) % record.lesson.check.choices.length])
             assert.throws(() => f.grade(record.slug, choice, { person }), (error) =>
-                refused(403, /website for current members/)(error) && !error.message.includes(record.lesson.check.explanation));
+                refused(403, /website for current members/)(error) && !error.message.includes(keys.explanationFor(record.slug)));
     }
 });
 
@@ -146,7 +186,7 @@ test('attempts are bounded per person and lesson, per person, and in tracked key
     const { per_lesson: perLesson, per_person: perPerson, max_keys: maxKeys, window_ms: windowMs } = f.service.LIMITS;
     for (let i = 0; i < perLesson; i++) f.grade(lesson.slug, wrong);
     assert.throws(() => f.grade(lesson.slug, right), refused(429, /Try again in (600|599) seconds/));
-    assert.equal(f.grade(starter.lessons[1].slug, starter.lessons[1].lesson.check.answer).correct, true, 'another lesson keeps its own budget');
+    assert.equal(f.grade(starter.lessons[1].slug, keys.answerFor(starter.lessons[1].slug)).correct, true, 'another lesson keeps its own budget');
     assert.equal(f.grade(lesson.slug, right, { person: '223456789012345678' }).correct, true, 'another person keeps theirs');
     // Per-person budget across lessons, measured directly on the limiter with a controlled clock.
     const start = 1_900_000_000_000;
