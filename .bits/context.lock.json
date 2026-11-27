@@ -214,6 +214,13 @@
     },
     {
       "area": "governance",
+      "evidence": ".bits/queue/VCC-BUILDANDDO-CF-WORKERS-BUILD-001.md: 2/2 tasks done; mark SRS-BUILDANDDO-CF-WORKERS-BUILD-001 delivered once merged and verified, or add the task that remains",
+      "severity": "medium",
+      "srs": "SRS-BUILDANDDO-CF-WORKERS-BUILD-001",
+      "statement": "VCC-BUILDANDDO-CF-WORKERS-BUILD-001 has every task done but SRS-BUILDANDDO-CF-WORKERS-BUILD-001 is still in_progress"
+    },
+    {
+      "area": "governance",
       "evidence": ".bits/queue/VCC-BUILDANDDO-CHANGELOG-001.md: 5/5 tasks done; mark SRS-BUILDANDDO-CHANGELOG-001 delivered once merged and verified, or add the task that remains",
       "severity": "medium",
       "srs": "SRS-BUILDANDDO-CHANGELOG-001",
@@ -326,6 +333,13 @@
     },
     {
       "area": "governance",
+      "evidence": ".bits/queue/VCC-BUILDANDDO-REALTIME-TURN-001.md: 4/4 tasks done; mark SRS-BUILDANDDO-REALTIME-TURN-001 delivered once merged and verified, or add the task that remains",
+      "severity": "medium",
+      "srs": "SRS-BUILDANDDO-REALTIME-TURN-001",
+      "statement": "VCC-BUILDANDDO-REALTIME-TURN-001 has every task done but SRS-BUILDANDDO-REALTIME-TURN-001 is still in_progress"
+    },
+    {
+      "area": "governance",
       "evidence": ".bits/queue/VCC-BUILDANDDO-RECONCILE-001.md: 3/3 tasks done; mark SRS-BUILDANDDO-RECONCILE-001 delivered once merged and verified, or add the task that remains",
       "severity": "medium",
       "srs": "SRS-BUILDANDDO-RECONCILE-001",
@@ -372,6 +386,13 @@
       "severity": "medium",
       "srs": "SRS-BUILDANDDO-TRUST-001",
       "statement": "VCC-BUILDANDDO-TRUST-001 has every task done but SRS-BUILDANDDO-TRUST-001 is still in_progress"
+    },
+    {
+      "area": "governance",
+      "evidence": ".bits/queue/VCC-BUILDANDDO-WEB-COVERAGE-001.md: 5/5 tasks done; mark SRS-BUILDANDDO-WEB-COVERAGE-001 delivered once merged and verified, or add the task that remains",
+      "severity": "medium",
+      "srs": "SRS-BUILDANDDO-WEB-COVERAGE-001",
+      "statement": "VCC-BUILDANDDO-WEB-COVERAGE-001 has every task done but SRS-BUILDANDDO-WEB-COVERAGE-001 is still in_progress"
     },
     {
       "area": "governance",
@@ -895,7 +916,7 @@
       "wired_into_ci": true
     }
   ],
-  "generated_at": "2026-10-31T12:30:47.744501+00:00",
+  "generated_at": "2026-11-27T19:36:22.528161+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -966,6 +987,13 @@
         "title": "No Cloudflare account or resource id in the public repository; the edge deploy resolves them"
       },
       {
+        "code": "SRS-BUILDANDDO-CF-WORKERS-BUILD-001",
+        "risk": "A1",
+        "spec": ".bits/srs/SRS-BUILDANDDO-CF-WORKERS-BUILD-001.md",
+        "status": "in_progress",
+        "title": "The orphan buildanddo Worker fails every Workers Build; owner disconnects it"
+      },
+      {
         "code": "SRS-BUILDANDDO-CHANGELOG-001",
         "risk": "A2",
         "spec": ".bits/srs/SRS-BUILDANDDO-CHANGELOG-001.md",
@@ -1020,6 +1048,13 @@
         "spec": ".bits/srs/SRS-BUILDANDDO-DAY21-CLOSURE-001.md",
         "status": "in_progress",
         "title": "Day-21 submission closure - candidate continuity, browser journey, four-product proof"
+      },
+      {
+        "code": "SRS-BUILDANDDO-DAY21-RUNNER-001",
+        "risk": "A2",
+        "spec": ".bits/srs/SRS-BUILDANDDO-DAY21-RUNNER-001.md",
+        "status": "in_progress",
+        "title": "Day-21 acceptance passes on the GitLab fleet runners"
       },
       {
         "code": "SRS-BUILDANDDO-DECISION-001",
@@ -1118,6 +1153,13 @@
         "spec": ".bits/srs/SRS-BUILDANDDO-GITLAB-ONLY-CI-001.md",
         "status": "in_progress",
         "title": "GitLab is the only CI; retire GitHub Actions"
+      },
+      {
+        "code": "SRS-BUILDANDDO-GITLAB-RELEASE-001",
+        "risk": "A3",
+        "spec": ".bits/srs/SRS-BUILDANDDO-GITLAB-RELEASE-001.md",
+        "status": "in_progress",
+        "title": "Ship buildanddo.com from GitLab through the verified release rail"
       },
       {
         "code": "SRS-BUILDANDDO-GROWTH-001",
@@ -1225,6 +1267,13 @@
         "title": "Server-graded community quiz; no answers in the public catalogue"
       },
       {
+        "code": "SRS-BUILDANDDO-REALTIME-TURN-001",
+        "risk": "A2",
+        "spec": ".bits/srs/SRS-BUILDANDDO-REALTIME-TURN-001.md",
+        "status": "in_progress",
+        "title": "TURN relay for the classroom SFU; MoQ broadcast plan recorded"
+      },
+      {
         "code": "SRS-BUILDANDDO-RECONCILE-001",
         "risk": "A2",
         "spec": ".bits/srs/SRS-BUILDANDDO-RECONCILE-001.md",
@@ -1321,6 +1370,13 @@
         "spec": ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md",
         "status": "in_progress",
         "title": "BuildAndDo public, workspace and community upgrades"
+      },
+      {
+        "code": "SRS-BUILDANDDO-WEB-COVERAGE-001",
+        "risk": "A1",
+        "spec": ".bits/srs/SRS-BUILDANDDO-WEB-COVERAGE-001.md",
+        "status": "in_progress",
+        "title": "Web coverage meets its declared per-file minimums"
       },
       {
         "code": "SRS-BUILDANDDO-WITNESS-001",
@@ -1506,6 +1562,28 @@
       "triggers": [
         "rules (not evaluated)"
       ]
+    },
+    {
+      "configuration_errors": [],
+      "file": ".gitlab/ci/release.yml",
+      "jobs": [
+        "release_staging",
+        "release_production"
+      ],
+      "kind": "include",
+      "local_actions": [],
+      "name": "release",
+      "npm_scripts": [],
+      "provider": "gitlab",
+      "required_scripts": [
+        "tools/buildanddo_release.py"
+      ],
+      "scripts": [
+        "tools/buildanddo_release.py"
+      ],
+      "triggers": [
+        "rules (not evaluated)"
+      ]
     }
   ],
   "repo": {
@@ -1541,12 +1619,12 @@
       "scripts/deploy/staging-readback.sh"
     ],
     "migrations": 77,
-    "python_files": 486,
+    "python_files": 487,
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 1897,
-    "web_source_files": 386
+    "tracked_files": 1934,
+    "web_source_files": 410
   },
   "schema_version": 1,
   "sprint_readiness": {
@@ -1566,7 +1644,7 @@
       },
       {
         "id": "HS-03",
-        "next_step": "Migration rollout is now validated on BOTH environments: preflighted against a disposable copy of live data, applied behind a database backup, and confirmed by an authenticated readback from a second box (production at 72 applied migrations, 79 collections, 33 lessons). Recovery is still unexercised - backups were taken but no restore has been performed, so rollback remains a claim rather than an observation. Exercise a restore onto a disposable profile and record it. The later classroom migrations (media sessions and the broadcast lesson) are not rolled out yet: execute both expanded native runtime profiles, including media-session and lesson installation, typed track responses, ownership/revocation and rollback. Have the release owner install matching backend migrations/hooks before the frontend and measure actual provider delivery and stream revocation on staging. Guided grading now reads knowledge-check keys from a private key file (SRS-BUILDANDDO-CURRICULUM-PRIVATE-001): before the hooks that read it deploy, the operator installs that file and its BUILDANDDO_LESSON_KEYS_FILE drop-in on both PocketBase units (handoff 2026-10-31-BITS-CODEGEN-C-ONE-curriculum-private, H1-H3) and requires `pocketbase lesson-keys check` on a rehearsal copy to report PRIVATE with mismatch 0 and unavailable 0 (H5); without it, new enrollments in lessons with no database-held key answer 503 instead of grading. Source tests use synthetic keys only, so they do not establish installed-key acceptance.",
+        "next_step": "Migration rollout is now validated on BOTH environments: preflighted against a disposable copy of live data, applied behind a database backup, and confirmed by an authenticated readback from a second box (production at 72 applied migrations, 79 collections, 33 lessons). Recovery is still unexercised - backups were taken but no restore has been performed, so rollback remains a claim rather than an observation. Exercise a restore onto a disposable profile and record it. The later classroom migrations (media sessions and the broadcast lesson) are not rolled out yet: execute both expanded native runtime profiles, including media-session and lesson installation, typed track responses, ownership/revocation and rollback. Hooks from a9b6e71 until the positional Middleware repair (VCC-BUILDANDDO-UPGRADE-001 CX) stop 0.39.8 `serve` at startup and must not be installed; with the repair the native classroom profile runs again. Have the release owner install matching backend migrations/hooks before the frontend and measure actual provider delivery and stream revocation on staging. Guided grading now reads knowledge-check keys from a private key file (SRS-BUILDANDDO-CURRICULUM-PRIVATE-001): before the hooks that read it deploy, the operator installs that file and its BUILDANDDO_LESSON_KEYS_FILE drop-in on both PocketBase units (handoff 2026-10-31-BITS-CODEGEN-C-ONE-curriculum-private, H1-H3) and requires `pocketbase lesson-keys check` on a rehearsal copy to report PRIVATE with mismatch 0 and unavailable 0 (H5); without it, new enrollments in lessons with no database-held key answer 503 instead of grading. Source tests use synthetic keys only, so they do not establish installed-key acceptance.",
         "owner": "BITS-CODEGEN / IDE1",
         "why": "Persisted work and tenant isolation make the application useful beyond a visual prototype."
       },
@@ -1625,22 +1703,22 @@
         "why": "Competition readiness requires an evidence-backed learning-through-work journey, a reproducible replay and actual submission criteria."
       }
     ],
-    "source_sha256": "654056af91cd806a2d24897844267139a67d06dbd91ade8fffb213efde7b7687",
+    "source_sha256": "2bd813802b1b500bb3634bccc2dff9ec292fc8b9cf7b179d241daebbf1fe1f89",
     "state": "PASS"
   },
   "summary": {
-    "findings": 59,
+    "findings": 62,
     "findings_high": 26,
-    "pipelines": 4,
-    "srs_open": 58,
-    "srs_total": 62,
+    "pipelines": 5,
+    "srs_open": 63,
+    "srs_total": 67,
     "unwired_gates": 26
   },
   "tests": {
     "js_runners": [
       "vitest"
     ],
-    "js_test_files": 108,
+    "js_test_files": 132,
     "js_test_script": true,
     "junit_configured": true,
     "python_suite_entrypoints": [

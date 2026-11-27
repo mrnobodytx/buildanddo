@@ -1,7 +1,7 @@
 // --- CGRF Header ------------------------------------------------
 // File:        apps/pocketbase/pb_hooks/classroom-realtime.pb.js
 // Stage:       07_BUILD
-// SRS:         SRS-BUILDANDDO-UPGRADE-001
+// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-REALTIME-TURN-001
 // CAPS:        pending
 // CK:          pending
 // Dispatch:    VCC-BUILDANDDO-UPGRADE-001
@@ -35,6 +35,14 @@ routerAdd('POST', '/api/classroom/close', (e) => {
     return e.json(200, require(`${__hooks}/classroom-media.js`).close(e));
 }, $apis.requireAuth('users'), $apis.bodyLimit(2000));
 
+// Short-lived ICE servers for this join (SRS-BUILDANDDO-REALTIME-TURN-001). Signed-in callers
+// only: TURN credentials are a relay allowance. Always 200 with a usable list - STUN-only plus
+// a named reason when TURN is not configured or Cloudflare refuses - so a join never blocks on it.
+routerAdd('GET', '/api/classroom/ice', (e) => {
+    e.response.header().set('Cache-Control', 'no-store');
+    return e.json(200, require(`${__hooks}/classroom-realtime-lib.js`).iceServers());
+}, $apis.requireAuth('users'));
+
 routerAdd('GET', '/api/classroom/health', (e) => {
     const config = require(`${__hooks}/classroom-realtime-lib.js`).realtimeConfig();
     let installed = false;
@@ -45,6 +53,7 @@ routerAdd('GET', '/api/classroom/health', (e) => {
     return e.json(!config.reason && installed ? 200 : 503, { ok: !config.reason && installed, route: 'classroom-realtime/v2',
         app_id_configured: !!$os.getenv('CLOUDFLARE_REALTIME_APP_ID'),
         app_secret_configured: !!$os.getenv('CLOUDFLARE_REALTIME_APP_SECRET'),
+        turn_configured: !!$os.getenv('CLOUDFLARE_TURN_KEY_ID') && !!$os.getenv('CLOUDFLARE_TURN_KEY_API_TOKEN'),
         publishers_configured: publishers.length, sessions_installed: installed,
         reason: !installed ? 'classroom media session migration required' : config.reason || null });
 });

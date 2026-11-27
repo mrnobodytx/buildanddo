@@ -287,7 +287,9 @@ describe('workflow outcome and approval forms', () => {
                 source: 'Saved output', observation: 'Three rows matched.' } }] });
         renderReview(run);
         expect(screen.getByText('Three rows matched.')).toBeInTheDocument();
-        expect(screen.getByText(/Evidence receipt: receipt1/)).toBeInTheDocument();
+        // The receipt id is a link inside the sentence, so match the paragraph's full text.
+        expect(screen.getByText((_, node) => node?.tagName === 'P'
+            && node.textContent === 'Evidence receipt: receipt1')).toBeInTheDocument();
         expect(screen.getByRole('link', { name: 'receipt1' })).toHaveAttribute('href', '/app/evidence?evidence=receipt1');
         expect(screen.queryByRole('button', { name: 'Cancel run' })).not.toBeInTheDocument();
         expect(screen.queryByRole('button', { name: 'Record completed step' })).not.toBeInTheDocument();
