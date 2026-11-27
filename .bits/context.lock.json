@@ -882,7 +882,7 @@
       "wired_into_ci": true
     }
   ],
-  "generated_at": "2026-10-27T22:32:57.880743+00:00",
+  "generated_at": "2026-11-27T19:32:11.546513+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -1007,6 +1007,13 @@
         "spec": ".bits/srs/SRS-BUILDANDDO-DAY21-CLOSURE-001.md",
         "status": "in_progress",
         "title": "Day-21 submission closure - candidate continuity, browser journey, four-product proof"
+      },
+      {
+        "code": "SRS-BUILDANDDO-DAY21-RUNNER-001",
+        "risk": "A2",
+        "spec": ".bits/srs/SRS-BUILDANDDO-DAY21-RUNNER-001.md",
+        "status": "in_progress",
+        "title": "Day-21 acceptance passes on the GitLab fleet runners"
       },
       {
         "code": "SRS-BUILDANDDO-DECISION-001",
@@ -1530,7 +1537,7 @@
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 1890,
+    "tracked_files": 1892,
     "web_source_files": 386
   },
   "schema_version": 1,
@@ -1551,7 +1558,7 @@
       },
       {
         "id": "HS-03",
-        "next_step": "Migration rollout is now validated on BOTH environments: preflighted against a disposable copy of live data, applied behind a database backup, and confirmed by an authenticated readback from a second box (production at 72 applied migrations, 79 collections, 33 lessons). Recovery is still unexercised - backups were taken but no restore has been performed, so rollback remains a claim rather than an observation. Exercise a restore onto a disposable profile and record it. The later classroom migrations (media sessions and the broadcast lesson) are not rolled out yet: execute both expanded native runtime profiles, including media-session and lesson installation, typed track responses, ownership/revocation and rollback. Have the release owner install matching backend migrations/hooks before the frontend and measure actual provider delivery and stream revocation on staging.",
+        "next_step": "Migration rollout is now validated on BOTH environments: preflighted against a disposable copy of live data, applied behind a database backup, and confirmed by an authenticated readback from a second box (production at 72 applied migrations, 79 collections, 33 lessons). Recovery is still unexercised - backups were taken but no restore has been performed, so rollback remains a claim rather than an observation. Exercise a restore onto a disposable profile and record it. The later classroom migrations (media sessions and the broadcast lesson) are not rolled out yet: execute both expanded native runtime profiles, including media-session and lesson installation, typed track responses, ownership/revocation and rollback. Hooks from a9b6e71 until the positional Middleware repair (VCC-BUILDANDDO-UPGRADE-001 CX) stop 0.39.8 `serve` at startup and must not be installed; with the repair the native classroom profile runs again. Have the release owner install matching backend migrations/hooks before the frontend and measure actual provider delivery and stream revocation on staging.",
         "owner": "BITS-CODEGEN / IDE1",
         "why": "Persisted work and tenant isolation make the application useful beyond a visual prototype."
       },
@@ -1610,15 +1617,15 @@
         "why": "Competition readiness requires an evidence-backed learning-through-work journey, a reproducible replay and actual submission criteria."
       }
     ],
-    "source_sha256": "e87f730fe08e91b65710e87c6ac0f22c15b3d177978bf815bbcdaca65c9ba6fb",
+    "source_sha256": "aea42adfa931e0caab278a4b4f7f1e771b35e96d6e64cd50e93785f2d9692e7e",
     "state": "PASS"
   },
   "summary": {
     "findings": 59,
     "findings_high": 25,
     "pipelines": 4,
-    "srs_open": 58,
-    "srs_total": 62,
+    "srs_open": 59,
+    "srs_total": 63,
     "unwired_gates": 25
   },
   "tests": {

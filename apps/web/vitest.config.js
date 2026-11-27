@@ -1,7 +1,7 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/vitest.config.js
 // Stage:       08_TEST
-// SRS:         SRS-BUILDANDDO-TEST-001, SRS-BUILDANDDO-TRUST-001
+// SRS:         SRS-BUILDANDDO-TEST-001, SRS-BUILDANDDO-TRUST-001, SRS-BUILDANDDO-DAY21-RUNNER-001
 // CAPS:        pending
 // CK:          pending
 // Seat:        BITS-CODEGEN
@@ -55,6 +55,11 @@ export default defineConfig({
         // them costs every test run.
         css: false,
         clearMocks: true,
+        // Rendered flows take 0.3-1.3 s here and 5-7 s on a loaded GitLab shell runner, where the
+        // 5 s default failed 13 files that pass unchanged (job 105160, 2026-10-27). A slow machine
+        // is not a regression; a hung test still fails, just later.
+        testTimeout: 30_000,
+        hookTimeout: 30_000,
         // JUnit lands at the repository root because that is the directory the
         // datadog-ci-report action already scans (junit-path: reports/junit).
         outputFile: {

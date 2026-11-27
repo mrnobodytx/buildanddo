@@ -175,11 +175,13 @@ export function fixture({ migrated = true, runtime = {}, now = () => new Date().
             join: (...parts) => path.posix.join(...parts.map(String)),
             dir: (value) => path.posix.dirname(String(value)),
         },
-        Middleware: function (definition) {
-            assert.equal(typeof definition, 'object', 'Middleware requires a definition object');
-            assert.equal(typeof definition.func, 'function');
-            this.func = definition.func;
-            this.priority = definition.priority ?? 0;
+        // 0.39.8 declares new Middleware(func, priority?, id?) and compiles a non-function
+        // first argument as source, so a definition object fails at line 1, column 11.
+        Middleware: function (func, priority, id) {
+            if (typeof func !== 'function') throw new SyntaxError('Line 1:11 Unexpected identifier');
+            this.func = func;
+            this.priority = priority ?? 0;
+            this.id = id ?? '';
             assert.ok(Number.isInteger(this.priority));
         },
         routerUse: (handler) => { routerHandlers.push(handler); },
