@@ -307,7 +307,8 @@ for (const [hook, path] of [
                     loggerThrows ? [] : [['buildanddo.backend.failure', 'classroom.media.schema', 'schema', 503]]);
                 assert.deepEqual(result.body, path === '/api/classroom/health' ? {
                     ok: false, route: 'classroom-realtime/v2', app_id_configured: true, app_secret_configured: true,
-                    publishers_configured: 3, sessions_installed: false, reason: 'classroom media session migration required',
+                    turn_configured: false, publishers_configured: 3, sessions_installed: false,
+                    reason: 'classroom media session migration required',
                 } : {
                     ok: false, route: 'classroom-presence/v1', collection_installed: false, publishers_configured: 3,
                     max_ttl_ms: 120000, max_rows: 50, verification: 'ECHO_ON_READ',

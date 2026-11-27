@@ -93,7 +93,7 @@ const ROUTES = [
         'decide', 'decisions/:id', 'blueprints', 'blueprints/analyze',
         'blueprints/:id', 'blueprints/:id/commands',
     ].map((suffix) => '/api/buildanddo/workspaces/:workspace/' + suffix),
-    ...['session', 'tracks', 'renegotiate', 'close', 'health', 'presence', 'presence/health']
+    ...['session', 'tracks', 'renegotiate', 'close', 'ice', 'health', 'presence', 'presence/health']
         .map((suffix) => '/api/classroom/' + suffix),
 ].map((template) => ({ template, pattern: new RegExp('^' + template.replace(/:[a-z]+/g, '[^/]+') + '/?$') }));
 const OPERATIONS = [
