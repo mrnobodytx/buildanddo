@@ -326,6 +326,13 @@
     },
     {
       "area": "governance",
+      "evidence": ".bits/queue/VCC-BUILDANDDO-REALTIME-TURN-001.md: 4/4 tasks done; mark SRS-BUILDANDDO-REALTIME-TURN-001 delivered once merged and verified, or add the task that remains",
+      "severity": "medium",
+      "srs": "SRS-BUILDANDDO-REALTIME-TURN-001",
+      "statement": "VCC-BUILDANDDO-REALTIME-TURN-001 has every task done but SRS-BUILDANDDO-REALTIME-TURN-001 is still in_progress"
+    },
+    {
+      "area": "governance",
       "evidence": ".bits/queue/VCC-BUILDANDDO-RECONCILE-001.md: 3/3 tasks done; mark SRS-BUILDANDDO-RECONCILE-001 delivered once merged and verified, or add the task that remains",
       "severity": "medium",
       "srs": "SRS-BUILDANDDO-RECONCILE-001",
@@ -882,7 +889,7 @@
       "wired_into_ci": true
     }
   ],
-  "generated_at": "2026-11-27T19:32:57.193857+00:00",
+  "generated_at": "2026-11-27T19:34:35.354511+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -1226,6 +1233,13 @@
         "title": "Server-graded community quiz; no answers in the public catalogue"
       },
       {
+        "code": "SRS-BUILDANDDO-REALTIME-TURN-001",
+        "risk": "A2",
+        "spec": ".bits/srs/SRS-BUILDANDDO-REALTIME-TURN-001.md",
+        "status": "in_progress",
+        "title": "TURN relay for the classroom SFU; MoQ broadcast plan recorded"
+      },
+      {
         "code": "SRS-BUILDANDDO-RECONCILE-001",
         "risk": "A2",
         "spec": ".bits/srs/SRS-BUILDANDDO-RECONCILE-001.md",
@@ -1566,7 +1580,7 @@
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 1896,
+    "tracked_files": 1899,
     "web_source_files": 386
   },
   "schema_version": 1,
@@ -1646,15 +1660,15 @@
         "why": "Competition readiness requires an evidence-backed learning-through-work journey, a reproducible replay and actual submission criteria."
       }
     ],
-    "source_sha256": "a9c8dfcc10733572dd0b49e5ac24c9f11b1c02044e7e5ef601fb5412500ce467",
+    "source_sha256": "f797d3555f01ece2a1eb0d7977a7da1e510f5c64a5ea24f8ad1fc77608a3cf74",
     "state": "PASS"
   },
   "summary": {
-    "findings": 59,
+    "findings": 60,
     "findings_high": 25,
     "pipelines": 5,
-    "srs_open": 60,
-    "srs_total": 64,
+    "srs_open": 61,
+    "srs_total": 65,
     "unwired_gates": 25
   },
   "tests": {
