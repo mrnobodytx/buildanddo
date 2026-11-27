@@ -176,7 +176,7 @@ source_assurance:
     - python${PYTHON_VERSION} -m venv state/ci/assurance-venv
   script:
     - state/ci/assurance-venv/bin/python -m unittest tests.upgrade.test_assurance_runner
-    - state/ci/assurance-venv/bin/python -m unittest tests.deploy.test_ship_telemetry tests.deploy.test_release_telemetry tests.deploy.test_ship_swap
+    - state/ci/assurance-venv/bin/python -m unittest tests.deploy.test_ship_telemetry tests.deploy.test_release_telemetry tests.deploy.test_ship_swap tests.deploy.test_release_lane
     - state/ci/assurance-venv/bin/python -m tests.assurance.run --source-only --profiles security,evidence,failure --output state/ci/assurance/$CI_JOB_ID/source
     # The research export loads the foundry registry, whose declared YAML parser
     # a new environment does not contain. The steps above need no installed package.
