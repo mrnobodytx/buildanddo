@@ -438,6 +438,13 @@
     },
     {
       "area": "governance",
+      "evidence": ".bits/queue/VCC-BUILDANDDO-GM-SHIFT-001.md: TEMPLATE.md asks every task to carry a gate command that prints PASS or FAIL",
+      "severity": "info",
+      "srs": "SRS-BUILDANDDO-GM-SHIFT-001",
+      "statement": "VCC-BUILDANDDO-GM-SHIFT-001 has no task table"
+    },
+    {
+      "area": "governance",
       "evidence": ".bits/queue/VCC-BUILDANDDO-UPGRADE-001.md: TEMPLATE.md asks every task to carry a gate command that prints PASS or FAIL",
       "severity": "info",
       "srs": "SRS-BUILDANDDO-UPGRADE-001",
@@ -926,7 +933,7 @@
       "wired_into_ci": true
     }
   ],
-  "generated_at": "2026-11-27T19:37:27.182346+00:00",
+  "generated_at": "2026-11-27T19:41:03.081853+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -1170,6 +1177,13 @@
         "spec": ".bits/srs/SRS-BUILDANDDO-GITLAB-RELEASE-001.md",
         "status": "in_progress",
         "title": "Ship buildanddo.com from GitLab through the verified release rail"
+      },
+      {
+        "code": "SRS-BUILDANDDO-GM-SHIFT-001",
+        "risk": "A1",
+        "spec": ".bits/srs/SRS-BUILDANDDO-GM-SHIFT-001.md",
+        "status": "in_progress",
+        "title": "Guildmaster units on buildanddo.com through the Citadel mission loop, peer-graded, armed only by the owner"
       },
       {
         "code": "SRS-BUILDANDDO-GROWTH-001",
@@ -1640,7 +1654,7 @@
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 1969,
+    "tracked_files": 1971,
     "web_source_files": 415
   },
   "schema_version": 1,
@@ -1724,11 +1738,11 @@
     "state": "PASS"
   },
   "summary": {
-    "findings": 63,
+    "findings": 64,
     "findings_high": 26,
     "pipelines": 5,
-    "srs_open": 64,
-    "srs_total": 68,
+    "srs_open": 65,
+    "srs_total": 69,
     "unwired_gates": 26
   },
   "tests": {
