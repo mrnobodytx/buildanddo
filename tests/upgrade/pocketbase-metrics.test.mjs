@@ -41,11 +41,16 @@ function runtime(env = { BUILDANDDO_TELEMETRY_TRANSPORT: 'stdout', NODE_ENV: 'pr
     };
     vm.runInNewContext(helperSource, scope, { filename: pathToFileURL(resolve(helperPath)).href });
     const hookScope = { __hooks: '/hooks', require: () => scope.module.exports,
-        Middleware: function (definition) {
-            assert.equal(typeof definition, 'object', 'Middleware requires a definition object');
-            assert.equal(typeof definition.func, 'function');
-            this.func = definition.func;
-            this.priority = definition.priority ?? 0;
+        // Mirrors the 0.39.8 declaration `new Middleware(func, priority?, id?)`. The binary
+        // compiles a non-function first argument as source, so a definition object turns into
+        // "[object Object]" and fails to compile at line 1, column 11.
+        Middleware: function (func, priority, id) {
+            if (typeof func !== 'function') {
+                throw new SyntaxError(`Line 1:11 Unexpected identifier (compiled ${String(func)})`);
+            }
+            this.func = func;
+            this.priority = priority ?? 0;
+            this.id = id ?? '';
             assert.ok(Number.isInteger(this.priority));
         } };
     for (const hook of [
@@ -268,13 +273,15 @@ test('routerUse registers request timing exactly once, without an onServe compat
     assert.equal(records[0].data.metric, 'buildanddo.request.duration_ms');
 });
 
-test('middleware registration uses a definition object rather than a positional constructor', () => {
+test('middleware registration uses the positional 0.39.8 constructor, not a definition object', () => {
     const { hooks, hookScope, priorities } = runtime();
     assert.equal(priorities.routerUse, -2000);
-    const registered = new hookScope.Middleware({ func: hooks.routerUse, priority: -2000 });
+    const registered = new hookScope.Middleware(hooks.routerUse, -2000);
     assert.equal(registered.func, hooks.routerUse);
     assert.equal(registered.priority, -2000);
-    assert.throws(() => new hookScope.Middleware(hooks.routerUse, -2000), /definition object/);
+    assert.throws(() => new hookScope.Middleware({ func: hooks.routerUse, priority: -2000 }),
+        /Line 1:11 Unexpected identifier/);
+    assert.doesNotMatch(hookSource, /new Middleware\(\s*\{/, 'a definition object stops 0.39.8 at startup');
 });
 
 test('router middleware loads the helper inside its isolated callback and preserves downstream errors', () => {
