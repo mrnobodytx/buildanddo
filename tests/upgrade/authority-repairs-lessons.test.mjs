@@ -1,16 +1,16 @@
 // --- CGRF Header ------------------------------------------------
 // File:        tests/upgrade/authority-repairs-lessons.test.mjs
 // Stage:       08_TEST
-// SRS:         SRS-BUILDANDDO-UPGRADE-001
+// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-CURRICULUM-PRIVATE-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-CURRICULUM-PRIVATE-001
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-23
-// Depends:     tests/upgrade/admin-fixture.mjs, apps/pocketbase/pb_hooks/tutorial-learning.js, apps/pocketbase/pb_migrations/1791500002_authority_repair_lessons.js, apps/pocketbase/pb_migrations/data/authority-repairs-lessons.json, apps/web/src/lib/tutorialCurriculum.js
+// Depends:     tests/upgrade/admin-fixture.mjs, tests/upgrade/lesson-keys-fixture.mjs, apps/pocketbase/pb_hooks/tutorial-learning.js, apps/pocketbase/pb_migrations/1791500002_authority_repair_lessons.js, apps/pocketbase/pb_migrations/data/authority-repairs-lessons.json, apps/web/src/lib/tutorialCurriculum.js
 // EnumType:    Test
-// EnumEdges:   CONSUMES tests/upgrade/admin-fixture.mjs; CONSUMES apps/pocketbase/pb_hooks/tutorial-learning.js; VALIDATES apps/pocketbase/pb_migrations/1791500002_authority_repair_lessons.js; VALIDATES apps/pocketbase/pb_migrations/data/authority-repairs-lessons.json; CONSUMES apps/web/src/lib/tutorialCurriculum.js
+// EnumEdges:   CONSUMES tests/upgrade/admin-fixture.mjs; CONSUMES tests/upgrade/lesson-keys-fixture.mjs; CONSUMES apps/pocketbase/pb_hooks/tutorial-learning.js; VALIDATES apps/pocketbase/pb_migrations/1791500002_authority_repair_lessons.js; VALIDATES apps/pocketbase/pb_migrations/data/authority-repairs-lessons.json; CONSUMES apps/web/src/lib/tutorialCurriculum.js
 // DAG Node:    none
 // Intent:      Validate one source-only lesson and additive migration while preserving prior lessons, snapshots and evidence.
 // ----------------------------------------------------------------
@@ -20,6 +20,7 @@ import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
 import test from 'node:test';
 import { fixture, plain, repoPath, source } from './admin-fixture.mjs';
+import { KEY_PATH, lessonKeyServer } from './lesson-keys-fixture.mjs';
 import { DBX, faithfulCountRecords } from './tutorial-learning-fixture.mjs';
 import { lessonLink, mergeTutorials, validLesson } from '../../apps/web/src/lib/tutorialCurriculum.js';
 
@@ -29,13 +30,17 @@ const BROADCAST_MIGRATION = 'apps/pocketbase/pb_migrations/1791400001_broadcast_
 const bundle = JSON.parse(source(DATA)), seed = bundle.lessons[0];
 const starter = JSON.parse(source('apps/pocketbase/pb_migrations/data/starter-tutorials.json'));
 const broadcast = JSON.parse(source('apps/pocketbase/pb_migrations/data/broadcast-classroom-lessons.json'));
+// Synthetic grading keys generated at test time from public lesson text, served as the private key file.
+const keys = lessonKeyServer();
 
 function installed(data = bundle) {
+    const served = lessonKeyServer();
     const f = fixture({ runtime: {
-        toString: String,
+        ...served.runtime,
         $dbx: DBX,
         $security: { sha256: (text) => createHash('sha256').update(text).digest('hex') },
-        $os: { readFile: (path) => {
+        $os: { ...served.runtime.$os, readFile: (path) => {
+            if (path === KEY_PATH) return served.runtime.$os.readFile(path);
             if (path === '/pb_migrations/data/authority-repairs-lessons.json') return JSON.stringify(data);
             assert.ok(['/pb_migrations/data/starter-tutorials.json', '/pb_migrations/data/broadcast-classroom-lessons.json'].includes(path));
             return source('apps/pocketbase' + path);
@@ -48,6 +53,7 @@ function installed(data = bundle) {
     // PocketBase's countRecords takes dbx expressions only; a filter-string double would accept the call
     // shape PocketBase refuses (see tutorial-learning-fixture.mjs).
     faithfulCountRecords(f.app);
+    served.attach(f.app);
     return f;
 }
 
@@ -95,7 +101,11 @@ test('the lesson distinguishes claim authorities and binds only the recorded sou
         'Missions already produce scoped observations', 'historical artifact', 'not this repair',
         'support_sources', 'corrections', 'daily_editions', 'specialist_desks', 'social_content', 'social_channels', 'seat_events'])
         assert.ok(text.includes(term), term);
-    assert.match(seed.lesson.check.choices[seed.lesson.check.answer], /independent review and payment remain unverified/);
+    // The correct choice is private golden data (SRS-BUILDANDDO-CURRICULUM-PRIVATE-001): the public check carries its
+    // question and choices only, and the key that grades it is generated synthetically for this suite.
+    assert.deepEqual(Object.keys(seed.lesson.check).sort(), ['choices', 'question']);
+    const answer = keys.answerFor(seed.slug);
+    assert.ok(Number.isInteger(answer) && answer >= 0 && answer < seed.lesson.check.choices.length, 'the synthetic key indexes a listed choice');
     const evidence = bundle.source_evidence;
     assert.ok(text.includes(evidence.boundary));
     assert.deepEqual(evidence.validation.map((check) => check.status), ['recorded source pass', 'blocked', 'blocked', 'unmeasured']);
@@ -177,7 +187,7 @@ test('up/down replay preserves operator edits, completed snapshots, certificates
     command('start');
     seed.lesson.sections.forEach((_section, index) => command('section', { index }));
     command('practice', { checks: seed.lesson.exercise.checklist.map(() => true) });
-    command('answer', { choice: seed.lesson.check.answer });
+    command('answer', { choice: keys.answerFor(seed.slug) });
     const snapshot = detail();
     assert.ok(snapshot.enrollment.certificate);
     const record = f.app.findRecordById('tutorials', seed.id);

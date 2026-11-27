@@ -1,10 +1,10 @@
 # ─── CGRF Header ───────────────────────────────────────────────
 # File:        tests/assurance/browser.py
 # Stage:       08_TEST
-# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-CURRICULUM-PRIVATE-001
 # CAPS:        pending
 # CK:          pending
-# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-CURRICULUM-PRIVATE-001
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-22
@@ -202,8 +202,9 @@ def learning_journey(page: Any, base: str, server: AssuranceServer) -> None:
     for checkbox in page.get_by_role("dialog").get_by_role("checkbox").all():
         checkbox.check()
     page.get_by_role("button", name="Save practice and continue", exact=True).click()
+    # The catalogue never carries the key, so the correct choice comes from the staged synthetic set.
     page.get_by_label(
-        lesson["lesson"]["check"]["choices"][lesson["lesson"]["check"]["answer"]],
+        lesson["lesson"]["check"]["choices"][server.answer(lesson)],
         exact=True,
     ).check()
     page.get_by_role("button", name="Check answer and finish", exact=True).click()

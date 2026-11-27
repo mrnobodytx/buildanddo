@@ -2,17 +2,18 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        tests/upgrade/public-api.test.mjs
 // Stage:       08_TEST
-// SRS:         SRS-BUILDANDDO-BUDDI-002
+// SRS:         SRS-BUILDANDDO-BUDDI-002, SRS-BUILDANDDO-CURRICULUM-PRIVATE-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-BUDDI-002
+// Dispatch:    VCC-BUILDANDDO-BUDDI-002, VCC-BUILDANDDO-CURRICULUM-PRIVATE-001
 // Seat:        C-ONE
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-22
-// Depends:     tests/upgrade/admin-fixture.mjs, apps/pocketbase/pb_hooks/public-api.js,
-//              apps/pocketbase/pb_hooks/buddi-intake.js, apps/pocketbase/pb_hooks/public-api.pb.js
+// Depends:     tests/upgrade/admin-fixture.mjs, tests/upgrade/tutorial-learning-fixture.mjs, tests/upgrade/lesson-keys-fixture.mjs,
+//              apps/pocketbase/pb_hooks/public-api.js, apps/pocketbase/pb_hooks/buddi-intake.js, apps/pocketbase/pb_hooks/public-api.pb.js
 // EnumType:    Test
-// EnumEdges:   CONSUMES tests/upgrade/admin-fixture.mjs; VALIDATES apps/pocketbase/pb_hooks/public-api.js;
+// EnumEdges:   CONSUMES tests/upgrade/admin-fixture.mjs; CONSUMES tests/upgrade/tutorial-learning-fixture.mjs;
+//              CONSUMES tests/upgrade/lesson-keys-fixture.mjs; VALIDATES apps/pocketbase/pb_hooks/public-api.js;
 //              VALIDATES apps/pocketbase/pb_hooks/buddi-intake.js; VALIDATES apps/pocketbase/pb_hooks/public-api.pb.js
 // DAG Node:    none
 // Intent:      Keep Buddi's mirrored public text equal to the site's own sources, the mounted routes equal to the
@@ -27,6 +28,8 @@ import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import vm from 'node:vm';
 import { plain, repoPath, source } from './admin-fixture.mjs';
+import { SYNTHETIC_PREFIX } from './lesson-keys-fixture.mjs';
+import { learningFixture } from './tutorial-learning-fixture.mjs';
 
 const HOOKS = 'apps/pocketbase/pb_hooks';
 
@@ -127,4 +130,99 @@ test('the write limits and the minimum secret length are the documented ones', (
     assert.equal(intake.PER_HOUR, 200);
     assert.equal(intake.MIN_SECRET, 32);
     assert.deepEqual(plain(Object.keys(intake.CONTRACTS).sort()), ['challenge_request', 'feedback', 'handoff']);
+});
+
+// ---- published digests over private keys (SRS-BUILDANDDO-CURRICULUM-PRIVATE-001) ------------------------------
+// These few run public-api.js inside the learning storage double, because the published digest must be the one
+// tutorial-learning.js binds into a certificate. Grading keys are synthetic, generated at test time and served as the
+// private key file. A failing comparison names the lesson, never a digest or a key.
+
+/** Run one public-api handler against a storage double and return its single stamped reply. */
+function call(f, handler, { challenge = '', query = {} } = {}) {
+    const replies = [], headers = {};
+    handler({
+        app: f.app,
+        request: { pathValue: (name) => (name === 'challenge_id' ? challenge : ''),
+            url: { path: '/api/v1/public/test', query: () => ({ get: (name) => (Object.prototype.hasOwnProperty.call(query, name) ? query[name] : '') }) } },
+        response: { header: () => ({ set: (key, value) => { headers[key] = value; } }) },
+        json: (status, body) => { replies.push({ status, text: JSON.stringify(body) }); return null; },
+        written: () => replies.length > 0,
+    });
+    assert.equal(replies.length, 1, 'one reply');
+    assert.equal(headers['Cache-Control'], 'no-store');
+    const { status, text } = replies[0];
+    assert.ok(!text.includes(SYNTHETIC_PREFIX) && !/"(?:answer|explanation)"/.test(text), 'a reply never carries a key');
+    return { status, body: JSON.parse(text) };
+}
+
+function publicFixture(options) {
+    const f = learningFixture(options);
+    const errors = [];
+    f.app.logger = () => ({ error: (...args) => errors.push(args), warn: () => {} });
+    return { f, api: f.load('public-api.js'), errors };
+}
+
+const published = (api, f, slug) => {
+    const state = call(f, api.challengeState, { challenge: slug });
+    const evidence = call(f, api.evidence, { query: { challenge_id: slug, evidence_type: 'digest' } });
+    assert.equal(state.status, 200, slug); assert.equal(evidence.status, 200, slug);
+    return { state: state.body, digest: evidence.body.items[0] };
+};
+
+test('a published content_digest is the enrollment and certificate digest, whether the key comes from the file or the database', () => {
+    const { f, api, errors } = publicFixture();
+    const { f: g, api: held } = publicFixture({ keys: 'absent' });
+    for (const lesson of g.lessons) g.data.tutorials.find((row) => row.id === lesson.id).lesson = g.keyed(lesson.id);
+    for (const lesson of f.lessons) {
+        const { state, digest } = published(api, f, lesson.slug);
+        assert.equal(state.verifier.state, 'SERVER_CHECKED', lesson.slug);
+        assert.equal(digest.state, 'COMPUTED', lesson.slug);
+        assert.ok(/^[0-9a-f]{64}$/.test(state.content_digest), lesson.slug);
+        assert.ok(digest.content_digest === state.content_digest, `${lesson.slug}: evidence and state agree`);
+        assert.ok(state.content_digest === f.detail(lesson.id).tutorial.content_digest, `${lesson.slug}: the enrollment digest`);
+        assert.ok(published(held, g, lesson.slug).state.content_digest === state.content_digest, `${lesson.slug}: database-keyed`);
+    }
+    const certificate = f.finish().enrollment.certificate;
+    assert.ok(certificate.content_digest === published(api, f, f.lessons[0].slug).state.content_digest, 'the certificate digest');
+    assert.deepEqual(errors, []);
+});
+
+test('a lesson that cannot be graded publishes content_digest null and UNAVAILABLE, and the catalogue still answers', () => {
+    for (const keys of ['absent', 'invalid']) {
+        const { f, api, errors } = publicFixture({ keys });
+        for (const lesson of f.lessons.slice(0, 3)) {
+            const { state, digest } = published(api, f, lesson.slug);
+            assert.equal(state.state, 'PUBLISHED', keys);
+            assert.equal(state.content_digest, null, keys);
+            assert.equal(state.verifier.state, 'UNAVAILABLE', keys);
+            assert.equal(typeof state.verifier.reason, 'string');
+            assert.deepEqual([digest.state, digest.content_digest], ['UNAVAILABLE', null], keys);
+            assert.equal(state.steps.at(-1).kind, 'check');
+        }
+        assert.equal(call(f, api.demoChallenges).status, 200, keys);
+        assert.deepEqual(errors, [], keys);
+    }
+    // An entry that disagrees with its lesson makes that lesson alone ungradable.
+    const { f: base } = publicFixture();
+    const [target, other] = base.lessons;
+    const { f, api } = publicFixture({ keys: 'tampered', keyOptions: { slug: target.slug } });
+    assert.deepEqual([published(api, f, target.slug).state.verifier.state, published(api, f, target.slug).state.content_digest], ['UNAVAILABLE', null]);
+    assert.equal(published(api, f, other.slug).state.verifier.state, 'SERVER_CHECKED');
+});
+
+test('the key file is read at most once per catalogue read, and never by a read that publishes no digest', () => {
+    const { f, api } = publicFixture();
+    const reads = () => f.keys.reads.length;
+    let before = reads();
+    call(f, api.challengeState, { challenge: f.lessons[0].slug });
+    assert.equal(reads() - before, 1, 'challenge state');
+    before = reads();
+    call(f, api.evidence, { query: { challenge_id: f.lessons[0].slug } });
+    assert.equal(reads() - before, 1, 'challenge evidence');
+    before = reads();
+    call(f, api.demoChallenges, { query: { limit: '10' } });
+    call(f, api.productContext, { query: { section: 'curriculum' } });
+    call(f, api.replay, { challenge: f.lessons[0].slug });
+    assert.equal(reads() - before, 0, 'listing, curriculum and replay publish no digest');
+    assert.equal(f.data.tutorial_learning.length, 0, 'public reads never enroll');
 });
