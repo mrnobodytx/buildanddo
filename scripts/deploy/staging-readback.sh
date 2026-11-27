@@ -2,18 +2,19 @@
 # ─── CGRF Header ──────────────────────────────
 # File:        scripts/deploy/staging-readback.sh
 # Stage:       11_COMMIT
-# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-CURRICULUM-PRIVATE-001
 # CAPS:        pending
 # CK:          pending
-# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-CURRICULUM-PRIVATE-001
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-16
-# Depends:     docker-compose.staging.yml, apps/web/nginx.conf
+# Depends:     docker-compose.staging.yml, apps/web/nginx.conf, apps/pocketbase/pb_hooks/lesson-keys.pb.js
 # EnumType:    Service
-# EnumEdges:   VALIDATES docker-compose.staging.yml; CONSUMES /api/health; VERIFIED_BY apps/web/Dockerfile
+# EnumEdges:   VALIDATES docker-compose.staging.yml; CONSUMES /api/health; CONSUMES /api/buildanddo/learning/keys-health; VERIFIED_BY apps/web/Dockerfile
 # DAG Node:    buildanddo.staging.readback
-# Intent:      Fail staging health unless the HTML shell, built JavaScript and PocketBase API are readable.
+# Intent:      Fail staging health unless the HTML shell, built JavaScript and PocketBase API are readable,
+#              and, in full mode, every lesson can be graded from private lesson keys.
 # ──────────────────────────────────────────────────────────
 
 set -eu
@@ -80,6 +81,36 @@ if [ "$mode" = full ]; then
         echo "FAIL staging readback: PocketBase did not report code 200" >&2
         exit 1
     fi
+
+    # Guided grading needs the private lesson key file (SRS-BUILDANDDO-CURRICULUM-PRIVATE-001).
+    # keys-health carries only the key state and lesson counts. The messages below are fixed text,
+    # so nothing from the response reaches the log.
+    keys_file="$work_dir/keys-health.json"
+    if ! fetch "$base_url/api/buildanddo/learning/keys-health" "$keys_file"; then
+        echo "FAIL staging readback: lesson keys health endpoint is unavailable" >&2
+        exit 1
+    fi
+    keys_body=$(tr -d ' \t\r\n' < "$keys_file")
+    case "$keys_body" in
+        *'"keys":'*'"keys":'*|*'"unavailable":'*'"unavailable":'*)
+            echo "FAIL staging readback: lesson keys health is ambiguous" >&2
+            exit 1
+            ;;
+    esac
+    case "$keys_body" in
+        *'"keys":"PRIVATE"'*) ;;
+        *)
+            echo "FAIL staging readback: lesson grading keys are not installed as PRIVATE" >&2
+            exit 1
+            ;;
+    esac
+    case "$keys_body" in
+        *'"unavailable":0,'*|*'"unavailable":0}'*) ;;
+        *)
+            echo "FAIL staging readback: some lessons cannot be graded" >&2
+            exit 1
+            ;;
+    esac
 fi
 
 echo "PASS staging readback: application${mode:+ ($mode)} is serving at $base_url"

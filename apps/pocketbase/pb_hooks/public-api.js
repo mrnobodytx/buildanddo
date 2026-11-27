@@ -2,18 +2,20 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/pocketbase/pb_hooks/public-api.js
 // Stage:       07_BUILD
-// SRS:         SRS-BUILDANDDO-BUDDI-002
+// SRS:         SRS-BUILDANDDO-BUDDI-002, SRS-BUILDANDDO-CURRICULUM-PRIVATE-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-BUDDI-002
+// Dispatch:    VCC-BUILDANDDO-BUDDI-002, VCC-BUILDANDDO-CURRICULUM-PRIVATE-001
 // Seat:        C-ONE
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-22
-// Depends:     apps/pocketbase/pb_hooks/workspace-access.js, apps/pocketbase/pb_migrations/1789700000_expand_business_learning.js,
+// Depends:     apps/pocketbase/pb_hooks/tutorial-learning.js, apps/pocketbase/pb_hooks/lesson-keys.js,
+//              apps/pocketbase/pb_migrations/1789700000_expand_business_learning.js,
 //              apps/pocketbase/pb_migrations/1788800000_create_praxis_evidence_fabric.js,
 //              apps/pocketbase/pb_migrations/1788940000_create_evidence_witness.js
 // EnumType:    Service
-// EnumEdges:   DEPENDS_ON apps/pocketbase/pb_hooks/workspace-access.js; CONSUMES tutorials; CONSUMES knowledge_sources;
+// EnumEdges:   DEPENDS_ON apps/pocketbase/pb_hooks/tutorial-learning.js; DEPENDS_ON apps/pocketbase/pb_hooks/lesson-keys.js;
+//              CONSUMES tutorials; CONSUMES knowledge_sources;
 //              CONSUMES knowledge_claims; CONSUMES governance_audits; CONSUMES governance_research_quests;
 //              CONSUMES evidence_epochs; CONSUMES anchor_manifests; SERVED_BY apps/pocketbase/pb_hooks/public-api.pb.js
 // DAG Node:    none
@@ -30,6 +32,12 @@
 // into a response. The knowledge check's ANSWER is never returned: handing it out would turn the
 // verification step into a formality.
 //
+// The answer and explanation are private (SRS-BUILDANDDO-CURRICULUM-PRIVATE-001). A lesson's published
+// content_digest is the certificate digest, so it is computed by tutorial-learning.js over the lesson
+// with its key resolved, from the key file read once per catalogue read. A lesson that cannot be graded
+// on this server publishes content_digest null and the state UNAVAILABLE; the catalogue itself still
+// answers, whatever the state of the key file.
+//
 // Evidence is served only from a collection whose list AND view rules are the empty string, checked
 // on every request. If an operator locks one of them down, this module stops serving it the same
 // minute, instead of publishing around the platform's own rule.
@@ -38,8 +46,6 @@
 // Desk run is a workspace mission; neither collection is queried anywhere in this file. A mission id
 // therefore always answers the same 404, whether or not such a mission exists, so these routes cannot
 // be used to test whether an id is real.
-
-const access = require(`${__hooks}/workspace-access.js`);
 
 const API = 'buildanddo.public-api/v1';
 const SITE = 'https://buildanddo.com';
@@ -56,6 +62,8 @@ const RUNS_PRIVATE = 'Runs are private. A lesson run belongs to the learner\'s o
 const VERIFICATION = 'Checked on the server: the sections are read in order, the practice checklist is recorded, and the '
     + 'knowledge check is answered correctly. Only then is a completion certificate issued, bound to the lesson\'s '
     + 'content digest. Course completion, not accreditation.';
+const UNGRADABLE = 'This lesson\'s knowledge check cannot be graded on this server yet, so no completion certificate can be '
+    + 'issued for it. The lesson can still be read.';
 const STOP = new Set(['the', 'and', 'for', 'with', 'want', 'need', 'how', 'what', 'your', 'you', 'our', 'can', 'does',
     'help', 'get', 'make', 'about', 'into', 'from', 'this', 'that', 'not', 'some', 'any', 'all', 'more', 'most', 'very',
     'just', 'like', 'please', 'would', 'could', 'should', 'will', 'has', 'have', 'had', 'was', 'were', 'been', 'their',
@@ -206,7 +214,7 @@ function strings(list, max = 20) {
 }
 
 /** @returns {object|null} One authored lesson projected for the public, or null when it is not presentable. */
-function lessonOf(record) {
+function lessonOf(record, grade = () => null) {
     // Read the JSON field through its string form: on 0.39.8 record.get() hands back a raw JSON value
     // whose keys are unreachable, and `typeof` still says 'object', so a truthiness check passes.
     let lesson = null;
@@ -230,6 +238,26 @@ function lessonOf(record) {
         outcomes: strings(lesson.outcomes),
         created: iso(record.getString('created')),
         updated: iso(record.getString('updated')),
+        grade,
+    };
+}
+
+/**
+ * @param {object} app Native app.
+ * @returns {function(object): (object|null)} Resolves one record's gradable lesson. The key file is read at most once,
+ * on first use, so a catalogue read that publishes no digest never reads it.
+ */
+function grader(app) {
+    let keys = null;
+    return (record) => {
+        try {
+            const learning = require(`${__hooks}/tutorial-learning.js`);
+            keys = keys || require(`${__hooks}/lesson-keys.js`).load(app);
+            return learning.gradable(app, record, keys);
+        } catch (_) {
+            // A lesson whose key needs an operator review cannot be graded; the catalogue still answers.
+            return null;
+        }
     };
 }
 
@@ -242,8 +270,9 @@ function catalogue(app) {
         throw error;
     }
     // Filter syntax (&&, quoted ''), not SQL: this is findRecordsByFilter, not countRecords.
+    const grade = grader(app);
     return app.findRecordsByFilter('tutorials', "slug != '' && curriculum_version != ''", 'order,slug', 500, 0)
-        .map(lessonOf).filter(Boolean);
+        .map((record) => lessonOf(record, grade)).filter(Boolean);
 }
 
 /** @returns {object|null} The authored lesson with this slug or record id; anything else is null. */
@@ -252,16 +281,16 @@ function findLesson(app, id) {
     return (catalogue(app) || []).find((item) => item.challenge_id === id || item.record_id === id) || null;
 }
 
-/** Same digest tutorial-learning.js binds into a certificate, so the two can be compared. */
+/**
+ * The digest tutorial-learning.js binds into a certificate, computed by that code over the lesson with its key resolved,
+ * or null when the lesson cannot be graded. Computed once per item; the resolved lesson itself is never kept on the item.
+ */
 function digestOf(item) {
-    return $security.sha256(access.canonical({
-        title: item.record.getString('title'),
-        summary: item.record.getString('summary'),
-        category: item.record.getString('category'),
-        effort_minutes: Number(item.record.get('effort_minutes') || 10),
-        curriculum_version: item.record.getString('curriculum_version') || 'custom',
-        lesson: item.lesson,
-    }));
+    if (!Object.prototype.hasOwnProperty.call(item, 'digest')) {
+        const graded = item.grade(item.record);
+        item.digest = graded ? require(`${__hooks}/tutorial-learning.js`).contentDigest(item.record, graded) : null;
+    }
+    return item.digest;
 }
 
 function links(base) {
@@ -296,13 +325,14 @@ function references(item) {
 }
 
 function lessonEvidence(item) {
+    const digest = digestOf(item);
     return [...references(item), {
         evidence_id: `${item.challenge_id}.digest`,
         type: 'digest',
         label: 'SHA-256 of the lesson content a completion certificate is bound to',
-        content_digest: digestOf(item),
+        content_digest: digest,
         curriculum_version: item.curriculum_version,
-        state: 'COMPUTED',
+        state: digest ? 'COMPUTED' : 'UNAVAILABLE',
     }];
 }
 
@@ -546,12 +576,14 @@ function challengeState(e) {
         const steps = sections.map((entry, index) => ({ step: index + 1, kind: 'read', heading: text(entry.heading, 200) }));
         steps.push({ step: steps.length + 1, kind: 'practice', prompt: item.lesson.exercise.prompt, checklist: strings(item.lesson.exercise.checklist) });
         steps.push({ step: steps.length + 1, kind: 'check', question: item.lesson.check.question, choices: item.lesson.check.choices.length });
+        const digest = digestOf(item);
         return reply(e, 200, 'A0', CATALOGUE, {
             state: 'PUBLISHED',
             challenge: summaryOf(item, origin()),
             steps,
-            verifier: { state: 'SERVER_CHECKED', method: VERIFICATION },
-            content_digest: digestOf(item),
+            verifier: digest ? { state: 'SERVER_CHECKED', method: VERIFICATION }
+                : { state: 'UNAVAILABLE', method: VERIFICATION, reason: UNGRADABLE },
+            content_digest: digest,
             curriculum_version: item.curriculum_version,
             evidence_refs: lessonEvidence(item).map((entry) => ({ evidence_id: entry.evidence_id, type: entry.type })),
             catalogue: { added: item.created, revised: item.updated },
