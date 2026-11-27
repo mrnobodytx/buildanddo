@@ -15,6 +15,7 @@
 #              CONSUMES apps/pocketbase/pb_migrations/data/government-submissions.json;
 #              CONSUMES apps/pocketbase/pb_migrations/data/authority-repairs-lessons.json;
 #              CONSUMES apps/pocketbase/pb_migrations/data/broadcast-classroom-lessons.json;
+#              CONSUMES apps/pocketbase/pb_migrations/data/agent-mail-intake-lessons.json;
 #              CONSUMES .bits/hostinger-readiness.lock.json; VERIFIED_BY tests/upgrade/test_lesson_keys.py
 # Intent:      Export, verify, synthesise and strip knowledge-check answer keys without ever printing
 #              one, so the private key file and the public curriculum can be proved to agree.
@@ -89,6 +90,7 @@ CURRICULA = (
     "government-submissions.json",
     "authority-repairs-lessons.json",
     "broadcast-classroom-lessons.json",
+    "agent-mail-intake-lessons.json",
 )
 READINESS_LOCK = ".bits/hostinger-readiness.lock.json"
 KEY_MEMBERS = ("answer", "explanation")
@@ -385,7 +387,7 @@ def read_curriculum(root: Path, name: str) -> str:
 
 
 def public_lessons(root: Path) -> dict:
-    """{slug: {id, version, check}} for the four curricula in the work tree."""
+    """{slug: {id, version, check}} for every curriculum in the work tree."""
     lessons: dict = {}
     for name in CURRICULA:
         doc = parse_curriculum(read_curriculum(root, name), name)

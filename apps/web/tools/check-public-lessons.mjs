@@ -9,10 +9,12 @@
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-23
 // Depends:     apps/pocketbase/pb_migrations/data/starter-tutorials.json, apps/pocketbase/pb_migrations/data/government-submissions.json,
-//              apps/pocketbase/pb_migrations/data/authority-repairs-lessons.json, apps/pocketbase/pb_migrations/data/broadcast-classroom-lessons.json
+//              apps/pocketbase/pb_migrations/data/authority-repairs-lessons.json, apps/pocketbase/pb_migrations/data/broadcast-classroom-lessons.json,
+//              apps/pocketbase/pb_migrations/data/agent-mail-intake-lessons.json
 // EnumType:    Service
 // EnumEdges:   CONSUMES apps/pocketbase/pb_migrations/data/starter-tutorials.json; CONSUMES apps/pocketbase/pb_migrations/data/government-submissions.json;
 //              CONSUMES apps/pocketbase/pb_migrations/data/authority-repairs-lessons.json; CONSUMES apps/pocketbase/pb_migrations/data/broadcast-classroom-lessons.json;
+//              CONSUMES apps/pocketbase/pb_migrations/data/agent-mail-intake-lessons.json;
 //              CONSUMES BUILDANDDO_LESSON_KEYS_FILE; CONSUMES BUILDANDDO_LESSON_KEYS_REQUIRED; VALIDATES dist/apps/web
 // DAG Node:    none
 // Intent:      Fail a build whose output carries a knowledge-check answer or explanation, the text that gives an interactive lesson's answer away.
@@ -38,7 +40,8 @@ export const REQUIRED_VARIABLE = 'BUILDANDDO_LESSON_KEYS_REQUIRED';
 const SCHEMA = 'buildanddo.lesson-keys/1';
 const SYNTHETIC_PREFIX = 'SYNTHETIC FIXTURE:';
 // Every curriculum whose lessons the server grades; used only to count the public lessons a key file must cover.
-const CURRICULA = ['starter-tutorials.json', 'government-submissions.json', 'authority-repairs-lessons.json', 'broadcast-classroom-lessons.json'];
+const CURRICULA = ['starter-tutorials.json', 'government-submissions.json', 'authority-repairs-lessons.json', 'broadcast-classroom-lessons.json',
+    'agent-mail-intake-lessons.json'];
 // The limits scripts/ci/lesson_keys.py and the PocketBase resolver apply to a key file.
 const LIMITS = Object.freeze({ bytes: 256 * 1024, entries: 500, answer: 5, explanation: 5000, slug: 80, fingerprint: 24 });
 const TOP = ['integrity', 'lessons', 'schema_version', 'source', 'synthetic'];
@@ -64,7 +67,7 @@ function exact(value, names) {
     return keys.length === names.length && keys.every((key, index) => key === names[index]);
 }
 
-/** @returns {string[]} Slugs of every authored lesson with a knowledge check, across the four curricula. */
+/** @returns {string[]} Slugs of every authored lesson with a knowledge check, across every curriculum. */
 function publicSlugs() {
     return CURRICULA.flatMap((name) => {
         const curriculum = JSON.parse(readFileSync(new URL(`../../pocketbase/pb_migrations/data/${name}`, import.meta.url), 'utf8'));

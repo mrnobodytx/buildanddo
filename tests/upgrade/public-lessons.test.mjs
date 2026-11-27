@@ -37,7 +37,8 @@ import { dump, keyFile, resealed, syntheticDocument, syntheticExplanation } from
 
 const root = fileURLToPath(new URL('../../', import.meta.url));
 const source = (path) => readFileSync(join(root, path), 'utf8');
-const CURRICULA = ['starter-tutorials.json', 'broadcast-classroom-lessons.json', 'government-submissions.json', 'authority-repairs-lessons.json'];
+const CURRICULA = ['starter-tutorials.json', 'broadcast-classroom-lessons.json', 'government-submissions.json', 'authority-repairs-lessons.json',
+    'agent-mail-intake-lessons.json'];
 const PUBLIC_LESSONS = CURRICULA.reduce((count, name) => count + JSON.parse(source(`apps/pocketbase/pb_migrations/data/${name}`)).lessons.length, 0);
 const CLI = join(root, 'apps/web/tools/check-public-lessons.mjs');
 const SKIP_LINE = 'SKIP: lesson explanation fingerprints need BUILDANDDO_LESSON_KEYS_FILE; output scanned for answer-bearing JSON checks only.';

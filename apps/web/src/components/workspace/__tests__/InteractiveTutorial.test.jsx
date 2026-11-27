@@ -22,6 +22,7 @@ import { learningFixture } from '../../../../../../tests/upgrade/tutorial-learni
 import { plain } from '../../../../../../tests/upgrade/admin-fixture.mjs';
 import broadcastCurriculum from '../../../../../pocketbase/pb_migrations/data/broadcast-classroom-lessons.json';
 import authorityCurriculum from '../../../../../pocketbase/pb_migrations/data/authority-repairs-lessons.json';
+import agentMailCurriculum from '../../../../../pocketbase/pb_migrations/data/agent-mail-intake-lessons.json';
 import TutorialCatalog from '@/components/workspace/TutorialCatalog';
 import AuthContext from '@/contexts/AuthContext';
 import pb from '@/lib/pocketbaseClient';
@@ -136,7 +137,7 @@ it('requires practice and the right answer, then displays a persistent certifica
     const growth = within(screen.getByRole('region', { name: 'Your learning journey' }));
     expect(await growth.findByText('Level 2 · Practitioner')).toBeVisible();
     expect(growth.getByText('First finish · earned')).toBeVisible();
-    expect(await screen.findByText(`1 of ${backend.lessons.length + broadcastCurriculum.lessons.length + authorityCurriculum.lessons.length} guided tutorials completed`)).toBeVisible();
+    expect(await screen.findByText(`1 of ${backend.lessons.length + broadcastCurriculum.lessons.length + authorityCurriculum.lessons.length + agentMailCurriculum.lessons.length} guided tutorials completed`)).toBeVisible();
     expect(backend.data.tutorial_progress).toHaveLength(0);
     const reopened = (await openTutorial(user)).reader;
     expect(await reopened.findByRole('heading', { name: 'Certificate of completion' })).toBeVisible();

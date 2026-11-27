@@ -271,6 +271,21 @@ deployed hooks ignore the file.
 - Verify: `python3 scripts/ci/public_redaction.py scan .bits/handoffs/2026-10-31-BITS-CODEGEN-C-ONE-curriculum-private.md`
   and `python3 scripts/ci/verify_public_boundary.py --root .` both pass with the reply in place.
 
+## Addendum 2026-11-27: the agent mail-intake lesson
+
+PR #149 adds a fifth curriculum, `agent-mail-intake-lessons.json`, with one lesson. It lands with
+its knowledge check stripped, so its key exists only in history, at commit `642bc36`. Until the
+private file carries it, new enrollments in that one lesson get a 503 instead of a grade; every
+other lesson is unaffected.
+
+- Re-run H1's export with `--source-rev 642bc36`. That revision still carries every key, so one
+  export covers all 36 lessons. Write it to the same mode-0700 directory.
+- Verify against current `main`: `python3 -I scripts/ci/lesson_keys.py verify --keys <file> --require-private`
+  exits 0 with state OK, lessons 36, bound 36, version_match 36, in_range 36, private true.
+- Replace the file in the private project (H2) and on each PocketBase host (H3), then re-run
+  `pocketbase lesson-keys check` and confirm keys-health shows `PRIVATE` with no unavailable lesson.
+- Record the date and counts under H13's reply rules: no values, digests, hosts or private URLs.
+
 ## Blocking
 
 Public work does not stop. The PR for this SRS does stop: it carries `hold` until H1-H3 are

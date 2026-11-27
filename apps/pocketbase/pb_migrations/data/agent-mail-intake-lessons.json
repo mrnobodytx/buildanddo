@@ -1,0 +1,127 @@
+{
+  "version": "2026.11.mailintake.1",
+  "lessons": [
+    {
+      "id": "bdomailintake01",
+      "slug": "agent-mail-intake-and-sender-proof",
+      "title": "Teaching an AI agent to read its own mail safely",
+      "summary": "Prove who sent a message, turn it into an intent with a testable hypothesis, keep every requested action behind an independent record, and measure whether the agent actually saw it.",
+      "category": "AI agent operations",
+      "effort_minutes": 25,
+      "prerequisites": "Read the work-loop lesson. Use your own test domain and synthetic messages; never route real customer mail into an exercise.",
+      "order": 28,
+      "lesson": {
+        "schema_version": 1,
+        "outcomes": [
+          "Explain why the From line of an email proves nothing, and what SPF, DKIM and DMARC results add.",
+          "Trust only the first Authentication-Results header written by your own receiving service, and split repeated headers at real boundaries.",
+          "Turn one email into an intent, a purpose, an objective and a falsifiable hypothesis without opening any of its links.",
+          "Keep every action an email asks for behind an independent record, and stop for a person when a vendor asks for one.",
+          "Measure whether an agent received and understood its mail instead of assuming it did."
+        ],
+        "why": "An AI agent with its own mailbox receives invitations, verification requests and look-alike phishing. The address in the From line is typed by the sender, so it cannot tell a real vendor from an impostor. A mailbox is only safe for an agent when three things hold: the agent can prove where a message came from, no email can authorize its own request, and someone can measure whether the agent actually saw the message. This case study follows a real first mission: eight guild agents, each invited by email to join a shared analytics workspace.",
+        "preparation": [
+          "A mail receiving service that runs code for each message (for example an email worker) and somewhere to store each message's metadata.",
+          "Your own test domain and synthetic messages. Do not forward real customer mail into the exercise.",
+          "One vendor invitation that you issued yourself, so you can read the vendor's own record of it.",
+          "Plain text notes for every result you observe, including failures and anything that stayed unproven."
+        ],
+        "sections": [
+          {
+            "heading": "The From line is a claim, not a proof",
+            "paragraphs": [
+              "Anyone can type any address into the From line. Three checks give the receiver real evidence. SPF asks whether the sending server is allowed to send for the envelope domain. DKIM verifies a cryptographic signature made with a key published by a signing domain. DMARC asks whether the domain a person sees in From is backed by a passing SPF or DKIM result for the same domain.",
+              "The receiving service writes what it found into an Authentication-Results header (RFC 8601), for example: dkim=pass header.d=vendor.example; dmarc=pass header.from=vendor.example; spf=pass smtp.mailfrom=bounce@mail.vendor.example."
+            ]
+          },
+          {
+            "heading": "Trust only the first header, written by your own receiver",
+            "paragraphs": [
+              "Your receiver adds its Authentication-Results header to the top of the message. Any other copy of that header may have been written by the sender, including one that names your receiver and says everything passed. Read the first one only, and only when its authentication service identifier is your receiver's.",
+              "Two traps catch careful teams. Some platforms join repeated headers into one string separated by commas, so a forged second copy can bleed into the trusted one's last result unless you split at the real boundaries: a comma counts only outside quoted strings and parenthesised comments. And some message stores keep only the last copy of a repeated header, which is exactly the copy a sender controls, so never check authentication from such a store."
+            ],
+            "steps": [
+              "Read the first Authentication-Results header the receiver hands your code.",
+              "Confirm its authentication service identifier is your own receiver's; otherwise record the message as untrusted.",
+              "Split a joined value only at commas outside quotes and comments; if a quote or comment never closes, fail closed.",
+              "Record spf, dkim and dmarc as pass, fail or none, each with the domain the result is for."
+            ]
+          },
+          {
+            "heading": "A pass means nothing without its domain",
+            "paragraphs": [
+              "An impostor can sign mail perfectly with a domain they own, so a bare dkim=pass proves nothing about a vendor. Keep one result per signing domain and require a passing signature from the vendor's own domain or one of its subdomains. A look-alike such as vendor.example.attacker.test is a different domain.",
+              "A single message can carry two SPF results: one for the server's greeting name and one for the envelope sender. The envelope sender is the one DMARC uses, so prefer it. In our case study, real vendor mail arrived with SPF none for the greeting name and SPF pass for the envelope sender."
+            ]
+          },
+          {
+            "heading": "From email to intent, purpose, objective and hypothesis",
+            "paragraphs": [
+              "Route each message by its recipient address to the agent that owns that address. Classify it with a small rule table of sender domain plus subject pattern, so an invitation, a verification request and everything else get different intents. Write down the purpose the message serves for that agent's team.",
+              "Then create an objective that says why, what done looks like, what evidence will prove it and which gate must open, and a hypothesis that can fail. The test for that hypothesis must read something the classifier never read, such as the vendor's own member list after the invitation is accepted. A test that re-reads the email can only agree with itself."
+            ],
+            "steps": [
+              "Treat the subject as untrusted data: flatten it to one line, quote it, and never place it in an agent prompt as an instruction.",
+              "If the subject carries authority claims such as an urgent order or a system notice, downgrade any action to triage.",
+              "If the receiver's trusted header shows no passing signature from the vendor's domain, downgrade the action to triage and say the sender may be spoofed."
+            ]
+          },
+          {
+            "heading": "An email can propose, never authorize",
+            "paragraphs": [
+              "A requested action becomes a held proposal bound to one exact plan: the kind of action, the vendor, the agent, the address and the source message, hashed together. An edited proposal stops matching its hash and is refused.",
+              "Approval comes from the vendor's own record, never from the email. In the case study, an invitation was approved automatically only when the vendor's organization records, read with a read-only key scoped to that organization, showed that our own organization issued that invitation for that exact address and that a trusted administrator created it. An invitation from a look-alike organization is simply absent from our list."
+            ]
+          },
+          {
+            "heading": "When the vendor asks for a person, stop",
+            "paragraphs": [
+              "The first mission's measured result: one of eight automated signups completed, and the vendor's member list confirmed that agent as a member in a separate read. The vendor answered the other seven with a human challenge. The correct response was to pause, mark each one as needing a person, and never retry or try to get around the challenge.",
+              "The one new account then received a verification email two seconds after signup. Its address stays unverified until a person opens that link; an agent that follows links from its own mail would turn every phishing message into an action."
+            ]
+          },
+          {
+            "heading": "Make the loop survive an outage",
+            "paragraphs": [
+              "An intake that looks back a fixed number of hours silently skips mail whenever it is down for longer than that window. Keep a cursor beside the processing ledger and look back to it when it is older than the window, never moving it past a message that failed and must be retried.",
+              "Write each ledger line to disk before handling the next message, so a crash cannot re-create objectives that were already created, and give every queued task an idempotency key so a re-run cannot queue it twice."
+            ]
+          },
+          {
+            "heading": "Prove the agent actually saw it",
+            "paragraphs": [
+              "Delivery is a chain: received, recorded, queued, claimed, completed. Report each step per agent and raise an alarm when a task waits unclaimed for too long, because a queue nobody consumes looks exactly like a healthy one from the sender's side. In the case study all eight invitations were recorded and queued, and none was claimed: the queue on that machine had no consumer.",
+              "Then ask the agent. Before its mail was delivered into its context, one agent asked about its mailbox described a message that did not exist. An agent that has not been given its mail will invent some, so test what it knows against an answer key it cannot see."
+            ]
+          }
+        ],
+        "exercise": {
+          "prompt": "Build a tiny intake for one test mailbox. Send it three synthetic messages: a genuine invitation from a domain you control and sign, the same text from a look-alike domain, and a message carrying a second Authentication-Results header that claims everything passed. Record what your intake decides for each, and why.",
+          "checklist": [
+            "Only the first Authentication-Results header from your own receiver was read.",
+            "The look-alike and the forged header both ended in triage, with no proposal.",
+            "The genuine invitation produced an objective, a falsifiable hypothesis and a held proposal, and nothing followed its link.",
+            "Approval was checked against the vendor's own record of the invitation, not the email.",
+            "Your report shows, per mailbox, which messages were recorded, queued, claimed and completed."
+          ]
+        },
+        "check": {
+          "question": "An email to your agent claims to be a vendor invitation. Your receiver's first Authentication-Results header is its own and shows dkim=pass only for an unrelated domain. A second header further down claims a pass for the vendor. What should the agent do?",
+          "choices": [
+            "Accept the invitation, because a DKIM check passed",
+            "Trust the second header, because it names the vendor",
+            "Treat the sender as unproven for the vendor and drop the message to triage without acting",
+            "Open the invitation link to see whether the page looks genuine"
+          ]
+        },
+        "references": [
+          { "label": "RFC 8601: Message Header Field for Indicating Message Authentication Status", "url": "https://www.rfc-editor.org/rfc/rfc8601.html" },
+          { "label": "RFC 6376: DomainKeys Identified Mail (DKIM) Signatures", "url": "https://www.rfc-editor.org/rfc/rfc6376.html" },
+          { "label": "RFC 7489: Domain-based Message Authentication, Reporting, and Conformance (DMARC)", "url": "https://www.rfc-editor.org/rfc/rfc7489.html" },
+          { "label": "RFC 7208: Sender Policy Framework (SPF)", "url": "https://www.rfc-editor.org/rfc/rfc7208.html" },
+          { "label": "Cloudflare Email Routing: authentication results in an email handler", "url": "https://developers.cloudflare.com/email-service/api/route-emails/email-handler/" }
+        ]
+      }
+    }
+  ]
+}

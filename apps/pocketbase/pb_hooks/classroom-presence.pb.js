@@ -1,21 +1,30 @@
 // --- CGRF Header ------------------------------------------------
 // File:        apps/pocketbase/pb_hooks/classroom-presence.pb.js
 // Stage:       07_BUILD
-// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-PRESENCE-001
+// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-PRESENCE-001, SRS-BUILDANDDO-GUILDMASTER-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-PRESENCE-001
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-PRESENCE-001, VCC-BUILDANDDO-GUILDMASTER-001
 // Seat:        BITS-CODEGEN, C-ONE (the SFU echo on read)
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-23
-// Depends:     apps/pocketbase/pb_hooks/classroom-media.js, apps/pocketbase/pb_hooks/classroom-realtime-lib.js, apps/pocketbase/pb_migrations/1790600000_classroom_presence.js, apps/pocketbase/pb_hooks/telemetry.js
+// Depends:     apps/pocketbase/pb_hooks/classroom-media.js, apps/pocketbase/pb_hooks/classroom-realtime-lib.js, apps/pocketbase/pb_migrations/1790600000_classroom_presence.js, apps/pocketbase/pb_hooks/telemetry.js, apps/pocketbase/pb_hooks/guildmasters.js
 // EnumType:    Route
-// EnumEdges:   CONSUMES apps/pocketbase/pb_hooks/classroom-media.js; CONSUMES apps/pocketbase/pb_hooks/classroom-realtime-lib.js; DEPENDS_ON apps/pocketbase/pb_migrations/1790600000_classroom_presence.js; CONSUMES apps/pocketbase/pb_hooks/telemetry.js
-// Intent:      Advertise only owned published tracks to current classroom participants without granting room access from a global publisher allowlist, and call a track verified only when the SFU echoes it.
+// EnumEdges:   CONSUMES apps/pocketbase/pb_hooks/classroom-media.js; CONSUMES apps/pocketbase/pb_hooks/classroom-realtime-lib.js; DEPENDS_ON apps/pocketbase/pb_migrations/1790600000_classroom_presence.js; CONSUMES apps/pocketbase/pb_hooks/telemetry.js; CONSUMES apps/pocketbase/pb_hooks/guildmasters.js
+// Intent:      Advertise only owned published tracks to current classroom participants without granting room access from a global publisher allowlist, call a track verified only when the SFU echoes it, and show a guildmaster badge only for that guildmaster's own seat.
 // ----------------------------------------------------------------
 
 // The receiving persona adapter may retain context, string tracks and gm:slug
 // spelling, but it must now join the room and obtain a bound media session too.
+//
+// THE BADGE (SRS-BUILDANDDO-GUILDMASTER-001). Role 'guildmaster' and any persona_id are a claim
+// to be one of the eight guildmasters, so they are decided from the stored account alone
+// (guildmasters.seatOf), never from the body, the display name or the publisher allowlist. A write
+// carrying either is refused unless the caller IS that guildmaster's seat; a seat that names no
+// persona is badged as itself, and may still choose teacher or assistant explicitly. The stored
+// persona_id ('gm-<slug>') and display_name are canonical. A read re-decides every badged row
+// against its publisher's current account, so a row written before this rule, or by a seat that
+// has since lost its flag, loses the badge instead of being trusted.
 //
 // VERIFICATION. An advertisement must match tracks the provider confirmed when they were
 // pushed, in a media session this account owns, while its attendance is current
@@ -46,12 +55,21 @@ routerAdd('POST', '/api/classroom/presence', (e) => {
     const now = Date.now(), expires = Date.parse(str(body.expires_at, 40).replace(' ', 'T'));
     if (!Number.isFinite(expires) || expires <= now || expires > now + 120000) bad('Use a future expiry within 120 seconds.');
     const persona = str(body.persona_id, 120).toLowerCase().replace(/[^a-z0-9._-]+/g, '-').replace(/^-|-$/g, '');
-    const role = body.role || (persona ? 'guildmaster' : 'teacher'), state = body.state || 'LIVE';
-    if (!['teacher', 'guildmaster', 'assistant'].includes(role) || (persona && role !== 'guildmaster') ||
+    // An absent role is derived below from who the caller is; a present one must be listed.
+    const asked = body.role || '', state = body.state || 'LIVE';
+    if ((asked && !['teacher', 'guildmaster', 'assistant'].includes(asked)) || (persona && asked && asked !== 'guildmaster') ||
         !['LIVE', 'DEGRADED', 'ENDED'].includes(state)) bad('Use the listed advertisement role and state.');
     let saved, basis;
     e.app.runInTransaction((app) => {
         const scope = media.scopeFor(app, e.auth, roomId);
+        // Decided before the advertisement check and any write, so a refused badge stores nothing
+        // and contacts no provider.
+        const guildmasters = require(`${__hooks}/guildmasters.js`);
+        const own = guildmasters.seatOf(app, scope.auth);
+        const role = asked || (persona || own ? 'guildmaster' : 'teacher');
+        if (((role === 'guildmaster' || persona) && !own) || (persona && guildmasters.resolve(persona) !== own))
+            throw new ForbiddenError('Only a guildmaster\'s own seat may carry its badge.');
+        const badge = role === 'guildmaster';
         media.advertisement(app, scope, body.session_id, tracks);
         const rows = app.findRecordsByFilter('classroom_presence', 'room = {:room} && session_id = {:session}',
             '', 2, 0, { room: roomId, session: body.session_id });
@@ -59,8 +77,8 @@ routerAdd('POST', '/api/classroom/presence', (e) => {
         if (rows[0] && rows[0].getString('publisher') !== scope.auth.id) throw new ForbiddenError('This advertisement belongs to another account.');
         const record = rows[0] || new Record(app.findCollectionByNameOrId('classroom_presence'));
         const values = { workspace: scope.workspace, room: roomId, publisher: scope.auth.id,
-            display_name: (scope.auth.getString('name').trim() || persona || 'Classroom publisher').slice(0, 120),
-            persona_id: persona, role, state, access_basis: scope.basis, session_id: body.session_id, tracks,
+            display_name: badge ? own.name : (scope.auth.getString('name').trim() || 'Classroom publisher').slice(0, 120),
+            persona_id: badge ? guildmasters.personaId(own) : '', role, state, access_basis: scope.basis, session_id: body.session_id, tracks,
             app_name: str(body.app_name, 120), manifest_id: str(body.manifest_id, 80), capsule_digest: str(body.capsule_digest, 64),
             expires_at: new Date(expires).toISOString() };
         Object.entries(values).forEach(([key, value]) => record.set(key, value));
@@ -103,6 +121,7 @@ routerAdd('GET', '/api/classroom/presence', (e) => {
     // One SFU read per SESSION, not per row: several rows can share a session and the echo is a
     // network call, bounded by the 50 rows read above.
     const provider = require(`${__hooks}/classroom-realtime-lib.js`);
+    const guildmasters = require(`${__hooks}/guildmasters.js`);
     const echoed = {};
     const echoFor = (sessionId) => {
         if (!Object.hasOwn(echoed, sessionId)) echoed[sessionId] = provider.echoSession(sessionId);
@@ -112,14 +131,24 @@ routerAdd('GET', '/api/classroom/presence', (e) => {
     for (const row of rows) {
         const expires = Date.parse(row.getString('expires_at').replace(' ', 'T'));
         if (row.getString('workspace') !== scope.workspace || !Number.isFinite(expires) || expires <= Date.now() || row.getString('state') === 'ENDED') continue;
-        let tracks;
+        let tracks, publisher;
         try {
-            const publisher = media.scopeFor(e.app, access.find(e.app, 'users', row.getString('publisher')), roomId);
+            publisher = media.scopeFor(e.app, access.find(e.app, 'users', row.getString('publisher')), roomId);
             tracks = access.json(row, 'tracks');
             media.advertisement(e.app, publisher, row.getString('session_id'), tracks);
         } catch (error) {
             if ([400, 403, 404, 409].includes(error.status)) continue;
             throw error;
+        }
+        // A badge is shown only while the publisher's current account is the guildmaster it names.
+        // Anything else is served without it, as the teacher or assistant its access basis says,
+        // under the publisher's own name. The stored row is left as it is: a read repairs nothing.
+        let persona = row.getString('persona_id'), role = row.getString('role'), name = row.getString('display_name');
+        if (persona || role === 'guildmaster') {
+            const own = guildmasters.seatOf(e.app, publisher.auth);
+            if (own && own === guildmasters.resolve(persona)) [persona, role, name] = [guildmasters.personaId(own), 'guildmaster', own.name];
+            else [persona, role, name] = ['', row.getString('access_basis') === 'host' ? 'teacher' : 'assistant',
+                (publisher.auth.getString('name').trim() || 'Classroom publisher').slice(0, 120)];
         }
         // advertisement() has already required one to eight {trackName, kind} tracks, so the only
         // question left is whether the SFU holds every one of them by name.
@@ -129,7 +158,7 @@ routerAdd('GET', '/api/classroom/presence', (e) => {
             : missing.length ? { verified: false, verification: 'NOT_HELD_BY_SFU:' + missing.slice(0, 3).join(',') }
                 : { verified: true, verification: 'ECHOED_BY_SFU' };
         items.push({ id: row.id, room: roomId, session_id: row.getString('session_id'), tracks, tracks_error: '',
-            persona_id: row.getString('persona_id'), display_name: row.getString('display_name'), role: row.getString('role'),
+            persona_id: persona, display_name: name, role,
             access_basis: row.getString('access_basis'), app_name: row.getString('app_name'), manifest_id: row.getString('manifest_id'),
             capsule_digest: row.getString('capsule_digest'), state: row.getString('state'),
             ...verdict, expires_at: new Date(expires).toISOString() });

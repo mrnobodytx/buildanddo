@@ -1,10 +1,10 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/src/pages/workspace/ClassroomsPage.jsx
 // Stage:       07_BUILD
-// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-COMMUNITY-WEB-001
+// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-COMMUNITY-WEB-001, SRS-BUILDANDDO-GUILDMASTER-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-COMMUNITY-WEB-001
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-COMMUNITY-WEB-001, VCC-BUILDANDDO-GUILDMASTER-001
 // Seat:        BITS-CODEGEN, C-ONE (status link kept on the domain)
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-16
@@ -142,22 +142,33 @@ function ClassroomList({ control, onPage, status, onStatus }) {
 
 function SharedLesson({ control }) {
     const { room, lesson, lessons } = control.data;
+    // Guild material shared with room.material is keyless reading material: it has no exercise and
+    // no Field Manual page, and the host moves it with room.material rather than room.lesson.
+    const guild = lesson?.source === 'guild_lesson';
     const section = lesson?.lesson.sections[room.section];
     const change = (tutorial, index) => control.mutate('room.lesson', { id: room.id, tutorial, section: index }, room.revision);
+    const move = (index) => guild ? control.mutate('room.material', { id: room.id, material: room.material, section: index }, room.revision) : change(room.tutorial, index);
     return <Card className="min-w-0 space-y-5 p-5 sm:p-6">
         <h2 className="flex items-center gap-2 font-display text-2xl font-semibold"><BookOpen className="h-5 w-5" aria-hidden="true" />Shared lesson</h2>
         {room.can_manage && room.status === 'live' && <div><label htmlFor="room-lesson" className="mb-1 block text-sm">Class lesson</label><select id="room-lesson" value={room.tutorial} disabled={frozen(control)} onChange={(event) => change(event.target.value, 0)} className={controlInput}>
+            {room.material && <option value="" disabled>{guild ? `Guild material: ${lesson.title}` : 'Guild material'}</option>}
             {lessons.items.map((item) => <option key={item.id} value={item.id}>{item.title}</option>)}</select></div>}
-        {!section ? <p role="status" className="text-sm text-muted-foreground">{room.status === 'ended' ? 'The lesson is no longer available in the catalogue. The saved class discussion is still readable.' : 'The selected lesson is unavailable. Ask the host to select an installed lesson.'}</p> : <>
+        {!section ? <p role="status" className="text-sm text-muted-foreground">{room.material ? 'The shared guild material is unavailable. Ask the host to share published material or select an installed lesson.' : room.status === 'ended' ? 'The lesson is no longer available in the catalogue. The saved class discussion is still readable.' : 'The selected lesson is unavailable. Ask the host to select an installed lesson.'}</p> : <>
             <div><p className="text-xs font-semibold uppercase tracking-wide text-primary">{lesson.category}</p><h3 className="mt-2 break-words font-display text-xl font-semibold">{lesson.title}</h3><p className="mt-2 text-sm leading-6 text-muted-foreground">{lesson.summary}</p></div>
             <p role="status" className="text-xs text-muted-foreground">{room.status === 'live' ? 'Following the host' : 'Saved lesson position'} · Section {room.section + 1} of {lesson.lesson.sections.length}</p>
             <article className="space-y-4 break-words text-sm leading-7 [overflow-wrap:anywhere]" aria-labelledby="shared-section-title"><h4 id="shared-section-title" className="font-display text-xl font-semibold">{section.heading}</h4>
                 {section.paragraphs?.map((paragraph, index) => <p key={index}>{paragraph}</p>)}
                 {section.steps && <ol className="list-decimal space-y-2 pl-5">{section.steps.map((step, index) => <li key={index}>{step}</li>)}</ol>}
             </article>
-            {room.can_manage && room.status === 'live' && <div className="flex flex-wrap gap-3"><Button variant="secondary" disabled={frozen(control) || room.section === 0} onClick={() => change(room.tutorial, room.section - 1)}>Previous section</Button><Button disabled={frozen(control) || room.section + 1 >= lesson.lesson.sections.length} onClick={() => change(room.tutorial, room.section + 1)}>Next section</Button></div>}
-            <details className="border-t border-border pt-4"><summary className="cursor-pointer text-sm font-semibold">Practice exercise</summary><div className="mt-3 space-y-3 text-sm leading-6"><p>{lesson.lesson.exercise.prompt}</p><ul className="list-disc space-y-1 pl-5">{lesson.lesson.exercise.checklist.map((item, index) => <li key={index}>{item}</li>)}</ul></div></details>
-            <Link className="inline-block text-sm underline underline-offset-4" to={`/app/tutorials?lesson=${encodeURIComponent(lesson.id)}`}>Read the full lesson and save your own progress</Link>
+            {room.can_manage && room.status === 'live' && <div className="flex flex-wrap gap-3"><Button variant="secondary" disabled={frozen(control) || room.section === 0} onClick={() => move(room.section - 1)}>Previous section</Button><Button disabled={frozen(control) || room.section + 1 >= lesson.lesson.sections.length} onClick={() => move(room.section + 1)}>Next section</Button></div>}
+            {guild ? <>
+                {lesson.lesson.outcomes?.length > 0 && <div className="border-t border-border pt-4"><h4 className="text-sm font-semibold">What this class covers</h4><ul className="mt-2 list-disc space-y-1 pl-5 text-sm leading-6">{lesson.lesson.outcomes.map((item, index) => <li key={index}>{item}</li>)}</ul></div>}
+                {lesson.lesson.references?.length > 0 && <div className="border-t border-border pt-4"><h4 className="text-sm font-semibold">References</h4><ul className="mt-2 space-y-1 text-sm">{lesson.lesson.references.map((reference, index) => <li key={index}><a className="underline underline-offset-4 [overflow-wrap:anywhere]" href={reference.url} target="_blank" rel="noopener noreferrer">{reference.label}</a></li>)}</ul></div>}
+                <p className="text-xs text-muted-foreground">Class material written by this workspace's guild. It has no exercise or knowledge check.</p>
+            </> : <>
+                <details className="border-t border-border pt-4"><summary className="cursor-pointer text-sm font-semibold">Practice exercise</summary><div className="mt-3 space-y-3 text-sm leading-6"><p>{lesson.lesson.exercise.prompt}</p><ul className="list-disc space-y-1 pl-5">{lesson.lesson.exercise.checklist.map((item, index) => <li key={index}>{item}</li>)}</ul></div></details>
+                <Link className="inline-block text-sm underline underline-offset-4" to={`/app/tutorials?lesson=${encodeURIComponent(lesson.id)}`}>Read the full lesson and save your own progress</Link>
+            </>}
         </>}
     </Card>;
 }

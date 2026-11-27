@@ -1,20 +1,22 @@
 // --- CGRF Header ------------------------------------------------
 // File:        apps/pocketbase/pb_hooks/workspace-claims.js
 // Stage:       07_BUILD
-// SRS:         SRS-BUILDANDDO-UPGRADE-001
+// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-GUILDMASTER-001
 // CAPS:        pending
 // CK:          pending
 // Dispatch:    VCC-BUILDANDDO-UPGRADE-001
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-23
-// Depends:     apps/pocketbase/pb_hooks/workspace-access.js, apps/pocketbase/pb_hooks/business-policy.js, apps/pocketbase/pb_migrations/1791500001_workspace_claim_authority.js
+// Depends:     apps/pocketbase/pb_hooks/workspace-access.js, apps/pocketbase/pb_hooks/business-policy.js, apps/pocketbase/pb_hooks/guildmasters.js, apps/pocketbase/pb_hooks/guild-publishing.js, apps/pocketbase/pb_migrations/1791500001_workspace_claim_authority.js, apps/pocketbase/pb_migrations/1792300000_seat_event_persona.js
 // EnumType:    Adapter
-// EnumEdges:   CONSUMES apps/pocketbase/pb_hooks/workspace-access.js; CONSUMES apps/pocketbase/pb_hooks/business-policy.js; DEPENDS_ON apps/pocketbase/pb_migrations/1791500001_workspace_claim_authority.js
+// EnumEdges:   CONSUMES apps/pocketbase/pb_hooks/workspace-access.js; CONSUMES apps/pocketbase/pb_hooks/business-policy.js; CONSUMES apps/pocketbase/pb_hooks/guildmasters.js; CONSUMES apps/pocketbase/pb_hooks/guild-publishing.js; DEPENDS_ON apps/pocketbase/pb_migrations/1791500001_workspace_claim_authority.js; DEPENDS_ON apps/pocketbase/pb_migrations/1792300000_seat_event_persona.js
 // Intent:      Bind bounded workspace reports and editorial changes to native accounts, current roles and saved revisions without inventing verification.
 // ----------------------------------------------------------------
 
 const access = require(`${__hooks}/workspace-access.js`);
+const guildmasters = require(`${__hooks}/guildmasters.js`);
+const guildPublishing = require(`${__hooks}/guild-publishing.js`);
 const ACTIONS = {
     'support.request': 'support_sources', 'correction.save': 'corrections', 'edition.save': 'daily_editions',
     'edition.publish': 'daily_editions', 'desk.save': 'specialist_desks', 'content.save': 'social_content',
@@ -60,27 +62,40 @@ function command(e) {
     if (name === 'seat_events' && !creating) access.invalid('Seat reports are append-only.');
     if (creating && body.revision !== 0) access.conflict('New records start at revision zero.');
     const status = typeof values.status === 'string' ? values.status.trim() : undefined;
-    const adminOnly = ['support_sources', 'social_channels'].includes(name) || publishing ||
-        name === 'social_content' && ['approved', 'published'].includes(status);
+    const adminOnly = ['support_sources', 'social_channels'].includes(name);
+    // Editorial decisions stay owner/admin (TRUST-001 R3) except for a guildmaster seat deciding
+    // on its own record (SRS-BUILDANDDO-GUILDMASTER-001): a non-guildmaster editor is still refused.
+    const decision = publishing || name === 'social_content' && ['approved', 'published'].includes(status);
     let result;
     e.app.runInTransaction((app) => {
-        const scope = access.requireRole(app, e.auth, workspace, adminOnly ? ADMINS : [...ADMINS, 'editor']);
+        const guild = decision ? guildPublishing.author(app, e.auth, workspace) : null;
+        const scope = access.requireRole(app, e.auth, workspace, adminOnly || (decision && !guild) ? ADMINS : [...ADMINS, 'editor']);
+        // The speaker is decided from the stored account alone (guildmasters.seatOf): a guildmaster
+        // seat reports as its agent persona and cannot pass as a person, and no label makes a person
+        // an agent. The persona itself is never a client value; TEXT does not list it.
+        const own = name === 'seat_events' ? guildmasters.seatOf(app, e.auth) : null, actor = own ? 'agent' : 'human';
         if (name === 'seat_events' && ((Object.hasOwn(values, 'seat') && values.seat !== e.auth.id) ||
-            (Object.hasOwn(values, 'actor_type') && values.actor_type !== 'human')))
-            access.invalid('Post seat events as your own human account. Agent seats publish through the server.');
+            (Object.hasOwn(values, 'actor_type') && values.actor_type !== actor)))
+            access.invalid(own ? 'A guildmaster seat reports as its agent persona; the server stamps it.' :
+                'Post seat events as your own human account. Agent seats publish through the server.');
         const stamps = name === 'daily_editions' ? ['published_by', 'published_at'] :
             ['support_sources', 'social_channels'].includes(name) ? ['requested_by', 'requested_at'] : [];
         const collection = access.schema(app, name, ['owner', 'workspace', 'claim_commands', 'claim_revision', ...Object.keys(TEXT[name]), ...jsonFields, ...stamps]);
         if (['createRule', 'updateRule', 'deleteRule'].some((key) => collection[key] != null))
             throw new ApiError(503, 'Install the locked workspace claim migration before writing.');
+        const persona = name === 'seat_events' && Boolean(collection.fields.getByName('persona'));
+        if (own && !persona) throw new ApiError(503, 'Install the guildmaster seat-event migration before reporting as a guildmaster.');
         const record = creating ? new Record(collection) : access.find(app, name, id);
         if (!creating) {
             if (record.getString('workspace') !== workspace) throw new ForbiddenError('Choose a record in the current workspace.');
             access.readable(app, record, e.requestInfo());
+            if (guild && !ADMINS.includes(scope.role) && record.getString('owner') !== e.auth.id)
+                throw new ForbiddenError('A guildmaster seat publishes only what it authored.');
             if (record.getString('owner') !== e.auth.id && !ADMINS.includes(scope.role))
                 throw new ForbiddenError('Only the author or a current workspace administrator may edit this record.');
         }
-        if (name === 'social_content' && ['approved', 'published'].includes(status ?? record.getString('status')) && !ADMINS.includes(scope.role))
+        if (name === 'social_content' && ['approved', 'published'].includes(status ?? record.getString('status')) && !ADMINS.includes(scope.role) &&
+            !(guild && record.getString('owner') === e.auth.id))
             throw new ForbiddenError('A current workspace administrator must record or recover this editorial decision.');
         // Authority and readability precede replay, including after revocation.
         result = access.audit(app, e.auth, workspace, body, () => {
@@ -128,7 +143,8 @@ function command(e) {
                     requestInfo: () => e.requestInfo(), next: () => {} }, creating);
             } else {
                 choice(record.getString('event'), ['joined', 'progress', 'completed', 'blocked', 'handoff']);
-                record.set('seat', e.auth.id); record.set('actor_type', 'human');
+                record.set('seat', e.auth.id); record.set('actor_type', actor);
+                if (persona) record.set('persona', own ? own.slug : '');
                 access.bounded(record.getString('summary'), 400);
                 const kind = record.getString('subject_type'), subject = record.getString('subject');
                 choice(kind, ['', 'mission', 'workflow', 'page', 'issue', 'pull_request', 'other']);
@@ -142,9 +158,15 @@ function command(e) {
                 // Account attribution does not independently verify the report.
             }
             record.set('claim_revision', revision + 1); app.save(record);
+            // A guildmaster seat's publication is audited whatever its role; replays never reach here.
+            const seat = (publishing || (name === 'social_content' && record.getString('status') === 'published')) ? guildmasters.seatOf(app, e.auth) : null;
+            if (seat) guildPublishing.record(app, { workspace, auth: e.auth, entry: seat, kind: publishing ? 'daily_edition' : 'social_content',
+                target: record.id, title: record.getString('title'), content: Object.fromEntries((publishing ? ['title', 'summary', 'body', 'edition_date'] :
+                    ['title', 'body', 'format', 'audience', 'channel', 'call_to_action', 'published_url']).map((field) => [field, record.getString(field)])) });
             const saved = { id: record.id, claim_revision: revision + 1 };
             for (const field of new Set(['owner', 'workspace', 'created', 'updated', 'status', ...Object.keys(TEXT[name]), ...stamps,
-                ...(name === 'social_content' ? ['reviewed_by', 'reviewed_at', 'published_by', 'published_at'] : [])])) saved[field] = record.getString(field);
+                ...(name === 'social_content' ? ['reviewed_by', 'reviewed_at', 'published_by', 'published_at'] : []),
+                ...(name === 'seat_events' ? ['persona'] : [])])) saved[field] = record.getString(field);
             for (const field of jsonFields) saved[field] = access.json(record, field);
             return { id: record.id, workspace, action: body.action, revision: revision + 1, record: saved };
         });

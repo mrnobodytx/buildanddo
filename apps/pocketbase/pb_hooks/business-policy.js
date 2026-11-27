@@ -1,16 +1,16 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/pocketbase/pb_hooks/business-policy.js
 // Stage:       07_BUILD
-// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-TRUST-001
+// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-TRUST-001, SRS-BUILDANDDO-GUILDMASTER-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-TRUST-001
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-TRUST-001, VCC-BUILDANDDO-GUILDMASTER-001
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-15
-// Depends:     apps/pocketbase/pb_hooks/workflow-policy.js
+// Depends:     apps/pocketbase/pb_hooks/workflow-policy.js, apps/pocketbase/pb_hooks/guild-publishing.js
 // EnumType:    Service
-// EnumEdges:   DEPENDS_ON apps/pocketbase/pb_hooks/workflow-policy.js
+// EnumEdges:   DEPENDS_ON apps/pocketbase/pb_hooks/workflow-policy.js; CONSUMES apps/pocketbase/pb_hooks/guild-publishing.js
 // DAG Node:    none
 // Intent:      Preserve workspace relations and require attributed review before recording content publication.
 // ───────────────────────────────────────────────────────────────
@@ -73,6 +73,17 @@ function httpsLink(value) {
     return Boolean(match) && (!match[1] || (Number(match[1]) > 0 && Number(match[1]) <= 65535));
 }
 
+/**
+ * Require the reviewer or publisher to be a current owner/admin, or the guildmaster seat that
+ * authored this content (SRS-BUILDANDDO-GUILDMASTER-001, owner decision of 2026-10-31). The four
+ * checks, the note and the HTTPS URL are still required of either.
+ */
+function decide(e, original) {
+    const ws = e.record.getString('workspace');
+    if (require(`${__hooks}/guild-publishing.js`).author(e.app, e.auth, ws, original ?? e.record)) return;
+    access.writable(e.app, e.auth, ws, true);
+}
+
 /** Enforce draft, review and operator-recorded publication transitions. */
 function content(e, creating) {
     const original = workspace(e, creating);
@@ -96,6 +107,7 @@ function content(e, creating) {
         scheduled: ['draft', 'scheduled', 'published'],
         failed: ['draft'],
         published: [],
+        withdrawn: [],
     };
     if (!creating && !(transitions[previous] || []).includes(status))
         access.invalid('This content transition is unavailable. Published receipts are retained; copy to a new draft.');
@@ -104,7 +116,7 @@ function content(e, creating) {
     if (status !== 'draft' && (!access.text(record.getString('body'), 5000) || !access.text(record.getString('audience'), 300)))
         access.invalid('Add the intended audience and draft body before review.');
     if (status === 'approved') {
-        access.writable(e.app, e.auth, record.getString('workspace'), true);
+        decide(e, original);
         const checks = access.json(record, 'review_checks', {});
         if (!access.fields(checks, REVIEW_CHECKS) || !REVIEW_CHECKS.every((name) => checks[name] === true) ||
             !access.text(record.getString('review_note'), 1200))
@@ -124,7 +136,7 @@ function content(e, creating) {
     if (status === 'scheduled' && !record.getString('scheduled_for'))
         access.invalid('Choose a planned publication date.');
     if (status === 'published') {
-        access.writable(e.app, e.auth, record.getString('workspace'), true);
+        decide(e, original);
         if (!httpsLink(record.getString('published_url')))
             access.invalid('Record the HTTPS URL of the publication you checked.');
         record.set('published_by', e.auth.id);

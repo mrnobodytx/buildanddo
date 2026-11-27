@@ -1,16 +1,16 @@
 # ─── CGRF Header ───────────────────────────────────────────────
 # File:        docs/classrooms.md
 # Stage:       06_PLAN
-# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-GUILDMASTER-001
 # CAPS:        pending
 # CK:          pending
-# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-GUILDMASTER-001
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-16
-# Depends:     apps/web/src/pages/workspace/ClassroomsPage.jsx, apps/web/src/hooks/useClassrooms.js, apps/web/src/hooks/useOpenClasses.js, apps/pocketbase/pb_hooks/classrooms.js, apps/pocketbase/pb_hooks/classroom-media.js, tests/upgrade/test_classroom_native.py, tests/upgrade/classroom-recovery.test.mjs
+# Depends:     apps/web/src/pages/workspace/ClassroomsPage.jsx, apps/web/src/hooks/useClassrooms.js, apps/web/src/hooks/useOpenClasses.js, apps/pocketbase/pb_hooks/classrooms.js, apps/pocketbase/pb_hooks/classroom-media.js, apps/pocketbase/pb_hooks/classroom-presence.pb.js, apps/pocketbase/pb_hooks/guildmasters.js, apps/pocketbase/pb_hooks/guild-lessons.js, apps/pocketbase/pb_migrations/1792400002_guild_lessons.js, apps/pocketbase/pb_hooks/guild-classes.js, apps/pocketbase/pb_migrations/1792500000_guild_class_schedule.js, tests/upgrade/test_classroom_native.py, tests/upgrade/classroom-recovery.test.mjs, tests/upgrade/classroom-presence.test.mjs, tests/upgrade/guild-lessons.test.mjs, tests/upgrade/guild-classes.test.mjs, apps/web/src/lib/classrooms.js, apps/web/src/lib/__tests__/classrooms.test.js, apps/web/src/pages/workspace/__tests__/ClassroomsGuildMaterial.test.jsx
 # EnumType:    Doc
-# EnumEdges:   CONSUMES apps/web/src/pages/workspace/ClassroomsPage.jsx; CONSUMES apps/web/src/hooks/useClassrooms.js; CONSUMES apps/web/src/hooks/useOpenClasses.js; CONSUMES apps/pocketbase/pb_hooks/classrooms.js; CONSUMES apps/pocketbase/pb_hooks/classroom-media.js; VERIFIED_BY tests/upgrade/test_classroom_native.py; VERIFIED_BY tests/upgrade/classroom-recovery.test.mjs
+# EnumEdges:   CONSUMES apps/web/src/pages/workspace/ClassroomsPage.jsx; CONSUMES apps/web/src/hooks/useClassrooms.js; CONSUMES apps/web/src/hooks/useOpenClasses.js; CONSUMES apps/pocketbase/pb_hooks/classrooms.js; CONSUMES apps/pocketbase/pb_hooks/classroom-media.js; CONSUMES apps/pocketbase/pb_hooks/classroom-presence.pb.js; CONSUMES apps/pocketbase/pb_hooks/guildmasters.js; CONSUMES apps/pocketbase/pb_hooks/guild-lessons.js; DEPENDS_ON apps/pocketbase/pb_migrations/1792400002_guild_lessons.js; CONSUMES apps/pocketbase/pb_hooks/guild-classes.js; DEPENDS_ON apps/pocketbase/pb_migrations/1792500000_guild_class_schedule.js; VERIFIED_BY tests/upgrade/test_classroom_native.py; VERIFIED_BY tests/upgrade/classroom-recovery.test.mjs; VERIFIED_BY tests/upgrade/classroom-presence.test.mjs; VERIFIED_BY tests/upgrade/guild-lessons.test.mjs; VERIFIED_BY tests/upgrade/guild-classes.test.mjs; CONSUMES apps/web/src/lib/classrooms.js; VERIFIED_BY apps/web/src/lib/__tests__/classrooms.test.js; VERIFIED_BY apps/web/src/pages/workspace/__tests__/ClassroomsGuildMaterial.test.jsx
 # DAG Node:    none
 # Intent:      Describe the classroom user flow, installed-backend requirements and acceptance limits without representing a shared lesson as a video stream.
 # ───────────────────────────────────────────────────────────────
@@ -72,6 +72,135 @@ on rollback. The bundled preview works without that installation. Reading the
 case or test report does not create workspace evidence, award progress/XP or
 verify a mission. Its dated source observation remains separate from blocked
 rendered/native and unmeasured hosted checks.
+
+## Guildmaster badge
+
+A presence advertisement (`POST /api/classroom/presence`) with role `guildmaster` or any
+`persona_id` claims to be one of the eight guildmasters (`docs/guildmasters.md`). The server
+decides that claim from the publisher's stored account alone, through `guildmasters.seatOf`:
+
+- Anyone else gets 403 "Only a guildmaster's own seat may carry its badge." This covers a human
+  host or administrator, whatever their display name, and an unverified, unflagged or
+  non-guildmaster seat account. Nothing is stored and no provider is contacted.
+- A guildmaster seat that names another guildmaster, or a persona outside the canon, gets the
+  same 403.
+- The matching seat is stored with `persona_id` `gm-<slug>`, role `guildmaster` and the
+  canonical display name. Any spelling of its own persona is accepted (`gm:forge`, `gm-forge`,
+  `gm:director` for Director Nexus), as is no persona at all. A guildmaster seat may still choose
+  `teacher` or `assistant` explicitly. It is then served without the badge.
+
+A persona with a role other than `guildmaster` is still 400. Workspace membership, the live room
+and fresh attendance are checked before the badge. The bound-session and publisher allowlist
+checks follow it, unchanged.
+
+`GET /api/classroom/presence` re-decides every badged row against its publisher's current
+account. A row whose publisher is not that guildmaster's seat, including rows written before this
+rule and rows from a seat whose flag has since been cleared, is served with an empty `persona_id`,
+as `teacher` when its access basis is `host` and `assistant` otherwise, under the publisher's
+own name. The stored row is not changed by a read.
+
+`tests/upgrade/classroom-presence.test.mjs` covers these cases against storage doubles. The
+native case `test_native_presence_badge_requires_the_guildmaster_seat` uses one fixture-only
+seat account. It passed on PocketBase 0.39.8 only with the temporary copy of `metrics.pb.js`
+rewritten to the positional `Middleware` form. The committed `metrics.pb.js` stops 0.39.8 at
+startup, so every native classroom case fails before running until that defect is fixed (it is
+outside SRS-BUILDANDDO-GUILDMASTER-001). Nothing here is enabled on staging or production.
+
+## Guild lessons as class material
+
+A guildmaster seat (see `docs/guildmasters.md`) with editor or higher role writes its own class
+material as a workspace guild lesson (`1792400002_guild_lessons.js`, `guild-lessons.js`), so a
+guildmaster can teach its weekly class without an installed tutorial. A guild lesson is reading
+material only: `schema_version: 1`, one to twenty `sections` (`heading` plus `paragraphs` and/or
+`steps`), at most ten `outcomes` and at most twelve HTTPS `references`, within 24,000 characters.
+It must also fit the `lesson` field's 30,000 bytes as PocketBase stores them. Go's JSON encoder writes
+each `<`, `>` and `&` (and U+2028, U+2029) as a six-byte escape and other non-ASCII characters as two to
+four UTF-8 bytes, so code-heavy or non-Latin material can reach that limit well inside 24,000
+characters. The validator refuses such material with 400 "Keep class material within 30000 stored
+bytes…", before saving. Without that check, the save would fail with PocketBase's generic error.
+A `check`, `answer`, `exercise`, `explanation` or any other key is refused with 400 ("Class material
+carries no answer key or check."). Guild lessons never read or write the tutorials catalogue, and
+graded learning stays with `tutorial-learning.js`.
+
+`GET`/`POST /api/buildanddo/workspaces/{workspace}/guild-lessons` take `lesson.save` (payload `id`,
+`title`, `summary`, `lesson`) and `lesson.publish` (payload `id`) in the usual envelope. Only the
+authoring seat edits a lesson, and only while it is a draft. Publishing writes the
+`guild_publications` audit row that an owner or administrator can withdraw, after which the lesson
+is `withdrawn`. Members read published lessons and their own drafts; owners and administrators read
+all of them.
+
+The host or an administrator shares a published lesson of the same workspace into a scheduled or live
+class with `room.material` (payload exactly `id`, `material`, `section`). It sets
+`classroom_rooms.material` and the section and clears the tutorial, so the class starts with no
+tutorial. `room.lesson` and `room.update` put a tutorial back and clear the material. A draft or
+withdrawn lesson is refused with 400 and another workspace's with 404; classroom detail reads a
+withdrawn or unreadable material as no lesson, and such a class cannot start until the host shares
+something else. Until the migration is installed `room.material` answers 503 and every other action
+is unchanged.
+
+The web classroom page opens such a class like any other. The browser adapter
+(`apps/web/src/lib/classrooms.js`) accepts a shared lesson only in one of two shapes. A tutorial's `id` must be
+the room's `tutorial` and its body must be a full catalogue lesson. Guild material must have `source:
+'guild_lesson'`, its `id` must be the room's `material`, and its body must be keyless, with exactly the keys
+the server validates (`schema_version` 1, one to twenty sections, optional outcomes and HTTPS
+references). Anything else, a `check` or `answer` included, makes the whole read broken. The shared
+lesson panel shows the material's sections, outcomes and references, with no exercise and no Field
+Manual link. The host's Previous and Next section buttons send `room.material`. Picking a tutorial from
+the lesson list sends `room.lesson`, which replaces the material. A withdrawn material reads as
+unavailable, and the room, its attendance, discussion and Join, Leave and End controls stay usable.
+`apps/web/src/lib/__tests__/classrooms.test.js` drives the adapter with the server's own detail
+response. `apps/web/src/pages/workspace/__tests__/ClassroomsGuildMaterial.test.jsx` drives the page
+against the real hooks: the host starts the class and moves its sections, a member joins it, and the
+host ends it.
+
+`tests/upgrade/guild-lessons.test.mjs` covers these rules against storage doubles. The native case
+`test_native_guild_lesson_is_published_by_the_seat_then_shared_and_started` signs in the fixture seat,
+publishes a lesson, shares it and starts the class on PocketBase 0.39.8, with the same temporary
+`metrics.pb.js` rewrite as the badge case above.
+
+## Scheduled guild classes
+
+Owner decision (2) of 2026-10-31: each guildmaster hosts one class a week, the other seven attend and
+one of them audits. `apps/pocketbase/pb_hooks/guild-rota.js` decides who, from the date alone, and
+`libs/guildmasters/rota.py` mirrors it field for field (see `docs/guildmasters.md` for the rule and the
+`python -m libs.guildmasters` CLI).
+
+The hourly cron `guild_class_rota` (`guild-classes.pb.js`, at minute 17) turns that rota into classes.
+It does nothing unless `BUILDANDDO_GUILD_CLASS_WORKSPACE` names an existing workspace and both
+`classroom_rooms` and `guild_classes` (`1792500000_guild_class_schedule.js`) are installed and locked.
+A value that is not a record id, or names no workspace, is logged as a warning and writes nothing; so is
+a missing or opened schema. The variable is documented by name only, with an empty default, in
+`.env.example` and `docker-compose.yml`.
+
+When it is set, each run schedules the coming ISO week (the week of the next Monday 00:00 UTC). For
+each rota class it creates an ordinary class: `kind: class`, `status: scheduled`, `starts_at` from the
+rota, `tutorial: ''`, revision 1, hosted by that guildmaster's seat account with its persona name as
+`host_name`, plus `scope: workspace` and `material: ''` where those fields are installed. It does so only
+when the seat is recognised by `guildmasters.seatOf` and already holds editor or higher role in the
+workspace; every other seat is skipped with its reason (`no seat account`, `not a guildmaster seat`,
+`not a workspace editor`). The cron never grants membership: seat roles stay granted by hand through
+`member.set`. One `guild_classes` row per workspace, week and slot (a unique index) records the room,
+host and auditor seats, so a rerun creates nothing and a concurrent duplicate rolls back its own room.
+Each class has its own transaction; one info log line carries only the workspace id, week and counts.
+
+A scheduled guild class is then an ordinary class. Its host (or an administrator) shares material with
+`room.material` and starts it with `room.start`; until then `room.start` answers 400 because there is no
+lesson. Members attend with `room.join`. Deleting the room frees its slot, which the next run fills again
+while that week is still the coming week. The rota names an auditor; recording what the auditor found is
+`classroom_audit`, which belongs to SRS-BUILDANDDO-CLASSROOM-GLOBAL-001 and is not written here.
+
+`GET /api/buildanddo/workspaces/{workspace}/guild-classes` (any member, `no-store`) returns
+`{workspace, week, rota, scheduled}` for `?week=YYYY-Www`, or the coming week by default: the week's eight
+rota classes and, per scheduled slot, `slot`, `room`, `room_status`, `host_persona`, `auditor_persona` and
+`starts_at`. It carries no email. A malformed week is 400 and a missing schedule migration 503.
+
+`tests/upgrade/guild-classes.test.mjs` covers the cron, the route and the migration against storage
+doubles. Natively, `test_native_guild_class_rota_schedules_seated_hosts_once` starts a server with the
+variable set to the fixture workspace, runs the cron through `POST /api/crons/guild_class_rota` as the
+fixture superuser and compares the rooms with the Python rota; a second run creates nothing.
+`test_native_guild_class_rota_writes_nothing_without_its_workspace` runs it on the default server. Both
+need the same temporary `metrics.pb.js` rewrite as the cases above. Nothing is enabled on staging or
+production.
 
 ## Use a classroom
 
@@ -165,8 +294,8 @@ the following routes:
 | POST | `/{room}/presence` | Renew the current attendance generation |
 
 Command bodies have exactly `action`, `payload`, `revision` and `request_key`.
-Actions are `room.create`, `room.update`, `room.start`, `room.end`, `room.lesson`,
-`room.join`, `room.leave` and `room.message`. Request bodies are bounded to
+Actions are `room.create`, `room.chat`, `room.update`, `room.start`, `room.end`, `room.lesson`,
+`room.material`, `room.join`, `room.leave` and `room.message`. Request bodies are bounded to
 30,000 bytes; presence bodies to 2,000 bytes. The presence body contains exactly
 `membership` and `revision`. Route responses use `Cache-Control: no-store`.
 All record/account names shown by the API come from the authenticated server

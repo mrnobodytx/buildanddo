@@ -1,18 +1,18 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/src/components/broadcast/__tests__/AgentActivity.test.jsx
 // Stage:       08_TEST
-// SRS:         SRS-BUILDANDDO-UPGRADE-001
+// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-GUILDMASTER-001
 // CAPS:        pending
 // CK:          pending
 // Dispatch:    VCC-BUILDANDDO-UPGRADE-001
 // Seat:        BITS-CODEGEN, C-ONE (seat names)
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-23
-// Depends:     apps/web/src/components/broadcast/AgentActivity.jsx
+// Depends:     apps/web/src/components/broadcast/AgentActivity.jsx, apps/web/src/data/personas.js
 // EnumType:    Test
-// EnumEdges:   VALIDATES apps/web/src/components/broadcast/AgentActivity.jsx
+// EnumEdges:   VALIDATES apps/web/src/components/broadcast/AgentActivity.jsx; CONSUMES apps/web/src/data/personas.js
 // DAG Node:    none
-// Intent:      Verify agent activity shows only agent seats, states its connection honestly and never presents a failed read as silence.
+// Intent:      Verify agent activity shows only agent seats, names a guildmaster only from its server-stamped persona, states its connection honestly and never presents a failed read as silence.
 // ───────────────────────────────────────────────────────────────
 
 import React from 'react';
@@ -47,7 +47,8 @@ describe('agent activity', () => {
         expect(screen.queryByText(/^verified$/i)).not.toBeInTheDocument();
         expect(screen.getAllByText(/^reported$/i)).toHaveLength(2);
         expect(screen.getByText('Submitting account: account1. Claimed actor: agent.')).toBeVisible();
-        expect(screen.getByText(/Seat labels and actor types do not authenticate an agent/)).toBeVisible();
+        expect(screen.getByText(/any other seat label or actor type is unauthenticated and does not identify an agent/)).toBeVisible();
+        expect(screen.getByText(/A guildmaster name is stamped by the server from the signed-in guildmaster seat/)).toBeVisible();
     });
 
     it('says when no one is in the class, and never presents an empty or failed read as proof of no work', async () => {
@@ -55,7 +56,8 @@ describe('agent activity', () => {
         view({ unattended: true });
         expect(await screen.findByText(/Either none has been recorded in this workspace, or your seat cannot read the agent record/)).toBeVisible();
         expect(screen.getByRole('status')).toHaveTextContent('No one is in this class right now');
-        expect(screen.getByText(/Agents propose; people review and publish/)).toBeVisible();
+        expect(screen.getByText(/Guildmasters publish directly; workspace owners and admins can withdraw what they publish/)).toBeVisible();
+        expect(screen.queryByText(/Agents propose; people review and publish/)).toBeNull();
     });
 
     it('names seats without showing a login or a machine, and withholds machine names in what they wrote', async () => {
@@ -73,6 +75,33 @@ describe('agent activity', () => {
         expect(screen.getByText(`Rebuilt on ${WITHHELD}`)).toBeVisible();
         expect(screen.getByText(`Logs from codegen-${WITHHELD}-build`)).toBeVisible();
         expect(document.body.textContent).not.toMatch(/ray-xyz0-0|rig0|member@example\.com|buildanddo\.invalid/);
+    });
+
+    it('names a guildmaster from the server-stamped persona, and says the server recorded it as agent activity', async () => {
+        // The seat of a guildmaster report is the account id; the persona is what the server stamped.
+        comms.recentSeatEvents.mockResolvedValue([
+            event({ id: 'g1', seat: 'accountdirector1', persona: 'director-nexus', owner: 'accountdirector1', summary: 'Hosted the weekly class' }),
+            event({ id: 'g2', seat: 'gm-builder-forge', persona: 'nobody-in-canon', summary: 'Claimed an unknown persona' }),
+            event({ id: 'g3', seat: 'ray-xyz0-0@ocn.buildanddo.invalid', persona: 'not-a-guildmaster', summary: 'Unknown persona on a login seat' }),
+            event({ id: 'g4', seat: 'kestrel-verify', persona: 'forge', actorType: 'mixed', summary: 'A mixed report is never a stamped persona' }),
+        ]);
+        view({});
+        expect(await screen.findByText('Hosted the weekly class')).toBeVisible();
+        const [director, unknown, login, mixed] = screen.getAllByRole('listitem');
+        expect(director).toHaveTextContent('Director Nexus');
+        expect(director).toHaveTextContent('Signed in as the Director Nexus guildmaster seat; the server recorded this as agent activity.');
+        expect(director).not.toHaveTextContent('accountdirector1');
+        expect(director).not.toHaveTextContent('Submitting account');
+        // A persona outside the canon names nobody: the seat label stands, as an unauthenticated report.
+        expect(unknown).toHaveTextContent('Forge');
+        expect(unknown).not.toHaveTextContent('guildmaster seat');
+        expect(unknown).toHaveTextContent('Submitting account: account1. Claimed actor: agent.');
+        expect(login).toHaveTextContent('Agent');
+        expect(login).not.toHaveTextContent('guildmaster seat');
+        expect(mixed).toHaveTextContent('kestrel-verify');
+        expect(mixed).not.toHaveTextContent('guildmaster seat');
+        expect(mixed).toHaveTextContent('Claimed actor: mixed.');
+        expect(document.body.textContent).not.toMatch(/@|ray-xyz0-0|buildanddo\.invalid|nobody-in-canon|not-a-guildmaster/);
     });
 
     it('links only https evidence', async () => {

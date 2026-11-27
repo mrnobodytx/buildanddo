@@ -13,7 +13,8 @@
 // EnumEdges:   CONSUMES tests/upgrade/admin-fixture.mjs; CONSUMES apps/pocketbase/pb_migrations/data/starter-tutorials.json;
 //              CONSUMES apps/pocketbase/pb_migrations/data/government-submissions.json;
 //              CONSUMES apps/pocketbase/pb_migrations/data/authority-repairs-lessons.json;
-//              CONSUMES apps/pocketbase/pb_migrations/data/broadcast-classroom-lessons.json; VALIDATES scripts/ci/lesson_keys.py
+//              CONSUMES apps/pocketbase/pb_migrations/data/broadcast-classroom-lessons.json;
+//              CONSUMES apps/pocketbase/pb_migrations/data/agent-mail-intake-lessons.json; VALIDATES scripts/ci/lesson_keys.py
 // DAG Node:    none
 // Intent:      Build synthetic lesson key files at test time from public lesson text only, byte for byte as
 //              lesson_keys.py synthetic writes them, plus absent, invalid and tampered variants, and serve them to hook fixtures.
@@ -45,6 +46,7 @@ export const CURRICULA = Object.freeze([
     'government-submissions.json',
     'authority-repairs-lessons.json',
     'broadcast-classroom-lessons.json',
+    'agent-mail-intake-lessons.json',
 ]);
 export const KEY_MEMBERS = Object.freeze(['answer', 'explanation']);
 // Where hook fixtures serve the key file: the resolver's default path, lesson-keys.json in the PocketBase data directory.
