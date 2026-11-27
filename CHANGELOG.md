@@ -28,21 +28,100 @@ the entry.
 
 <!-- changelog:generated:begin -->
 
+## 2026-11-27
+
+### Changed
+
+- bits: refresh the growth lock after merging main (`6a373bd`)
+- bits: regenerate locks after merging main (`60692dc`, SRS-BUILDANDDO-WEB-COVERAGE-001)
+
+### Other
+
+- Record the PostHog-independent CNWB Scout and its correlation with BuildAndDo (`07de76a`, SRS-CN-GM-SCOUT-001)
+
+## 2026-11-22
+
+### Other
+
+- Record the hardened guild loop, PostHog reporting and the arming checklist (`0e892f4`, SRS-BUILDANDDO-GM-SHIFT-001)
+
 ## 2026-11-21
 
 ### Changed
 
+- bits: refresh context and growth locks for SRS-BUILDANDDO-GM-SHIFT-001 (`18f48ae`, SRS-BUILDANDDO-GM-SHIFT-001)
+- bits: guildmaster units on buildanddo.com through the Citadel mission loop (`cb8570e`, SRS-BUILDANDDO-GM-SHIFT-001)
 - bits: record the Middleware repair in readiness and refresh locks (`cbca491`, SRS-BUILDANDDO-UPGRADE-001)
 
 ### Fixed
 
 - pocketbase: register request telemetry with the positional 0.39.8 Middleware (`23d9f80`, SRS-BUILDANDDO-UPGRADE-001)
 
+### Other
+
+- Record the passing QA smoke unit and the disarmed weekday dispatcher (`8fda416`, SRS-BUILDANDDO-GM-SHIFT-001)
+
+## 2026-10-31
+
+### Added
+
+- guildmasters: keep real fleet box ids out of the verifier test's seat fixture (`492fc80`, SRS-BUILDANDDO-GUILDMASTER-001)
+- ci: add the disabled keyed GitLab lane and the automerge guard (`e3aaa5f`, SRS-BUILDANDDO-CURRICULUM-PRIVATE-001)
+- guildmasters: classroom verifiers cast the canonical eight from the weekly rota (`b6d1e0d`, SRS-BUILDANDDO-GUILDMASTER-001)
+- ci: fail the public boundary on tracked answer keys and key files (`845ce61`, SRS-BUILDANDDO-CURRICULUM-PRIVATE-001)
+- build: take lesson explanation fingerprints from the private key file (`02f6f18`, SRS-BUILDANDDO-CURRICULUM-PRIVATE-001)
+- guildmasters: deterministic weekly guild class rota and an env-gated cron that schedules the coming week (`79f1e79`, SRS-BUILDANDDO-GUILDMASTER-001)
+- native: run the native and assurance lanes on synthetic lesson keys (`041b30b`, SRS-BUILDANDDO-CURRICULUM-PRIVATE-001)
+- guildmasters: Guild publications admin tab with audited withdrawal and retry recovery (`1849453`, SRS-BUILDANDDO-GUILDMASTER-001)
+- guildmasters: keyless guild lessons a host shares into a class with room.material (`e848aea`, SRS-BUILDANDDO-GUILDMASTER-001)
+- guildmasters: guildmaster seats publish their own work directly under an audit trail owners can withdraw (`ead6eaf`, SRS-BUILDANDDO-GUILDMASTER-001)
+- learning: grade from private lesson keys and strip the curricula (`6ea4405`, SRS-BUILDANDDO-CURRICULUM-PRIVATE-001)
+- guildmasters: show a classroom guildmaster badge only for that guildmaster's own seat (`ded7b05`, SRS-BUILDANDDO-GUILDMASTER-001)
+- guildmasters: store guildmaster seat reports as agent activity with a server-derived persona (`8478c86`, SRS-BUILDANDDO-GUILDMASTER-001)
+- pocketbase: add the lesson key resolver, keys-health route and check command (`b9bca3f`, SRS-BUILDANDDO-CURRICULUM-PRIVATE-001)
+- guildmasters: canonical registry, seat identity and ocn_seat write guard (`0585de6`, SRS-BUILDANDDO-GUILDMASTER-001)
+- ci: add the stdlib-only lesson key tool and its tests (`441a9dd`, SRS-BUILDANDDO-CURRICULUM-PRIVATE-001)
+
+### Changed
+
+- context: refresh the agent context lock for the key fixes (`099fbc1`, SRS-BUILDANDDO-CURRICULUM-PRIVATE-001)
+- readiness: refresh the reviewed source binding for the key fixes (`0b88f57`, SRS-BUILDANDDO-CURRICULUM-PRIVATE-001)
+- governance: mark the red gates blocked and record the filter and wiring findings (`7b8d905`, SRS-BUILDANDDO-CURRICULUM-PRIVATE-001)
+- bits: mark the guildmaster review fixes done and regenerate the locks (`5652c63`, SRS-BUILDANDDO-GUILDMASTER-001)
+- bits: authorize the guildmaster review fixes and record row 2's base failures (`37c3ae1`, SRS-BUILDANDDO-GUILDMASTER-001)
+- context: refresh the agent context lock for the curriculum-private docs and handoff (`faed061`, SRS-BUILDANDDO-CURRICULUM-PRIVATE-001)
+- curriculum: document private lesson keys, gate staging on them and hand off the A3 steps (`1ae056d`, SRS-BUILDANDDO-CURRICULUM-PRIVATE-001)
+- context: refresh the agent context lock for the keyed GitLab lane (`78cda87`, SRS-BUILDANDDO-CURRICULUM-PRIVATE-001)
+- context: refresh the agent context lock for the boundary key rules (`5356971`, SRS-BUILDANDDO-CURRICULUM-PRIVATE-001)
+- context: refresh the agent context lock for the private-fingerprint bundle gate (`561e97d`, SRS-BUILDANDDO-CURRICULUM-PRIVATE-001)
+- context: refresh the agent context lock for the synthetic-key native lanes (`e425a1a`, SRS-BUILDANDDO-CURRICULUM-PRIVATE-001)
+- context: refresh the agent context lock for the private-key graders (`af2dbbf`, SRS-BUILDANDDO-CURRICULUM-PRIVATE-001)
+- context: refresh the agent context lock for the lesson key resolver (`904b075`, SRS-BUILDANDDO-CURRICULUM-PRIVATE-001)
+- bits: refresh the context lock after the guildmaster foundation (`540dc0f`, SRS-BUILDANDDO-GUILDMASTER-001)
+- bits: refresh the context lock for SRS-BUILDANDDO-GUILDMASTER-001 (`2dc302d`, SRS-BUILDANDDO-GUILDMASTER-001)
+- bits: register the guildmaster seat SRS and its dispatch (`4f15b41`, SRS-BUILDANDDO-GUILDMASTER-001)
+- context: refresh the agent context lock for the lesson key tool (`b06b5ee`, SRS-BUILDANDDO-CURRICULUM-PRIVATE-001)
+- governance: register SRS-BUILDANDDO-CURRICULUM-PRIVATE-001 and its dispatch (`4f4476d`, SRS-BUILDANDDO-CURRICULUM-PRIVATE-001)
+
+### Fixed
+
+- ci: fail the public boundary on any tracked key document (`56579c5`, SRS-BUILDANDDO-CURRICULUM-PRIVATE-001)
+- keys: seal the synthetic label, refuse relabelled fixture keys and fill partial database exports (`8e6ed8a`, SRS-BUILDANDDO-CURRICULUM-PRIVATE-001)
+- guildmasters: never use a seat an earlier run already seated as the live verifier's control (`924c763`, SRS-BUILDANDDO-GUILDMASTER-001)
+- guildmasters: refuse guild lessons that exceed the stored size with their reason, not at save (`d099336`, SRS-BUILDANDDO-GUILDMASTER-001)
+- guildmasters: open a class that shares guild material from the web classroom page (`fef3b63`, SRS-BUILDANDDO-GUILDMASTER-001)
+
 ## 2026-10-27
 
 ### Added
 
+- web: cover public pages, content studio and tutorial reader (`4276a28`, SRS-BUILDANDDO-WEB-COVERAGE-001)
+- web: cover motion components and MotionContext (`0e59a6c`, SRS-BUILDANDDO-WEB-COVERAGE-001)
+- web: cover planning, curriculum, mission, dossier and Discord libraries (`9944acd`, SRS-BUILDANDDO-WEB-COVERAGE-001)
+- web: cover workflow run components and client (`63ad954`, SRS-BUILDANDDO-WEB-COVERAGE-001)
+- web: cover ERP and research page behaviour (`b7697c3`, SRS-BUILDANDDO-WEB-COVERAGE-001)
 - web: press Escape only once focus is inside the lesson dialog (`179dd0a`, SRS-BUILDANDDO-DAY21-RUNNER-001)
+- classroom: TURN relay for the Realtime SFU, STUN fallback unchanged [SRS-BUILDANDDO-REALTIME-TURN-001] (`0e82bec`, SRS-BUILDANDDO-REALTIME-TURN-001)
 - web: complete the observability runtime mock on the tutorials page (`61833dc`, SRS-BUILDANDDO-DAY21-RUNNER-001)
 - ci: ship buildanddo-source from GitLab through the release rail (`5c6d7df`, SRS-BUILDANDDO-GITLAB-RELEASE-001)
 - ci: merge green agent PRs unattended and give the plane its own lane [SRS-BUILDANDDO-GITLAB-ONLY-CI-001] (`e39d344`, SRS-BUILDANDDO-GITLAB-ONLY-CI-001)
@@ -50,6 +129,9 @@ the entry.
 
 ### Changed
 
+- bits: refresh locks (`1cebf45`, SRS-BUILDANDDO-WEB-COVERAGE-001)
+- bits: close the coverage dispatch tasks (`46f58fd`, SRS-BUILDANDDO-WEB-COVERAGE-001)
+- bits: register SRS-BUILDANDDO-WEB-COVERAGE-001 (`7935e61`, SRS-BUILDANDDO-WEB-COVERAGE-001)
 - bits: refresh locks (`e4db595`, SRS-BUILDANDDO-DAY21-RUNNER-001)
 - bits: refresh locks (`028f9d1`, SRS-BUILDANDDO-DAY21-RUNNER-001)
 - bits: refresh locks (`be50df3`, SRS-BUILDANDDO-DAY21-RUNNER-001)
