@@ -19,7 +19,7 @@
 // ───────────────────────────────────────────────────────────────
 
 import React from 'react';
-import { act, render, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import TalkToBuddi, { POLICY_BLOCKED } from '@/components/voice/TalkToBuddi';
@@ -252,8 +252,10 @@ describe('talk to Buddi', () => {
         microphoneGranted();
         render(<TalkToBuddi />);
         vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
-        const timedUser = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
-        await startTalking(timedUser);
+        // Not user-event here: under Vitest its Testing Library async wrapper waits on a real
+        // setTimeout(0) that the fake clock never fires (it only advances timers for Jest), so the
+        // click never returned and the test hung until the suite timeout.
+        await act(async () => fireEvent.click(screen.getByRole('button', { name: 'Start talking' })));
         await act(async () => {});
         act(() => vi.advanceTimersByTime(30_000));
         expect(screen.getByText('Buddi did not connect in time. Try again.')).toBeVisible();

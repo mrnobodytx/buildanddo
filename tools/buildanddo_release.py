@@ -2,7 +2,7 @@
 # --- CGRF Header ------------------------------------------------
 # File:        tools/buildanddo_release.py
 # Stage:       07_BUILD
-# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-GITLAB-RELEASE-001
 # CAPS:        pending
 # CK:          pending
 # Dispatch:    VCC-BUILDANDDO-UPGRADE-001
@@ -1334,6 +1334,23 @@ def deploy_local_webroot(root: Path, artifact: Path, target: Path, sha: str, env
     return {"mode": "local_webroot", "target": str(target), "backup": str(backup), "remote_writes": 1, "environment": env_name}
 
 
+def ssh_host_key_options() -> list[str]:
+    """Host-key checking stays strict everywhere; only WHERE the known host comes from may change.
+
+    A GitLab runner has no ~/.ssh/known_hosts entry for the web VM, and writing one into a shared
+    runner's home would leak trust to every other job on it. BUILDANDDO_SSH_KNOWN_HOSTS names a
+    file (a GitLab File variable) holding the VM's host key; ssh then trusts that file and nothing
+    else. Unset keeps the operator machine's own known_hosts, exactly as before."""
+    options = ["-o", "BatchMode=yes", "-o", "StrictHostKeyChecking=yes"]
+    known = os.environ.get("BUILDANDDO_SSH_KNOWN_HOSTS", "").strip()
+    if known:
+        path = Path(known).expanduser()
+        if not path.is_file() or path.stat().st_size == 0:
+            raise ReleaseError("BUILDANDDO_SSH_KNOWN_HOSTS must name a non-empty known_hosts file")
+        options += ["-o", f"UserKnownHostsFile={path}"]
+    return options
+
+
 def ssh_base(prefix: str) -> tuple[list[str], str, str, int, Path]:
     host = _validated_host(os.environ.get(prefix + "_HOST", ""))
     user = _validated_user(os.environ.get(prefix + "_USER", ""))
@@ -1347,7 +1364,7 @@ def ssh_base(prefix: str) -> tuple[list[str], str, str, int, Path]:
     if not key.is_file():
         raise ReleaseError(f"{prefix}_SSH_KEY_FILE does not exist")
     remote_root = _validated_remote_root(os.environ.get(prefix + "_REMOTE_ROOT", ""))
-    base = ["ssh", "-o", "BatchMode=yes", "-o", "StrictHostKeyChecking=yes", "-i", str(key), "-p", str(port), f"{user}@{host}"]
+    base = ["ssh", *ssh_host_key_options(), "-i", str(key), "-p", str(port), f"{user}@{host}"]
     return base, remote_root, f"{user}@{host}", port, key
 
 
@@ -1403,7 +1420,7 @@ def deploy_ssh_webroot(artifact: Path, sha: str, env_name: str) -> dict[str, Any
             "--exclude=.citadel_backups/",
             *[f"--exclude={x.strip()}" for x in os.environ.get("BUILDANDDO_DEPLOY_EXCLUDES", "").split(",") if x.strip()],
             "-e",
-            f"ssh -o BatchMode=yes -o StrictHostKeyChecking=yes -i {shlex.quote(str(key))} -p {port}",
+            " ".join(["ssh", *map(shlex.quote, ssh_host_key_options()), "-i", shlex.quote(str(key)), "-p", str(port)]),
             str(artifact) + "/",
             f"{target}:{remote_root}/",
         ],

@@ -95,6 +95,12 @@ services:
       # Community bot quiz grading (pb_hooks/community-quiz.pb.js). Unset, the
       # route answers 503 and the bot reports grading as unavailable.
       BUILDANDDO_COMMUNITY_BOT_TOKEN: ${BUILDANDDO_COMMUNITY_BOT_TOKEN:-}
+      # Private lesson grading keys (pb_hooks/lesson-keys.js). Empty reads
+      # /pb/pb_data/lesson-keys.json; with no key file, guided grading and the
+      # quiz report that keys are not installed. For local practice only, copy
+      # a synthetic key file there and set the opt-in to 1. See .env.example.
+      BUILDANDDO_LESSON_KEYS_FILE: ${BUILDANDDO_LESSON_KEYS_FILE:-}
+      BUILDANDDO_LESSON_KEYS_SYNTHETIC: ${BUILDANDDO_LESSON_KEYS_SYNTHETIC:-}
       # Live classroom media (pb_hooks/classroom-realtime.pb.js). Values come from
       # your shell or an untracked .env, never this file. Unset, the classroom
       # reports "not configured on this server" and keeps shared lessons and text.

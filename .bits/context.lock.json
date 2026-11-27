@@ -39,6 +39,13 @@
     },
     {
       "area": "ci",
+      "evidence": "referenced by: tests/upgrade/test_classroom_native.py, tests/upgrade/test_gitlab_acceptance.py, tests/upgrade/test_gitlab_plane.py, tests/upgrade/test_lesson_keys.py, tests/upgrade/test_public_boundary.py, tests/upgrade/test_tutorial_learning_native.py",
+      "severity": "high",
+      "srs": "",
+      "statement": "scripts/ci/lesson_keys.py is not configured in reachable GitLab jobs"
+    },
+    {
+      "area": "ci",
       "evidence": "referenced by: nothing in this repo",
       "severity": "high",
       "srs": "",
@@ -207,6 +214,13 @@
     },
     {
       "area": "governance",
+      "evidence": ".bits/queue/VCC-BUILDANDDO-CF-WORKERS-BUILD-001.md: 2/2 tasks done; mark SRS-BUILDANDDO-CF-WORKERS-BUILD-001 delivered once merged and verified, or add the task that remains",
+      "severity": "medium",
+      "srs": "SRS-BUILDANDDO-CF-WORKERS-BUILD-001",
+      "statement": "VCC-BUILDANDDO-CF-WORKERS-BUILD-001 has every task done but SRS-BUILDANDDO-CF-WORKERS-BUILD-001 is still in_progress"
+    },
+    {
+      "area": "governance",
       "evidence": ".bits/queue/VCC-BUILDANDDO-CHANGELOG-001.md: 5/5 tasks done; mark SRS-BUILDANDDO-CHANGELOG-001 delivered once merged and verified, or add the task that remains",
       "severity": "medium",
       "srs": "SRS-BUILDANDDO-CHANGELOG-001",
@@ -326,6 +340,13 @@
     },
     {
       "area": "governance",
+      "evidence": ".bits/queue/VCC-BUILDANDDO-REALTIME-TURN-001.md: 4/4 tasks done; mark SRS-BUILDANDDO-REALTIME-TURN-001 delivered once merged and verified, or add the task that remains",
+      "severity": "medium",
+      "srs": "SRS-BUILDANDDO-REALTIME-TURN-001",
+      "statement": "VCC-BUILDANDDO-REALTIME-TURN-001 has every task done but SRS-BUILDANDDO-REALTIME-TURN-001 is still in_progress"
+    },
+    {
+      "area": "governance",
       "evidence": ".bits/queue/VCC-BUILDANDDO-RECONCILE-001.md: 3/3 tasks done; mark SRS-BUILDANDDO-RECONCILE-001 delivered once merged and verified, or add the task that remains",
       "severity": "medium",
       "srs": "SRS-BUILDANDDO-RECONCILE-001",
@@ -372,6 +393,13 @@
       "severity": "medium",
       "srs": "SRS-BUILDANDDO-TRUST-001",
       "statement": "VCC-BUILDANDDO-TRUST-001 has every task done but SRS-BUILDANDDO-TRUST-001 is still in_progress"
+    },
+    {
+      "area": "governance",
+      "evidence": ".bits/queue/VCC-BUILDANDDO-WEB-COVERAGE-001.md: 5/5 tasks done; mark SRS-BUILDANDDO-WEB-COVERAGE-001 delivered once merged and verified, or add the task that remains",
+      "severity": "medium",
+      "srs": "SRS-BUILDANDDO-WEB-COVERAGE-001",
+      "statement": "VCC-BUILDANDDO-WEB-COVERAGE-001 has every task done but SRS-BUILDANDDO-WEB-COVERAGE-001 is still in_progress"
     },
     {
       "area": "governance",
@@ -585,6 +613,19 @@
         "tests/deploy/test_ship_telemetry.py"
       ],
       "wired_into_ci": true
+    },
+    {
+      "configured_providers": [],
+      "path": "scripts/ci/lesson_keys.py",
+      "referenced_by": [
+        "tests/upgrade/test_classroom_native.py",
+        "tests/upgrade/test_gitlab_acceptance.py",
+        "tests/upgrade/test_gitlab_plane.py",
+        "tests/upgrade/test_lesson_keys.py",
+        "tests/upgrade/test_public_boundary.py",
+        "tests/upgrade/test_tutorial_learning_native.py"
+      ],
+      "wired_into_ci": false
     },
     {
       "configured_providers": [],
@@ -885,7 +926,7 @@
       "wired_into_ci": true
     }
   ],
-  "generated_at": "2026-10-31T12:09:31.765586+00:00",
+  "generated_at": "2026-11-27T19:37:27.182346+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -956,6 +997,13 @@
         "title": "No Cloudflare account or resource id in the public repository; the edge deploy resolves them"
       },
       {
+        "code": "SRS-BUILDANDDO-CF-WORKERS-BUILD-001",
+        "risk": "A1",
+        "spec": ".bits/srs/SRS-BUILDANDDO-CF-WORKERS-BUILD-001.md",
+        "status": "in_progress",
+        "title": "The orphan buildanddo Worker fails every Workers Build; owner disconnects it"
+      },
+      {
         "code": "SRS-BUILDANDDO-CHANGELOG-001",
         "risk": "A2",
         "spec": ".bits/srs/SRS-BUILDANDDO-CHANGELOG-001.md",
@@ -998,11 +1046,25 @@
         "title": "Firecrawl verification for every canonical public page"
       },
       {
+        "code": "SRS-BUILDANDDO-CURRICULUM-PRIVATE-001",
+        "risk": "A2",
+        "spec": ".bits/srs/SRS-BUILDANDDO-CURRICULUM-PRIVATE-001.md",
+        "status": "in_progress",
+        "title": "Private lesson answer keys - knowledge-check answers and explanations leave the public tree for a runtime key file"
+      },
+      {
         "code": "SRS-BUILDANDDO-DAY21-CLOSURE-001",
         "risk": "A1",
         "spec": ".bits/srs/SRS-BUILDANDDO-DAY21-CLOSURE-001.md",
         "status": "in_progress",
         "title": "Day-21 submission closure - candidate continuity, browser journey, four-product proof"
+      },
+      {
+        "code": "SRS-BUILDANDDO-DAY21-RUNNER-001",
+        "risk": "A2",
+        "spec": ".bits/srs/SRS-BUILDANDDO-DAY21-RUNNER-001.md",
+        "status": "in_progress",
+        "title": "Day-21 acceptance passes on the GitLab fleet runners"
       },
       {
         "code": "SRS-BUILDANDDO-DECISION-001",
@@ -1101,6 +1163,13 @@
         "spec": ".bits/srs/SRS-BUILDANDDO-GITLAB-ONLY-CI-001.md",
         "status": "in_progress",
         "title": "GitLab is the only CI; retire GitHub Actions"
+      },
+      {
+        "code": "SRS-BUILDANDDO-GITLAB-RELEASE-001",
+        "risk": "A3",
+        "spec": ".bits/srs/SRS-BUILDANDDO-GITLAB-RELEASE-001.md",
+        "status": "in_progress",
+        "title": "Ship buildanddo.com from GitLab through the verified release rail"
       },
       {
         "code": "SRS-BUILDANDDO-GROWTH-001",
@@ -1215,6 +1284,13 @@
         "title": "Server-graded community quiz; no answers in the public catalogue"
       },
       {
+        "code": "SRS-BUILDANDDO-REALTIME-TURN-001",
+        "risk": "A2",
+        "spec": ".bits/srs/SRS-BUILDANDDO-REALTIME-TURN-001.md",
+        "status": "in_progress",
+        "title": "TURN relay for the classroom SFU; MoQ broadcast plan recorded"
+      },
+      {
         "code": "SRS-BUILDANDDO-RECONCILE-001",
         "risk": "A2",
         "spec": ".bits/srs/SRS-BUILDANDDO-RECONCILE-001.md",
@@ -1311,6 +1387,13 @@
         "spec": ".bits/srs/SRS-BUILDANDDO-UPGRADE-001.md",
         "status": "in_progress",
         "title": "BuildAndDo public, workspace and community upgrades"
+      },
+      {
+        "code": "SRS-BUILDANDDO-WEB-COVERAGE-001",
+        "risk": "A1",
+        "spec": ".bits/srs/SRS-BUILDANDDO-WEB-COVERAGE-001.md",
+        "status": "in_progress",
+        "title": "Web coverage meets its declared per-file minimums"
       },
       {
         "code": "SRS-BUILDANDDO-WITNESS-001",
@@ -1456,7 +1539,9 @@
         "supply_chain_weekly",
         "evidence_epoch",
         "main_writeback",
-        "ci_report"
+        "ci_report",
+        "lesson_keys_bundle",
+        "lesson_keys_private"
       ],
       "kind": "include",
       "local_actions": [],
@@ -1490,6 +1575,28 @@
         "scripts/ci/telemetry_delta.py",
         "scripts/ci/telemetry_snapshot.py",
         "scripts/ci/verify_public_boundary.py"
+      ],
+      "triggers": [
+        "rules (not evaluated)"
+      ]
+    },
+    {
+      "configuration_errors": [],
+      "file": ".gitlab/ci/release.yml",
+      "jobs": [
+        "release_staging",
+        "release_production"
+      ],
+      "kind": "include",
+      "local_actions": [],
+      "name": "release",
+      "npm_scripts": [],
+      "provider": "gitlab",
+      "required_scripts": [
+        "tools/buildanddo_release.py"
+      ],
+      "scripts": [
+        "tools/buildanddo_release.py"
       ],
       "triggers": [
         "rules (not evaluated)"
@@ -1529,12 +1636,12 @@
       "scripts/deploy/staging-readback.sh"
     ],
     "migrations": 83,
-    "python_files": 490,
+    "python_files": 493,
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 1923,
-    "web_source_files": 391
+    "tracked_files": 1969,
+    "web_source_files": 415
   },
   "schema_version": 1,
   "sprint_readiness": {
@@ -1554,7 +1661,7 @@
       },
       {
         "id": "HS-03",
-        "next_step": "Migration rollout is now validated on BOTH environments: preflighted against a disposable copy of live data, applied behind a database backup, and confirmed by an authenticated readback from a second box (production at 72 applied migrations, 79 collections, 33 lessons). Recovery is still unexercised - backups were taken but no restore has been performed, so rollback remains a claim rather than an observation. Exercise a restore onto a disposable profile and record it. The later classroom migrations (media sessions and the broadcast lesson) are not rolled out yet: execute both expanded native runtime profiles, including media-session and lesson installation, typed track responses, ownership/revocation and rollback. Have the release owner install matching backend migrations/hooks before the frontend and measure actual provider delivery and stream revocation on staging.",
+        "next_step": "Migration rollout is now validated on BOTH environments: preflighted against a disposable copy of live data, applied behind a database backup, and confirmed by an authenticated readback from a second box (production at 72 applied migrations, 79 collections, 33 lessons). Recovery is still unexercised - backups were taken but no restore has been performed, so rollback remains a claim rather than an observation. Exercise a restore onto a disposable profile and record it. The later classroom migrations (media sessions and the broadcast lesson) are not rolled out yet: execute both expanded native runtime profiles, including media-session and lesson installation, typed track responses, ownership/revocation and rollback. Hooks from a9b6e71 until the positional Middleware repair (VCC-BUILDANDDO-UPGRADE-001 CX) stop 0.39.8 `serve` at startup and must not be installed; with the repair the native classroom profile runs again. Have the release owner install matching backend migrations/hooks before the frontend and measure actual provider delivery and stream revocation on staging. Guided grading now reads knowledge-check keys from a private key file (SRS-BUILDANDDO-CURRICULUM-PRIVATE-001): before the hooks that read it deploy, the operator installs that file and its BUILDANDDO_LESSON_KEYS_FILE drop-in on both PocketBase units (handoff 2026-10-31-BITS-CODEGEN-C-ONE-curriculum-private, H1-H3) and requires `pocketbase lesson-keys check` on a rehearsal copy to report PRIVATE with mismatch 0 and unavailable 0 (H5); without it, new enrollments in lessons with no database-held key answer 503 instead of grading. Source tests use synthetic keys only, so they do not establish installed-key acceptance.",
         "owner": "BITS-CODEGEN / IDE1",
         "why": "Persisted work and tenant isolation make the application useful beyond a visual prototype."
       },
@@ -1602,7 +1709,7 @@
       },
       {
         "id": "HS-10",
-        "next_step": "Run actual browser and native isolation tests, bind the existing inference endpoint under approved data authority, and observe scoped chat-to-form-to-personal-knowledge behavior. Validate value-card drill-downs against one real reviewed mission and exact provider/release receipts; collect comparable cost, effort and eligible-work baselines before displaying ROI. Exercise career export/import with the actual native account, ten real job dossiers and reviewed draft documents; obtain separate receiving authority for one permitted ATS browser submission and retain its actual receipt. Include unconfigured, failed-read and reconnected Buddi states with draft preservation before the real inferred action. The content and private ElevenLabsBridge owners must verify requested provider/account terms, approved voices and funding, then demonstrate the existing draft/review flow and one real generation, human publication, independent readback and measured engagement. Use the incorporated PR 119 work contract to map media source, corpus and job identities; CSCC mission assignment still requires receiving authorization. Run the classroom React regressions and disposable native backend suite, reproduce the reported classroom symptom, and retain independent host/listener media readback under the existing receiving release authority.",
+        "next_step": "Run actual browser and native isolation tests, bind the existing inference endpoint under approved data authority, and observe scoped chat-to-form-to-personal-knowledge behavior. Validate value-card drill-downs against one real reviewed mission and exact provider/release receipts; collect comparable cost, effort and eligible-work baselines before displaying ROI. Exercise career export/import with the actual native account, ten real job dossiers and reviewed draft documents; obtain separate receiving authority for one permitted ATS browser submission and retain its actual receipt. Include unconfigured, failed-read and reconnected Buddi states with draft preservation before the real inferred action. The content and private ElevenLabsBridge owners must verify requested provider/account terms, approved voices and funding, then demonstrate the existing draft/review flow and one real generation, human publication, independent readback and measured engagement. Use the incorporated PR 119 work contract to map media source, corpus and job identities; CSCC mission assignment still requires receiving authorization. Run the classroom React regressions and disposable native backend suite, reproduce the reported classroom symptom, and retain independent host/listener media readback under the existing receiving release authority. The broadcast and authority-repair lesson files now carry no knowledge-check keys (SRS-BUILDANDDO-CURRICULUM-PRIVATE-001): observe those lessons on a receiving environment only after its private key file is installed (the HS-03 prerequisite) and keys-health reports PRIVATE with no unavailable lesson.",
         "owner": "BITS-CODEGEN / CMAX-B",
         "why": "The operator and daily edition must explain current work with visible uncertainty and evidence."
       },
@@ -1613,22 +1720,22 @@
         "why": "Competition readiness requires an evidence-backed learning-through-work journey, a reproducible replay and actual submission criteria."
       }
     ],
-    "source_sha256": "823ec7d0c6fe3247b9eddac24791891f2066da011325c40de0b4f32b60b9a8ce",
+    "source_sha256": "05b9ad4879e8644cef1404064c95cc72093cc93163a06960b17269bdc79bd11d",
     "state": "PASS"
   },
   "summary": {
-    "findings": 59,
-    "findings_high": 25,
-    "pipelines": 4,
-    "srs_open": 58,
-    "srs_total": 62,
-    "unwired_gates": 25
+    "findings": 63,
+    "findings_high": 26,
+    "pipelines": 5,
+    "srs_open": 64,
+    "srs_total": 68,
+    "unwired_gates": 26
   },
   "tests": {
     "js_runners": [
       "vitest"
     ],
-    "js_test_files": 111,
+    "js_test_files": 135,
     "js_test_script": true,
     "junit_configured": true,
     "python_suite_entrypoints": [

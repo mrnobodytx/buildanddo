@@ -217,7 +217,7 @@ the integration is implemented.
 | **Assistant endpoint** | Buddi, the workspace assistant: a configurable inference URL with no vendor SDK | `workspace-assistant.js` | Wired |
 | **Firecrawl · n8n** | Reviewed business actions and crawl checks | `business-actions.js`, `scripts/crawl_check.py` | Wired; reviewed actions only |
 | **Citadel Nexus** | Career profiles and OCN seat sign-in through CitadelKey | `career-profile.pb.js`, `ocn-login.pb.js` | Wired |
-| **GitLab** | The only CI; pulls `main` and PR heads, reports back, holds deployment authority | [`.gitlab/ci/github-plane.yml`](./.gitlab/ci/github-plane.yml) | Wired; needs operator CI variables |
+| **GitLab** | The only CI; pulls `main` and PR heads, reports back, ships through the release rail | [`.gitlab/ci/github-plane.yml`](./.gitlab/ci/github-plane.yml), [`.gitlab/ci/release.yml`](./.gitlab/ci/release.yml) | Wired; release needs operator deploy variables |
 | **Reddit** | Release notices | `scripts/publish/activity_publish.py` | Held, deliberately |
 | **Public anchor network** | Notarising evidence roots | [EVIDENCE_WITNESS.md](./docs/architecture/EVIDENCE_WITNESS.md) | Designed, not yet built |
 
@@ -271,7 +271,9 @@ flowchart LR
 ```
 
 Staging and production are reached only through the release rail (`tools/buildanddo_release.py` and
-`scripts/deploy/ship.py`), under explicit A3 authority. Production receives exactly the build
+`scripts/deploy/ship.py`), under explicit A3 authority. The `release` stage in
+[`.gitlab/ci/release.yml`](./.gitlab/ci/release.yml) runs that rail after every gate on
+`buildanddo-source` once the operator sets `BUILDANDDO_DEPLOY_ENABLE=1`; it never runs for a review branch. Production receives exactly the build
 staging served: the content fingerprint must match, a rollback backup is recorded, and the result is
 read back from outside before it counts. The rules for contributors are in
 [CONTRIBUTING.md](./CONTRIBUTING.md), [AGENTS.md](./AGENTS.md) and [CLAUDE.md](./CLAUDE.md).

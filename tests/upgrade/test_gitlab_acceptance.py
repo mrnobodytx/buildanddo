@@ -1,17 +1,20 @@
 # ─── CGRF Header ───────────────────────────────────────────────
 # File:        tests/upgrade/test_gitlab_acceptance.py
 # Stage:       08_TEST
-# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-CURRICULUM-PRIVATE-001
 # CAPS:        pending
 # CK:          pending
-# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-CURRICULUM-PRIVATE-001
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-21
-# Depends:     scripts/ci/agent_context.py, scripts/ci/hostinger_readiness.py, scripts/ci/submission_readiness.py, .gitlab/ci/day21-submission.yml, .gitlab/ci/source-validation.yml
+# Depends:     scripts/ci/agent_context.py, scripts/ci/hostinger_readiness.py, scripts/ci/submission_readiness.py, .gitlab/ci/day21-submission.yml, .gitlab/ci/source-validation.yml,
+#              .gitlab/ci/github-plane.yml
 # EnumType:    Test
-# EnumEdges:   VALIDATES scripts/ci/agent_context.py; VALIDATES scripts/ci/hostinger_readiness.py; VALIDATES scripts/ci/submission_readiness.py; VALIDATES .gitlab/ci/day21-submission.yml; VALIDATES .gitlab/ci/source-validation.yml
-# Intent:      Prevent GitHub configuration, unreachable jobs or incomplete artifacts from standing in for GitLab acceptance.
+# EnumEdges:   VALIDATES scripts/ci/agent_context.py; VALIDATES scripts/ci/hostinger_readiness.py; VALIDATES scripts/ci/submission_readiness.py; VALIDATES .gitlab/ci/day21-submission.yml; VALIDATES .gitlab/ci/source-validation.yml;
+#              VALIDATES .gitlab/ci/github-plane.yml
+# Intent:      Prevent GitHub configuration, unreachable jobs or incomplete artifacts from standing in for GitLab acceptance,
+#              and keep the keyed lesson-key lane off by default, protected-only and unable to leak or gate anything else.
 # ───────────────────────────────────────────────────────────────
 
 """Exercise configured GitLab reachability without claiming a hosted execution."""
@@ -19,6 +22,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+import re
 import tempfile
 import unittest
 
@@ -31,6 +35,14 @@ from scripts.ci import (
 
 ROOT = Path(__file__).resolve().parents[2]
 FRAGMENT = ".gitlab/ci/day21-submission.yml"
+PLANE = ".gitlab/ci/github-plane.yml"
+KEYED_JOBS = ("lesson_keys_bundle", "lesson_keys_private")
+KEYED_RULE = (
+    '($CI_PIPELINE_SOURCE == "push" || $CI_PIPELINE_SOURCE == "web") && $CI_COMMIT_BRANCH == "buildanddo-source"'
+    ' && $CI_COMMIT_REF_PROTECTED == "true" && $BUILDANDDO_LESSON_KEYS_ENABLED == "1"'
+)
+# The key file variable itself, not the switch BUILDANDDO_LESSON_KEYS_ENABLED.
+KEY_VARIABLE_RE = re.compile(r"\$\{?BUILDANDDO_LESSON_KEYS(?![A-Z0-9_])")
 
 
 class GitLabAcceptanceTests(unittest.TestCase):
@@ -433,6 +445,201 @@ class GitLabAcceptanceTests(unittest.TestCase):
             ]
         )
         self.assertNotIn("scripts/ci/supply_chain.py", scripts)
+
+
+def evaluate_rule(rule: str, env: dict[str, str]) -> bool:
+    """Evaluate a GitLab `if:` made of ==, !=, &&, || and parentheses; an unset variable is null."""
+    tokens = re.findall(r'\s*(\(|\)|&&|\|\||==|!=|\$[A-Za-z_][A-Za-z0-9_]*|"[^"]*")', rule)
+    if "".join(tokens).replace(" ", "") != rule.replace(" ", ""):
+        raise ValueError("unsupported rule syntax")
+    items = [token.strip() for token in tokens]
+    position = 0
+
+    def take() -> str:
+        nonlocal position
+        position += 1
+        return items[position - 1]
+
+    def operand() -> str | None:
+        token = take()
+        return env.get(token[1:]) if token.startswith("$") else token[1:-1]
+
+    def primary() -> bool:
+        if items[position] == "(":
+            take()
+            value = disjunction()
+            if take() != ")":
+                raise ValueError("unbalanced rule")
+            return value
+        left, operator, right = operand(), take(), operand()
+        if operator not in {"==", "!="}:
+            raise ValueError("unsupported comparison")
+        return (left == right) == (operator == "==")
+
+    def conjunction() -> bool:
+        value = primary()
+        while position < len(items) and items[position] == "&&":
+            take()
+            value = primary() and value
+        return value
+
+    def disjunction() -> bool:
+        value = conjunction()
+        while position < len(items) and items[position] == "||":
+            take()
+            value = conjunction() or value
+        return value
+
+    result = disjunction()
+    if position != len(items):
+        raise ValueError("trailing rule tokens")
+    return result
+
+
+class KeyedLaneContractTests(unittest.TestCase):
+    """SRS-BUILDANDDO-CURRICULUM-PRIVATE-001 A10: the keyed lane ships off and stays isolated."""
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.config = gitlab_ci.collect(ROOT)
+        cls.jobs = {job.name: job for job in cls.config.jobs}
+        cls.plane = (ROOT / PLANE).read_text()
+        cls.sources = {name: (ROOT / name).read_text() for name in cls.config.files}
+        cls.bodies = {
+            name: text.split(f"\n{name}:\n", 1)[1].split("\n\n", 1)[0]
+            for text in cls.sources.values()
+            for name in cls.jobs
+            if f"\n{name}:\n" in text
+        }
+
+    def test_both_jobs_are_reachable_in_the_plane_include(self) -> None:
+        self.assertEqual(self.config.errors, ())
+        self.assertIn(PLANE, self.config.files)
+        for name in KEYED_JOBS:
+            with self.subTest(job=name):
+                self.assertEqual(self.jobs[name].file, PLANE)
+
+    def test_the_lane_runs_only_when_enabled_on_protected_buildanddo_source(self) -> None:
+        for name in KEYED_JOBS:
+            with self.subTest(job=name):
+                rules = self.bodies[name].split("\n  rules:\n", 1)[1].rstrip("\n")
+                self.assertEqual(rules, "    - if: '" + KEYED_RULE + "'\n    - when: never")
+        on = {"CI_PIPELINE_SOURCE": "push", "CI_COMMIT_BRANCH": "buildanddo-source",
+              "CI_COMMIT_REF_PROTECTED": "true", "BUILDANDDO_LESSON_KEYS_ENABLED": "1"}
+        self.assertTrue(evaluate_rule(KEYED_RULE, on))
+        self.assertTrue(evaluate_rule(KEYED_RULE, {**on, "CI_PIPELINE_SOURCE": "web"}))
+        off: list[dict[str, str]] = []
+        off += [{**on, "BUILDANDDO_LESSON_KEYS_ENABLED": v} for v in ("", "0", "true", "yes", " 1", "1 ")]
+        off += [{k: v for k, v in on.items() if k != "BUILDANDDO_LESSON_KEYS_ENABLED"}]
+        off += [{**on, "CI_COMMIT_BRANCH": b} for b in ("review/pr-7", "main", "sprint/x", "bits/SRS-X-001-y", "")]
+        off += [{**on, "CI_PIPELINE_SOURCE": s} for s in ("schedule", "merge_request_event", "external_pull_request_event",
+                                                          "api", "trigger", "pipeline", "parent_pipeline", "chat")]
+        off += [{**on, "CI_COMMIT_REF_PROTECTED": "false"},
+                {k: v for k, v in on.items() if k != "CI_COMMIT_REF_PROTECTED"}]
+        for env in off:
+            with self.subTest(env=env):
+                self.assertFalse(evaluate_rule(KEYED_RULE, env))
+        # Syntax the evaluator does not model is refused, never guessed.
+        gate = ('$CI_PIPELINE_SOURCE != "schedule" && ($CI_COMMIT_BRANCH == "main" || '
+                '$CI_COMMIT_BRANCH == "buildanddo-source" || $CI_COMMIT_BRANCH =~ /^(sprint|review)\\//)')
+        with self.assertRaises(ValueError):
+            evaluate_rule(gate, on)
+        self.assertTrue(evaluate_rule('$A == "1" && ($B == "x" || $B == "y")', {"A": "1", "B": "y"}))
+        self.assertFalse(evaluate_rule('$A != "1"', {"A": "1"}))
+
+    def test_the_bundle_job_builds_without_keys_and_keeps_dist_for_a_day(self) -> None:
+        body = self.bodies["lesson_keys_bundle"]
+        self.assertEqual(self.jobs["lesson_keys_bundle"].commands, ("npm ci", "npm run build"))
+        for line in ("  tags: [buildanddo]\n", "  needs: []\n",
+                     "  artifacts:\n    expire_in: 1 day\n    paths:\n      - dist/apps/web/\n  rules:\n"):
+            self.assertIn(line, body)
+        self.assertNotRegex(body, KEY_VARIABLE_RE)
+        self.assertNotIn("environment:", body)
+        self.assertNotIn("buildanddo-protected", body)
+
+    def test_the_private_job_runs_only_the_two_built_in_checks_with_no_artifacts(self) -> None:
+        job = self.jobs["lesson_keys_private"]
+        body = self.bodies["lesson_keys_private"]
+        self.assertEqual(
+            [gitlab_ci.arguments(command) for command in job.commands],
+            [["python3", "-I", "scripts/ci/lesson_keys.py", "verify", "--keys", "$BUILDANDDO_LESSON_KEYS",
+              "--require-private"],
+             ["node", "apps/web/tools/check-public-lessons.mjs", "dist/apps/web", "--keys", "$BUILDANDDO_LESSON_KEYS",
+              "--require-keys"]],
+        )
+        # Quoted, so an unset variable is an empty argument and the tools report BLOCKED (exit 3).
+        self.assertEqual(body.count('--keys "$BUILDANDDO_LESSON_KEYS"'), 2)
+        for line in ("  tags: [buildanddo-protected]\n",
+                     "  needs:\n    - job: lesson_keys_bundle\n      artifacts: true\n",
+                     "  environment:\n    name: lesson-keys\n    action: prepare\n",
+                     "  cache: []\n", "  allow_failure: {exit_codes: [3]}\n"):
+            self.assertIn(line, body)
+        self.assertEqual(re.findall(r"^  ([a-z_]+):", body, re.MULTILINE),
+                         ["stage", "tags", "timeout", "needs", "environment", "cache", "allow_failure", "script", "rules"])
+        for word in ("npm", "npx", "vite", "yarn", "pnpm", "before_script", "after_script",
+                     "variables", "image", "services", "extends", "inherit", "dependencies"):
+            self.assertNotRegex(body, rf"\b{word}\b", word)
+        # The one mention is the download of the bundle's dist; the job itself keeps nothing.
+        self.assertEqual(re.findall(r"^.*\bartifacts\b.*$", body, re.MULTILINE), ["      artifacts: true"])
+        # Optional only for the BLOCKED exit code, so it never counts as acceptance wiring.
+        self.assertFalse(job.required)
+
+    def test_neither_job_writes_reports_epochs_or_bookkeeping(self) -> None:
+        for name in KEYED_JOBS:
+            body = self.bodies[name]
+            for marker in ("reports/", "state/epochs", "state/ci", "gitlab_plane.py", "evidence_epoch",
+                           "resource_group", "GITHUB_", "GITLAB_INGEST_TOKEN"):
+                with self.subTest(job=name, marker=marker):
+                    self.assertNotIn(marker, body)
+
+    def test_only_the_private_job_sees_the_key_variable_or_its_environment(self) -> None:
+        for path, text in self.sources.items():
+            for match in KEY_VARIABLE_RE.finditer(text):
+                with self.subTest(path=path, offset=match.start()):
+                    self.assertEqual(path, PLANE)
+                    line = text[text.rfind("\n", 0, match.start()) + 1:text.find("\n", match.start())]
+                    self.assertTrue(line.startswith("#") or line in self.bodies["lesson_keys_private"], line)
+                    if not line.startswith("#"):
+                        self.assertIn(line.strip()[2:], self.jobs["lesson_keys_private"].commands)
+            for marker in ("lesson-keys", "buildanddo-protected", "job: lesson_keys_"):
+                for name, body in self.bodies.items():
+                    if marker in body and self.jobs[name].file == path:
+                        with self.subTest(path=path, job=name, marker=marker):
+                            self.assertEqual(name, "lesson_keys_private")
+
+    def test_the_lane_comment_names_variables_never_values_or_private_locations(self) -> None:
+        comment = self.plane.split("\nlesson_keys_bundle:\n", 1)[0].rsplit("\n\n", 1)[1]
+        self.assertTrue(all(line.startswith("#") for line in comment.splitlines()), comment)
+        for name in ("BUILDANDDO_LESSON_KEYS_ENABLED", "BUILDANDDO_LESSON_KEYS ", "lesson-keys"):
+            self.assertIn(name, comment)
+        for marker in ("/etc/", "/root/", "lesson-keys.json", "curriculum/", ".json", "=1 ", "http", "@"):
+            self.assertNotIn(marker, comment, marker)
+
+    def test_existing_gates_and_submission_needs_are_unchanged(self) -> None:
+        gate_rule = (
+            "'$CI_PIPELINE_SOURCE != \"schedule\" && ($CI_COMMIT_BRANCH == \"main\" || "
+            "$CI_COMMIT_BRANCH == \"buildanddo-source\" || $CI_COMMIT_BRANCH =~ /^(sprint|review)\\//)'"
+        )
+        for name in ("integrity_gate", "sprint_replay", "praxis_evidence_tests", "day21_governance",
+                     "day21_full_acceptance", "source_discord", "source_foundry", "source_federal_portfolio",
+                     "source_mission_suite", "source_behavior_coverage", "source_assurance"):
+            with self.subTest(job=name):
+                self.assertIn(gate_rule, self.bodies[name])
+                self.assertTrue(self.jobs[name].required)
+        for name, body in self.bodies.items():
+            if name in KEYED_JOBS:
+                continue
+            with self.subTest(job=name):
+                self.assertNotIn("BUILDANDDO_LESSON_KEYS", body)
+                self.assertNotIn("lesson_keys", body)
+        bundle = self.bodies["day21_submission_bundle"]
+        needs = re.findall(r"^\s+- job: (\S+)$", bundle, re.MULTILINE)
+        self.assertEqual(sorted(needs), sorted([
+            "day21_governance", "day21_full_acceptance", "source_discord", "source_foundry",
+            "source_federal_portfolio", "source_mission_suite", "source_behavior_coverage", "source_assurance"]))
+        plane_jobs = [name for name, job in self.jobs.items() if job.file == PLANE]
+        self.assertEqual(plane_jobs, ["github_intake", "stack_telemetry", "supply_chain_weekly", "evidence_epoch",
+                                      "main_writeback", "ci_report", *KEYED_JOBS])
 
 
 if __name__ == "__main__":

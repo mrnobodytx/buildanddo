@@ -2,16 +2,17 @@
 // --- CGRF Header ------------------------------------------------
 // File:        apps/web/tools/build.mjs
 // Stage:       07_BUILD
-// SRS:         SRS-BUILDANDDO-UPGRADE-001
+// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-CURRICULUM-PRIVATE-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-CURRICULUM-PRIVATE-001
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-24
-// Depends:     apps/web/tools/release-telemetry.mjs
+// Depends:     apps/web/tools/release-telemetry.mjs, apps/web/tools/check-public-lessons.mjs
 // EnumType:    Adapter
-// EnumEdges:   CONSUMES apps/web/tools/release-telemetry.mjs
+// EnumEdges:   CONSUMES apps/web/tools/release-telemetry.mjs; CONSUMES apps/web/tools/check-public-lessons.mjs;
+//              CONSUMES BUILDANDDO_LESSON_KEYS_FILE; CONSUMES BUILDANDDO_LESSON_KEYS_REQUIRED
 // Intent:      Keep offline builds usable while binding designated release telemetry to the actual build.
 // ----------------------------------------------------------------
 // Cross-platform replacement for the old inline npm script:
@@ -85,8 +86,26 @@ try {
 generatePageHeads(output, release);
 generateCommunityCatalogue(output, release);
 // Interactive lessons are graded on the server; a shipped answer or explanation would give it away.
-// Scanned last so generated feeds such as community-catalog.json are covered too.
-const leaks = findLessonAnswers(output);
+// Scanned last so generated feeds such as community-catalog.json are covered too. The tracked curricula hold no
+// explanations, so their fingerprints come from the private key file BUILDANDDO_LESSON_KEYS_FILE names; a public
+// build has none, says so, and still fails on any answer-bearing JSON check. BUILDANDDO_LESSON_KEYS_REQUIRED=1 makes
+// missing or synthetic keys fatal. Only the mode and a count are printed, never the file, a fingerprint or a key.
+const requireKeys = process.env.BUILDANDDO_LESSON_KEYS_REQUIRED === '1';
+let leaks;
+try {
+    leaks = findLessonAnswers(output, { keysFile: process.env.BUILDANDDO_LESSON_KEYS_FILE || '', requireKeys });
+} catch (error) {
+    console.error(`Lesson answer scan refused the build: ${error?.message || error}`);
+    process.exit(1);
+}
+if (leaks.mode === 'skipped') {
+    console.log('SKIP: lesson explanation fingerprints need BUILDANDDO_LESSON_KEYS_FILE; output scanned for answer-bearing JSON checks only.' +
+        (leaks.reason === 'absent' ? ' The named key file is absent.' : ''));
+} else if (leaks.mode) console.log(`Lesson explanation fingerprints: ${leaks.lessons} lessons from ${leaks.mode} keys.`);
+if (requireKeys && leaks.mode !== 'private') {
+    console.error('Lesson answer scan refused the build: BUILDANDDO_LESSON_KEYS_REQUIRED=1 needs a private lesson key file.');
+    process.exit(1);
+}
 if (leaks.length) {
     for (const leak of leaks) console.error(`Lesson ${leak.slug} answer is in ${leak.file}; import curricula with ?public-lessons and keep checks answer-free.`);
     process.exit(1);
