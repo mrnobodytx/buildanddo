@@ -32,6 +32,9 @@ carries no grader or runtime of its own.
   "use the system Citadel Nexus already has".
 - Owner dispatch VCC-BUILDANDDO-GM-SHIFT-OPS-001, 2026-11-21: Datadog disarmed build
   plus one supervised smoke run. Arming the weekday dispatcher is a separate owner act.
+- Owner instruction, 2026-11-22: if PostHog is lost, CNWB must keep the same Scout skill and
+  process, powered by one guildmaster box, correlating the CNI guildmaster service with
+  BuildAndDo (task I).
 
 ## Tasks
 
@@ -45,6 +48,7 @@ carries no grader or runtime of its own.
 | F | Weekday dispatcher, unpublished, gated on `control:global` (armed and unexpired) | Spec validates; does nothing while disarmed; loop tested without agents | done — "BuildAndDo · guild weekday units" (weekdays 13:23 UTC), unpublished |
 | G | Report verdicts to the `guildmaster-behaviour` PostHog Scout | `guildmaster_operation` events with `project=buildanddo`, read back from PostHog | done — display copy after each record; Scout skill v3 checks it |
 | H | Arm | Owner instruction in their own words; the arming checklist below | owner |
+| I | PostHog-independent Scout: the same skill on one guildmaster box over the CNWB ledger, judging CNI guildmaster behaviour and BuildAndDo units per guild | Bundle tests pass on disposable PostgreSQL 16; the parity gate passes; every HogQL query runs in PostHog; two adversarial reviews disposed | prepared — the code belongs to CNWB (SRS-CN-GM-SCOUT-001, proposed); GitLab writes to CNWB were refused and CNWB is frozen; landing steps below |
 
 ## Evidence, 2026-11-21
 
@@ -113,6 +117,76 @@ survived and 4 were refuted.
   - **Second full run the same UTC day:** refused at the day lock (409) before any unit.
   - **Armed at the start but disarmed at the per-unit recheck:** halted with zero units
     and no mission run.
+
+## CNWB fallback Scout, 2026-11-22 (task I)
+
+The bundle is kept outside this repository: it is CNWB code under CNWB's own SRS. It was handed
+to the owner as an archive (sha256 `867139092532d451797df4654518e25964bca180d47cb43a5e5148de5a73046a`).
+Only the correlation is recorded here.
+
+- **One skill, two runners.** `SKILL.md` (v5) is one body. The PostHog Scout runs it with a HogQL
+  pack; a guildmaster box runs it with a SQL pack over the CNWB ledger. Every window and list in
+  the HogQL pack is filled from the same `checks.json`. A CI gate fails when:
+  - the packs cover different checks;
+  - a window is hard-coded;
+  - a value falls outside the SQL pack's bounds;
+  - the HogQL rota expression, evaluated as written, disagrees with the 60 golden weeks.
+- **Correlation keys.** `guild` (or `seat`) only. A BuildAndDo unit is keyed by `unit_id` if
+  sent, else `op_id` (the mission instance), so a resent unit counts once and a later grade
+  replaces the earlier one. Its rota peer comes from the formula for the dispatcher's `week`,
+  never from the stamped `rota_reviewer`.
+- **Runner.** Stdlib Python on one box: a systemd timer at 06:20 and 18:20 UTC, as a dynamic
+  user. Thresholds are applied in code from `checks.json`, never by a model. Reads and reports go
+  through an n8n webhook with its own secret, and the box holds no database key. A malformed
+  response is a failed run, never a quiet one. Exit codes 2, 3 and 4 mark a failed run, and an
+  n8n watchdog alerts when no run lands for 13 hours.
+- **Ledger writes.** Two SECURITY DEFINER functions, one per writer role:
+  - guildmaster events keep an allow-list of metadata keys, so message text cannot be stored;
+  - Scout rows can be written only by the Scout's report path.
+
+  EXECUTE is revoked from PUBLIC and from Supabase's API roles.
+- **What it cannot see yet.** BuildAndDo units reach the ledger only once the dispatcher can
+  post to gm-ops, which needs a Datadog HTTP connection (owner). Until then CNWB reports them
+  as `not_running`, and PostHog stays the only view of units.
+
+Evidence:
+- Four adversarial review rounds, each verified by a skeptic:
+  - round 1 confirmed 46 findings plus 9 from a completeness critic, and refuted 16;
+  - round 2 found 12 partly fixed and 14 new;
+  - round 3 found 12 partly fixed and 6 new;
+  - round 4 found 6.
+
+  Every confirmed item was fixed with a test.
+- 86 tests run against disposable PostgreSQL 16 clusters, whose server timezone is
+  deliberately not UTC. `REQUIRE_PG=1` makes CI fail rather than skip without PostgreSQL.
+  Mutation checks show the tests fail when any of these guards is broken:
+  - the rota modulus, the week stamp and the HogQL rota arrays;
+  - the 15:00 UTC rule;
+  - the warm, gap and observed-silence rules;
+  - the excluded operations and the rollup rate;
+  - the self-review and empty-reviewer rules;
+  - the allow-list, the event-type split and the revokes;
+  - the regrade key and the required grading time;
+  - the report acknowledgement and refused redirects;
+  - response validation, including NUMERIC values delivered as text by n8n's Postgres node.
+- The SQL rota function matches all 480 golden pairs.
+- All seven HogQL queries were run read-only in PostHog project 269641 and returned rows.
+
+Owner landing steps (CNWB):
+1. Register SRS-CN-GM-SCOUT-001 and a dispatch in CNWB.
+2. Land the bundle on a CNWB branch.
+3. Apply the three migrations as the ledger's owner (the index one outside a transaction),
+   then create the reader and the two writer roles.
+4. Make the n8n edits:
+   - a gm-ops ledger branch beside PostHog;
+   - the gm-ai rewiring;
+   - the gm-scout webhook with its own secret;
+   - the watchdog.
+5. Install the unit on one guildmaster box (the recommendation is recorded internally). Run
+   `--selftest` and `--dry-run`, then enable the timer.
+6. Publish the rendered skill v5 to the PostHog Scout, which is still v3, and record its hash.
+7. Optional: create the Datadog HTTP connection, with the grading time on every unit, so units
+   reach the ledger.
 
 ## Arming checklist (owner)
 

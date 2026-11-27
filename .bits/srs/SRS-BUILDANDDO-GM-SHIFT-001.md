@@ -92,6 +92,16 @@ its reviewer was always the author's own guild.
    `guildmaster_operation` with `op=mission_graded` and `project=buildanddo`. A PostHog
    failure never changes a verdict or stops a unit. The `guildmaster-behaviour` Scout
    (v3) checks these events.
+8. Without PostHog, the same Scout skill runs from one guildmaster box over the CNWB ledger.
+   The skill body is shared; only the query pack differs (HogQL in PostHog, SQL in CNWB).
+   CNI guildmaster behaviour and BuildAndDo units are joined on guild or seat only:
+   - a unit is identified by its `op_id` (or `unit_id` if sent), and a later grade replaces an
+     earlier one;
+   - its rota peer is recomputed from the dispatcher's `week`.
+   That code belongs to CNWB under SRS-CN-GM-SCOUT-001 (proposed); this repository records
+   only the correlation. Until the dispatcher can post to the gm-ops webhook (a Datadog HTTP
+   connection, owner), units reach PostHog only and the CNWB Scout reports them as
+   `not_running`.
 
 ## Phases
 
