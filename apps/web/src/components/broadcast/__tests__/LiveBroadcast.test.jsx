@@ -33,6 +33,7 @@ vi.mock('@/lib/classroomRealtime', () => ({
     PRESENCE_POLL_MS: 5000,
     classroomHealth: vi.fn(),
     joinClassroom: vi.fn(),
+    classroomIceServers: vi.fn(async () => ({ iceServers: [{ urls: 'stun:stun.cloudflare.com:3478' }], turn: false, reason: 'fixture' })),
     createPresenceTracker: vi.fn(),
     startPresenceHeartbeat: vi.fn(),
     inboundAudioStats: vi.fn(),

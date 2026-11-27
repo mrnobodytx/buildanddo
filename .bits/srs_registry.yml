@@ -207,6 +207,14 @@ srs:
     owner: C-ONE
     notes: Owner directive 2026-10-27 after the GitHub Actions billing lock; GitLab pulls main and trusted PR heads, posts commit status back and performs the changelog/growth/epoch writeback; CI variables, schedules, tokens and disabling Actions are A3 operator steps
 
+  - code: SRS-BUILDANDDO-GITLAB-RELEASE-001
+    title: Ship buildanddo.com from GitLab through the verified release rail
+    status: in_progress
+    risk: A3
+    spec: .bits/srs/SRS-BUILDANDDO-GITLAB-RELEASE-001.md
+    owner: C-ONE
+    notes: Owner directive 2026-10-27 ("do all 5"); release stage runs pipeline-stage then pipeline-promote on protected buildanddo-source only, behind BUILDANDDO_DEPLOY_ENABLE; deploy key, known_hosts and public telemetry keys are A3 operator inputs
+
   - code: SRS-BUILDANDDO-DAY21-RUNNER-001
     title: Day-21 acceptance passes on the GitLab fleet runners
     status: in_progress
@@ -222,6 +230,22 @@ srs:
     spec: .bits/srs/SRS-BUILDANDDO-WEB-COVERAGE-001.md
     owner: C-ONE
     notes: Found once Day-21 web_tests stopped failing on tests (pipeline 6419); 14 globs under 80%; behaviour tests only, thresholds unchanged
+
+  - code: SRS-BUILDANDDO-CF-WORKERS-BUILD-001
+    title: The orphan buildanddo Worker fails every Workers Build; owner disconnects it
+    status: in_progress
+    risk: A1
+    spec: .bits/srs/SRS-BUILDANDDO-CF-WORKERS-BUILD-001.md
+    owner: C-ONE
+    notes: Agent self-authorized on the owner's 2026-10-27 request to investigate and document; 415 builds since 2026-09-09, 0 succeeded; the Cloudflare disconnect is A3 and only the owner performs it
+
+  - code: SRS-BUILDANDDO-REALTIME-TURN-001
+    title: TURN relay for the classroom SFU; MoQ broadcast plan recorded
+    status: in_progress
+    risk: A2
+    spec: .bits/srs/SRS-BUILDANDDO-REALTIME-TURN-001.md
+    owner: C-ONE
+    notes: Owner directive 2026-10-27 ("improve buildanddo cloudflare moq and sfu usage"); STUN-only behaviour unchanged without a TURN key; the TURN key and any MoQ relay are A3 operator steps
 
   - code: SRS-BUILDANDDO-EVIDENCE-CI-001
     title: Run the Praxis evidence suite in public CI
