@@ -60,14 +60,14 @@
     },
     {
       "area": "ci",
-      "evidence": "referenced by: nothing in this repo",
+      "evidence": "referenced by: tests/upgrade/test_ocn_classroom_rota.py",
       "severity": "high",
       "srs": "",
       "statement": "scripts/ci/ocn_classroom_fleet.py is not configured in reachable GitLab jobs"
     },
     {
       "area": "ci",
-      "evidence": "referenced by: tests/upgrade/test_ocn_telemetry.py",
+      "evidence": "referenced by: tests/upgrade/test_ocn_classroom_rota.py, tests/upgrade/test_ocn_telemetry.py",
       "severity": "high",
       "srs": "",
       "statement": "scripts/ci/ocn_classroom_live.py is not configured in reachable GitLab jobs"
@@ -253,6 +253,13 @@
       "severity": "medium",
       "srs": "SRS-BUILDANDDO-GROWTH-001",
       "statement": "VCC-BUILDANDDO-GROWTH-001 has every task done but SRS-BUILDANDDO-GROWTH-001 is still in_progress"
+    },
+    {
+      "area": "governance",
+      "evidence": ".bits/queue/VCC-BUILDANDDO-GUILDMASTER-001.md: 7/7 tasks done; mark SRS-BUILDANDDO-GUILDMASTER-001 delivered once merged and verified, or add the task that remains",
+      "severity": "medium",
+      "srs": "SRS-BUILDANDDO-GUILDMASTER-001",
+      "statement": "VCC-BUILDANDDO-GUILDMASTER-001 has every task done but SRS-BUILDANDDO-GUILDMASTER-001 is still in_progress"
     },
     {
       "area": "governance",
@@ -635,13 +642,16 @@
     {
       "configured_providers": [],
       "path": "scripts/ci/ocn_classroom_fleet.py",
-      "referenced_by": [],
+      "referenced_by": [
+        "tests/upgrade/test_ocn_classroom_rota.py"
+      ],
       "wired_into_ci": false
     },
     {
       "configured_providers": [],
       "path": "scripts/ci/ocn_classroom_live.py",
       "referenced_by": [
+        "tests/upgrade/test_ocn_classroom_rota.py",
         "tests/upgrade/test_ocn_telemetry.py"
       ],
       "wired_into_ci": false
@@ -916,7 +926,7 @@
       "wired_into_ci": true
     }
   ],
-  "generated_at": "2026-11-27T19:36:22.528161+00:00",
+  "generated_at": "2026-11-27T19:37:27.182346+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -1167,6 +1177,13 @@
         "spec": ".bits/srs/SRS-BUILDANDDO-GROWTH-001.md",
         "status": "in_progress",
         "title": "System growth lock - per-system development and progression, measured from the repository and recorded on every merge"
+      },
+      {
+        "code": "SRS-BUILDANDDO-GUILDMASTER-001",
+        "risk": "A2",
+        "spec": ".bits/srs/SRS-BUILDANDDO-GUILDMASTER-001.md",
+        "status": "in_progress",
+        "title": "Guildmaster persona seats are recognised by the server, publish directly under audit and owner/admin withdrawal, and host a weekly class rota"
       },
       {
         "code": "SRS-BUILDANDDO-HEADERS-001",
@@ -1618,13 +1635,13 @@
       "scripts/deploy/ship.py",
       "scripts/deploy/staging-readback.sh"
     ],
-    "migrations": 77,
-    "python_files": 487,
+    "migrations": 83,
+    "python_files": 493,
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 1934,
-    "web_source_files": 410
+    "tracked_files": 1969,
+    "web_source_files": 415
   },
   "schema_version": 1,
   "sprint_readiness": {
@@ -1703,22 +1720,22 @@
         "why": "Competition readiness requires an evidence-backed learning-through-work journey, a reproducible replay and actual submission criteria."
       }
     ],
-    "source_sha256": "2bd813802b1b500bb3634bccc2dff9ec292fc8b9cf7b179d241daebbf1fe1f89",
+    "source_sha256": "05b9ad4879e8644cef1404064c95cc72093cc93163a06960b17269bdc79bd11d",
     "state": "PASS"
   },
   "summary": {
-    "findings": 62,
+    "findings": 63,
     "findings_high": 26,
     "pipelines": 5,
-    "srs_open": 63,
-    "srs_total": 67,
+    "srs_open": 64,
+    "srs_total": 68,
     "unwired_gates": 26
   },
   "tests": {
     "js_runners": [
       "vitest"
     ],
-    "js_test_files": 132,
+    "js_test_files": 135,
     "js_test_script": true,
     "junit_configured": true,
     "python_suite_entrypoints": [

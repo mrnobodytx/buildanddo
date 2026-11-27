@@ -1,16 +1,16 @@
 // --- CGRF Header ------------------------------------------------
 // File:        tests/upgrade/workspace-claims.test.mjs
 // Stage:       08_TEST
-// SRS:         SRS-BUILDANDDO-UPGRADE-001
+// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-GUILDMASTER-001
 // CAPS:        pending
 // CK:          pending
 // Dispatch:    VCC-BUILDANDDO-UPGRADE-001
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-23
-// Depends:     tests/upgrade/admin-fixture.mjs, apps/pocketbase/pb_hooks/workspace-record-policy.js, apps/pocketbase/pb_hooks/workspace-claims.js, apps/pocketbase/pb_hooks/workspace-claims.pb.js, apps/pocketbase/pb_migrations/1791500001_workspace_claim_authority.js, apps/web/src/lib/workspaceClaims.js, apps/web/src/lib/workspaceRecords.js, apps/web/src/lib/workspaceControl.js, apps/web/src/lib/seatComms.js, tests/upgrade/mutation-telemetry-fixture.mjs
+// Depends:     tests/upgrade/admin-fixture.mjs, apps/pocketbase/pb_hooks/workspace-record-policy.js, apps/pocketbase/pb_hooks/workspace-claims.js, apps/pocketbase/pb_hooks/workspace-claims.pb.js, apps/pocketbase/pb_migrations/1791500001_workspace_claim_authority.js, apps/pocketbase/pb_hooks/guildmasters.js, apps/pocketbase/pb_migrations/1792300000_seat_event_persona.js, apps/web/src/lib/workspaceClaims.js, apps/web/src/lib/workspaceRecords.js, apps/web/src/lib/workspaceControl.js, apps/web/src/lib/seatComms.js, tests/upgrade/mutation-telemetry-fixture.mjs
 // EnumType:    Test
-// EnumEdges:   CONSUMES tests/upgrade/admin-fixture.mjs; VALIDATES apps/pocketbase/pb_hooks/workspace-record-policy.js; VALIDATES apps/pocketbase/pb_hooks/workspace-claims.js; VALIDATES apps/pocketbase/pb_hooks/workspace-claims.pb.js; VALIDATES apps/pocketbase/pb_migrations/1791500001_workspace_claim_authority.js; VALIDATES apps/web/src/lib/workspaceClaims.js; VALIDATES apps/web/src/lib/workspaceRecords.js; VALIDATES apps/web/src/lib/workspaceControl.js; VALIDATES apps/web/src/lib/seatComms.js; CONSUMES tests/upgrade/mutation-telemetry-fixture.mjs
+// EnumEdges:   CONSUMES tests/upgrade/admin-fixture.mjs; VALIDATES apps/pocketbase/pb_hooks/workspace-record-policy.js; VALIDATES apps/pocketbase/pb_hooks/workspace-claims.js; VALIDATES apps/pocketbase/pb_hooks/workspace-claims.pb.js; VALIDATES apps/pocketbase/pb_migrations/1791500001_workspace_claim_authority.js; CONSUMES apps/pocketbase/pb_hooks/guildmasters.js; VALIDATES apps/pocketbase/pb_migrations/1792300000_seat_event_persona.js; VALIDATES apps/web/src/lib/workspaceClaims.js; VALIDATES apps/web/src/lib/workspaceRecords.js; VALIDATES apps/web/src/lib/workspaceControl.js; VALIDATES apps/web/src/lib/seatComms.js; CONSUMES tests/upgrade/mutation-telemetry-fixture.mjs
 // Intent:      Reject raw claim fabrication and exercise current native authority without treating storage doubles as native acceptance.
 // ----------------------------------------------------------------
 
@@ -315,6 +315,109 @@ test('seat reports bind the human account, reject claimed identities, validate s
     denied(() => f.claim('seat.report', { ...values, subject_type: 'mission', subject: 'foreignmission' }), 400);
     f.app.delete(f.app.findRecordById('workspace_members', 'editormember'));
     denied(() => f.claim('seat.report', values, { key: 'seat_retry_synthetic_001' }));
+});
+
+const PERSONA_MIGRATION = 'apps/pocketbase/pb_migrations/1792300000_seat_event_persona.js';
+// Seat accounts as 1789100000/1789100002 create them. c-one is the long-standing non-guildmaster
+// seat; no machine name or address appears here.
+function guildFixture({ persona = true } = {}) {
+    const f = claimsFixture();
+    const seat = (id, local, values = {}) => f.seed('users', { id, email: `${local}@ocn.buildanddo.invalid`, verified: true, ocn_seat: true, ...values });
+    seat('forgeseat', 'forge'); seat('directorseat', 'director');
+    seat('unverifiedseat', 'scholar', { verified: false }); seat('flaglessseat', 'oracle', { ocn_seat: false }); seat('coneseat', 'c-one');
+    seat('museviewer', 'muse');
+    for (const id of ['forgeseat', 'directorseat', 'unverifiedseat', 'flaglessseat', 'coneseat'])
+        f.seed('workspace_members', { id: `${id}member`, workspace: 'ws1', user: id, role: 'editor' });
+    f.seed('workspace_members', { id: 'museviewermember', workspace: 'ws1', user: 'museviewer', role: 'viewer' });
+    if (persona) f.migration(PERSONA_MIGRATION).up();
+    return f;
+}
+
+test('guildmaster seat reports are stored as agent activity with the server-derived persona', () => {
+    const f = guildFixture(), values = { event: 'progress', summary: 'Prepared the weekly class outline', detail: { phase: 'outline' } };
+    const forge = f.claim('seat.report', values, { actor: 'forgeseat', key: 'guild_seat_retry_forge_001' });
+    assert.equal(forge.record.actor_type, 'agent'); assert.equal(forge.record.persona, 'forge');
+    assert.equal(forge.record.seat, 'forgeseat'); assert.equal(forge.record.owner, 'forgeseat');
+    const stored = f.data.seat_events.find((row) => row.id === forge.id);
+    assert.equal(stored.actor_type, 'agent'); assert.equal(stored.persona, 'forge'); assert.equal(stored.seat, 'forgeseat');
+    // The account id is director; the public persona is director-nexus.
+    const director = f.claim('seat.report', { ...values, actor_type: 'agent', seat: 'directorseat' }, { actor: 'directorseat' });
+    assert.equal(director.record.actor_type, 'agent'); assert.equal(director.record.persona, 'director-nexus');
+    assert.equal(director.record.seat, 'directorseat');
+    // A guildmaster cannot pass as a person, pick a persona or speak for another seat.
+    for (const claimed of [{ actor_type: 'human' }, { actor_type: 'mixed' }, { persona: 'forge' }, { persona: 'director-nexus' },
+        { seat: 'directorseat' }, { seat: 'forge' }])
+        denied(() => f.claim('seat.report', { ...values, ...claimed }, { actor: 'forgeseat' }), 400);
+    // Only a verified, flagged registered seat is a guildmaster; everyone else is stamped human.
+    for (const actor of ['unverifiedseat', 'flaglessseat', 'coneseat', 'editor']) {
+        const report = f.claim('seat.report', values, { actor });
+        assert.deepEqual([report.record.actor_type, report.record.persona, report.record.seat, report.record.owner], ['human', '', actor, actor]);
+        denied(() => f.claim('seat.report', { ...values, actor_type: 'agent' }, { actor }), 400);
+        denied(() => f.claim('seat.report', { ...values, persona: 'forge' }, { actor }), 400);
+    }
+    denied(() => f.claim('seat.report', values, { actor: 'museviewer' }));
+    const replay = f.claim('seat.report', values, { actor: 'forgeseat', key: 'guild_seat_retry_forge_001' });
+    assert.equal(replay.id, forge.id); assert.equal(replay.replayed, true); assert.equal(replay.record.persona, 'forge');
+    assert.equal(f.data.seat_events.length, 6);
+    assert.equal(f.data.seat_events.filter((row) => row.actor_type === 'agent').length, 2);
+    // A raw write cannot carry the stamp either: the native policy refuses it outright.
+    const raw = f.event('forgeseat');
+    raw.record = f.record('seat_events', { id: 'rawpersona', workspace: 'ws1', owner: 'forgeseat', seat: 'forgeseat', actor_type: 'agent', persona: 'forge', event: 'progress', summary: 'Raw' });
+    raw.next = () => assert.fail('A raw guildmaster seat event reached persistence');
+    denied(() => f.load('workspace-record-policy.js').enforce(raw, 'create'));
+    assert.equal(f.data.seat_events.length, 6);
+});
+
+test('without the seat-event persona migration a guildmaster report fails closed and human reports continue', () => {
+    const f = guildFixture({ persona: false }), values = { event: 'joined', summary: 'Joined the workspace' };
+    const before = plain(f.data);
+    denied(() => f.claim('seat.report', values, { actor: 'forgeseat' }), 503);
+    denied(() => f.claim('seat.report', values, { actor: 'directorseat' }), 503);
+    assert.deepEqual(f.data, before);
+    const human = f.claim('seat.report', values);
+    assert.deepEqual([human.record.actor_type, human.record.seat, human.record.persona], ['human', 'editor', '']);
+    assert.equal(Object.hasOwn(f.data.seat_events[0], 'persona'), false);
+    // Refusals that do not depend on the schema still come first.
+    denied(() => f.claim('seat.report', { ...values, actor_type: 'human' }, { actor: 'forgeseat' }), 400);
+});
+
+test('the seat-event persona migration is idempotent, preflights the locked shape and keeps persona history on rollback', () => {
+    const f = guildFixture({ persona: false }), step = f.migration(PERSONA_MIGRATION);
+    step.up();
+    const installed = plain(f.collections.seat_events);
+    assert.deepEqual(plain(f.collections.seat_events.fields.getByName('persona')), { name: 'persona', type: 'text', max: 64, required: false, hidden: false });
+    step.up(); nativeSchema(f); step.up();
+    assert.deepEqual(plain(f.collections.seat_events), installed);
+    for (const corrupt of [
+        (c) => { c.fields.getByName('persona').max = 10; },
+        (c) => { c.fields.getByName('persona').required = true; },
+        (c) => { c.fields.getByName('persona').hidden = true; },
+        (c) => { c.fields.getByName('persona').type = 'select'; },
+        (c) => { c.createRule = "@request.auth.id != ''"; },
+        (c) => { c.listRule = "@request.auth.id != ''"; },
+        (c) => { c.type = 'view'; },
+    ]) {
+        const g = guildFixture(); corrupt(g.collections.seat_events);
+        const collections = plain(g.collections), saves = [];
+        const save = g.app.save; g.app.save = (value) => { saves.push(value); return save.call(g.app, value); };
+        assert.throws(g.migration(PERSONA_MIGRATION).up, /Review custom seat_events\.persona/);
+        assert.equal(saves.length, 0); assert.deepEqual(plain(g.collections), collections);
+    }
+    const missing = guildFixture({ persona: false }); delete missing.collections.seat_events;
+    assert.throws(missing.migration(PERSONA_MIGRATION).up, /Review custom seat_events\.persona/);
+    // Human reports keep the field empty, so rolling back loses nothing and is allowed.
+    const human = guildFixture(); human.claim('seat.report', { event: 'joined', summary: 'Joined' });
+    human.migration(PERSONA_MIGRATION).down(); human.migration(PERSONA_MIGRATION).down();
+    assert.equal(human.collections.seat_events.fields.getByName('persona'), undefined);
+    assert.equal(human.data.seat_events.length, 1);
+    // A guildmaster report carries a persona that removing the field would erase.
+    const guild = guildFixture(); guild.claim('seat.report', { event: 'joined', summary: 'Joined' }, { actor: 'forgeseat' });
+    const rows = plain(guild.data), schema = plain(guild.collections.seat_events);
+    assert.throws(guild.migration(PERSONA_MIGRATION).down, /persona/);
+    assert.deepEqual(plain(guild.data), rows); assert.deepEqual(plain(guild.collections.seat_events), schema);
+    const custom = guildFixture(); custom.collections.seat_events.fields.getByName('persona').max = 200;
+    assert.throws(custom.migration(PERSONA_MIGRATION).down, /Review custom seat_events\.persona/);
+    assert.ok(custom.collections.seat_events.fields.getByName('persona'));
 });
 
 test('bounded commands reject nested or oversized payloads and roll back on missing audit storage', () => {
