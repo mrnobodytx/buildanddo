@@ -1,10 +1,10 @@
 # ─── CGRF Header ───────────────────────────────────────────────
 # File:        docs/discord-bot.md
 # Stage:       06_PLAN
-# SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-QUIZ-001
+# SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-QUIZ-001, SRS-BUILDANDDO-CURRICULUM-PRIVATE-001
 # CAPS:        pending
 # CK:          pending
-# Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-QUIZ-001
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-QUIZ-001, VCC-BUILDANDDO-CURRICULUM-PRIVATE-001
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-15
@@ -88,8 +88,14 @@ When grading is not configured, unreachable or refused, the bot says the answer
 was not graded, keeps the answer menu open and never invents a result. The
 catalogue's `schema_version` is 2; an earlier bot rejects it and an updated bot
 rejects an older catalogue, so ship the site build and the bot together.
-The authored curriculum files under `apps/pocketbase/pb_migrations/data/` still
-contain answers; whether they move is an open owner decision.
+The authored curriculum files under `apps/pocketbase/pb_migrations/data/` no
+longer contain answers or explanations. The route takes each lesson's key from
+the private key file PocketBase reads at runtime, named by
+`BUILDANDDO_LESSON_KEYS_FILE`, or from a key an existing database already
+holds, which must agree with any file entry for that lesson. When no key exists
+for a lesson the route answers 404, which the bot shows as not gradable. A key
+that disagrees with the lesson, or an unusable key file where the database holds
+no key, answers 503, which the bot shows as grading unavailable.
 
 With the research bridge configured, `/buildanddo missions`, `mission`,
 `evidence`, `submit`, `submissions`, `submission` and `recover` connect to the

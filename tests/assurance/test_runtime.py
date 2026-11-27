@@ -1,10 +1,10 @@
 # ─── CGRF Header ───────────────────────────────────────────────
 # File:        tests/assurance/test_runtime.py
 # Stage:       08_TEST
-# SRS:         SRS-BUILDANDDO-UPGRADE-001
+# SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-CURRICULUM-PRIVATE-001
 # CAPS:        pending
 # CK:          pending
-# Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+# Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-CURRICULUM-PRIVATE-001
 # Seat:        BITS-CODEGEN
 # Owner:       Citadel Nexus Inc.
 # Created:     2026-09-22
@@ -76,10 +76,11 @@ def prepare_learning(
         "practice",
         {"checks": [True] * len(data["tutorial"]["lesson"]["exercise"]["checklist"])},
     )
+    # The learner view never carries the key, so the correct choice comes from the staged synthetic set.
     return path, {
         "action": "answer",
         "content_digest": digest,
-        "payload": {"choice": data["tutorial"]["lesson"]["check"]["answer"]},
+        "payload": {"choice": server.answer(lesson)},
     }
 
 

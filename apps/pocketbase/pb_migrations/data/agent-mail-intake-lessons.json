@@ -112,9 +112,7 @@
             "Trust the second header, because it names the vendor",
             "Treat the sender as unproven for the vendor and drop the message to triage without acting",
             "Open the invitation link to see whether the page looks genuine"
-          ],
-          "answer": 2,
-          "explanation": "A passing signature only proves the domain that signed it. Only the first header from your own receiver is trusted, and it shows no pass for the vendor, so the agent records the message and drops it to triage instead of acting."
+          ]
         },
         "references": [
           { "label": "RFC 8601: Message Header Field for Indicating Message Authentication Status", "url": "https://www.rfc-editor.org/rfc/rfc8601.html" },

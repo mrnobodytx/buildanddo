@@ -1,28 +1,28 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/src/lib/classrooms.js
 // Stage:       07_BUILD
-// SRS:         SRS-BUILDANDDO-UPGRADE-001
+// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-GUILDMASTER-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-UPGRADE-001
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-GUILDMASTER-001
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-16
-// Depends:     apps/pocketbase/pb_hooks/classrooms.pb.js, apps/web/src/lib/tutorialCurriculum.js
+// Depends:     apps/pocketbase/pb_hooks/classrooms.pb.js, apps/pocketbase/pb_hooks/guild-lessons.js, apps/web/src/lib/tutorialCurriculum.js
 // EnumType:    Adapter
-// EnumEdges:   CONSUMES apps/pocketbase/pb_hooks/classrooms.pb.js; CONSUMES apps/web/src/lib/tutorialCurriculum.js
+// EnumEdges:   CONSUMES apps/pocketbase/pb_hooks/classrooms.pb.js; CONSUMES apps/pocketbase/pb_hooks/guild-lessons.js; CONSUMES apps/web/src/lib/tutorialCurriculum.js; VERIFIED_BY apps/web/src/lib/__tests__/classrooms.test.js
 // DAG Node:    none
 // Intent:      Bind classroom interactions to one account and workspace while recovering uncertain saves and rejecting foreign responses.
 // ───────────────────────────────────────────────────────────────
 
-import { validLesson } from './tutorialCurriculum.js';
+import { lessonLink, validLesson } from './tutorialCurriculum.js';
 
 const id = (value) => typeof value === 'string' && /^[a-zA-Z0-9_-]{1,64}$/.test(value);
 const integer = (value, min = 0) => Number.isSafeInteger(value) && value >= min;
 const text = (value, max) => typeof value === 'string' && value.length <= max;
 const ROLES = ['owner', 'admin', 'editor', 'viewer'];
 const STATUSES = ['scheduled', 'live', 'ended'];
-const ACTIONS = ['room.create', 'room.update', 'room.start', 'room.end', 'room.lesson', 'room.join', 'room.leave', 'room.message'];
+const ACTIONS = ['room.create', 'room.update', 'room.start', 'room.end', 'room.lesson', 'room.material', 'room.join', 'room.leave', 'room.message'];
 const stale = () => ({ ok: false, reason: 'scope_changed', error: '' });
 const pageShape = (value, page) => value?.page === page && Array.isArray(value.items) && value.items.length <= 20 &&
     typeof value.has_more === 'boolean' && new Set(value.items.map((item) => item?.id)).size === value.items.length;
@@ -35,6 +35,33 @@ function roomShape(value, workspace, account, role) {
         (id(value.host) || value.host === '') && text(value.host_name, 120) && (id(value.tutorial) || value.tutorial === '') &&
         STATUSES.includes(value.status) && ['starts_at', 'started_at', 'ended_at', 'created'].every((name) => text(value[name], 50)) &&
         value.can_manage === (['owner', 'admin'].includes(role) || (role === 'editor' && value.host === account));
+}
+const items = (value, count, max) => Array.isArray(value) && value.length <= count &&
+    value.every((item) => typeof item === 'string' && item.trim() && item.length <= max);
+// Guild material (guild-lessons.js body()) is keyless reading material: sections, optional outcomes
+// and HTTPS references with exactly the keys the server validates. A check, answer, exercise or any
+// other key makes the whole read broken rather than a lesson with something hidden in it.
+function validMaterial(value) {
+    return Boolean(value && typeof value === 'object' && !Array.isArray(value) && value.schema_version === 1 &&
+        Object.keys(value).every((key) => ['schema_version', 'outcomes', 'sections', 'references'].includes(key)) &&
+        (value.outcomes === undefined || items(value.outcomes, 10, 300)) &&
+        Array.isArray(value.sections) && value.sections.length > 0 && value.sections.length <= 20 &&
+        value.sections.every((section) => section && typeof section === 'object' && !Array.isArray(section) &&
+            Object.keys(section).every((key) => ['heading', 'paragraphs', 'steps'].includes(key)) &&
+            text(section.heading, 200) && section.heading.trim() &&
+            (section.paragraphs === undefined || items(section.paragraphs, 20, 2000)) && (section.steps === undefined || items(section.steps, 20, 2000))) &&
+        (value.references === undefined || (Array.isArray(value.references) && value.references.length <= 12 &&
+            value.references.every((reference) => reference && Object.keys(reference).length === 2 && text(reference.label, 200) &&
+                reference.label.trim() && lessonLink(reference.url).startsWith('https://')))));
+}
+// A shared lesson is either the room's tutorial or, after room.material, the guild lesson the room
+// names; never a guild lesson standing in for a tutorial or the other way round.
+function lessonShape(lesson, room) {
+    if (lesson === null) return true;
+    if (!lesson || !text(lesson.title, 300) || !text(lesson.summary, 5000) || !text(lesson.category, 300)) return false;
+    if (lesson.source === 'guild_lesson')
+        return id(room.material) && lesson.id === room.material && text(lesson.persona, 64) && validMaterial(lesson.lesson);
+    return lesson.source === undefined && lesson.id === room.tutorial && validLesson(lesson.lesson);
 }
 // Media availability is a server fact: a boolean, offered only while live, with at
 // most a short reason. Any other key (a token, a session id) is refused outright.
@@ -53,7 +80,7 @@ function readShape(value, workspace, account, roomId, page) {
         membership && typeof membership.active === 'boolean' && integer(membership.revision) &&
         (membership.id === '' ? membership.revision === 0 && !membership.active : id(membership.id) && membership.revision >= 1) &&
         (!membership.active || room.status === 'live') &&
-        (lesson === null || (lesson?.id === room.tutorial && text(lesson.title, 300) && text(lesson.summary, 5000) && text(lesson.category, 300) && validLesson(lesson.lesson))) &&
+        lessonShape(lesson, room) &&
         Array.isArray(participants) && participants.length <= 100 && participants.every((item) => id(item?.id) && text(item.name, 120) && typeof item.is_host === 'boolean') &&
         new Set(participants.map((item) => item.id)).size === participants.length && pageShape(messages, page) &&
         messages.items.every((item) => id(item?.id) && item.room === roomId && text(item.name, 120) && text(item.body, 2000) &&

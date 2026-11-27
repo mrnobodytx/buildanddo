@@ -8,9 +8,9 @@
 // Seat:        C-ONE
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-11-21
-// Depends:     tests/upgrade/admin-fixture.mjs, tests/upgrade/tutorial-learning-fixture.mjs, apps/pocketbase/pb_hooks/tutorial-learning.js, apps/pocketbase/pb_migrations/1792200000_agent_mail_intake_lessons.js, apps/pocketbase/pb_migrations/data/agent-mail-intake-lessons.json, apps/web/src/lib/tutorialCurriculum.js
+// Depends:     tests/upgrade/admin-fixture.mjs, tests/upgrade/lesson-keys-fixture.mjs, tests/upgrade/tutorial-learning-fixture.mjs, apps/pocketbase/pb_hooks/tutorial-learning.js, apps/pocketbase/pb_migrations/1792200000_agent_mail_intake_lessons.js, apps/pocketbase/pb_migrations/data/agent-mail-intake-lessons.json, apps/web/src/lib/tutorialCurriculum.js
 // EnumType:    Test
-// EnumEdges:   CONSUMES tests/upgrade/admin-fixture.mjs; CONSUMES apps/pocketbase/pb_hooks/tutorial-learning.js; VALIDATES apps/pocketbase/pb_migrations/1792200000_agent_mail_intake_lessons.js; VALIDATES apps/pocketbase/pb_migrations/data/agent-mail-intake-lessons.json; CONSUMES apps/web/src/lib/tutorialCurriculum.js
+// EnumEdges:   CONSUMES tests/upgrade/admin-fixture.mjs; CONSUMES tests/upgrade/lesson-keys-fixture.mjs; CONSUMES apps/pocketbase/pb_hooks/tutorial-learning.js; VALIDATES apps/pocketbase/pb_migrations/1792200000_agent_mail_intake_lessons.js; VALIDATES apps/pocketbase/pb_migrations/data/agent-mail-intake-lessons.json; CONSUMES apps/web/src/lib/tutorialCurriculum.js
 // DAG Node:    none
 // Intent:      Validate one public AI-agent mail-intake lesson and its additive migration, and keep internal topology out of it.
 // ----------------------------------------------------------------
@@ -19,6 +19,7 @@ import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import test from 'node:test';
 import { fixture, plain, source } from './admin-fixture.mjs';
+import { KEY_PATH, lessonKeyServer } from './lesson-keys-fixture.mjs';
 import { DBX, faithfulCountRecords } from './tutorial-learning-fixture.mjs';
 import { lessonLink, publicLesson, validLesson } from '../../apps/web/src/lib/tutorialCurriculum.js';
 
@@ -28,13 +29,17 @@ const BROADCAST_MIGRATION = 'apps/pocketbase/pb_migrations/1791400001_broadcast_
 const bundle = JSON.parse(source(DATA)), seed = bundle.lessons[0];
 const others = ['starter-tutorials.json', 'broadcast-classroom-lessons.json', 'government-submissions.json',
     'authority-repairs-lessons.json'].flatMap((name) => JSON.parse(source(`apps/pocketbase/pb_migrations/data/${name}`)).lessons);
+// Synthetic grading keys generated at test time from public lesson text, served as the private key file.
+const keys = lessonKeyServer();
 
 function installed(data = bundle) {
+    const served = lessonKeyServer();
     const f = fixture({ runtime: {
-        toString: String,
+        ...served.runtime,
         $dbx: DBX,
         $security: { sha256: (text) => createHash('sha256').update(text).digest('hex') },
-        $os: { readFile: (path) => {
+        $os: { ...served.runtime.$os, readFile: (path) => {
+            if (path === KEY_PATH) return served.runtime.$os.readFile(path);
             if (path === '/pb_migrations/data/agent-mail-intake-lessons.json') return JSON.stringify(data);
             assert.ok(['/pb_migrations/data/starter-tutorials.json', '/pb_migrations/data/broadcast-classroom-lessons.json'].includes(path));
             return source('apps/pocketbase' + path);
@@ -45,6 +50,7 @@ function installed(data = bundle) {
     f.migration(BROADCAST_MIGRATION).up();
     f.migration('apps/pocketbase/pb_migrations/1791500100_tutorial_answer_wait.js').up();
     faithfulCountRecords(f.app);
+    served.attach(f.app);
     return f;
 }
 
@@ -58,9 +64,8 @@ test('one complete public lesson with a stable identity that collides with no ot
     assert.ok(Buffer.byteLength(JSON.stringify(seed.lesson)) < 65536);
     const all = [...others, seed];
     for (const field of ['id', 'slug']) assert.equal(new Set(all.map((row) => row[field])).size, all.length, field);
-    assert.ok(seed.lesson.check.answer >= 0 && seed.lesson.check.answer < seed.lesson.check.choices.length);
-    const run = seed.lesson.check.explanation.split(/[^A-Za-z0-9 ,.;()-]/).sort((a, b) => b.length - a.length)[0];
-    assert.ok(run.length >= 24, 'the public-bundle leak check needs a 24-character explanation run');
+    const answer = keys.answerFor(seed.slug);
+    assert.ok(Number.isInteger(answer) && answer >= 0 && answer < seed.lesson.check.choices.length, 'the synthetic key indexes a listed choice');
     assert.deepEqual(publicLesson(seed.lesson).check, { question: seed.lesson.check.question, choices: seed.lesson.check.choices });
     for (const path of [DATA, `${DATA}.cgrf.yaml`, MIGRATION, 'tests/upgrade/agent-mail-intake-lessons.test.mjs'])
         assert.doesNotMatch(source(path), /[^\x00-\x7f]/, path);
@@ -85,7 +90,9 @@ test('the lesson teaches every rule the case study measured', () => {
         'vendor.example.attacker.test', 'envelope sender', 'falsifiable', 'never from the email', 'human challenge',
         'one of eight', 'cursor', 'idempotency key', 'no consumer', 'did not exist'])
         assert.ok(text.includes(term), term);
-    assert.match(seed.lesson.check.choices[seed.lesson.check.answer], /triage without acting/);
+    // The correct choice is private golden data (SRS-BUILDANDDO-CURRICULUM-PRIVATE-001): the public check carries its
+    // question and choices only, and the key that grades it is generated synthetically for this suite.
+    assert.deepEqual(Object.keys(seed.lesson.check).sort(), ['choices', 'question']);
 });
 
 test('migration creates only the missing tutorial and leaves every other record and schema alone', () => {
@@ -115,7 +122,7 @@ test('a learner can complete the lesson through the production learning source a
     command('start');
     seed.lesson.sections.forEach((_section, index) => command('section', { index }));
     command('practice', { checks: seed.lesson.exercise.checklist.map(() => true) });
-    command('answer', { choice: seed.lesson.check.answer });
+    command('answer', { choice: keys.answerFor(seed.slug) });
     assert.ok(detail().enrollment.certificate);
 });
 

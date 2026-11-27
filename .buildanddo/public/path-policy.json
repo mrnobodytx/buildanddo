@@ -8,13 +8,18 @@
     "github": "public collaboration and submission plane",
     "gitlab": "private golden, infrastructure, release and deployment authority"
   },
+  "curriculum_data_globs": [
+    "apps/pocketbase/pb_migrations/data/*.json"
+  ],
   "forbidden_file_names": [
     ".env",
     ".env.local",
     "id_rsa",
     "id_ed25519",
-    "credentials.json"
+    "credentials.json",
+    "lesson-keys.json"
   ],
+  "private_key_schema": "buildanddo.lesson-keys/1",
   "public_allowed_prefixes": [
     ".github/",
     ".bits/",

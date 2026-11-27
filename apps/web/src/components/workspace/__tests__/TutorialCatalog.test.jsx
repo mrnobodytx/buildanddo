@@ -1,10 +1,10 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/web/src/components/workspace/__tests__/TutorialCatalog.test.jsx
 // Stage:       08_TEST
-// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-TRUST-001
+// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-TRUST-001, SRS-BUILDANDDO-CURRICULUM-PRIVATE-001
 // CAPS:        pending
 // CK:          pending
-// Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-TRUST-001
+// Dispatch:    VCC-BUILDANDDO-UPGRADE-001, VCC-BUILDANDDO-TRUST-001, VCC-BUILDANDDO-CURRICULUM-PRIVATE-001
 // Seat:        BITS-CODEGEN
 // Owner:       Citadel Nexus Inc.
 // Created:     2026-09-15
@@ -46,6 +46,14 @@ vi.mock('@/lib/pocketbaseClient', async () => {
 });
 vi.mock('@/lib/observability/runtime', () => ({ reportAction: vi.fn(), reportMetric: vi.fn(), trackAuthIdentity: vi.fn(), readFailed: vi.fn() }));
 vi.mock('@/lib/telemetry', () => ({ trackEvent: vi.fn() }));
+// Radix attaches the dialog's Escape listener in the same effect that moves focus into it. On a
+// loaded runner an Escape typed before that effect ran was simply lost and the dialog stayed open
+// (jobs 105160 and 6404), so wait until focus is inside the dialog before pressing it.
+async function escapeDialog(user) {
+    await waitFor(() => expect(screen.getByRole('dialog')).toContainElement(document.activeElement));
+    await user.keyboard('{Escape}');
+}
+
 const lesson = curriculum.lessons[0];
 const broadcastLesson = broadcastCurriculum.lessons[0];
 const authorityLesson = authorityCurriculum.lessons[0];
@@ -58,7 +66,7 @@ it('opens the saved lesson linked by a classroom and keeps personal progress sep
     const dialog = within(await screen.findByRole('dialog'));
     expect(dialog.getByRole('heading', { name: lesson.title })).toBeVisible();
     expect(pb.collection('tutorial_progress').create).not.toHaveBeenCalled();
-    await user.keyboard('{Escape}');
+    await escapeDialog(user);
     // Escape closes the dialog through a state update React still has to flush, so this is a
     // WAIT, not a synchronous read. Asserting it directly passed only because userEvent's
     // default delay of 0 awaited a macrotask first - the race was hidden, never removed.
@@ -87,6 +95,10 @@ beforeEach(() => {
     });
 });
 afterEach(() => vi.restoreAllMocks());
+// The backend grades from synthetic keys generated at test time; the curriculum carries none. Checks on an
+// explanation compare against null, so a failure never prints the key text.
+const explanationOf = (record) => backend.keys.explanationFor(record.slug);
+const shown = (scope, text) => scope.queryByText(text) !== null;
 const read = async (prefix = 'Read') => {
     const user = setupUser();
     const opener = await screen.findByRole('button', { name: `${prefix} ${lesson.title}` });
@@ -140,7 +152,7 @@ describe('complete Field Manual lessons', () => {
         const { reader, user } = await read();
         expect(reader.queryByRole('button', { name: 'Save reading progress' })).not.toBeInTheDocument();
         expect(reader.getByText('Sign in and open the interactive tutorial to answer this knowledge check.')).toBeVisible();
-        expect(JSON.stringify(screen.getByRole('dialog').textContent)).not.toContain(lesson.lesson.check.explanation);
+        expect(JSON.stringify(screen.getByRole('dialog').textContent).includes(explanationOf(lesson))).toBe(false);
         await user.click(reader.getByRole('button', { name: 'Close lesson' }));
         expect(pb.collection).not.toHaveBeenCalled();
         view.unmount(); setDemoMode(true);
@@ -170,7 +182,7 @@ describe('complete Field Manual lessons', () => {
         const { user, reader, opener } = await read('Review');
         expect(reader.getByText('Guided tutorial completed. Reading practice does not change your saved completion.')).toBeVisible();
         expect(reader.queryByRole('button', { name: 'Mark lesson complete' })).not.toBeInTheDocument();
-        await user.keyboard('{Escape}');
+        await escapeDialog(user);
         await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
         expect(opener).toHaveFocus();
         expect(pb.__collection('tutorial_progress').update).not.toHaveBeenCalled();
@@ -193,7 +205,7 @@ describe('complete Field Manual lessons', () => {
         for (const choice of lesson.lesson.check.choices) expect(check.getByText(choice)).toBeVisible();
         expect(reader.queryByRole('radio')).not.toBeInTheDocument();
         expect(reader.queryByRole('button', { name: 'Check answer' })).not.toBeInTheDocument();
-        expect(reader.queryByText(lesson.lesson.check.explanation)).not.toBeInTheDocument();
+        expect(shown(reader, explanationOf(lesson))).toBe(false);
         expect(check.getByText('Answer this knowledge check in the interactive tutorial.')).toBeVisible();
         expect(reader.getByText(/Finish the interactive tutorial to complete this lesson/)).toBeVisible();
         expect(reader.queryByRole('button', { name: 'Save reading progress' })).not.toBeInTheDocument();
@@ -235,8 +247,9 @@ describe('complete Field Manual lessons', () => {
 
     it('opens a public guided lesson from its card and reader while a revoked restricted enrollment denies aggregate progress', async () => {
         installGovernment(backend, ['user_test']);
+        // Its slug has no entry in the key file, so it holds its key in the database, as production rows may.
         backend.seed('tutorials', { ...backend.lessons[1], id: 'restricted00001', slug: 'restricted-fixture',
-            title: 'Restricted learning fixture', category: 'Government submissions' });
+            title: 'Restricted learning fixture', category: 'Government submissions', lesson: backend.keyed(backend.lessons[1].id) });
         backend.command('start', {}, { id: 'restricted00001', actor: 'user_test' });
         backend.data.government_memberships[0].status = 'revoked';
         renderWithProviders(<TutorialCatalog />);
@@ -298,7 +311,7 @@ describe('complete Field Manual lessons', () => {
         expect(reader.getByRole('heading', { name: 'Practice' })).toBeVisible();
         expect(reader.getByRole('region', { name: 'Knowledge check' })).toBeVisible();
         expect(reader.getByRole('heading', { name: 'Check your understanding' })).toBeVisible();
-        expect(reader.queryByText(sourceLesson.lesson.check.explanation)).not.toBeInTheDocument();
+        expect(shown(reader, explanationOf(sourceLesson))).toBe(false);
         expect(reader.getByText(sourceCase.source_evidence.boundary)).toBeVisible();
         expect(reader.getByRole('link', { name: /Open Evidence and its separate Source case studies panel/ })).toHaveAttribute('href', '/app/evidence');
         expect(reader.queryByRole('button', { name: 'Save reading progress' })).not.toBeInTheDocument();
@@ -326,7 +339,7 @@ describe('complete Field Manual lessons', () => {
         expect(reader.getByText(edited.lesson.why)).toBeVisible();
         expect(reader.queryByRole('button', { name: 'Save reading progress' })).not.toBeInTheDocument();
         for (const name of ['tutorial_progress', 'tutorial_learning', 'evidence']) expect(pb.__collection(name).create).not.toHaveBeenCalled();
-        await setupUser().keyboard('{Escape}');
+        await escapeDialog(setupUser());
         await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
         expect(screen.getAllByRole('heading', { name: edited.title })).toHaveLength(1);
         expect(await screen.findByText(`0 of ${publicLessonCount} guided tutorials completed`)).toBeVisible();
@@ -349,7 +362,7 @@ describe('complete Field Manual lessons', () => {
         expect(reader.queryByRole('radio')).not.toBeInTheDocument();
         expect(reader.queryByRole('checkbox')).not.toBeInTheDocument();
         expect(reader.queryByRole('button', { name: 'Check answer' })).not.toBeInTheDocument();
-        expect(reader.queryByText(authorityLesson.lesson.check.explanation)).not.toBeInTheDocument();
+        expect(shown(reader, explanationOf(authorityLesson))).toBe(false);
         for (const name of ['tutorial_progress', 'tutorial_learning', 'evidence'])
             for (const method of ['create', 'update', 'delete']) expect(pb.__collection(name)[method]).not.toHaveBeenCalled();
         expect(pb.send.mock.calls.every(([, request]) => request.method === 'GET')).toBe(true);

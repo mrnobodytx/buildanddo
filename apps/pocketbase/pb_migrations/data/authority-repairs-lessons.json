@@ -107,9 +107,7 @@
             "The mission, learner mastery and payment are all verified by their status labels.",
             "Keep the report and ordered open-book completion distinct; independent review and payment remain unverified without their own evidence.",
             "Removing the guided answer key makes the public-source quiz a secure exam."
-          ],
-          "answer": 1,
-          "explanation": "These claims have different authorities. Native commands can record ordered progress and attributed reports, but OSS grading keys remain public, a mission status cannot mint an independent receipt, and a support label cannot prove payment."
+          ]
         },
         "references": [
           {

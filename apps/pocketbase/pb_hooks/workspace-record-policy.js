@@ -1,7 +1,7 @@
 // ─── CGRF Header ───────────────────────────────────────────────
 // File:        apps/pocketbase/pb_hooks/workspace-record-policy.js
 // Stage:       07_BUILD
-// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-TRUST-001, SRS-BUILDANDDO-SITE-001
+// SRS:         SRS-BUILDANDDO-UPGRADE-001, SRS-BUILDANDDO-TRUST-001, SRS-BUILDANDDO-SITE-001, SRS-BUILDANDDO-GUILDMASTER-001
 // CAPS:        pending
 // CK:          pending
 // Dispatch:    VCC-BUILDANDDO-UPGRADE-001
@@ -90,7 +90,9 @@ function enforce(e, operation) {
                 SYNCED.some((field) => record.getString(field) !== record.original().getString(field)))
                 access.invalid('Request a connection only. Synced revenue and its status are written by the server.');
         }
-        // No account maps to an agent seat yet, so a browser speaks only as its own human account.
+        // Raw seat_events writes are refused above; this stays as a second lock. Agent attribution
+        // for a guildmaster seat is derived only in workspace-claims.js, from the stored seat account
+        // (SRS-BUILDANDDO-GUILDMASTER-001), so a raw write never carries it.
         if (name === 'seat_events' && (record.getString('actor_type') !== 'human' || record.getString('seat') !== e.auth.id))
             throw new ForbiddenError('Post seat events as your own account. Agent seats publish through the server.');
     }
