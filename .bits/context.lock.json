@@ -875,7 +875,7 @@
       "wired_into_ci": true
     }
   ],
-  "generated_at": "2026-11-21T20:17:03.689297+00:00",
+  "generated_at": "2026-11-27T19:31:21.027543+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -993,6 +993,13 @@
         "spec": ".bits/srs/SRS-BUILDANDDO-DAY21-CLOSURE-001.md",
         "status": "in_progress",
         "title": "Day-21 submission closure - candidate continuity, browser journey, four-product proof"
+      },
+      {
+        "code": "SRS-BUILDANDDO-DAY21-RUNNER-001",
+        "risk": "A2",
+        "spec": ".bits/srs/SRS-BUILDANDDO-DAY21-RUNNER-001.md",
+        "status": "in_progress",
+        "title": "Day-21 acceptance passes on the GitLab fleet runners"
       },
       {
         "code": "SRS-BUILDANDDO-DECISION-001",
@@ -1516,7 +1523,7 @@
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 1888,
+    "tracked_files": 1890,
     "web_source_files": 386
   },
   "schema_version": 1,
@@ -1596,15 +1603,15 @@
         "why": "Competition readiness requires an evidence-backed learning-through-work journey, a reproducible replay and actual submission criteria."
       }
     ],
-    "source_sha256": "9a6887412fa8554f5000144c61993bfc669b3c5a87a8191f7a7f64931b9d0c86",
+    "source_sha256": "aea42adfa931e0caab278a4b4f7f1e771b35e96d6e64cd50e93785f2d9692e7e",
     "state": "PASS"
   },
   "summary": {
     "findings": 58,
     "findings_high": 25,
     "pipelines": 4,
-    "srs_open": 57,
-    "srs_total": 61,
+    "srs_open": 58,
+    "srs_total": 62,
     "unwired_gates": 25
   },
   "tests": {
