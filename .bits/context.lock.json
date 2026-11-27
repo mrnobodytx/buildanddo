@@ -882,7 +882,7 @@
       "wired_into_ci": true
     }
   ],
-  "generated_at": "2026-11-27T19:32:25.448082+00:00",
+  "generated_at": "2026-11-27T19:33:13.828313+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -1105,6 +1105,13 @@
         "spec": ".bits/srs/SRS-BUILDANDDO-GITLAB-ONLY-CI-001.md",
         "status": "in_progress",
         "title": "GitLab is the only CI; retire GitHub Actions"
+      },
+      {
+        "code": "SRS-BUILDANDDO-GITLAB-RELEASE-001",
+        "risk": "A3",
+        "spec": ".bits/srs/SRS-BUILDANDDO-GITLAB-RELEASE-001.md",
+        "status": "in_progress",
+        "title": "Ship buildanddo.com from GitLab through the verified release rail"
       },
       {
         "code": "SRS-BUILDANDDO-GROWTH-001",
@@ -1498,6 +1505,28 @@
       "triggers": [
         "rules (not evaluated)"
       ]
+    },
+    {
+      "configuration_errors": [],
+      "file": ".gitlab/ci/release.yml",
+      "jobs": [
+        "release_staging",
+        "release_production"
+      ],
+      "kind": "include",
+      "local_actions": [],
+      "name": "release",
+      "npm_scripts": [],
+      "provider": "gitlab",
+      "required_scripts": [
+        "tools/buildanddo_release.py"
+      ],
+      "scripts": [
+        "tools/buildanddo_release.py"
+      ],
+      "triggers": [
+        "rules (not evaluated)"
+      ]
     }
   ],
   "repo": {
@@ -1533,11 +1562,11 @@
       "scripts/deploy/staging-readback.sh"
     ],
     "migrations": 77,
-    "python_files": 484,
+    "python_files": 485,
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 1893,
+    "tracked_files": 1897,
     "web_source_files": 386
   },
   "schema_version": 1,
@@ -1617,15 +1646,15 @@
         "why": "Competition readiness requires an evidence-backed learning-through-work journey, a reproducible replay and actual submission criteria."
       }
     ],
-    "source_sha256": "846b3fd3328cbd58008a7183ce70a6bc1ac51845f85c796b227bf934144b4ba0",
+    "source_sha256": "f797d3555f01ece2a1eb0d7977a7da1e510f5c64a5ea24f8ad1fc77608a3cf74",
     "state": "PASS"
   },
   "summary": {
     "findings": 59,
     "findings_high": 25,
-    "pipelines": 4,
-    "srs_open": 59,
-    "srs_total": 63,
+    "pipelines": 5,
+    "srs_open": 60,
+    "srs_total": 64,
     "unwired_gates": 25
   },
   "tests": {
