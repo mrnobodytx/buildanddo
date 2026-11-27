@@ -207,6 +207,13 @@
     },
     {
       "area": "governance",
+      "evidence": ".bits/queue/VCC-BUILDANDDO-CF-WORKERS-BUILD-001.md: 2/2 tasks done; mark SRS-BUILDANDDO-CF-WORKERS-BUILD-001 delivered once merged and verified, or add the task that remains",
+      "severity": "medium",
+      "srs": "SRS-BUILDANDDO-CF-WORKERS-BUILD-001",
+      "statement": "VCC-BUILDANDDO-CF-WORKERS-BUILD-001 has every task done but SRS-BUILDANDDO-CF-WORKERS-BUILD-001 is still in_progress"
+    },
+    {
+      "area": "governance",
       "evidence": ".bits/queue/VCC-BUILDANDDO-CHANGELOG-001.md: 5/5 tasks done; mark SRS-BUILDANDDO-CHANGELOG-001 delivered once merged and verified, or add the task that remains",
       "severity": "medium",
       "srs": "SRS-BUILDANDDO-CHANGELOG-001",
@@ -882,7 +889,7 @@
       "wired_into_ci": true
     }
   ],
-  "generated_at": "2026-11-27T19:33:17.506367+00:00",
+  "generated_at": "2026-11-27T19:33:58.632439+00:00",
   "governance": {
     "files": {
       ".bits/context.md": true,
@@ -951,6 +958,13 @@
         "spec": ".bits/srs/SRS-BUILDANDDO-CF-IDS-001.md",
         "status": "in_progress",
         "title": "No Cloudflare account or resource id in the public repository; the edge deploy resolves them"
+      },
+      {
+        "code": "SRS-BUILDANDDO-CF-WORKERS-BUILD-001",
+        "risk": "A1",
+        "spec": ".bits/srs/SRS-BUILDANDDO-CF-WORKERS-BUILD-001.md",
+        "status": "in_progress",
+        "title": "The orphan buildanddo Worker fails every Workers Build; owner disconnects it"
       },
       {
         "code": "SRS-BUILDANDDO-CHANGELOG-001",
@@ -1567,7 +1581,7 @@
     "services": [
       "praxis_evidence"
     ],
-    "tracked_files": 1907,
+    "tracked_files": 1909,
     "web_source_files": 386
   },
   "schema_version": 1,
@@ -1651,11 +1665,11 @@
     "state": "PASS"
   },
   "summary": {
-    "findings": 59,
+    "findings": 60,
     "findings_high": 25,
     "pipelines": 5,
-    "srs_open": 60,
-    "srs_total": 64,
+    "srs_open": 61,
+    "srs_total": 65,
     "unwired_gates": 25
   },
   "tests": {

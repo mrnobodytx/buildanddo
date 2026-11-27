@@ -1,9 +1,9 @@
 {
   "progression": {
     "dispatch_tasks": {
-      "done": 194,
-      "progress": 0.8584,
-      "total": 226
+      "done": 196,
+      "progress": 0.8596,
+      "total": 228
     },
     "dispatches": {
       "USO-BUILDANDDO-CRAWL-001": {
@@ -53,6 +53,12 @@
         "status": "in_progress",
         "tasks_done": 3,
         "tasks_total": 3
+      },
+      "VCC-BUILDANDDO-CF-WORKERS-BUILD-001": {
+        "srs": "SRS-BUILDANDDO-CF-WORKERS-BUILD-001",
+        "status": "in_progress",
+        "tasks_done": 2,
+        "tasks_total": 2
       },
       "VCC-BUILDANDDO-CHANGELOG-001": {
         "srs": "SRS-BUILDANDDO-CHANGELOG-001",
@@ -256,13 +262,13 @@
     "srs": {
       "by_risk": {
         "A0": 2,
-        "A1": 29,
+        "A1": 30,
         "A2": 31,
         "A3": 1
       },
       "by_status": {
         "delivered": 4,
-        "in_progress": 53,
+        "in_progress": 54,
         "proposed": 6
       },
       "specs": {
@@ -274,6 +280,7 @@
         "SRS-BUILDANDDO-CAPABILITY-TOKEN-001": "in_progress",
         "SRS-BUILDANDDO-CAREER-001": "in_progress",
         "SRS-BUILDANDDO-CF-IDS-001": "in_progress",
+        "SRS-BUILDANDDO-CF-WORKERS-BUILD-001": "in_progress",
         "SRS-BUILDANDDO-CHANGELOG-001": "in_progress",
         "SRS-BUILDANDDO-CI-001": "delivered",
         "SRS-BUILDANDDO-CLASSROOM-GLOBAL-001": "in_progress",
@@ -330,7 +337,7 @@
         "SRS-BUILDANDDO-WORKSPACE-001": "in_progress",
         "SRS-BUILDANDDO-WORLD-TWIN-001": "in_progress"
       },
-      "total": 63
+      "total": 64
     }
   },
   "schema": "buildanddo.growth-lock/v1",
@@ -341,7 +348,7 @@
     "pocketbase_hooks": 31,
     "pocketbase_migrations": 67,
     "readmes": 50,
-    "tracked_files": 1893
+    "tracked_files": 1895
   },
   "systems": {
     "apps/career": {
